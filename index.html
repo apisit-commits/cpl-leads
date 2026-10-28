@@ -160,7 +160,7 @@ input[list]::-webkit-calendar-picker-indicator,input[data-dl]::-webkit-calendar-
 #tF{position:relative}#fdot{position:absolute;top:4px;right:6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#e03131;color:#fff;font-size:11px;font-style:normal;display:flex;align-items:center;justify-content:center;box-sizing:border-box}#fdot.hid{display:none}
 .ib{border:1px dashed rgba(120,130,150,.5);border-radius:12px;padding:10px;margin-bottom:10px}.ibh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:600}.svsel{display:flex;gap:6px}.svsel select{flex:1;min-width:0}
 .clk{cursor:pointer}.clk:hover td{background:rgba(30,100,200,.07)}#flist table{width:100%;min-width:0!important}#flist th,#flist td{white-space:normal!important;position:static!important;vertical-align:top}
-.chart{width:100%;height:auto;display:block}.chart text{fill:currentColor;font-size:10px}.dn{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.dn svg{width:150px;height:150px;flex:none}.dnl{flex:1;min-width:140px;font-size:12px}.dnl span{overflow-wrap:anywhere}.dnl b{white-space:nowrap}.dnl div{display:flex;align-items:center;gap:6px;padding:2px 0}.dnl i{width:10px;height:10px;border-radius:3px;flex:none}.dnl b{margin-left:auto;padding-left:8px}.lg{display:flex;gap:12px;font-size:12px;margin-bottom:4px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+.chart{width:100%;height:auto;display:block}.chart text{fill:currentColor;font-size:10px}.dn{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.dn svg{width:150px;height:150px;flex:none}.dnl{flex:1;min-width:140px;font-size:12px}.dnl span{overflow-wrap:anywhere}.dnl b{white-space:nowrap}.dnl div{display:flex;align-items:center;gap:6px;padding:2px 0}.dnl i{width:10px;height:10px;border-radius:3px;flex:none}.dnl b{margin-left:auto;padding-left:8px}.clg{display:flex;gap:12px;font-size:12px;margin-bottom:4px}.clg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
 .fg{margin-bottom:14px}.fg h4{margin:0 0 6px;font-size:15px}.ftag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11px;background:#e1efff;color:#1456a0;margin-left:6px}
 .cgr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;gap:6px;margin-bottom:6px}.cgr input{min-width:0}
 #vC .cwrap{display:grid;grid-template-columns:minmax(0,3fr) minmax(300px,2fr);gap:16px;align-items:start}#vC .cprev{position:sticky;top:12px}@media(max-width:900px){#vC .cwrap{grid-template-columns:minmax(0,1fr)}#vC .cprev{position:static;order:-1}}
@@ -345,11 +345,12 @@ async function saveLead(id,o){o={...o,fu:o.fu||null,date:o.date||today()};const 
 async function start(){
  document.body.classList.add('out');$('lgimg').src=document.querySelector('.logo').src;
  if(!window.supabase||SUPABASE_URL.startsWith('PASTE')){$('lge').textContent='ยังไม่ได้ใส่ SUPABASE_URL / SUPABASE_KEY ในไฟล์ index.html';return}
- sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+ const SK='cpl_sess';try{if(sb.auth.onAuthStateChange)sb.auth.onAuthStateChange((ev,ss)=>{try{if(ss&&ss.refresh_token)localStorage.setItem(SK,JSON.stringify({access_token:ss.access_token,refresh_token:ss.refresh_token}));else if(ev==='SIGNED_OUT')localStorage.removeItem(SK)}catch(e){}})}catch(e){}
  $('lgf').onsubmit=async e=>{e.preventDefault();$('lge').textContent='';const{error}=await sb.auth.signInWithPassword({email:$('lgm').value.trim(),password:$('lgp').value});if(error)$('lge').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง';else enter()};
- $('lo').onclick=async()=>{await sb.auth.signOut();location.reload()};
+ $('lo').onclick=async()=>{try{localStorage.removeItem(SK)}catch(e){}await sb.auth.signOut();location.reload()};
  $('rg').onchange=reload;
- const{data}=await sb.auth.getSession();if(data.session)enter();
+ let{data}=await sb.auth.getSession();if(!data.session&&sb.auth.setSession){try{const b=JSON.parse(localStorage.getItem(SK)||'null');if(b&&b.refresh_token){const r=await sb.auth.setSession(b);if(r&&r.data&&r.data.session)data=r.data}}catch(e){}}if(data.session)enter();
 }
 async function enter(){
  const{data:{user}}=await sb.auth.getUser();
@@ -522,7 +523,7 @@ function renderDash(){
   const y=v=>T+ch-v/nice*ch;
   const grid=[0,.5,1].map(f=>`<line x1="${L}" x2="${W}" y1="${y(nice*f)}" y2="${y(nice*f)}" stroke="currentColor" stroke-opacity=".12"/><text x="${L-4}" y="${y(nice*f)+3}" text-anchor="end">${N(nice*f)}</text>`).join('');
   const bars=d.map((x,i)=>{const w=Math.min(bw*.7,44),bx=L+i*bw+(bw-w)/2;return `<g><title>${esc(x[0])}: ${pre||''}${N(x[1])}${x[2]!=null?' · '+N(x[2]):''}</title><rect x="${bx}" y="${y(x[1])}" width="${w}" height="${ch+T-y(x[1])}" rx="2" fill="#0096d6" fill-opacity="${x[2]!=null?.35:1}"/>${x[2]!=null?`<rect x="${bx}" y="${y(x[2])}" width="${w}" height="${ch+T-y(x[2])}" rx="2" fill="#2fb170"/>`:''}${d.length<=14?`<text x="${bx+w/2}" y="${y(x[1])-3}" text-anchor="middle">${pre||''}${N(x[1])}</text>`:''}${i%step===0?`<text x="${bx+w/2}" y="${H-8}" text-anchor="middle">${esc(String(x[0]).slice(0,9))}</text>`:''}</g>`}).join('');
-  return `<div class="pn" style="grid-column:1/-1"><h3>${t}</h3>${l1?`<div class="lg"><span><i style="background:#0096d6;opacity:${l2?.35:1}"></i>${l1}</span>${l2?`<span><i style="background:#2fb170"></i>${l2}</span>`:''}</div>`:''}<svg class="chart" viewBox="0 0 ${W} ${H}">${grid}${bars}</svg></div>`};
+  return `<div class="pn" style="grid-column:1/-1"><h3>${t}</h3>${l1?`<div class="clg"><span><i style="background:#0096d6;opacity:${l2?.35:1}"></i>${l1}</span>${l2?`<span><i style="background:#2fb170"></i>${l2}</span>`:''}</div>`:''}<svg class="chart" viewBox="0 0 ${W} ${H}">${grid}${bars}</svg></div>`};
  const sdn=donut('สัดส่วนสถานะ Lead',[ST_S,ST_Y,ST_N].map(x=>[x,l.filter(r=>effS(r)===x)]),3,SCOL);
  const ds=l.map(r=>r.date).sort(),mo=ds.length&&(new Date(ds[ds.length-1])-new Date(ds[0]))/864e5>62;
  const trend=vcol(mo?'Lead รายเดือน':'Lead รายวัน',grp(r=>mo?r.date.slice(0,7):r.date,'').sort((x,y)=>x[0].localeCompare(y[0])).slice(-31).map(([k,v])=>[mo?k:k.slice(5),v.length,cnt(v,ST_Y)]),'Lead','ปิดการขาย');
