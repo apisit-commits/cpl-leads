@@ -111,7 +111,7 @@ body.out{padding-left:0}
 .lgc{background:var(--card);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--sh);padding:28px;width:min(380px,100%);display:flex;flex-direction:column;gap:14px}
 .lgc img{width:150px;margin:0 auto}.lgc h2{margin:0;text-align:center;font-size:18px}
 .hd{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.hd .mlb{display:flex;align-items:center;gap:6px;color:var(--mu);font-size:13px}.hd .mlb span{white-space:nowrap}
+.bar .mlb{display:flex;align-items:center;gap:6px;color:var(--mu);font-size:13px;white-space:nowrap}.hd .mlb{display:flex;align-items:center;gap:6px;color:var(--mu);font-size:13px}.hd .mlb span{white-space:nowrap}
 .hd input,.hd select{padding:7px 10px;border:1px solid var(--bd);background:var(--card);border-radius:10px}
 :root{color-scheme:light}
 .logo{width:96px;margin:0 auto 18px}
@@ -208,7 +208,7 @@ details.dt>summary{cursor:pointer;font-weight:600;padding:10px 12px;border:1px s
   <div class="seg" id="seg"></div>
   <div class="stats" id="stats"></div>
   <div class="bar">
-    <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…">
+    <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…"><label class="mlb"><span>ตั้งแต่วันที่</span><input type="date" id="lf"></label><label class="mlb"><span>ถึงวันที่</span><input type="date" id="lt"></label><button class="btn sm" id="lclr" type="button">ล้างวันที่</button>
     <select id="fs"></select><select id="fc"></select><select id="fa"></select><select id="fm"></select>
   </div>
   <div class="wrap"><table><thead><tr>
@@ -330,9 +330,9 @@ const teamsVisible=()=>profile&&profile.role==='sales'?[profile.team]:Object.key
 async function fetchRows(from,to){let out=[],i=0;for(;;){let q=sb.from('leads').select(COLS).order('date',{ascending:false}).order('id',{ascending:false}).range(i,i+999);if(from)q=q.gte('date',from);if(to)q=q.lte('date',to);const{data,error}=await q;if(error)throw error;out=out.concat(data);if(data.length<1000)return out;i+=1000}}
 const norm=r=>{const o={...r,svc:r.svc||[]};['ads','country','note','dir','channel','reason','quo','sales','brand','promo','fu','fu_status'].forEach(k=>o[k]=o[k]||'');o.status=o.status||ST_S;return o};
 function rangeFrom(){const v=$('rg').value;if(v==='all')return'';const d=new Date(),y=d.getFullYear();if(v==='y')return y+'-01-01';const dt=new Date(y,d.getMonth()-(v==='m'?0:2),1);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-01'}
-async function reload(){try{const f=rangeFrom(),vm=$('vm').value;let d=await fetchRows(f);if(vm&&f&&vm+'-01'<f){const[y,mo]=vm.split('-').map(Number),ex=await fetchRows(vm+'-01',vm+'-'+String(new Date(y,mo,0).getDate()).padStart(2,'0')),ids=new Set(d.map(x=>x.id));ex.forEach(x=>{if(!ids.has(x.id))d.push(x)})}rows=d.map(norm)}catch(e){alert('โหลดข้อมูลไม่สำเร็จ: '+e.message);return}const v=$('fa').value;setSales();$('fa').value=v;render()}
+async function reload(){try{const f=rangeFrom(),vm=$('vm').value,lf=$('lf').value,lt=$('lt').value;let d=await fetchRows(f);if(f){const ex=[];if(vm&&vm+'-01'<f){const[y,mo]=vm.split('-').map(Number);ex.push([vm+'-01',vm+'-'+String(new Date(y,mo,0).getDate()).padStart(2,'0')])}if(lf&&lf<f)ex.push([lf,lt&&lt<f?lt:'']);const ids=new Set(d.map(x=>x.id));for(const[a,b]of ex){(await fetchRows(a,b||undefined)).forEach(x=>{if(!ids.has(x.id)){ids.add(x.id);d.push(x)}})}}rows=d.map(norm)}catch(e){alert('โหลดข้อมูลไม่สำเร็จ: '+e.message);return}const v=$('fa').value;setSales();$('fa').value=v;render()}
 function refresh(){rows.sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.id>a.id?1:-1));const v=$('fa').value;setSales();$('fa').value=v;render()}
-function upRow(n){if(!n||n.id==null)return;const r=norm(n),f=rangeFrom(),i=rows.findIndex(x=>x.id===r.id);if(typeof f==='string'&&r.date<f&&!($('vm').value&&r.date.slice(0,7)===$('vm').value)){if(i>=0)rows.splice(i,1)}else if(i>=0)rows[i]=r;else rows.push(r)}
+function upRow(n){if(!n||n.id==null)return;const r=norm(n),f=rangeFrom(),i=rows.findIndex(x=>x.id===r.id);if(typeof f==='string'&&r.date<f&&!($('vm').value&&r.date.slice(0,7)===$('vm').value)&&!($('lf').value&&r.date>=$('lf').value&&(!$('lt').value||r.date<=$('lt').value))){if(i>=0)rows.splice(i,1)}else if(i>=0)rows[i]=r;else rows.push(r)}
 async function saveLead(id,o){o={...o,fu:o.fu||null,date:o.date||today()};const q=id?sb.from('leads').update(o).eq('id',id):sb.from('leads').insert({team,...o});const{data,error}=await q.select();if(error){alert('บันทึกไม่สำเร็จ: '+error.message);return}if(data&&data[0]){upRow(data[0]);refresh()}else reload()}
 async function start(){
  document.body.classList.add('out');$('lgimg').src=document.querySelector('.logo').src;
@@ -369,7 +369,7 @@ function init(){
  $('tb').addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea'))return;if(String(getSelection()))return;const tr=e.target.closest('tr[data-id]');if(tr)openForm(Number(tr.dataset.id))});
  $('add').onclick=()=>openForm();
  $('fm_').addEventListener('input',e=>{const t=e.target;if(t.dataset&&'dmy' in t.dataset){let v=t.value.replace(/\D/g,'').slice(0,8);t.value=v.length>4?v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4):v.length>2?v.slice(0,2)+'/'+v.slice(2):v}markEmpty()});$('fm_').addEventListener('change',markEmpty);
- cgBind('cgf');cgBind('cgc',calc);$('tC').onclick=()=>tab('C');['cl_mode','cl_rate'].forEach(i=>$(i).oninput=calc);$('cl_q').addEventListener('input',calcPick);$('cl_save').onclick=calcSave;svcRender();bsInit();$('cl_svc').addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.p!==undefined&&t.value!==''){const c=$('cl_svc').querySelector('input[data-i="'+t.dataset.p+'"]');if(c)c.checked=true}calc()});$('qdl').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');const a=document.createElement('a');a.href=$('qc').toDataURL('image/png');a.download='quotation.png';a.click()};$('qcp').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');$('qc').toBlob(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);alert('คัดลอกรูปแล้ว วางในแชทลูกค้าได้เลย')}catch(e){alert('เบราว์เซอร์นี้คัดลอกรูปไม่ได้ กรุณากดดาวน์โหลดแทน')}})};$('cx').onclick=()=>$('dlg').close();$('exp').onclick=()=>{const v=$('vm').value;$('xfrom').value=v;$('xto').value=v;$('xd').showModal()};$('xcx').onclick=()=>$('xd').close();$('xgo').onclick=()=>{const a=$('xfrom').value,b=$('xto').value;if(a&&b&&a>b)return alert(TT('เดือนเริ่มต้นต้องไม่เกินเดือนสิ้นสุด','The start month must not be after the end month'));$('xd').close();exportXlsx(a,b)};$('vm').onchange=()=>{const v=$('vm').value,f=rangeFrom();if(v&&f&&v+'-01'<f)reload();else render()};
+ cgBind('cgf');cgBind('cgc',calc);$('tC').onclick=()=>tab('C');['cl_mode','cl_rate'].forEach(i=>$(i).oninput=calc);$('cl_q').addEventListener('input',calcPick);$('cl_save').onclick=calcSave;svcRender();bsInit();$('cl_svc').addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.p!==undefined&&t.value!==''){const c=$('cl_svc').querySelector('input[data-i="'+t.dataset.p+'"]');if(c)c.checked=true}calc()});$('qdl').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');const a=document.createElement('a');a.href=$('qc').toDataURL('image/png');a.download='quotation.png';a.click()};$('qcp').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');$('qc').toBlob(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);alert('คัดลอกรูปแล้ว วางในแชทลูกค้าได้เลย')}catch(e){alert('เบราว์เซอร์นี้คัดลอกรูปไม่ได้ กรุณากดดาวน์โหลดแทน')}})};$('cx').onclick=()=>$('dlg').close();$('exp').onclick=()=>{const v=$('vm').value;$('xfrom').value=v;$('xto').value=v;$('xd').showModal()};$('xcx').onclick=()=>$('xd').close();$('xgo').onclick=()=>{const a=$('xfrom').value,b=$('xto').value;if(a&&b&&a>b)return alert(TT('เดือนเริ่มต้นต้องไม่เกินเดือนสิ้นสุด','The start month must not be after the end month'));$('xd').close();exportXlsx(a,b)};$('lf').onchange=$('lt').onchange=()=>{const a=$('lf').value,b=$('lt').value;if(a&&b&&a>b)return alert(TT('วันเริ่มต้องไม่เกินวันสิ้นสุด','The start date must not be after the end date'));const f=rangeFrom();if(a&&f&&a<f)reload();else render()};$('lclr').onclick=()=>{$('lf').value='';$('lt').value='';render()};$('vm').onchange=()=>{const v=$('vm').value,f=rangeFrom();if(v&&f&&v+'-01'<f)reload();else render()};
  f.addEventListener('submit',onSave);
  ['L','A','M','K','S','N'].forEach(k=>$('t'+k).onclick=()=>tab(k));$('dsl').onchange=renderDash;$('imb').onclick=()=>{const f=$('imf').files[0];if(!f){$('imlog').textContent='กรุณาเลือกไฟล์ก่อน';return}importXlsx(f)};
  $('dp').onchange=preset;$('dtm').innerHTML='<option value="">ทั้งสองทีม</option>'+Object.keys(TEAMS).map(k=>`<option value="${k}">${TEAMS[k]}</option>`).join('');$('dtm').onchange=renderDash;['d1','d2'].forEach(i=>$(i).addEventListener('input',()=>{$('dp').value='c';renderDash()}));
@@ -541,10 +541,11 @@ function onSave(e){
  saveLead(editId,o);
 }
 async function del(id){if(!confirm('ลบ Lead นี้?'))return;const bk=rows;rows=rows.filter(x=>x.id!==id);refresh();const{error}=await sb.from('leads').delete().eq('id',id);if(error){alert('ลบไม่สำเร็จ: '+error.message);rows=bk;reload()}}
+const inLr=r=>{const a=$('lf').value,b=$('lt').value,d=r.date||'';return (!a||d>=a)&&(!b||d<=b)};
 const inVm=r=>{const m=$('vm').value;return !m||(r.date||'').slice(0,7)===m};
 function filtered(){
  const q=$('q').value.toLowerCase(),s=$('fs').value,c=$('fc').value,a=$('fa').value,m=$('fm').value;
- return rows.filter(r=>r.team===team&&inVm(r)&&(!s||effS(r)===s)&&(!c||r.channel===c)&&(!a||r.sales===a)&&(!m||r.svc.includes(m))&&
+ return rows.filter(r=>r.team===team&&inVm(r)&&inLr(r)&&(!s||effS(r)===s)&&(!c||r.channel===c)&&(!a||r.sales===a)&&(!m||r.svc.includes(m))&&
   (!q||[r.name,r.ads,r.country,r.note,r.quo].join(' ').toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
 }
 
@@ -634,6 +635,7 @@ function nOpen(id){const f=$('nf');f.reset();nEdit=id||null;const n=id?NEWS.find
   let r;if(nEdit)r=await sb.from('announcements').update(o).eq('id',nEdit);else{o.author=profile.name||'';r=await sb.from('announcements').insert(o)}
   if(r.error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+r.error.message);$('nd').close();await loadNews()}})();
 Object.assign(EN,{"ข่าวสาร": "News", "ข่าวสาร / ประกาศ": "News / Announcements", "แสดงที่หมดอายุแล้ว": "Show expired", "+ เพิ่มประกาศ": "+ Add announcement", "ยังไม่มีประกาศ": "No announcements yet", "เพิ่มประกาศ": "Add announcement", "ประเภท": "Type", "แคมเปญ": "Campaign", "ประชุม": "Meeting", "ประกาศ": "Notice", "อื่นๆ": "Other", "หัวข้อ *": "Title *", "รายละเอียด": "Details", "เริ่มแสดง": "Show from", "แสดงถึงวันที่ (เว้นว่าง = ไม่หมดอายุ)": "Show until (blank = no expiry)", "รูปภาพ": "Image", "ลบรูป": "Remove image", "ปักหมุดไว้บนสุด": "Pin to top"});
+Object.assign(EN,{"ตั้งแต่วันที่": "From date", "ถึงวันที่": "To date", "ล้างวันที่": "Clear dates"});
 const dialDisp=c=>{const d=DIAL.find(x=>x[0]===c);return d?d[0]+' · '+TT(d[1],d[2]):(c||'')};
 const dialCode=t=>{t=(t||'').trim();if(!t)return'';let d=DIAL.find(x=>x[0]===t)||DIAL.find(x=>t.startsWith(x[0]+' '));if(d)return d[0];const q=t.toLowerCase();d=DIAL.find(x=>x[1]===t||x[2].toLowerCase()===q)||DIAL.find(x=>x[1].includes(t)||x[2].toLowerCase().includes(q));if(d)return d[0];return /^\+?\d{1,4}$/.test(t)?(t[0]==='+'?t:'+'+t):''};
 function fillDial(){const f=$('fm_');$('dl_dial').innerHTML=DIAL.map(d=>`<option value="${d[0]} · ${esc(TT(d[1],d[2]))}" label="${esc(TT(d[2],d[1]))}"></option>`).join('');['d_cpd','d_ctd'].forEach(n=>{f[n].value=dialDisp(dialCode(f[n].value))})}
@@ -737,7 +739,7 @@ function openDetail(id){openForm(id);const d=$('dd');d.open=true;setTimeout(()=>
 function fitWrap(){const w=document.querySelector('#vL .wrap');if(!w||w.offsetParent===null)return;const t=w.getBoundingClientRect().top+window.scrollY;w.style.maxHeight=Math.max(300,window.innerHeight-t-16)+'px'}
 window.addEventListener('resize',fitWrap);
 function render(){
- const l=filtered(),t=today(),tr=rows.filter(r=>r.team===team&&inVm(r));buildSeg();
+ const l=filtered(),t=today(),tr=rows.filter(r=>r.team===team&&inVm(r)&&inLr(r));buildSeg();
  $('tb').innerHTML=l.slice(0,300).map(r=>`<tr${can(r)?` class="rw" data-id="${r.id}" title="คลิกเพื่อแก้ไข"`:''}>
   <td${E(r.date)}>${esc(fmtD(r.date))}</td><td${E(r.ads)}>${esc(r.ads)}</td><td${E(r.name)}><b>${esc(r.name)}</b></td>
   <td${E(r.dir||r.country||r.svc.length||r.note)}><div class="dl2">${esc([TR(r.dir),r.country,r.svc.join('/')].filter(Boolean).join(' · '))}${r.note?`<div class="sub">${esc(r.note)}</div>`:''}</div></td>
