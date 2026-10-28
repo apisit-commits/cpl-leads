@@ -148,7 +148,8 @@ input[list]::-webkit-calendar-picker-indicator,input[data-dl]::-webkit-calendar-
 .nh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.nbar{display:flex;gap:12px;align-items:center}
 .ng{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .nc{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}.nc.ex{opacity:.6}
-.nc img{width:100%;max-height:360px;object-fit:cover;cursor:zoom-in;display:block;background:var(--bg)}
+.nc{cursor:pointer;transition:transform .12s,box-shadow .12s}.nc:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(11,34,64,.15)}.nc img{width:100%;max-height:360px;object-fit:cover;display:block;background:var(--bg)}
+#nlc img{width:100%;max-height:70vh;object-fit:contain;display:block;background:#000}#nlc .nb{padding:16px 20px 20px;gap:8px}#nlc .nb h4{font-size:20px}#nlc .nb p{font-size:15px}.nx{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:18px;cursor:pointer;z-index:2}
 .nb{padding:12px 14px;display:flex;flex-direction:column;gap:6px}.nb h4{margin:0;font-size:16px}.nb p{margin:0;white-space:pre-wrap;font-size:14px}
 .ntag{display:inline-block;padding:2px 10px;border-radius:99px;color:#fff;font-size:12px;align-self:flex-start}
 .nm{font-size:12px;color:var(--mu)}.na{display:flex;gap:6px;margin-top:4px}
@@ -202,7 +203,7 @@ details.dt>summary{cursor:pointer;font-weight:600;padding:10px 12px;border:1px s
  <div id="n_prev" class="hid" style="margin:10px 0"><img id="n_pimg" alt="" style="max-width:100%;max-height:240px;border-radius:10px;border:1px solid var(--bd)"><div><button type="button" class="btn sm" id="n_rm" style="margin-top:6px">ลบรูป</button></div></div>
  <label style="display:flex;gap:6px;align-items:center;margin:12px 0;cursor:pointer"><input type="checkbox" name="pin"> ปักหมุดไว้บนสุด</label>
  <div class="acts"><button type="button" class="btn" id="n_cx">ยกเลิก</button><button class="btn p" id="n_sv">บันทึก</button></div></form></dialog>
-<dialog id="nl" style="width:min(1000px,96vw);background:transparent;border:0;box-shadow:none"><img id="nli" alt="" style="width:100%;max-height:90vh;object-fit:contain;border-radius:12px;cursor:zoom-out"></dialog>
+<dialog id="nl" style="width:min(820px,96vw);padding:0"><div id="nlc"></div></dialog>
 <div id="vL">
   <div class="seg" id="seg"></div>
   <div class="stats" id="stats"></div>
@@ -612,8 +613,10 @@ async function loadNews(){const msg=$('n_msg');let r;try{r=await sb.from('announ
  renderNews();newsDot()}
 function renderNews(){const t=today(),old=$('n_old').checked;const l=NEWS.filter(n=>old||!(n.end_date&&n.end_date<t));
  $('n_list').innerHTML=l.map(n=>{const ex=n.end_date&&n.end_date<t,per=(n.start_date||n.end_date)?fmtD(n.start_date)+(n.end_date?' – '+fmtD(n.end_date):''):'';
-  return `<div class="nc${ex?' ex':''}">${n.image?`<img src="${n.image}" alt="" data-n="${n.id}">`:''}<div class="nb"><span class="ntag" style="background:${NCOL[n.tag]||'#868e96'}">${n.pinned?'📌 ':''}${esc(n.tag||'')}</span><h4>${esc(n.title)}</h4>${n.body?`<p>${esc(n.body)}</p>`:''}<div class="nm">${per?'🗓 '+per+' · ':''}${ex?TT('หมดอายุแล้ว','Expired')+' · ':''}${esc(n.author||'')} · ${fmtD((n.created_at||'').slice(0,10))}</div>${canEditN(n)?`<div class="na"><button class="btn sm" data-e="${n.id}">แก้ไข</button><button class="btn sm" data-d="${n.id}">ลบ</button></div>`:''}</div></div>`}).join('');
+  return `<div class="nc${ex?' ex':''}" data-n="${n.id}">${n.image?`<img src="${n.image}" alt="">`:''}<div class="nb"><span class="ntag" style="background:${NCOL[n.tag]||'#868e96'}">${n.pinned?'📌 ':''}${esc(n.tag||'')}</span><h4>${esc(n.title)}</h4></div></div>`}).join('');
  $('n_em').classList.toggle('hid',l.length>0)}
+function nShow(id){const n=NEWS.find(x=>x.id===id);if(!n)return;const t=today(),ex=n.end_date&&n.end_date<t,per=(n.start_date||n.end_date)?fmtD(n.start_date)+(n.end_date?' – '+fmtD(n.end_date):''):'';
+ $('nlc').innerHTML=`<button class="nx" data-x>✕</button>${n.image?`<img src="${n.image}" alt="">`:''}<div class="nb"><span class="ntag" style="background:${NCOL[n.tag]||'#868e96'}">${n.pinned?'📌 ':''}${esc(n.tag||'')}</span><h4>${esc(n.title)}</h4>${n.body?`<p>${esc(n.body)}</p>`:''}<div class="nm">${per?'🗓 '+per+' · ':''}${ex?TT('หมดอายุแล้ว','Expired')+' · ':''}${esc(n.author||'')} · ${fmtD((n.created_at||'').slice(0,10))}</div>${canEditN(n)?`<div class="na"><button class="btn sm" data-e="${n.id}">แก้ไข</button><button class="btn sm" data-d="${n.id}">ลบ</button></div>`:''}</div>`;$('nl').showModal()}
 function nShot(src){nImg=src||'';$('n_prev').classList.toggle('hid',!nImg);if(nImg)$('n_pimg').src=nImg}
 function nCompress(file){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=no;fr.onload=()=>{const im=new Image();im.onerror=no;im.onload=()=>{const M=1400,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);let q=.82,u=c.toDataURL('image/jpeg',q);while(u.length>1000000&&q>.4){q-=.12;u=c.toDataURL('image/jpeg',q)}ok(u)};im.src=fr.result};fr.readAsDataURL(file)})}
 function nOpen(id){const f=$('nf');f.reset();nEdit=id||null;const n=id?NEWS.find(x=>x.id===id):null;$('nt').textContent=TT(id?'แก้ไขประกาศ':'เพิ่มประกาศ',id?'Edit announcement':'Add announcement');
@@ -623,9 +626,9 @@ function nOpen(id){const f=$('nf');f.reset();nEdit=id||null;const n=id?NEWS.find
  $('n_add').onclick=()=>nOpen();$('n_cx').onclick=()=>$('nd').close();$('n_old').onchange=renderNews;
  $('n_file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{nShot(await nCompress(f))}catch(er){alert(TT('อ่านรูปไม่สำเร็จ','Could not read the image'))}};
  $('n_rm').onclick=()=>{nShot('');$('n_file').value=''};
- $('n_list').addEventListener('click',async e=>{const im=e.target.closest('img[data-n]');if(im){$('nli').src=im.src;$('nl').showModal();return}
-  const b=e.target.closest('button');if(!b)return;if(b.dataset.e)nOpen(+b.dataset.e);else if(b.dataset.d){if(!confirm(TT('ลบประกาศนี้?','Delete this announcement?')))return;const{error}=await sb.from('announcements').delete().eq('id',+b.dataset.d);if(error)return alert(error.message);loadNews()}});
- $('nl').onclick=()=>$('nl').close();
+ $('n_list').addEventListener('click',e=>{const c=e.target.closest('.nc');if(c)nShow(+c.dataset.n)});
+ $('nl').addEventListener('click',async e=>{const t=e.target;if(t===$('nl')||t.closest('[data-x]'))return $('nl').close();const b=t.closest('button');if(!b)return;
+  if(b.dataset.e){$('nl').close();nOpen(+b.dataset.e)}else if(b.dataset.d){if(!confirm(TT('ลบประกาศนี้?','Delete this announcement?')))return;const{error}=await sb.from('announcements').delete().eq('id',+b.dataset.d);if(error)return alert(error.message);$('nl').close();loadNews()}});
  $('nf').onsubmit=async e=>{e.preventDefault();const f=$('nf'),o={tag:f.tag.value,title:f.title.value.trim(),body:f.body.value.trim()||null,image:nImg||null,start_date:f.sd.value||null,end_date:f.ed.value||null,pinned:f.pin.checked};if(!o.title)return;
   if(o.start_date&&o.end_date&&o.start_date>o.end_date)return alert(TT('วันเริ่มต้องไม่เกินวันสิ้นสุด','Start date must not be after end date'));
   let r;if(nEdit)r=await sb.from('announcements').update(o).eq('id',nEdit);else{o.author=profile.name||'';r=await sb.from('announcements').insert(o)}
