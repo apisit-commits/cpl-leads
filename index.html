@@ -153,6 +153,8 @@ input[list]::-webkit-calendar-picker-indicator,input[data-dl]::-webkit-calendar-
 .nb{padding:12px 14px;display:flex;flex-direction:column;gap:6px}.nb h4{margin:0;font-size:16px}.nb p{margin:0;white-space:pre-wrap;font-size:14px}
 .ntag{display:inline-block;padding:2px 10px;border-radius:99px;color:#fff;font-size:12px;align-self:flex-start}
 .nm{font-size:12px;color:var(--mu)}.na{display:flex;gap:6px;margin-top:4px}
+
+.ut{width:100%;border-collapse:collapse;min-width:640px}.ut th{text-align:left;font-size:12px;color:var(--mu);font-weight:500;padding:6px 8px}.ut td{padding:6px 8px;border-top:1px solid var(--bd);vertical-align:middle}.ut input,.ut select{width:100%;min-width:0}.ut .wait{display:inline-block;padding:2px 9px;border-radius:99px;background:#fff0d6;color:#8a5200;font-size:12px;margin-top:4px}
 .cgr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;gap:6px;margin-bottom:6px}.cgr input{min-width:0}
 #vC .cwrap{display:grid;grid-template-columns:minmax(0,3fr) minmax(300px,2fr);gap:16px;align-items:start}#vC .cprev{position:sticky;top:12px}@media(max-width:900px){#vC .cwrap{grid-template-columns:minmax(0,1fr)}#vC .cprev{position:static;order:-1}}
 .bsel{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.bsel button{border:1px solid var(--bd);background:#fff;border-radius:10px;padding:6px 10px;cursor:pointer;height:44px;display:flex;align-items:center}.bsel button img{height:26px;max-width:110px;object-fit:contain;display:block}.bsel button.on{outline:2px solid #0096d6;border-color:#0096d6}
@@ -237,7 +239,7 @@ details.dt>summary{cursor:pointer;font-weight:600;padding:10px 12px;border:1px s
  <div class="cres" id="cl_out"></div>
  <div class="acts"><button type="button" class="btn" id="cl_save">บันทึกข้อมูลสินค้าลง Lead</button></div></div>
 <div class="pn cprev"><h3>ตัวอย่างใบเสนอราคา (ภาพที่จะส่งออก)</h3><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas><div class="acts"><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn p" id="qcp">คัดลอกรูป</button></div></div></div></div>
-<div id="vS" class="hid"><div id="vSo"></div>
+<div id="vS" class="hid"><div class="pn" id="vSu"></div><div id="vSo" style="margin-top:12px"></div>
  <div class="pn" style="margin-top:12px"><h3>นำเข้า Lead จาก Excel</h3><p class="sub" style="margin:0 0 10px">เลือกไฟล์ .xlsx ตามหัวคอลัมน์ของไฟล์นำเข้า (หรือไฟล์ที่ส่งออกจากเว็บนี้) · แถวที่มี ทีม+วันที่+ชื่อ ตรงกับที่มีอยู่แล้วจะถูกข้าม จึงนำเข้าซ้ำได้อย่างปลอดภัย</p><div class="oa"><input type="file" id="imf" accept=".xlsx,.xls"><button class="btn p sm" id="imb">เริ่มนำเข้า</button></div><pre id="imlog" class="sub" style="white-space:pre-wrap;margin:10px 0 0"></pre></div></div>
 </main>
 
@@ -350,7 +352,7 @@ async function enter(){
  if(p.role==='sales'&&!TEAMS[p.team]){$('lge').textContent='บัญชีเซลล์ยังไม่ได้กำหนดทีม ติดต่อผู้ดูแลระบบ';return}
  profile=p;document.body.classList.remove('out');
  WHO={n:p.name||user.email,r:p.role,t:p.team};setWho();
- $('add').classList.toggle('hid',!['admin','sales'].includes(p.role));$('n_add').classList.toggle('hid',!['admin','marketing'].includes(p.role));loadNews();$('tS').classList.toggle('hid',p.role!=='admin');const DR={admin:'AMK',marketing:'AMK',ads:'A',sales:'K'}[p.role]||'';['A','M','K'].forEach(k=>$('t'+k).classList.toggle('hid',!DR.includes(k)));
+ $('add').classList.toggle('hid',!['admin','sales'].includes(p.role));$('n_add').classList.toggle('hid',!['admin','marketing'].includes(p.role));loadNews();$('tS').classList.toggle('hid',p.role!=='admin');$('tC').classList.toggle('hid',p.role==='ads');const DR={admin:'AMK',marketing:'AMK',ads:'A',sales:'K'}[p.role]||'';['A','M','K'].forEach(k=>$('t'+k).classList.toggle('hid',!DR.includes(k)));
  if(p.role==='sales')team=p.team;
   await loadOpts();await reload();
  sb.channel('leads-rt').on('postgres_changes',{event:'*',schema:'public',table:'leads'},pl=>{if(pl.eventType==='DELETE'){if(pl.old&&pl.old.id!=null)rows=rows.filter(x=>x.id!==pl.old.id);else{clearTimeout(tm);tm=setTimeout(reload,400);return}}else upRow(pl.new);clearTimeout(tm);tm=setTimeout(refresh,150)}).on('postgres_changes',{event:'*',schema:'public',table:'options'},loadOpts).subscribe();
@@ -378,7 +380,7 @@ function init(){
 function buildSeg(){$('seg').innerHTML=teamsVisible().map(k=>`<button class="${k===team?'on':''}" onclick="setTeam('${k}')">${TEAMS[k]}<em>${rows.filter(r=>r.team===k).length}</em></button>`).join('')}
 function setTeam(k){team=k;setSales();$('fa').value='';render()}
 function setSales(){fill($('fa'),[...new Set(rows.filter(r=>r.team===team).map(r=>r.sales).filter(Boolean))],'ทุก Sales')}
-function tab(k){if('AMK'.includes(k))dashMode=k;const v='AMK'.includes(k)?'D':k;['L','D','S','C','N'].forEach(x=>$('v'+x).classList.toggle('hid',x!==v));['L','A','M','K','C','S','N'].forEach(x=>$('t'+x).classList.toggle('on',x===k));if(v==='D')renderDash();if(v==='L')fitWrap();if(v==='C')calcLeads();if(v==='N'){loadNews();newsSeen()}}
+function tab(k){if('AMK'.includes(k))dashMode=k;const v='AMK'.includes(k)?'D':k;['L','D','S','C','N'].forEach(x=>$('v'+x).classList.toggle('hid',x!==v));['L','A','M','K','C','S','N'].forEach(x=>$('t'+x).classList.toggle('on',x===k));if(v==='D')renderDash();if(v==='L')fitWrap();if(v==='C')calcLeads();if(v==='N'){loadNews();newsSeen()}if(v==='S')loadUsers()}
 let OPTS={ads:[],brand:[],promo:[],sales:[]};
 const KINDS=[['brand','แบรนด์'],['promo','โปรโมชัน']];
 let POS_OK=true;
@@ -636,6 +638,26 @@ function nOpen(id){const f=$('nf');f.reset();nEdit=id||null;const n=id?NEWS.find
   if(r.error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+r.error.message);$('nd').close();await loadNews()}})();
 Object.assign(EN,{"ข่าวสาร": "News", "ข่าวสาร / ประกาศ": "News / Announcements", "แสดงที่หมดอายุแล้ว": "Show expired", "+ เพิ่มประกาศ": "+ Add announcement", "ยังไม่มีประกาศ": "No announcements yet", "เพิ่มประกาศ": "Add announcement", "ประเภท": "Type", "แคมเปญ": "Campaign", "ประชุม": "Meeting", "ประกาศ": "Notice", "อื่นๆ": "Other", "หัวข้อ *": "Title *", "รายละเอียด": "Details", "เริ่มแสดง": "Show from", "แสดงถึงวันที่ (เว้นว่าง = ไม่หมดอายุ)": "Show until (blank = no expiry)", "รูปภาพ": "Image", "ลบรูป": "Remove image", "ปักหมุดไว้บนสุด": "Pin to top"});
 Object.assign(EN,{"ตั้งแต่วันที่": "From date", "ถึงวันที่": "To date", "ล้างวันที่": "Clear dates"});
+
+/* ===== User management (admin) ===== */
+let USERS=[],UEMAIL=true;
+const UROLES=[['admin','admin · ผู้ดูแลระบบ'],['sales','sales · เซลล์'],['marketing','marketing · การตลาด'],['ads','ads · ยิงแอด']];
+async function loadUsers(){const box=$('vSu');if(!profile||profile.role!=='admin'){box.classList.add('hid');return}box.classList.remove('hid');
+ let r=await sb.from('profiles').select('id,name,role,team,email').order('name');UEMAIL=true;
+ if(r.error){r=await sb.from('profiles').select('id,name,role,team').order('name');UEMAIL=false}
+ if(r.error){box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub">โหลดรายชื่อผู้ใช้ไม่ได้: '+esc(r.error.message||'')+' (ต้องรันไฟล์ users-setup.sql ใน Supabase ก่อน)</p>';return}
+ USERS=r.data||[];renderUsers()}
+function renderUsers(){const box=$('vSu');const pend=USERS.filter(u=>!u.role).length;
+ box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub" style="margin:0 0 10px">กำหนดบทบาทและทีมของแต่ละบัญชี (เซลล์ต้องเลือกทีม) ·'+(pend?' <b>รอกำหนดสิทธิ์ '+pend+' บัญชี</b> ·':'')+' สร้างบัญชีล็อกอินใหม่ได้ที่ Supabase > Authentication > Users แล้วกลับมาตั้งสิทธิ์ที่นี่</p><div style="overflow-x:auto"><table class="ut"><thead><tr><th>บัญชี</th><th>ชื่อที่แสดง</th><th>บทบาท</th><th>ทีม</th><th></th></tr></thead><tbody>'+
+ USERS.map(u=>{const me=profile&&u.id===profile.id;return `<tr data-u="${u.id}"><td>${esc(u.email||'')||'<span class="sub">—</span>'}${!u.role?'<div><span class="wait">รอกำหนดสิทธิ์</span></div>':''}</td><td><input data-k="name" value="${esc(u.name||'')}"></td><td><select data-k="role"${me?' disabled title="ไม่สามารถเปลี่ยนบทบาทของตัวเอง"':''}><option value="">— เลือก —</option>${UROLES.map(r=>`<option value="${r[0]}"${u.role===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select></td><td><select data-k="team"${u.role==='sales'?'':' disabled'}><option value="">— เลือก —</option>${Object.entries(TEAMS).map(([k,v])=>`<option value="${k}"${u.team===k?' selected':''}>${esc(v)}</option>`).join('')}</select></td><td><button class="btn sm p" data-save>บันทึก</button></td></tr>`}).join('')+'</tbody></table></div>'}
+(function(){const box=$('vSu');
+ box.addEventListener('change',e=>{const t=e.target;if(t.dataset.k!=='role')return;const tr=t.closest('tr'),tm=tr.querySelector('[data-k=team]');tm.disabled=t.value!=='sales';if(t.value!=='sales')tm.value=''});
+ box.addEventListener('click',async e=>{const b=e.target.closest('[data-save]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.u,g=k=>tr.querySelector('[data-k='+k+']').value;
+  const role=g('role'),team=g('team'),name=g('name').trim();if(!role)return alert(TT('เลือกบทบาทก่อน','Choose a role first'));if(role==='sales'&&!team)return alert(TT('เซลล์ต้องเลือกทีม','A sales account needs a team'));
+  b.disabled=true;const{error}=await sb.from('profiles').update({name:name||null,role,team:role==='sales'?team:null}).eq('id',id);b.disabled=false;
+  if(error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message+TT(' (ถ้ายังไม่เคย ให้รันไฟล์ users-setup.sql ใน Supabase ก่อน)',' (if you have not yet, run users-setup.sql in Supabase)'));
+  b.textContent=TT('บันทึกแล้ว ✓','Saved ✓');setTimeout(()=>{b.textContent=TT('บันทึก','Save')},1500);loadUsers()})})();
+Object.assign(EN,{"จัดการผู้ใช้": "User management", "บัญชี": "Account", "ชื่อที่แสดง": "Display name", "บทบาท": "Role", "ทีม": "Team", "บันทึก": "Save", "รอกำหนดสิทธิ์": "Awaiting access"});
 const dialDisp=c=>{const d=DIAL.find(x=>x[0]===c);return d?d[0]+' · '+TT(d[1],d[2]):(c||'')};
 const dialCode=t=>{t=(t||'').trim();if(!t)return'';let d=DIAL.find(x=>x[0]===t)||DIAL.find(x=>t.startsWith(x[0]+' '));if(d)return d[0];const q=t.toLowerCase();d=DIAL.find(x=>x[1]===t||x[2].toLowerCase()===q)||DIAL.find(x=>x[1].includes(t)||x[2].toLowerCase().includes(q));if(d)return d[0];return /^\+?\d{1,4}$/.test(t)?(t[0]==='+'?t:'+'+t):''};
 function fillDial(){const f=$('fm_');$('dl_dial').innerHTML=DIAL.map(d=>`<option value="${d[0]} · ${esc(TT(d[1],d[2]))}" label="${esc(TT(d[2],d[1]))}"></option>`).join('');['d_cpd','d_ctd'].forEach(n=>{f[n].value=dialDisp(dialCode(f[n].value))})}
