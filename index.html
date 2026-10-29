@@ -394,7 +394,7 @@ function init(){
  fill(f.status,OPT.status);fill(f.reason,OPT.reason);fillDial();fillItems();$('ctp').addEventListener('change',togCt);f.addEventListener('invalid',()=>{$('dd').open=true},true);togCt();
  fill($('fs'),OPT.status,'ทุก Status');fill($('fc'),OPT.channel,'ทุกช่องทาง');fill($('fm'),OPT.svc,'ทุกบริการ');
  ['q','fs','fc','fa','fm'].forEach(i=>$(i).addEventListener('input',render));
- f.status.addEventListener('change',toggleReason);
+ f.status.addEventListener('change',toggleReason);f.fu_status.addEventListener('change',toggleReason);
  $('tb').addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea'))return;if(String(getSelection()))return;const tr=e.target.closest('tr[data-id]');if(tr)openForm(Number(tr.dataset.id))});
  $('add').onclick=()=>openForm();
  $('fm_').addEventListener('input',e=>{const t=e.target;if(t.dataset&&'dmy' in t.dataset){let v=t.value.replace(/\D/g,'').slice(0,8);t.value=v.length>4?v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4):v.length>2?v.slice(0,2)+'/'+v.slice(2):v}markEmpty()});$('fm_').addEventListener('change',markEmpty);
@@ -561,7 +561,8 @@ function renderDash(){
  else h=sdn+vcol('Lead และการปิดการขายรายเซลล์',grp(r=>r.sales,'(ไม่ระบุ)',base).map(([k,v])=>[k,v.length,cnt(v,ST_Y)]),'Lead','ปิดการขาย')+sum+stb('KPI รายเซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)',base),30)+`<div class="sub" style="grid-column:1/-1">ลูกค้าที่ปิดได้ (Yes) ของ <b>${esc(sl||'เซลล์ทุกคน')}</b> · ตัวเลขหน้าแท่ง = จำนวนที่ปิดได้ · % = ปิดได้กี่ % ของ Lead กลุ่มนั้น</div>`+wr('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+wr('ประเทศ',cty,10)+wr('บริการ',grp(r=>r.svc,''))+wr('ช่องทาง',ch)+wr('แบรนด์',grp(r=>r.brand,U))+wr('Ads',grp(r=>r.ads,'(ไม่ระบุ Ads)'),10)+wr('โปรโมชัน',grp(r=>r.promo,U));
  $('dg').innerHTML=h;
 }
-function toggleReason(){$('rsn').classList.toggle('hid',$('fm_').status.value!==ST_N)}
+function formEff(f){f=f||$('fm_');return closedR({status:f.status.value,fu_status:f.fu_status.value})?ST_Y:(okS(f.fu_status.value)||f.status.value)}
+function toggleReason(){$('rsn').classList.toggle('hid',formEff()!==ST_N)}
 function openForm(id){
  const f=$('fm_');editId=id||null;f.reset();applyOpts();
  const r=id?rows.find(x=>x.id===id):{date:today(),status:ST_S,svc:[]};
@@ -577,7 +578,7 @@ function openForm(id){
 }
 function markEmpty(){
  const f=$('fm_'),st=f.status.value,closed=[ST_Y,ST_N].includes(st);
- ['date','ads','name','fu','fu_status','reason','quo','sales','brand','promo'].forEach(k=>{const e=f[k];if(!e)return;const need=!((k==='fu'||k==='fu_status')&&closed)&&!(k==='reason'&&st!==ST_N);e.classList.toggle('em-f',need&&!e.value.trim())});
+ ['date','ads','name','fu','fu_status','reason','quo','sales','brand','promo'].forEach(k=>{const e=f[k];if(!e)return;const need=!((k==='fu'||k==='fu_status')&&closed)&&!(k==='reason'&&formEff(f)!==ST_N);e.classList.toggle('em-f',need&&!e.value.trim())});
  $('ch').classList.toggle('em-f',!f.querySelector('input[name=channel]:checked'));$('ints').querySelectorAll('.ib').forEach(e=>{e.querySelector('.chips').classList.toggle('em-f',!e.querySelector('.chips input:checked'));const c=e.querySelector('[data-k=country]'),v=e.querySelector('[data-k=svc]');c.classList.toggle('em-f',!c.value.trim());v.classList.toggle('em-f',!v.value)});
 }
 function onSave(e){
@@ -587,7 +588,7 @@ function onSave(e){
  const o={date:iso('date'),ads:v('ads'),name:v('name'),dir:OPT.dir.filter(x=>ints.some(b=>(b.dir||'').split(' / ').includes(x))).join(' / '),country:[...new Set(ints.flatMap(b=>(b.country||'').split(/\s*,\s*/)).filter(Boolean))].join(', '),
   svc:svGet(),note:v('note'),
   channel:(f.querySelector('input[name=channel]:checked')||{}).value||'',status:v('status'),fu:iso('fu'),fu_status:v('fu_status'),
-  reason:v('status')===ST_N?v('reason'):'',sales:v('sales'),brand:v('brand'),promo:v('promo')};
+  reason:formEff(f)===ST_N?v('reason'):'',sales:v('sales'),brand:v('brand'),promo:v('promo')};
  if(DEAL_OK){o.deal_amt=v('deal_amt')?pn(v('deal_amt')):null;o.deal_date=iso('deal_date')||(o.deal_amt?today():null)}
  if(!editId&&!o.fu&&![ST_Y,ST_N].includes(o.status)&&o.fu_status!==ST_Y)o.fu=addDays(o.date||today(),fuDays());
  {const it=cgGet('cgf'),d={};o.cargo=it.length?{items:it}:null;DK.forEach(k=>{const x=k==='sd'?iso('d_sd'):(k==='cpd'||k==='ctd')?dialCode(v('d_'+k)):v('d_'+k);if(x)d[k]=x});if((f.querySelector('input[name=d_cm]:checked')||{}).value==='Y'){const cj=cnRaw().filter(x=>x.t);if(cj.length){d.cj=cj;d.cn=cj.map(x=>x.t+(x.q>1?' x'+x.q:'')+(x.kg?' ('+x.kg.toLocaleString('en-US')+' kg)':'')).join(', ')}}if(ints.length>1)d.ints=ints;o.detail=Object.keys(d).length?d:null}
@@ -964,7 +965,7 @@ function render(){
   <td${E(r.dir||r.country||r.svc.length||r.note)}><div class="dl2">${esc([TR(r.dir),r.country,r.svc.join('/')].filter(Boolean).join(' · '))}${r.note?`<div class="sub">${esc(r.note)}</div>`:''}</div></td>
   <td${E(r.channel)}>${chIcon(r.channel)}</td><td title="${r.fu?TT('ติดตาม: ','Follow-up: ')+fmtD(r.fu):''}"><span class="tag ${SC[dispSt(r)]||''}">${esc(dispSt(r))}</span>${r.deal_amt||r.deal_date?`<div class="sub" style="margin-top:3px">${r.deal_amt?`<b>${N(r.deal_amt)} ฿</b>`:''}${r.deal_amt&&r.deal_date?' · ':''}${r.deal_date?esc(fmtD(r.deal_date)):''}</div>`:''}</td>
   
-  <td${E(r.reason,r.status===ST_N)}>${esc(r.reason)}</td><td${E(r.sales)}>${esc(r.sales)}</td><td${E(r.brand&&r.promo)}>${esc(r.brand)}<div class="sub">${esc(r.promo)}</div></td>
+  <td${E(r.reason,effS(r)===ST_N)}>${esc(r.reason)}</td><td${E(r.sales)}>${esc(r.sales)}</td><td${E(r.brand&&r.promo)}>${esc(r.brand)}<div class="sub">${esc(r.promo)}</div></td>
   <td>${can(r)?`<button class="btn sm${r.detail?' p':''}" onclick="openDetail(${r.id})">รายละเอียด</button> <button class="btn sm" onclick="openForm(${r.id})">แก้ไข</button> ${profile.role!=='keyer'?`<button class="btn sm" onclick="del(${r.id})">ลบ</button>`:''}`:''}</td></tr>`).join('');
  $('em').classList.toggle('hid',l.length>0);$('cap').textContent=l.length>300?TT('แสดง 300 จาก '+N(l.length)+' รายการ (ใหม่สุดก่อน) · ใช้ช่องค้นหา/ตัวกรอง หรือส่งออก Excel เพื่อดูทั้งหมด','Showing 300 of '+N(l.length)+' items (newest first) · use search/filters or export to Excel to see everything'):'';
  const n=s=>tr.filter(r=>effS(r)===s).length,due=tr.filter(r=>r.fu&&r.fu<=t&&![ST_Y,ST_N].includes(effS(r))).length;
