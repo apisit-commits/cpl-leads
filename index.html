@@ -238,7 +238,7 @@ details.dt>summary{cursor:pointer;font-weight:600;padding:10px 12px;border:1px s
     <select id="fs"></select><select id="fc"></select><select id="fa"></select><select id="fm"></select>
   </div>
   <div class="wrap"><table><thead><tr>
-    <th>วันที่</th><th>Ads</th><th>ลูกค้า</th><th>รายละเอียด</th><th>ช่องทาง</th><th>สถานะ</th><th>เหตุผลที่ยังไม่สนใจ</th><th>ยอดปิด / เซลล์</th><th>แบรนด์ / โปรโมชัน</th><th></th>
+    <th>วันที่</th><th>Ads</th><th>ลูกค้า</th><th>รายละเอียด</th><th>ช่องทาง</th><th>สถานะ</th><th>เหตุผลที่ยังไม่สนใจ</th><th>เซลล์</th><th>แบรนด์ / โปรโมชัน</th><th></th>
   </tr></thead><tbody id="tb"></tbody></table><div class="empty hid" id="em">ยังไม่มีข้อมูล</div><div class="sub" id="cap" style="padding:10px 14px"></div></div>
 </div>
 <div id="vD" class="hid">
@@ -952,9 +952,9 @@ function render(){
  $('tb').innerHTML=l.slice(0,300).map(r=>`<tr${can(r)?` class="rw" data-id="${r.id}" title="คลิกเพื่อแก้ไข"`:''}>
   <td${E(r.date)}>${esc(fmtD(r.date))}</td><td${E(r.ads)}>${esc(r.ads)}</td><td${E(r.name)}><b>${esc(r.name)}</b></td>
   <td${E(r.dir||r.country||r.svc.length||r.note)}><div class="dl2">${esc([TR(r.dir),r.country,r.svc.join('/')].filter(Boolean).join(' · '))}${r.note?`<div class="sub">${esc(r.note)}</div>`:''}</div></td>
-  <td${E(r.channel)}>${chIcon(r.channel)}</td><td title="${r.fu?TT('ติดตาม: ','Follow-up: ')+fmtD(r.fu):''}"><span class="tag ${SC[dispSt(r)]||''}">${esc(dispSt(r))}</span></td>
+  <td${E(r.channel)}>${chIcon(r.channel)}</td><td title="${r.fu?TT('ติดตาม: ','Follow-up: ')+fmtD(r.fu):''}"><span class="tag ${SC[dispSt(r)]||''}">${esc(dispSt(r))}</span>${r.deal_amt||r.deal_date?`<div class="sub" style="margin-top:3px">${r.deal_amt?`<b>${N(r.deal_amt)} ฿</b>`:''}${r.deal_amt&&r.deal_date?' · ':''}${r.deal_date?esc(fmtD(r.deal_date)):''}</div>`:''}</td>
   
-  <td${E(r.reason,r.status===ST_N)}>${esc(r.reason)}</td><td${E(r.sales)}>${r.deal_amt?`<b>${N(r.deal_amt)} ฿</b>${r.deal_date?`<div class="sub">${esc(fmtD(r.deal_date))}</div>`:''}`:''}<div class="sub">${esc(r.sales)}</div></td><td${E(r.brand&&r.promo)}>${esc(r.brand)}<div class="sub">${esc(r.promo)}</div></td>
+  <td${E(r.reason,r.status===ST_N)}>${esc(r.reason)}</td><td${E(r.sales)}>${esc(r.sales)}</td><td${E(r.brand&&r.promo)}>${esc(r.brand)}<div class="sub">${esc(r.promo)}</div></td>
   <td>${can(r)?`<button class="btn sm${r.detail?' p':''}" onclick="openDetail(${r.id})">รายละเอียด</button> <button class="btn sm" onclick="openForm(${r.id})">แก้ไข</button> ${profile.role!=='keyer'?`<button class="btn sm" onclick="del(${r.id})">ลบ</button>`:''}`:''}</td></tr>`).join('');
  $('em').classList.toggle('hid',l.length>0);$('cap').textContent=l.length>300?TT('แสดง 300 จาก '+N(l.length)+' รายการ (ใหม่สุดก่อน) · ใช้ช่องค้นหา/ตัวกรอง หรือส่งออก Excel เพื่อดูทั้งหมด','Showing 300 of '+N(l.length)+' items (newest first) · use search/filters or export to Excel to see everything'):'';
  const n=s=>tr.filter(r=>effS(r)===s).length,due=tr.filter(r=>r.fu&&r.fu<=t&&![ST_Y,ST_N].includes(effS(r))).length;
