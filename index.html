@@ -48,6 +48,7 @@ label.f input,label.f select,label.f textarea{padding:8px 10px;border:1px solid 
 .chips span{display:inline-block;padding:6px 14px;border:1px solid var(--bd);border-radius:99px;background:var(--bg);font-size:13px}
 .chips input:checked+span{background:var(--pr);color:var(--prt);border-color:var(--pr)}
 .chips input:focus-visible+span{outline:2px solid var(--pr);outline-offset:2px}
+.rmk{display:flex;flex-direction:column;gap:6px}.rmkr{display:flex;gap:8px;align-items:flex-start;font-size:13px;cursor:pointer;line-height:1.4}.rmkr input{margin-top:3px;flex:none}
 #ch span,.chips.pico span{padding:4px;border:2px solid transparent;background:none;border-radius:12px;display:inline-flex;flex-direction:column;align-items:center;gap:2px;transition:border-color .12s,background .12s}#ch span:hover,.chips.pico span:hover{background:rgba(0,150,214,.07)}#ch input:checked+span,.chips.pico input:checked+span{background:rgba(0,150,214,.1);border-color:var(--pr);color:inherit;box-shadow:0 0 0 3px rgba(0,150,214,.18)}#ch .chi{width:30px;height:30px}.pico em{font-style:normal;font-size:11px;color:var(--mu)}.pico .chi{width:30px;height:30px}.pico input:checked+span em{color:var(--pr);font-weight:600}
 .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
 .hid{display:none}
@@ -265,7 +266,8 @@ details.dt>summary{cursor:pointer;font-weight:600;padding:10px 12px;border:1px s
  <div id="cgc"></div>
  <div class="g" style="margin-top:10px"><label class="f"><span id="cl_ru">เรท (บาท/กก.)</span><input id="cl_rate" type="text" inputmode="decimal" data-num autocomplete="off"></label><label class="f">อื่นๆ (บาท) · รวมอัตโนมัติ<input id="cl_fee" type="text" readonly tabindex="-1"></label></div>
  <div class="sub" style="margin:12px 0 4px">บริการอื่นๆ (ติ๊กเลือก แล้วใส่ราคา)</div><div id="cl_svc"></div>
- <label class="f" style="margin-top:12px">หมายเหตุ (Remark) · แสดงในใบเสนอราคา<textarea id="cl_remark" rows="2" maxlength="300" placeholder="เช่น เงื่อนไขการชำระเงิน / ระยะเวลาขนส่ง / ข้อควรทราบ"></textarea></label>
+ <div class="sub" style="margin:12px 0 4px">หมายเหตุ : ราคานี้ไม่รวม (ติ๊กเลือกข้อที่ต้องการให้แสดงในใบเสนอราคา) <button type="button" class="btn sm" id="cl_rall">เลือกทั้งหมด</button> <button type="button" class="btn sm" id="cl_rnone">ล้าง</button></div><div id="cl_rmk" class="rmk"></div>
+ <label class="f" style="margin-top:8px">หมายเหตุเพิ่มเติม (พิมพ์เอง · ขึ้นบรรทัดใหม่ = 1 ข้อ)<textarea id="cl_remark" rows="2" maxlength="300" placeholder="เช่น ระยะเวลาขนส่ง 5-7 วันทำการ"></textarea></label>
  <div class="cres" id="cl_out"></div>
  <div class="acts"><button type="button" class="btn" id="cl_save">บันทึกข้อมูลสินค้าลง Lead</button></div></div>
 <div class="pn cprev"><h3>ตัวอย่างใบเสนอราคา (ภาพที่จะส่งออก)</h3><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas><div class="acts"><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn p" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกเป็นข้อความ</button></div></div></div></div>
@@ -338,7 +340,7 @@ const OPT={
  brand:['','Brand 1','Brand 2'],
  promo:['','ไม่มี','ลด 5%','ฟรีค่าเอกสาร','แคมเปญพิเศษ']
 };
-Object.assign(EN,{"หมายเหตุ (Remark) · แสดงในใบเสนอราคา": "Remark · shown on the quotation"});
+Object.assign(EN,{});
 Object.assign(EN,{"ไม่พบรายการ":"No match","สถานะหลัก":"Main status","สรุปสถานะ · สถานะหลัก เทียบ สถานะการติดตาม":"Status summary · Main status vs Follow-up","ใช้นับ KPI":"Counted in KPI","ยังไม่ระบุ Follow-up":"No Follow-up yet","ปิดการขายใน Status หรือ Follow-up อย่างใดอย่างหนึ่ง = จบ ไม่นับซ้ำในแถวอื่น · KPI ใช้ Follow-up ถ้ามี ไม่มีใช้สถานะหลัก":"Closed in either Status or Follow-up = final, not counted again in other rows · KPI uses Follow-up if set, otherwise the main Status"});
 Object.assign(EN,{"ตัวอย่างใบเสนอราคา (ภาพที่จะส่งออก)":"Quotation preview (exported image)","กรอกขนาด/น้ำหนักสินค้าก่อน":"Enter cargo size/weight first"});
 Object.assign(EN,{"แบรนด์ในใบเสนอราคา":"Brand on quotation"});
@@ -970,12 +972,17 @@ function calc(){
  $('cl_out').innerHTML=L.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')+`<div><span>${TT('ค่าขนส่ง ','Freight ')}${fmt(qty)} ${unit} × ${fmt(rate)}</span><b>${fmt(ship)} ${baht}</b></div><div><span>${TT('ค่าบริการอื่นๆ','Other services')}</span><b>${fmt(fee)} ${baht}</b></div><div class="tot"><span>${TT('รวมทั้งสิ้น','Total')}</span><span>${fmt(tot)} ${baht}</span></div>`;
  try{drawQuote()}catch(e){console.error(e)}
 }
-function drawQuote(){
+const RMK=[['VAT 7%'],['ค่าบริการแพ็คสินค้า, ตีลังไม้, ออนพาเลท (ถ้ามี)'],['ค่าพื้นที่ห่างไกลปลายทาง, ค่าประกันสินค้า, ค่ารับสินค้า, Over Size, Over Weight (ถ้ามี)'],['ไม่รวมภาษีนำเข้าที่ประเทศปลายทางขึ้นอยู่กับกรมศุลกากร และค่าใช้จ่ายอื่นๆ ตามใบเสร็จจริงที่ปลายทาง (ถ้ามี)'],['กรณีโดนเปิดตรวจ สินค้าอาจจะโดนตีกลับหรือถูกทำลาย ขึ้นอยู่กับการพิจารณาของกรมศุลกากรปลายทาง (ถ้ามี)'],['สินค้าที่ไม่รับทำประกันและไม่รับประกัน: สินค้าประเภท แก้ว เซรามิค หินอ่อน กระเบื้อง หรือ สินค้าที่แตกหักเสียหายง่าย',1],['สินค้าที่ไม่รับขนส่ง เช่น อาหารสด อาหารแช่แข็ง บุหรี่ แอลกอฮอร์ แบตเตอรี่ สินค้าก๊อบแบรนด์ และสารเสพติดทุกชนิด เป็นต้น',1]];
+function rmkInit(){const el=$('cl_rmk');if(!el||el.dataset.i)return;el.dataset.i=1;el.innerHTML=RMK.map((r,i)=>`<label class="rmkr"><input type="checkbox" data-r="${i}"><span>${r[1]?'🚫 ':''}${esc(r[0])}</span></label>`).join('');el.addEventListener('change',()=>{try{CQ&&drawQuote()}catch(e){console.error(e)}});$('cl_rall').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=true);try{CQ&&drawQuote()}catch(e){}};$('cl_rnone').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=false);try{CQ&&drawQuote()}catch(e){}}}
+function drawQuote(){rmkInit();
  const Q=CQ,c=$('qc'),W=800,r=rows.find(x=>String(x.id)===selId()),B=TT('บาท','THB');
  const it=[...Q.LI,[TT('ค่าขนส่ง','Freight')+' ('+Q.svc+')',fmt(Q.ship)+' '+B],...Q.fees.map(f=>[TR(f[0]),fmt(f[1])+' '+B])];
- const F=getComputedStyle(document.body).fontFamily,rm=($('cl_remark').value||'').trim(),mx=document.createElement('canvas').getContext('2d');mx.font=`400 20px ${F}`;
- const RL=[];rm.split('\n').forEach(p=>{let cur='';for(const ch of p){if(mx.measureText(cur+ch).width>W-80){RL.push(cur);cur=ch}else cur+=ch}RL.push(cur)});
- const y0=268,H=y0+it.length*46+150+(RL.length?50+RL.length*28:0);c.width=W;c.height=H;
+ const F=getComputedStyle(document.body).fontFamily,mx=document.createElement('canvas').getContext('2d');mx.font=`400 18px ${F}`;
+ const RB=[];[...document.querySelectorAll('#cl_rmk input:checked')].forEach(c=>{const r=RMK[+c.dataset.r];RB.push({t:r[0],no:!!r[1]})});
+ ($('cl_remark').value||'').split('\n').map(z=>z.trim()).filter(Boolean).forEach(z=>RB.push({t:z,no:false}));
+ const wrapT=t=>{const out=[];let cur='';for(const ch of t){if(mx.measureText(cur+ch).width>W-80-30){out.push(cur);cur=ch}else cur+=ch}out.push(cur);return out};
+ RB.forEach(b=>b.L=wrapT(b.t));const RH=RB.length?RB.reduce((a,b)=>a+b.L.length*26+8,0)+46:0;
+ const y0=268,H=y0+it.length*46+150+(RB.length?RH+10:0);c.width=W;c.height=H;
  const x=c.getContext('2d');
  const T=(s,px,py,sz,w,col,al)=>{x.font=`${w} ${sz}px ${F}`;x.fillStyle=col;x.textAlign=al||'left';x.fillText(s,px,py)};
  x.fillStyle='#fff';x.fillRect(0,0,W,H);
@@ -987,7 +994,7 @@ function drawQuote(){
  it.forEach((a,i)=>{const yy=y0+i*46;x.fillStyle='#e5e7eb';x.fillRect(40,yy-30,W-80,1);T(a[0],40,yy,22,'400','#374151');T(a[1],W-40,yy,22,'600','#111827','right')});
  const ty=y0+it.length*46+10;x.fillStyle='#0096d6';x.fillRect(40,ty,W-80,84);
  T(TT('รวมทั้งสิ้น','Total'),64,ty+54,28,'600','#fff');T(fmt(Q.tot)+' '+B,W-64,ty+56,36,'700','#fff','right');
- if(RL.length){let ry=ty+84+40;T(TT('หมายเหตุ','Remark'),40,ry,20,'700','#0b2545');RL.forEach((l,i)=>T(l,40,ry+30+i*28,20,'400','#374151'))}
+ if(RB.length){let ry=ty+84+44;T(TT('หมายเหตุ : ราคานี้ไม่รวม','Notes: price excludes'),40,ry,20,'700','#0b2545');ry+=14;RB.forEach(b=>{b.L.forEach((l,i)=>{const yy=ry+26+i*26;if(i===0){if(b.no){x.strokeStyle='#e03131';x.lineWidth=2.2;x.beginPath();x.arc(50,yy-6,8,0,7);x.moveTo(44.5,yy-11.5);x.lineTo(55.5,yy-0.5);x.stroke()}else{x.fillStyle='#374151';x.beginPath();x.arc(48,yy-6,3,0,7);x.fill()}}T(l,70,yy,18,'400',b.no?'#b42318':'#374151')});ry+=b.L.length*26+8})}
 }
 async function calcSave(){const r=rows.find(x=>String(x.id)===selId());if(!r)return alert('เลือก Lead ก่อน');if(!can(r))return alert('ไม่มีสิทธิ์แก้ไข Lead นี้');const it=cgGet('cgc');const{error}=await sb.from('leads').update({cargo:it.length?{items:it}:null}).eq('id',r.id);if(error)alert('บันทึกไม่สำเร็จ: '+error.message);else{alert('บันทึกแล้ว');reload()}}
 function openDetail(id){openForm(id);const d=$('dd');d.open=true;setTimeout(()=>d.scrollIntoView({block:'start',behavior:'smooth'}),60)}
