@@ -979,8 +979,10 @@ const LOGOS={"clmv":{"u":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtAAAACX
 const LBN={cplinter:'CPL-Inter',cplex:'CPLEx',imthai:'IMTHAI',clmv:'CLMV'},LIMG={};let QB='';
 Object.keys(LOGOS).forEach(k=>{const i=new Image();i.onload=()=>{try{if(!$('vC').classList.contains('hid'))drawQuote()}catch(e){}};i.src=LOGOS[k].u;LIMG[k]=i});
 const autoBrand=()=>{const r=rows.find(x=>String(x.id)===selId());return({CPL:'cplinter','CPL-Inter':'cplinter',CPLEx:'cplex',IMTHAI:'imthai',CLMV:'clmv'})[r&&r.brand]||(team==='B'?'cplex':'cplinter')};
-const curBrand=()=>QB||autoBrand();
-function bsInit(){const el=$('cl_bs');el.innerHTML=Object.keys(LOGOS).map(k=>`<button type="button" data-b="${k}" title="${LBN[k]}"><img src="${LOGOS[k].u}" alt="${LBN[k]}"></button>`).join('');el.addEventListener('click',e=>{const b=e.target.closest('button[data-b]');if(!b)return;QB=b.dataset.b;drawQuote()})}
+const brandOpts=()=>team==='B'?['cplex']:['cplinter','clmv','imthai'];
+const curBrand=()=>{const o=brandOpts(),b=QB||autoBrand();return o.includes(b)?b:o[0]};
+function bsRender(){const el=$('cl_bs'),o=brandOpts(),sig=o.join();if(el.dataset.sig===sig)return;el.dataset.sig=sig;el.innerHTML=o.map(k=>`<button type="button" data-b="${k}" title="${LBN[k]}"><img src="${LOGOS[k].u}" alt="${LBN[k]}"></button>`).join('');el.classList.toggle('hid',o.length<2);el.previousElementSibling.classList.toggle('hid',o.length<2)}
+function bsInit(){const el=$('cl_bs');bsRender();el.addEventListener('click',e=>{const b=e.target.closest('button[data-b]');if(!b)return;QB=b.dataset.b;drawQuote()})}
 function calc(){
  const m=MODES[$('cl_mode').value],it=cgGet('cgc');let act=0,vol=0,cbm=0,q=0;
  it.forEach(x=>{q+=x.q;act+=x.q*x.kg*(x.wu==='TON(S)'?1000:1);const c=x.q*x.l*x.w*x.h;cbm+=c/1e6;if(m.d)vol+=c/m.d});
@@ -1000,7 +1002,7 @@ function calc(){
 }
 const RMK=[['VAT 7%'],['ค่าบริการแพ็คสินค้า, ตีลังไม้, ออนพาเลท (ถ้ามี)'],['ค่าพื้นที่ห่างไกลปลายทาง, ค่าประกันสินค้า, ค่ารับสินค้า, Over Size, Over Weight (ถ้ามี)'],['ไม่รวมภาษีนำเข้าที่ประเทศปลายทางขึ้นอยู่กับกรมศุลกากร และค่าใช้จ่ายอื่นๆ ตามใบเสร็จจริงที่ปลายทาง (ถ้ามี)'],['กรณีโดนเปิดตรวจ สินค้าอาจจะโดนตีกลับหรือถูกทำลาย ขึ้นอยู่กับการพิจารณาของกรมศุลกากรปลายทาง (ถ้ามี)'],['สินค้าที่ไม่รับทำประกันและไม่รับประกัน: สินค้าประเภท แก้ว เซรามิค หินอ่อน กระเบื้อง หรือ สินค้าที่แตกหักเสียหายง่าย',1],['สินค้าที่ไม่รับขนส่ง เช่น อาหารสด อาหารแช่แข็ง บุหรี่ แอลกอฮอร์ แบตเตอรี่ สินค้าก๊อบแบรนด์ และสารเสพติดทุกชนิด เป็นต้น',1]];
 function rmkInit(){const el=$('cl_rmk');if(!el||el.dataset.i)return;el.dataset.i=1;el.innerHTML=RMK.map((r,i)=>`<label class="rmkr"><input type="checkbox" data-r="${i}"><span>${r[1]?'🚫 ':''}${esc(r[0])}</span></label>`).join('');el.addEventListener('change',()=>{try{CQ&&drawQuote()}catch(e){console.error(e)}});$('cl_rall').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=true);try{CQ&&drawQuote()}catch(e){}};$('cl_rnone').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=false);try{CQ&&drawQuote()}catch(e){}}}
-function drawQuote(){rmkInit();
+function drawQuote(){rmkInit();bsRender();
  const Q=CQ,c=$('qc'),W=800,r=rows.find(x=>String(x.id)===selId()),B=TT('บาท','THB');
  const it=[...Q.LI,[TT('ค่าขนส่ง','Freight')+' ('+Q.svc+')',fmt(Q.ship)+' '+B],...Q.fees.map(f=>[TR(f[0]),fmt(f[1])+' '+B])];
  const F=getComputedStyle(document.body).fontFamily,mx=document.createElement('canvas').getContext('2d');mx.font=`400 18px ${F}`;
