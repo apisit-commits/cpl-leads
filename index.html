@@ -1013,6 +1013,7 @@ function calc(){
 }
 const RMK=[['VAT 7%'],['ค่าบริการแพ็คสินค้า, ตีลังไม้, ออนพาเลท (ถ้ามี)'],['ค่าพื้นที่ห่างไกลปลายทาง, ค่าประกันสินค้า, ค่ารับสินค้า, Over Size, Over Weight (ถ้ามี)'],['ไม่รวมภาษีนำเข้าที่ประเทศปลายทางขึ้นอยู่กับกรมศุลกากร และค่าใช้จ่ายอื่นๆ ตามใบเสร็จจริงที่ปลายทาง (ถ้ามี)'],['กรณีโดนเปิดตรวจ สินค้าอาจจะโดนตีกลับหรือถูกทำลาย ขึ้นอยู่กับการพิจารณาของกรมศุลกากรปลายทาง (ถ้ามี)'],['สินค้าที่ไม่รับทำประกันและไม่รับประกัน: สินค้าประเภท แก้ว เซรามิค หินอ่อน กระเบื้อง หรือ สินค้าที่แตกหักเสียหายง่าย',1],['สินค้าที่ไม่รับขนส่ง เช่น อาหารสด อาหารแช่แข็ง บุหรี่ แอลกอฮอร์ แบตเตอรี่ สินค้าก๊อบแบรนด์ และสารเสพติดทุกชนิด เป็นต้น',1]];
 function rmkInit(){const el=$('cl_rmk');if(!el||el.dataset.i)return;el.dataset.i=1;el.innerHTML=RMK.map((r,i)=>`<label class="rmkr"><input type="checkbox" data-r="${i}"><span>${r[1]?'🚫 ':''}${esc(r[0])}</span></label>`).join('');el.addEventListener('change',()=>{try{CQ&&drawQuote()}catch(e){console.error(e)}});$('cl_rall').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=true);try{CQ&&drawQuote()}catch(e){}};$('cl_rnone').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=false);try{CQ&&drawQuote()}catch(e){}}}
+const QTH=()=>curBrand()==='cplex'?{a:'#f07820',d:'#00468a'}:{a:'#0096d6',d:'#0b2545'};
 function drawQuote(){rmkInit();bsRender();
  const Q=CQ,c=$('qc'),W=800,r=rows.find(x=>String(x.id)===selId()),B=TT('บาท','THB');
  const it=[...Q.LI,[TT('ค่าขนส่ง','Freight')+' ('+Q.svc+')',fmt(Q.ship)+' '+B],...Q.fees.map(f=>[TR(f[0]),fmt(f[1])+' '+B])];
@@ -1026,14 +1027,14 @@ function drawQuote(){rmkInit();bsRender();
  const T=(s,px,py,sz,w,col,al)=>{x.font=`${w} ${sz}px ${F}`;x.fillStyle=col;x.textAlign=al||'left';x.fillText(s,px,py)};
  x.fillStyle='#fff';x.fillRect(0,0,W,H);
  const bk=curBrand(),lg=LIMG[bk],ld=LOGOS[bk];[...$('cl_bs').children].forEach(b=>b.classList.toggle('on',b.dataset.b===bk));if(lg&&lg.complete&&lg.naturalWidth){const sc=Math.min(440/ld.w,76/ld.h),lw=Math.round(ld.w*sc),lh=Math.round(ld.h*sc);x.drawImage(lg,40,22+Math.round((84-lh)/2),lw,lh)}
- T(TT('ใบเสนอราคา','Quotation'),W-40,68,38,'700','#0b2545','right');T(fmtD(today()),W-40,102,20,'400','#6b7280','right');
- x.fillStyle='#0096d6';x.fillRect(0,126,W,6);
+ T(TT('ใบเสนอราคา','Quotation'),W-40,68,38,'700',QTH().d,'right');T(fmtD(today()),W-40,102,20,'400','#6b7280','right');
+ x.fillStyle=QTH().a;x.fillRect(0,126,W,6);
  let y=178;if(r&&r.name){T(TT('เรียน คุณ ','Dear ')+r.name,40,y,28,'600','#111827');y+=40}
  T(TT('บริการ: ','Service: ')+Q.svc+(r&&(r.dir||r.country)?'  ·  '+[TR(r.dir),r.country].filter(Boolean).join(' · '):''),40,y,21,'400','#374151');
  it.forEach((a,i)=>{const yy=y0+i*46;x.fillStyle='#e5e7eb';x.fillRect(40,yy-30,W-80,1);T(a[0],40,yy,22,'400','#374151');T(a[1],W-40,yy,22,'600','#111827','right')});
- const ty=y0+it.length*46+10;x.fillStyle='#0096d6';x.fillRect(40,ty,W-80,84);
+ const ty=y0+it.length*46+10;x.fillStyle=QTH().a;x.fillRect(40,ty,W-80,84);
  T(TT('รวมทั้งสิ้น','Total'),64,ty+54,28,'600','#fff');T(fmt(Q.tot)+' '+B,W-64,ty+56,36,'700','#fff','right');
- if(RB.length){let ry=ty+84+44;T(TT('หมายเหตุ : ราคานี้ไม่รวม','Notes: price excludes'),40,ry,20,'700','#0b2545');ry+=14;RB.forEach(b=>{b.L.forEach((l,i)=>{const yy=ry+26+i*26;if(i===0){if(b.no){x.strokeStyle='#e03131';x.lineWidth=2.2;x.beginPath();x.arc(50,yy-6,8,0,7);x.moveTo(44.5,yy-11.5);x.lineTo(55.5,yy-0.5);x.stroke()}else{x.fillStyle='#374151';x.beginPath();x.arc(48,yy-6,3,0,7);x.fill()}}T(l,70,yy,18,'400',b.no?'#b42318':'#374151')});ry+=b.L.length*26+8})}
+ if(RB.length){let ry=ty+84+44;T(TT('หมายเหตุ : ราคานี้ไม่รวม','Notes: price excludes'),40,ry,20,'700',QTH().d);ry+=14;RB.forEach(b=>{b.L.forEach((l,i)=>{const yy=ry+26+i*26;if(i===0){if(b.no){x.strokeStyle='#e03131';x.lineWidth=2.2;x.beginPath();x.arc(50,yy-6,8,0,7);x.moveTo(44.5,yy-11.5);x.lineTo(55.5,yy-0.5);x.stroke()}else{x.fillStyle='#374151';x.beginPath();x.arc(48,yy-6,3,0,7);x.fill()}}T(l,70,yy,18,'400',b.no?'#b42318':'#374151')});ry+=b.L.length*26+8})}
 }
 async function calcSave(){const r=rows.find(x=>String(x.id)===selId());if(!r)return alert('เลือก Lead ก่อน');if(!can(r))return alert('ไม่มีสิทธิ์แก้ไข Lead นี้');const it=cgGet('cgc');const{error}=await sb.from('leads').update({cargo:it.length?{items:it}:null}).eq('id',r.id);if(error)alert('บันทึกไม่สำเร็จ: '+error.message);else{alert('บันทึกแล้ว');reload()}}
 function openDetail(id){openForm(id);const d=$('dd');d.open=true;setTimeout(()=>d.scrollIntoView({block:'start',behavior:'smooth'}),60)}
