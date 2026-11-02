@@ -781,7 +781,7 @@ const fuDue=r=>r.fu||addDays(r.date||today(),fuDays());
 const nameEq=(a,b)=>String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
 function myFu(){const who=seeAll()?($('fsel').value||''):(profile&&profile.name)||'~none~';
  return rows.filter(r=>![ST_Y,ST_N].includes(effS(r))&&(who===''||nameEq(r.sales,who))).map(r=>({r,due:fuDue(r),auto:!r.fu})).sort((a,b)=>a.due.localeCompare(b.due))}
-function fuBadge(){const b=$('fdot');if(!profile||!['sales','keyer'].includes(profile.role)){b.classList.add('hid');return}const t=today(),n=profile.role==='keyer'?kyList().length:myFu().filter(x=>x.due<=t).length;b.textContent=n>99?'99+':n;b.classList.toggle('hid',!n);if(!$('vF').classList.contains('hid'))renderFu()}
+function fuBadge(){const b=$('fdot');if(!profile||!['sales','keyer'].includes(profile.role)){b.classList.add('hid');if(profile&&!$('vF').classList.contains('hid'))renderFu();return}const t=today(),n=profile.role==='keyer'?kyList().length:myFu().filter(x=>x.due<=t).length;b.textContent=n>99?'99+':n;b.classList.toggle('hid',!n);if(!$('vF').classList.contains('hid'))renderFu()}
 const KYF=[['date','วันที่','Date'],['ads','Ads','Ads'],['name','ลูกค้า','Customer'],['channel','ช่องทาง','Channel'],['status','สถานะ','Status'],['reason','เหตุผลที่ยังไม่สนใจ','Reason'],['sales','เซลล์','Sales'],['brand','แบรนด์','Brand']];
 const kyMiss=r=>KYF.filter(([k])=>k==='reason'?effS(r)===ST_N&&!String(r.reason||'').trim():k==='brand'&&r.team==='B'?false:!String(r[k]||'').trim());
 const kyTeams=()=>profile&&profile.role==='admin'?['A','B']:['A'];
