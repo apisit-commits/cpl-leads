@@ -355,6 +355,7 @@ header h1{display:none}
     <label class="f">วันที่<b class="rq">*</b><input type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" name="date" required></label>
     <label class="f">Ads ที่ลูกค้าทักเข้ามา<b class="rq">*</b><select name="ads"></select></label>
     <label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required></label>
+    <label class="f">เบอร์โทรศัพท์<input name="d_p0" type="tel" autocomplete="off"></label>
   </div>
   <div style="margin-top:12px"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div></fieldset>
   <fieldset><legend>รายละเอียดงาน (แทนการพิมพ์ยาว)</legend><div id="ints"></div><button type="button" class="btn sm" id="intadd">+ เพิ่มบริการที่สนใจ</button>
@@ -686,7 +687,7 @@ function openForm(id){
  if(r.channel)f.channel.value=r.channel;
  intsRender(intsFrom(r));
  cgRender('cgf',(r.cargo&&r.cargo.items)||[]);
- {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'));f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d)}
+ {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'&&k!=='p0'));['d_ph','d_ctt'].forEach(n=>{delete f[n].dataset.t;delete f[n].dataset.sy});f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d)}
  f.querySelectorAll('input[name=channel]').forEach(i=>i.checked=i.value===r.channel)
  {const bl=f.brand.closest('label.f');if(team==='B'){if(![...f.brand.options].some(o=>o.value==='CPLEx'))f.brand.add(new Option('CPLEx','CPLEx'));f.brand.value='CPLEx';bl.classList.add('hid')}else bl.classList.remove('hid')}
  if(!id&&!f.sales.value)f.sales.value=profile.role==='keyer'?'':(profile.name||'');toggleReason();$('dlg').showModal();markEmpty();
@@ -734,7 +735,7 @@ Email:['#f59e0b','<rect x="6" y="8" width="12" height="8.500" rx="1.500" stroke=
 let IGN=0;const chIcon=(v,sz)=>{if(!v)return '';const c=CHI[v];if(!c)return esc(v);const gid='igg'+(++IGN),z=sz||24;return `<svg class="chi" viewBox="0 0 24 24" width="${z}" height="${z}" role="img" aria-label="${v}"><title>${v}</title>${v==='IG'?'<defs><linearGradient id="'+gid+'" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".4" stop-color="#fa7e1e"/><stop offset=".7" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs>':''}<rect width="24" height="24" rx="6" fill="${v==='IG'?'url(#'+gid+')':c[0]}"/>${c[1]}</svg>`};
 const fmtD=d=>/^\d{4}-\d{2}-\d{2}/.test(d||'')?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):(d||'');
 const d2i=t=>{const m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec((t||'').trim());if(!m)return '';const iso=m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');return new Date(iso+'T00:00:00').getMonth()+1===+m[2]?iso:''};
-const DK=['ct','fn','ph','em','cpn','cpb','cpd','cpt','cpe','ctn','ctd','ctt','sd','st','sn','og','rn','ds','os','nt','gd','gv'];
+const DK=['p0','ct','fn','ph','em','cpn','cpb','cpd','cpt','cpe','ctn','ctd','ctt','sd','st','sn','og','rn','ds','os','nt','gd','gv'];
 let CS='';
 const fmt=n=>(+n).toLocaleString('th-TH',{maximumFractionDigits:2});
 const N=x=>typeof x==='number'&&isFinite(x)?x.toLocaleString('en-US'):x;
@@ -1050,6 +1051,9 @@ const dialDisp=c=>{const d=DIAL.find(x=>x[0]===c);return d?d[0]+' · '+TT(d[1],d
 const dialCode=t=>{t=(t||'').trim();if(!t)return'';let d=DIAL.find(x=>x[0]===t)||DIAL.find(x=>t.startsWith(x[0]+' '));if(d)return d[0];const q=t.toLowerCase();d=DIAL.find(x=>x[1]===t||x[2].toLowerCase()===q)||DIAL.find(x=>x[1].includes(t)||x[2].toLowerCase().includes(q));if(d)return d[0];return /^\+?\d{1,4}$/.test(t)?(t[0]==='+'?t:'+'+t):''};
 function fillDial(){const f=$('fm_');$('dl_dial').innerHTML=DIAL.map(d=>`<option value="${d[0]} · ${esc(TT(d[1],d[2]))}" label="${esc(TT(d[2],d[1]))}"></option>`).join('');['d_cpd','d_ctd'].forEach(n=>{f[n].value=dialDisp(dialCode(f[n].value))})}
 document.addEventListener('change',e=>{const t=e.target;if(t&&(t.name==='d_cpd'||t.name==='d_ctd'))t.value=dialDisp(dialCode(t.value))});
+document.addEventListener('input',e=>{const t=e.target,f=$('fm_');if(!t||!f||!f.contains(t))return;
+ if(t.name==='d_p0'){['d_ph','d_ctt'].forEach(n=>{const x=f[n];if(!x.dataset.t&&(!x.value||x.dataset.sy)){x.value=t.value;x.dataset.sy='1'}})}
+ else if(t.name==='d_ph'||t.name==='d_ctt'){t.dataset.t='1';delete t.dataset.sy}});
 function togCt(){const f=$('fm_'),c=f.d_ct.value==='Company';$('cpy').classList.toggle('hid',!c);$('cpr').classList.toggle('hid',c);['cpn','cpd','cpt','cpe','ctn','ctd','ctt'].forEach(k=>f['d_'+k].required=c)}
 const PKGS=[['ROLL(S)','ม้วน'],['ENVELOPE(S)','ซองเอกสาร'],['PACKAGE(S)','พัสดุ'],['SACK(S)','กระสอบ'],['PIECE(S)','ชิ้น'],['CASE(S)','เคส/หีบ'],['CRATE(S)','ลัง/เครท'],['CARTON(S)','กล่อง/ลังกระดาษ'],['BOX(ES)','กล่องพัสดุ'],['PALLET(S)','พาเลท'],['CORRUGATED PAPER(S)','กระดาษลูกฟูก']];
 const WUN=[['KILOGRAM(S)','กก.'],['TON(S)','ตัน']];
