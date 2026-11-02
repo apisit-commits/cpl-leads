@@ -791,7 +791,7 @@ const addDays=(iso,n)=>{const d=new Date(iso+'T00:00:00Z');d.setUTCDate(d.getUTC
 const fuKey=()=>'fuDays_'+((profile&&profile.id)||'');
 const fuDays=()=>{try{const v=parseInt(localStorage.getItem(fuKey()),10);return v>=1&&v<=30?v:3}catch(e){return 3}};
 const fuDue=r=>r.fu||addDays(r.date||today(),fuDays());
-const nameEq=(a,b)=>String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
+const nk=s=>String(s||'').normalize('NFC').replace(/[\s\u200b.]+/g,'').toLowerCase(),nameEq=(a,b)=>{a=nk(a);b=nk(b);return !!a&&!!b&&(a===b||a.includes(b)||b.includes(a))};
 function myFu(){const who=seeAll()?($('fsel').value||''):(profile&&profile.name)||'~none~';
  return rows.filter(r=>![ST_Y,ST_N].includes(effS(r))&&(who===''||nameEq(r.sales,who))).map(r=>({r,due:fuDue(r),auto:!r.fu})).sort((a,b)=>a.due.localeCompare(b.due))}
 function fuBadge(){const b=$('fdot');if(!profile||!['sales','keyer'].includes(profile.role)){b.classList.add('hid');if(profile&&!$('vF').classList.contains('hid'))renderFu();return}const t=today(),n=profile.role==='keyer'?kyList().length:myFu().filter(x=>x.due<=t).length;b.textContent=n>99?'99+':n;b.classList.toggle('hid',!n);if(!$('vF').classList.contains('hid'))renderFu()}
