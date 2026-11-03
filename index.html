@@ -406,7 +406,7 @@ function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '
 const ST_Y='ปิดการขาย',ST_H='มีโอกาสเปลี่ยนใจ',ST_S='รอการตัดสินใจ',ST_N='ยังไม่สนใจบริการ';
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
 const OPT={
- channel:['Messenger','LINE','LINE Private','IG','TikTok','WhatsApp','Call in','Website','Email'],
+ channel:['Messenger','Messenger Private','LINE','LINE Private','IG','TikTok','WhatsApp','Call in','Website','Email'],
  dir:['นำเข้า','ส่งออก'],
  svc:['Air','Sea','Truck'],
  status:[ST_S,ST_Y,ST_N],
@@ -725,6 +725,7 @@ const E=(v,c=true)=>!v&&c?' class="em"':'';
 const CHI={Messenger:['#0084ff','<path d="M5 18l1.3-3.8A6.5 6.5 0 1 1 9.5 17.3L5 18z" fill="#fff"/><path d="M8 13l2.500-3 2 1.600L15.500 9" stroke="#0084ff" stroke-width="1.600" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'],
 LINE:['#06c755','<ellipse cx="12" cy="11" rx="7.500" ry="6" fill="#fff"/><text x="12" y="13" font-size="5.500" font-weight="700" text-anchor="middle" fill="#06c755">LINE</text>'],
 'LINE Private':['#06c755','<path d="M3.500 9.800C3.500 6.500 6.800 4 10.800 4s7.300 2.500 7.300 5.800-3.300 5.800-7.300 5.800c-.6 0-1.200-.1-1.800-.2L6 17.200l.6-2.700C4.800 13.500 3.500 11.800 3.500 9.800z" fill="#fff"/><text x="10.800" y="11.300" font-size="4.600" font-weight="700" text-anchor="middle" fill="#06c755" font-family="Arial,sans-serif">LINE</text><circle cx="16.800" cy="16.800" r="6.700" fill="#0b3d24"/><circle cx="16.800" cy="14.900" r="2.300" fill="#fff"/><path d="M12.400 21.700a4.400 3.900 0 0 1 8.800 0z" fill="#fff"/>'],
+'Messenger Private':['#0084ff','<g transform="translate(-1.200 -1.400) scale(.95)"><path d="M5 18l1.3-3.8A6.5 6.5 0 1 1 9.5 17.3L5 18z" fill="#fff"/><path d="M8 13l2.500-3 2 1.600L15.500 9" stroke="#0084ff" stroke-width="1.600" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><circle cx="16.800" cy="16.800" r="6.700" fill="#052a57"/><circle cx="16.800" cy="14.900" r="2.300" fill="#fff"/><path d="M12.400 21.700a4.400 3.900 0 0 1 8.800 0z" fill="#fff"/>'],
 IG:['url(#igg)','<rect x="6" y="6" width="12" height="12" rx="3.500" stroke="#fff" stroke-width="1.600" fill="none"/><circle cx="12" cy="12" r="2.800" stroke="#fff" stroke-width="1.600" fill="none"/><circle cx="15.600" cy="8.400" r="1" fill="#fff"/>'],
 TikTok:['#111','<path d="M13 6v8.500a2.500 2.500 0 1 1-2.500-2.500M13 6c.4 2 1.700 3 3.500 3.100" stroke="#fff" stroke-width="1.800" fill="none" stroke-linecap="round"/>'],
 WhatsApp:['#25d366','<path d="M12 5.500a6.500 6.500 0 0 0-5.600 9.800L5.500 18.500l3.300-.9A6.500 6.500 0 1 0 12 5.500z" fill="#fff"/><path d="M9.700 9.200c.2 2 1.800 3.900 3.900 4.700l1-1-1.400-.8-.6.500c-.7-.3-1.300-1-1.500-1.700l.5-.6-.8-1.400-1.100 1.300z" fill="#25d366"/>'],
