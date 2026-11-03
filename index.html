@@ -280,6 +280,48 @@ html[data-theme=dark]{--lgv:url(data:image/webp;base64,UklGRlpDAABXRUJQVlA4WAoAA
 #lgimg.logo{width:150px;margin:0 auto}
 @media(max-width:760px){.logo{width:auto;height:30px;aspect-ratio:640/202;margin:0 10px 0 0;background-image:var(--lgh)}#lgimg.logo{height:auto;width:200px;margin:0 auto;aspect-ratio:640/202}}
 </style>
+<style id="uxcss">
+:root{--mu:#506378}
+body{font-size:14.5px}
+header{padding:12px 20px}
+main{padding:10px 28px 28px}
+.sub{font-size:13px}
+th{font-size:13px!important;font-weight:600!important;color:color-mix(in srgb,var(--tx) 78%,var(--bg))!important;white-space:nowrap}
+#vL th{white-space:normal}
+td{font-size:14px}
+.tag{font-size:12.5px}
+.seg em{font-size:12px}
+.st{padding:10px 14px!important;min-height:0}
+.st b{font-size:24px!important;line-height:1.15}
+.st span{font-size:13px!important;line-height:1.3;display:block;margin-top:2px;color:color-mix(in srgb,var(--tx) 72%,var(--bg))}
+#vD .st{padding:8px 12px!important}#vD .st b{font-size:22px!important}#vD .st span{font-size:12.5px!important}
+.hd{gap:8px}
+.bar{gap:8px;margin-bottom:10px;align-items:center}
+.bar input,.bar select{padding:6px 10px;font-size:14px}
+.bar input[type=date]{flex:none;width:136px}
+.bar #q{min-width:150px;max-width:230px}
+.bar input[type=date]{width:128px}.bar .mlb span{font-size:13px}
+#vL th:nth-child(5){width:80px!important}#vL th:nth-child(2){width:8%!important}#vL th:nth-child(3){width:9%!important}#vL th:nth-child(4){width:17%!important}#vL th:nth-child(8){width:7%!important}#vL th:nth-child(9){width:9%!important}#vL th:nth-child(10){width:124px!important}
+#vL .bar select{max-width:116px}.bar input[type=date]{width:122px!important}#vL .bar{gap:6px}#vD .dg{align-items:start}
+#vL th,#vL td{font-size:13.5px!important;padding:7px 8px}
+#vL .sub{font-size:12.5px!important}
+#vL td:last-child{overflow:visible;text-overflow:clip;white-space:nowrap}
+.rb{width:32px;height:32px;padding:0!important;display:inline-flex;align-items:center;justify-content:center;border-radius:9px}
+.rb+.rb{margin-left:4px}
+#vD .pn table,#vD .pn td,#vD .pn th{font-size:13.5px!important}
+#vD .pn td,#vD .pn th{padding:5px 9px}
+#vD .pn h3{font-size:14.5px!important;margin:0 0 6px}
+#vD .pn table.stt td.num{background:none!important}
+#vD .dnl,#vD .br{font-size:13.5px!important}
+#vD .pn{padding:10px 14px}
+.pn.slim{display:flex;align-items:center;gap:18px;padding:8px 14px!important}.pn.slim h3{margin:0!important;white-space:nowrap}
+.pn.slim .svs{display:flex;gap:10px;flex-wrap:wrap}.pn.slim .svs>div{padding:6px 12px;gap:10px;border-radius:12px}.pn.slim .svs .ib{width:34px;height:34px;border-radius:10px}.pn.slim .svs .ib svg{width:20px;height:20px}.pn.slim .svs b{font-size:19px;display:inline;margin-right:6px}.pn.slim .svs span.s,.pn.slim .svs em{font-size:13px}
+label.f{font-size:13px}
+legend{font-size:13px}
+.btn.sm{font-size:13px!important;padding:4px 11px}
+#acct em,.tg{font-size:12px!important}
+</style>
+
 </head>
 <body>
 <header>
@@ -662,7 +704,7 @@ function renderDash(){
  const sum=`<div class="pn w8"><h3>สรุปสถานะ · สถานะหลัก เทียบ สถานะการติดตาม</h3><table><thead><tr><th style="position:static">สถานะ</th><th class="num" style="position:static">สถานะหลัก</th><th class="num" style="position:static">สถานะการติดตาม</th><th class="num" style="position:static">ใช้นับ KPI</th></tr></thead><tbody>`+rw('ปิดการขาย',l.filter(r=>r.status===ST_Y).length,l.filter(r=>r.fu_status===ST_Y).length,W)+[ST_S,ST_N].map(s=>rw(s,cM(l,s),cF(l,s),cn(s))).join('')+rw('ยังไม่ระบุ Follow-up','-',nf,'-')+`</tbody></table></div>`;
  const rb=(t,g,n,fn)=>{fn=fn||lb;g=g.map(([k,v])=>[k,v,amt(v)]).filter(x=>x[2]>0).sort((x,y)=>y[2]-x[2]).slice(0,n||8);const mx=Math.max(1,...g.map(x=>x[2]));return `<div class="pn"><h3>${t}</h3>${g.length?g.map(([k,v,a])=>`<div class="br" style="grid-template-columns:120px 1fr 110px"><span title="${esc(k)}">${fn(k)}</span><i style="width:${a/mx*100}%"></i><span class="num">฿${N(a)}</span></div>`).join(''):'<div class="sub">ยังไม่มียอดปิดงาน</div>'}</div>`};
  const ceoK=`<div class="pn w12"><h3>ภาพรวมรายได้</h3><div class="stats">${[['ยอดที่ปิดได้ (บาท)',AMT],['จำนวนดีลที่ปิด',W],['มูลค่าเฉลี่ยต่อดีล (บาท)',W?Math.round(AMT/W):0],['ปิดแล้วแต่ยังไม่ใส่ยอด',l.filter(r=>closedR(r)&&!r.deal_amt).length]].map(([x,y])=>`<div class="st"><b>${N(y)}</b><span>${x}</span></div>`).join('')}</div></div>`;
-const sstrip=(()=>{const g={};l.forEach(r=>{const k=dkey((r.svc||[])[0]);if(k){const e=g[k]=g[k]||{n:0,w:0};e.n++;if(effS(r)===ST_Y)e.w++}});const L={air:TT('เครื่องบิน','Air'),sea:TT('เรือ','Sea'),truck:TT('รถ','Truck'),train:TT('รถไฟ','Rail')},o=['air','sea','truck','train'].filter(k=>g[k]);if(!o.length)return'';return `<div class="pn w12"><h3>${TT('สรุปตามบริการขนส่ง','By transport')}</h3><div class="svs">${o.map(k=>`<div><span class="ib">${dsv(k,26)}</span><span><b>${N(g[k].n)}</b><span class="s">${L[k]} · ${pc(g[k].n,T)}</span><br><em>${TT('ปิดการขาย','Closed')} ${N(g[k].w)}</em></span></div>`).join('')}</div></div>`})();
+const sstrip=(()=>{const g={};l.forEach(r=>{const k=dkey((r.svc||[])[0]);if(k){const e=g[k]=g[k]||{n:0,w:0};e.n++;if(effS(r)===ST_Y)e.w++}});const L={air:TT('เครื่องบิน','Air'),sea:TT('เรือ','Sea'),truck:TT('รถ','Truck'),train:TT('รถไฟ','Rail')},o=['air','sea','truck','train'].filter(k=>g[k]);if(!o.length)return'';return `<div class="pn w12${o.length<3?' slim':''}"><h3>${TT('สรุปตามบริการขนส่ง','By transport')}</h3><div class="svs">${o.map(k=>`<div><span class="ib">${dsv(k,26)}</span><span><b>${N(g[k].n)}</b><span class="s">${L[k]} · ${pc(g[k].n,T)}</span><br><em>${TT('ปิดการขาย','Closed')} ${N(g[k].w)}</em></span></div>`).join('')}</div></div>`})();
 const osg=(()=>{const m={};l.forEach(r=>{const q=r.detail&&r.detail.qt;if(q&&q.f)q.f.forEach(n=>{(m[n]=m[n]||[]).push(r)})});return Object.entries(m).sort((x,y)=>y[1].length-x[1].length)})(),osT=l.filter(r=>r.detail&&r.detail.qt).length,osp=osg.length?stb(TT('บริการเสริมที่ลูกค้าเลือก','Add-on services selected')+' ('+TT('จากใบเสนอราคา ','from ')+N(osT)+TT(' ราย',' quoted leads')+')',osg.map(([k,v])=>[TR(k),v]),12):'';
  let h='';
  if(dashMode==='A')h=sdn+sum+stb('ประสิทธิภาพตาม Ads (Lead และผลลัพธ์)',adsTail(grp(r=>r.ads,'(ไม่ระบุ Ads)')),25,1)+bars('Ads ที่ได้ Lead มากสุด',grp(r=>r.ads,'(ไม่ระบุ Ads)'),10)+bars('Ads ที่ปิดได้ (Yes) มากสุด',grp(r=>won(r)?(r.ads||'(ไม่ระบุ Ads)'):'',''),10)+donut('Lead ตามช่องทาง',ch)+trend;
@@ -1171,7 +1213,7 @@ function render(){
   <td${E(r.channel)}>${chIcon(r.channel)}</td><td title="${r.fu?TT('ติดตาม: ','Follow-up: ')+fmtD(r.fu):''}"><span class="tag ${SC[dispSt(r)]||''}">${esc(dispSt(r))}</span>${r.deal_amt||r.deal_date?`<div class="sub" style="margin-top:3px">${r.deal_amt?`<b>${N(r.deal_amt)} ฿</b>`:''}${r.deal_amt&&r.deal_date?' · ':''}${r.deal_date?esc(fmtD(r.deal_date)):''}</div>`:''}</td>
   
   <td${E(r.reason,effS(r)===ST_N)}>${esc(r.reason)}</td><td${E(r.sales)}>${esc(r.sales)}</td><td${E(r.brand&&r.promo)}>${esc(r.brand)}<div class="sub">${esc(r.promo)}</div></td>
-  <td>${can(r)?`<button class="btn sm${r.detail?' p':''}" onclick="openDetail(${r.id})">รายละเอียด</button> <button class="btn sm" onclick="openForm(${r.id})">แก้ไข</button> ${profile.role!=='keyer'?`<button class="btn sm" onclick="del(${r.id})">ลบ</button>`:''}`:''}</td></tr>`).join('');
+  <td>${can(r)?`<button class="btn sm rb${r.detail?' p':''}" title="รายละเอียด" aria-label="รายละเอียด" onclick="openDetail(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg></button><button class="btn sm rb" title="แก้ไข" aria-label="แก้ไข" onclick="openForm(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>${profile.role!=='keyer'?`<button class="btn sm rb" title="ลบ" aria-label="ลบ" onclick="del(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>`:''}`:''}</td></tr>`).join('');
  $('em').classList.toggle('hid',l.length>0);$('cap').textContent=l.length>300?TT('แสดง 300 จาก '+N(l.length)+' รายการ (ใหม่สุดก่อน) · ใช้ช่องค้นหา/ตัวกรอง หรือส่งออก Excel เพื่อดูทั้งหมด','Showing 300 of '+N(l.length)+' items (newest first) · use search/filters or export to Excel to see everything'):'';
  const n=s=>tr.filter(r=>effS(r)===s).length,due=tr.filter(r=>r.fu&&r.fu<=t&&![ST_Y,ST_N].includes(effS(r))).length;
  $('stats').innerHTML=[['Lead ทั้งหมด',tr.length],['ปิดการขาย',n(ST_Y)],['รอการตัดสินใจ',n(ST_S)],['ไม่สนใจ',n(ST_N)],['ต้อง Follow-up วันนี้/เลยกำหนด',due]]
