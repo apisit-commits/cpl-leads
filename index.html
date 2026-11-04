@@ -462,7 +462,8 @@ header .hd #who{display:none!important}
  <div class="pn"><h3>กฎค่าธรรมเนียมเสริม</h3><div style="overflow-x:auto"><table id="rs_rl"></table></div></div>
  <div class="rb-split">
   <div class="pn"><h3>รหัสไปรษณีย์ Remote Area</h3><div id="rs_rm"></div></div>
-  <div class="pn"><h3>ค่าน้ำมันและปรับราคา</h3><div class="g"><label class="f">ค่าน้ำมัน FedEx (%)<input id="rs_fF" type="number" step="0.01"></label><label class="f">ค่าน้ำมัน Aramex (%)<input id="rs_fA" type="number" step="0.01"></label><label class="f">ปรับราคา FedEx (%)<input id="rs_aF" type="number" step="0.5"></label><label class="f">ปรับราคา Aramex (%)<input id="rs_aA" type="number" step="0.5"></label></div>
+  <div class="pn"><h3>ราคาขาย FedEx</h3><div class="g"><label class="f">ค่าน้ำมัน (%)<input id="rs_fu" type="number" step="0.01"></label><label class="f">VAT (%)<input id="rs_vt" type="number" step="0.01"></label><label class="f">Margin (เท่า)<input id="rs_mg" type="number" step="0.01"></label></div><div class="g" id="rs_pk" style="margin-top:10px"></div>
+   <h3 style="margin-top:16px">Aramex</h3><div class="g"><label class="f">ค่าน้ำมัน (%)<input id="rs_fA" type="number" step="0.01"></label><label class="f">ปรับราคา (%)<input id="rs_aA" type="number" step="0.5"></label></div>
    <div class="rb-row" style="margin-top:14px"><button class="btn p" id="rs_pub" type="button">เผยแพร่</button><span class="sub" id="rs_st"></span></div></div>
  </div></div></div>
 <div id="vS" class="hid"><div class="mktabs" id="sst"><button type="button" data-s="o" class="on">ตัวเลือกในฟอร์ม</button><button type="button" data-s="u">จัดการผู้ใช้</button></div><div class="pn" id="vSu"></div><div id="vSo"></div>
@@ -1442,10 +1443,49 @@ RP.block=(g,opt)=>{
     if(!rows.length)return;
     cols[c].forEach(n=>{out.pkg[n]=rows;if(tr.length)out.kg[n]=tr})});
   return out};
+RP.cell=(ws,a)=>ws&&ws[a]||null;
+RP.fm=(ws,a)=>{const m=String((RP.cell(ws,a)||{}).f||'').match(/\*\s*([0-9.]+)\s*$/);return m?+m[1]:null};
+RP.v2=(wb)=>{
+  const A=RP.find(wb,'Adjust'),C=RP.find(wb,'Cost');if(!A||!C)return null;
+  const S=RP.find(wb,'+ASH'),g=RP.grid(A),gc=RP.grid(C),gs=S?RP.grid(S):null;
+  const t0=g.findIndex(r=>r&&/^FedEx International/i.test(String(r[0]||'')));if(t0<0)return null;
+  const zc={};(g[0]||[]).forEach((h,c)=>{const z=String(h||'').trim();if(c<1||!z)return;for(let i=1;i<t0;i++){const v=g[i]&&g[i][c];if(typeof v==='string'&&v.trim()&&!/^OTHER$/i.test(v.trim()))zc[RP.cn(v)]=z}});
+  const R=RP.find(wb,'RATE 2027'),gr=R?RP.grid(R):null,ch=[];
+  if(gr)gr.forEach((r,i)=>{if(r&&String(r[0]||'').trim()==='Country/Territory')ch.push(i)});
+  const chart=(n,col)=>{const i0=ch[n];if(i0===undefined)return null;const c=gr[i0].findIndex(x=>String(x||'').trim()===col);if(c<0)return null;const m={};for(let i=i0+1;i<gr.length;i++){const r=gr[i];if(!r||!r[0]){if(Object.keys(m).length)break;continue}const z=String(r[c]||'').trim();if(/^[A-Z]$/.test(z))m[RP.cn(r[0])]=z}return Object.keys(m).length?m:null};
+  const secs=[];g.forEach((r,i)=>{const m=r&&String(r[0]||'').match(/^FedEx International (Priority|Economy) (Export|Import)/i);if(m)secs.push({i,k:(m[1][0].toLowerCase()==='p'?'ip':'ie')+(m[2][0].toLowerCase()==='e'?'x':'i'),t:'FedEx '+m[1]+(m[2][0].toLowerCase()==='e'?' ส่งออก':' นำเข้า')})});
+  secs.forEach((s,j)=>s.e=j+1<secs.length?secs[j+1].i:g.length);
+  const out={data:{},sheets:[],params:{}};
+  const pkv={};['X','Y','Z','AA','AB'].forEach(k=>{const x=RP.cell(C,k+'42');if(x&&typeof x.v==='number')pkv[k]=x.v});
+  const cv=(i,c)=>{const v=RP.num(gc[i]&&gc[i][c]);if(v===null||v<=0)return null;const x=RP.cell(C,XLSX.utils.encode_cell({r:i,c:+c}))||{},mm=String(x.f||'').match(/\+\$?([A-Z]{1,3})\$?\d+\s*$/);
+    if(!mm)return[v,0];const h=RP.cell(C,mm[1]+(i+1)),hv=h&&typeof h.v==='number'?h.v:null,pv=pkv[mm[1]]||0;return[hv===null?v:Math.round((v-hv)*1000)/1000,hv===null||!pv?null:Math.round(hv/pv*1000)/1000]};
+  secs.forEach(s=>{
+    let hr=-1;for(let i=s.i;i<s.e;i++){if(g[i]&&String(g[i][0]||'').trim().toLowerCase()==='kgs'){hr=i;break}}
+    if(hr<0){out.sheets.push({k:s.k,n:'Adjust',t:s.t,ok:false});return}
+    const L={};(g[hr]||[]).forEach((v,c)=>{if(c>0&&typeof v==='string'&&/^[A-Z]$/.test(v.trim()))L[c]=v.trim()});
+    let pi=-1;for(let i=hr+1;i<s.e;i++){if(g[i]&&String(g[i][0]||'').trim().toLowerCase()==='package'){pi=i;break}}
+    if(pi<0){out.sheets.push({k:s.k,n:'Adjust',t:s.t,ok:false});return}
+    const pr=[],tr=[];let inT=false;
+    for(let i=pi+1;i<s.e;i++){const a=g[i]&&g[i][0];
+      if(typeof a==='string'&&/^\s*[\d,]+(\.\d+)?\s*-\s*[\d,]+/.test(a)){inT=true;tr.push([parseFloat(a.replace(/,/g,'')),i]);continue}
+      if(!inT){const kg=RP.num(a);if(kg!==null)pr.push([kg,i])}}
+    const zone={},pk={},np=[];
+    Object.keys(L).forEach(c=>{const z=L[c];const f=String((RP.cell(C,XLSX.utils.encode_cell({r:pr[0]?pr[0][1]:0,c:+c}))||{}).f||'');const m=f.match(/\+\$?([A-Z]{1,3})\$?\d+\s*$/);pk[z]=m?m[1]:'AB';
+      if(gs&&pr[0]){const lb=gs.findIndex((r,i)=>i>=s.i-3&&r&&String(r[0]||'').trim().toLowerCase()==='package'),gi=lb<0?-1:gs.findIndex((r,i)=>i>lb&&r&&r[0]===pr[0][0]);if(gi>=0&&RP.num(gs[gi][c])===null)np.push(z)}});
+    const d={pkg:{},kg:{},zn:{},pk,np};let n=0;
+    const zm=chart(s.k[2]==='x'?0:1,s.k[1]==='p'?'IP':'IE')||(s.k[2]==='x'?zc:null);if(!zm){out.sheets.push({k:s.k,n:'Adjust',t:s.t,ok:false});return}
+    Object.keys(zm).forEach(cn=>{const z=zm[cn],c=Object.keys(L).find(k=>L[k]===z);if(c===undefined)return;
+      const rows=[];pr.forEach(([kg,i])=>{const b=cv(i,c);if(b)rows.push([kg,b[0],b[1]])});if(!rows.length)return;
+      const t=[];tr.forEach(([f,i])=>{const b=cv(i,c);if(b)t.push([f,b[0],b[1]])});
+      d.pkg[cn]=rows;if(t.length)d.kg[cn]=t;d.zn[cn]=z;n++});
+    out.data[s.k]=d;out.sheets.push({k:s.k,n:'Adjust',t:s.t,ok:n>0,countries:n,sec:'Package'})});
+  const mg=RP.cell(RP.find(wb,'SElling'),'X43');
+  out.params={pk:pkv,fuel:Math.round(((RP.fm(RP.find(wb,'Cost+Fuel'),'B47')||1.55)-1)*10000)/100,vat:Math.round(((RP.fm(RP.find(wb,'Cost+Fuel+VAT'),'B47')||1.07)-1)*10000)/100,mg:mg&&typeof mg.v==='number'?mg.v:1.43};
+  return out};
 RP.parse=(wb)=>{
   const res={sheets:[],data:{},warn:[]};
   const F=[['ipx','IP Ex(FEDEX)','FedEx Priority ส่งออก'],['iex','IE Ex (FEDEX)','FedEx Economy ส่งออก'],['ipi','IP Im (FEDEX)','FedEx Priority นำเข้า'],['iei','IE Im (FEDEX)','FedEx Economy นำเข้า']];
-  F.forEach(([k,n,t])=>{const ws=RP.find(wb,n);if(!ws){res.sheets.push({k,n,t,ok:false});return}
+  const v2=RP.v2(wb);if(v2){Object.assign(res.data,v2.data);v2.sheets.forEach(x=>res.sheets.push(x));res.params=v2.params}else F.forEach(([k,n,t])=>{const ws=RP.find(wb,n);if(!ws){res.sheets.push({k,n,t,ok:false});return}
     const b=RP.block(RP.grid(ws),{sec:/PACK/i,not:/PAK/i});
     if(!b){res.sheets.push({k,n,t,ok:false});return}
     res.data[k]={pkg:b.pkg,kg:b.kg};res.sheets.push({k,n,t,ok:true,countries:Object.keys(b.pkg).length,sec:b.sec})});
@@ -1497,6 +1537,11 @@ const rl=id=>(RS.rules||[]).find(r=>r.id===id);
 const hit=(r,x)=>r.cond.filter(c=>x[c[2]]>c[1]).map(c=>c[0].replace(' เกิน','')+' '+x[c[2]]+' > '+c[1]);
 function lookup(svc,country,kg){const d=RS.data[svc];if(!d)return null;const rows=d.pkg[country];if(!rows||!rows.length)return null;
  const last=rows[rows.length-1];
+ if(d.zn){const z=d.zn[country];if(!z||(d.np||[]).includes(z))return null;const pm=RS.pm||{},pk=(pm.pk||{})[(d.pk&&d.pk[z])||'AB']||0;
+  const fin=x=>Math.ceil(+(x*(1+(pm.fuel==null?55:pm.fuel)/100)*(1+(pm.vat==null?7:pm.vat)/100)*(pm.mg||1.43)).toFixed(6)),fr=r=>fin(r[1]+pk*(r[2]==null?Math.ceil(r[0]):r[2]));
+  if(kg<=last[0]){const r=rows.find(x=>x[0]>=kg);return{price:fr(r),basis:'ตาราง '+r[0]+' กก.'}}
+  const tt=d.kg&&d.kg[country]||[],t=tt.filter(x=>x[0]<=kg).pop()||tt[0];if(!t)return null;const w=Math.ceil(kg),u=fin(t[1]+pk*(t[2]==null?1:t[2]));
+  return{price:Math.max(fr(last),u*w),basis:N(u)+' บาท/กก. × '+w+' กก.'}}
  if(kg<=last[0]){const r=rows.find(x=>x[0]>=kg);return{price:r[1],basis:'ตาราง '+r[0]+' กก.'}}
  if(d.perkg){const pk=d.perkg[country];if(!pk)return null;const w=Math.ceil(kg);return{price:pk*w,basis:N(pk)+' บาท/กก. × '+w+' กก.'}}
  const tr=(d.kg&&d.kg[country]||[]).filter(x=>x[0]<=kg).pop()||(d.kg&&d.kg[country]||[])[0];if(!tr)return null;
@@ -1510,7 +1555,7 @@ function calc(svc,car,country,postal,x){
  else{for(const id of['aos','aow']){const r=rl(id);if(!r)continue;const h=hit(r,x);if(h.length)F.push({r,h})}}
  let mp=0;F.forEach(f=>{if(f.r.min)mp=Math.max(mp,f.r.min)});
  const pb=Math.max(per,mp),chw=Math.ceil(pb*n*2)/2,base=lookup(svc,country,chw);if(!base)return null;
- const adj=1+((RS.adj&&RS.adj[car])||0)/100,fp=(RS.fuel&&RS.fuel[car])||0,fuel=base.price*adj*fp/100;let total=base.price*adj+fuel;const lines=[],fees=[];let ovAmt=0,rmAmt=0;
+ const nw=!!(RS.data[svc]&&RS.data[svc].zn),adj=nw?1:1+((RS.adj&&RS.adj[car])||0)/100,fp=nw?0:(RS.fuel&&RS.fuel[car])||0,fuel=base.price*adj*fp/100;let total=base.price*adj+fuel;const lines=[],fees=[];let ovAmt=0,rmAmt=0;
  lines.push({t:'ค่าขนส่ง',s:'น้ำหนักที่ใช้คิด '+chw+' กก. ('+(pb>x.W?(vol>=mp?'ปริมาตร '+vol+' กก./กล่อง':'ขั้นต่ำ '+mp+' กก./กล่อง'):'น้ำหนักจริง')+') · '+base.basis,v:base.price*adj});
  if(fuel>0)lines.push({t:'ค่าน้ำมัน',s:fp+'% ของค่าขนส่ง',v:fuel});
  let appr=false;
@@ -1524,7 +1569,7 @@ function rInit(){rLoad().then(()=>{
  const dl=$('rb_dl');const m={};dl.innerHTML=rows.filter(r=>can(r)).slice(0,500).map(r=>{let k=r.name+' · '+(r.country||'-');if(m[k])k+=' #'+r.id;m[k]=String(r.id);return `<option value="${esc(k)}"></option>`}).join('');window.__rbm=m;
  if(!RS){$('rb_big').textContent='-';$('rb_who').textContent='ยังไม่มีข้อมูล';$('rb_opts').innerHTML='';$('rb_ln').innerHTML='';return}
  fillC();rv()})}
-function fillC(){const keep=$('rb_c').value;const set=new Set();SV[DIR].forEach(([k])=>RS.data[k]&&Object.keys(RS.data[k].pkg).forEach(c=>set.add(c)));
+function fillC(){const keep=$('rb_c').value;const set=new Set();SV[DIR].forEach(([k])=>{const d=RS.data[k];d&&Object.keys(d.pkg).forEach(c=>{if(!(d.zn&&(d.np||[]).includes(d.zn[c])))set.add(c)})});
  const a=[...set].sort((p,q)=>p.localeCompare(q));$('rb_c').innerHTML='<option value="">— เลือก —</option>'+a.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('rb_c').value=a.includes(keep)?keep:''}
 function rv(){
  if(!RS)return;const country=$('rb_c').value,postal=$('rb_p').value.trim();
@@ -1563,14 +1608,15 @@ $('rb_sv').onclick=()=>{if(!LASTQ)return;const q=LASTQ,x=q.x,id=window.__rbm&&wi
 function rsInit(){rLoad().then(()=>{if(!DR&&RS)DR=clone(RS);if(!DR)DR={data:{},sheets:[],rules:clone(DEF),remote:{},adj:{F:0,A:0},ver:'',eff:''};rsDraw()})}
 function rsDraw(){const s=DR;
  $('rs_cur').textContent=RS?'ใช้งานอยู่ '+(RS.ver||'')+' · มีผล '+(RS.eff||'')+(RS.file?' · '+RS.file:''):'';
- $('rs_v').value=s.ver||'';$('rs_e').value=s.eff||'';$('rs_aF').value=(s.adj&&s.adj.F)||0;$('rs_aA').value=(s.adj&&s.adj.A)||0;$('rs_fF').value=(s.fuel&&s.fuel.F)||0;$('rs_fA').value=(s.fuel&&s.fuel.A)||0;
+ $('rs_v').value=s.ver||'';$('rs_e').value=s.eff||'';$('rs_aA').value=(s.adj&&s.adj.A)||0;$('rs_fA').value=(s.fuel&&s.fuel.A)||0;const pm=s.pm||{};$('rs_fu').value=pm.fuel==null?'':pm.fuel;$('rs_vt').value=pm.vat==null?'':pm.vat;$('rs_mg').value=pm.mg==null?'':pm.mg;
+ $('rs_pk').innerHTML=Object.keys(pm.pk||{}).sort((a,b)=>pm.pk[b]-pm.pk[a]).map(k=>{const zs=Object.entries((s.data&&s.data.ipx&&s.data.ipx.pk)||{}).filter(x=>x[1]===k).map(x=>x[0]).join(', ');return `<label class="f">Peak โซน ${zs||'-'} (บาท/กก.)<input type="number" step="0.01" data-pk="${k}" value="${pm.pk[k]}"></label>`}).join('');
  const sh=s.sheets&&s.sheets.length?s.sheets:Object.keys(s.data||{}).map(k=>({k,ok:true,t:k,countries:Object.keys(s.data[k].pkg).length}));
  $('rs_sh').innerHTML=sh.length?'<table><tr><th>ข้อมูล</th><th>ชีต</th><th>ประเทศ</th><th>สถานะ</th></tr>'+sh.map(r=>`<tr><td class="nm">${esc(r.t||'')}</td><td class="nm">${esc(r.n||'')}</td><td>${r.ok?r.countries:'-'}</td><td>${r.ok?'<span class="rb-tg ok">อ่านได้</span>':'<span class="rb-tg er">ไม่พบ</span>'}</td></tr>`).join('')+'</table>':'';
  $('rs_rl').innerHTML='<tr><th>ค่าย</th><th>ค่าธรรมเนียม</th><th>เงื่อนไข (ข้อใดข้อหนึ่ง)</th><th>ราคา (บาท/ชิ้น)</th><th>คิดขั้นต่ำ (กก.)</th></tr>'+(s.rules||[]).map((r,i)=>`<tr><td class="nm">${r.c}</td><td>${esc(r.n)}${r.appr?' <span class="rb-tg wn">ต้องอนุมัติ</span>':''}</td><td>${r.cond.map((c,j)=>esc(c[0])+` <input type="number" data-r="${i}" data-c="${j}" value="${c[1]}">`).join('<br>')}</td><td><input type="number" data-r="${i}" data-p="1" value="${r.p}"></td><td>${r.min?`<input type="number" data-r="${i}" data-m="1" value="${r.min}">`:'-'}</td></tr>`).join('');
  $('rs_rm').innerHTML=['FedEx','Aramex'].map(c=>{const m=(s.remote&&s.remote[c])||{},n=Object.values(m).reduce((a,l)=>a+l.length,0);return `<div class="rb-row" style="margin-bottom:10px"><b style="min-width:70px">${c}</b><input type="file" data-rm="${c}" accept=".xlsx,.xls,.csv"><span class="rb-tg ${n?'ok':'wn'}">${n?n.toLocaleString('th-TH')+' รายการ':'ยังไม่มี'}</span></div>`}).join('')}
 $('rs_f').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('rs_st').textContent='กำลังอ่านไฟล์…';
  try{const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),r=RP.parse(wb);
-  DR={...(DR||{}),file:f.name,data:r.data,sheets:r.sheets,rules:(DR&&DR.rules)||clone(DEF),remote:(DR&&DR.remote)||{},adj:(DR&&DR.adj)||{F:0,A:0},ver:(f.name.match(/V\d+/i)||[''])[0].toUpperCase(),eff:''};
+  DR={...(DR||{}),file:f.name,data:r.data,sheets:r.sheets,rules:(DR&&DR.rules)||clone(DEF),remote:(DR&&DR.remote)||{},adj:(DR&&DR.adj)||{F:0,A:0},pm:r.params&&r.params.pk?r.params:(DR&&DR.pm)||null,ver:(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_',''),eff:''};
   rsDraw();$('rs_st').textContent=''}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}};
 $('rs_rl').addEventListener('input',e=>{const t=e.target,i=t.dataset.r;if(i===undefined||!DR)return;const r=DR.rules[+i],v=+t.value;if(t.dataset.c!==undefined)r.cond[+t.dataset.c][1]=v;else if(t.dataset.p)r.p=v;else if(t.dataset.m)r.min=v});
 $('rs_rm').addEventListener('change',async e=>{const t=e.target;if(!t.dataset.rm||!t.files[0])return;const car=t.dataset.rm;
@@ -1579,8 +1625,8 @@ $('rs_rm').addEventListener('change',async e=>{const t=e.target;if(!t.dataset.rm
   DR.remote=DR.remote||{};DR.remote[car]=map;rsDraw()}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}});
 $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$('rs_st').textContent='ยังไม่ได้เลือกไฟล์ Rate';return}
  const v=$('rs_v').value.trim(),e=$('rs_e').value.trim();if(!v||!/^\d{2}\/\d{2}\/\d{4}$/.test(e)){$('rs_st').textContent='กรอกเวอร์ชันและวันที่มีผลให้ครบ';return}
- DR.ver=v;DR.eff=e;DR.adj={F:+$('rs_aF').value||0,A:+$('rs_aA').value||0};DR.fuel={F:+$('rs_fF').value||0,A:+$('rs_fA').value||0};
- await rSave({kind:'courier',ver:v,eff:e,file:DR.file||'',data:DR.data,rules:DR.rules,remote:DR.remote||{},adj:DR.adj,fuel:DR.fuel,by:profile&&profile.name||''});
+ DR.ver=v;DR.eff=e;DR.adj={F:0,A:+$('rs_aA').value||0};DR.fuel={F:0,A:+$('rs_fA').value||0};if(DR.pm){const q=id=>$(id).value===''?null:+$(id).value;DR.pm.fuel=q('rs_fu');DR.pm.vat=q('rs_vt');DR.pm.mg=q('rs_mg');document.querySelectorAll('#rs_pk [data-pk]').forEach(i=>{DR.pm.pk[i.dataset.pk]=+i.value||0})}
+ await rSave({kind:'courier',ver:v,eff:e,file:DR.file||'',data:DR.data,rules:DR.rules,remote:DR.remote||{},adj:DR.adj,fuel:DR.fuel,pm:DR.pm||{},by:profile&&profile.name||''});
  $('rs_st').textContent='เผยแพร่แล้ว';rsDraw()};
 })();
 
