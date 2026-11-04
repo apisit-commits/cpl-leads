@@ -664,7 +664,7 @@ function presetSet(){
  else if(v==='pm'){$('d1').value=iso(new Date(d.getFullYear(),d.getMonth()-1,1));$('d2').value=iso(new Date(d.getFullYear(),d.getMonth(),0))}
  else if(v!=='c'){$('d1').value=iso(new Date(Date.now()-(+v-1)*864e5));$('d2').value=iso(d)}
 }
-function dashLoad(){const a=$('d1').value,f=rangeFrom();if(a&&f&&a<f)reload();else renderDash()}
+function dashLoad(){const a=$('d1').value,f=rangeFrom();if(!a&&f){$('rg').value='all';$('rg').dispatchEvent(new Event('change'))}else if(a&&f&&a<f)reload();else renderDash()}
 const okS=x=>OPT.status.includes((x||'').trim())?(x||'').trim():'';
 const closedR=r=>r.status===ST_Y||r.fu_status===ST_Y;
 const effS=r=>closedR(r)?ST_Y:(okS(r.fu_status)||r.status);
