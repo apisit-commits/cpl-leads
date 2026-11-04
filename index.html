@@ -512,7 +512,7 @@ async function enter(){
  WHO={n:p.name||user.email,r:p.role,t:p.team};setWho();
  applyRoleUI(p);$('pvs').classList.toggle('hid',p.role!=='admin');loadNews();setTimeout(mkPoll,600);setTimeout(()=>tab('N'),0);
  if(p.role==='sales')team=p.team;
-  await loadOpts();await reload();
+  await loadOpts();await reload();loadSalesAll();
  sb.channel('leads-rt').on('postgres_changes',{event:'*',schema:'public',table:'leads'},pl=>{if(pl.eventType==='DELETE'){if(pl.old&&pl.old.id!=null)rows=rows.filter(x=>x.id!==pl.old.id);else{clearTimeout(tm);tm=setTimeout(reload,400);return}}else upRow(pl.new);clearTimeout(tm);tm=setTimeout(refresh,150)}).on('postgres_changes',{event:'*',schema:'public',table:'options'},loadOpts).subscribe();
 }
 
@@ -534,7 +534,7 @@ function init(){
  const f=$('fm_');
  fill(f.status,OPT.status);fill(f.reason,OPT.reason);fillDial();fillItems();$('ctp').addEventListener('change',togCt);f.addEventListener('invalid',()=>{$('dd').open=true},true);togCt();
  fill($('fs'),OPT.status,'ทุก Status');fill($('fc'),OPT.channel,'ทุกช่องทาง');fill($('fm'),OPT.svc,'ทุกบริการ');
- ['q','fs','fc','fa','fm'].forEach(i=>$(i).addEventListener('input',render));
+ ['q','fs','fc','fa','fm'].forEach(i=>$(i).addEventListener('input',render));$('fa').addEventListener('change',()=>{const v=$('fa').value;if(v&&$('rg').value!=='all'&&!rows.some(r=>r.team===team&&r.sales===v)){$('rg').value='all';$('rg').dispatchEvent(new Event('change'))}});
  f.status.addEventListener('change',toggleReason);f.fu_status.addEventListener('change',toggleReason);
  $('tb').addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea'))return;if(String(getSelection()))return;const tr=e.target.closest('tr[data-id]');if(tr)openForm(Number(tr.dataset.id))});
  $('add').onclick=()=>openForm();
@@ -548,7 +548,9 @@ $('cl_svc').addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.datase
 }
 function buildSeg(){$('seg').innerHTML=teamsVisible().map(k=>`<button class="${k===team?'on':''}" onclick="setTeam('${k}')">${TEAMS[k]}<em>${rows.filter(r=>r.team===k).length}</em></button>`).join('')}
 function setTeam(k){team=k;setSales();$('fa').value='';render()}
-function setSales(){fill($('fa'),[...new Set(rows.filter(r=>r.team===team).map(r=>r.sales).filter(Boolean))],'ทุก Sales')}
+let SALL=[];
+async function loadSalesAll(){try{let o=[],i=0;for(;;){const{data,error}=await sb.from('leads').select('sales,team').range(i,i+999);if(error||!data)return;o=o.concat(data);if(data.length<1000)break;i+=1000}SALL=[...new Set(o.filter(x=>x.sales).map(x=>x.team+'\u0001'+x.sales))].map(x=>x.split('\u0001'));const v=$('fa').value;setSales();$('fa').value=v}catch(e){}}
+function setSales(){fill($('fa'),[...new Set([...rows.filter(r=>r.team===team).map(r=>r.sales),...SALL.filter(x=>x[0]===team).map(x=>x[1])].filter(Boolean))],'ทุก Sales')}
 function tab(k){if('AMKE'.includes(k))dashMode=k;const v='AMKE'.includes(k)?'D':k;['L','D','S','C','N','F','W'].forEach(x=>$('v'+x).classList.toggle('hid',x!==v));['L','A','M','K','E','C','S','N','F','W'].forEach(x=>$('t'+x).classList.toggle('on',x===k));$('tDB').classList.toggle('on','AMKE'.includes(k));if(v==='D')renderDash();if(v==='L')fitWrap();if(v==='C')calcLeads();if(v==='N'){loadNews();newsSeen()}if(v==='S')loadUsers();if(v==='F')renderFu();if(v==='W')loadMk()}
 let OPTS={ads:[],brand:[],promo:[],sales:[]};
 const KINDS=[['brand','แบรนด์'],['promo','โปรโมชัน']];
