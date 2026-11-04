@@ -431,7 +431,7 @@ header .hd #who{display:none!important}
  <label class="f">วิธีคิด<select id="cl_mode"><option value="ac">Air Courier (FedEx, UPS) · ÷5,000</option><option value="ak">Air Cargo (จองสายการบิน) · ÷6,000</option><option value="sea">เรือ · CBM</option><option value="tc">รถ · CBM</option><option value="tw">รถ · น้ำหนัก ÷5,000</option></select></label></div>
  <div class="sub" style="margin:12px 0 4px">สินค้า: จำนวนกล่อง · ยาว · กว้าง · สูง (cm) · น้ำหนัก/กล่อง (kg)</div>
  <div id="cgc"></div>
- <div id="rb_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="rb_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศปลายทาง<select id="rb_c"></select></label><label class="f">รหัสไปรษณีย์ปลายทาง<input id="rb_p" autocomplete="off"></label></div><div id="rb_opts" class="rb-opts" style="margin-top:10px"></div><div id="rb_rem" class="rb-row" style="margin-top:8px"></div></div>
+ <div id="rb_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="rb_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศปลายทาง<input id="rb_c" list="rb_cl" autocomplete="off"><datalist id="rb_cl"></datalist></label><label class="f">รหัสไปรษณีย์ปลายทาง<input id="rb_p" autocomplete="off"></label></div><div id="rb_opts" class="rb-opts" style="margin-top:10px"></div><div id="rb_rem" class="rb-row" style="margin-top:8px"></div></div>
  <div class="g" style="margin-top:10px"><label class="f"><span id="cl_ru">เรท (บาท/กก.)</span><input id="cl_rate" type="text" inputmode="decimal" data-num autocomplete="off"></label><label class="f">อื่นๆ (บาท) · รวมอัตโนมัติ<input id="cl_fee" type="text" readonly tabindex="-1"></label></div>
  <div class="sub" style="margin:12px 0 4px">บริการอื่นๆ</div><div id="cl_svc"></div>
  <div class="sub" style="margin:12px 0 4px">หมายเหตุ : ราคานี้ไม่รวม <button type="button" class="btn sm" id="cl_rall">เลือกทั้งหมด</button> <button type="button" class="btn sm" id="cl_rnone">ล้าง</button></div><div id="cl_rmk" class="rmk"></div>
@@ -1550,15 +1550,16 @@ function calc(svc,car,country,postal,items){
   total+=v;rmAmt=v;fees.push('Remote Area');lines.push({t:'Remote Area',s:'รหัส '+String(postal).toUpperCase()+' · '+s,v})}
  return{total,lines,appr,chw,fees,freight:base.price*adj+fuel,ovAmt,rmAmt}}
 /* ---- sales: rate picker inside the calculator ---- */
-let RB_D='ex',PICK=null;
+let RB_D='ex',PICK=null,RB_L=[];
 const rbItems=()=>cgGet('cgc').filter(o=>o.l&&o.w&&o.h&&o.kg).map(o=>({n:Math.max(1,o.q||1),L0:o.l,W0:o.w,H0:o.h,W:o.kg*(o.wu==='TON(S)'?1000:1)}));
 function fillC(){const keep=$('rb_c').value;const set=new Set();SV[RB_D].forEach(([k])=>{const d=RS&&RS.data[k];d&&Object.keys(d.pkg).forEach(c=>{if(!(d.zn&&(d.np||[]).includes(d.zn[c])))set.add(c)})});
- const a=[...set].sort((p,q)=>p.localeCompare(q));$('rb_c').innerHTML='<option value="">— เลือก —</option>'+a.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('rb_c').value=a.includes(keep)?keep:''}
+ const a=[...set].sort((p,q)=>p.localeCompare(q));RB_L=a;$('rb_cl').innerHTML=a.map(c=>`<option value="${esc(c)}">`).join('');$('rb_c').value=a.includes(keep)?keep:''}
+function rbCountry(){const v=$('rb_c').value.trim().toLowerCase();return v?(RB_L.find(c=>c.toLowerCase()===v)||''):''}
 function rbInit(){rLoad().then(()=>{if(RS)fillC();rbRun(false)})}
 function rbRun(ap){const blk=$('rb_blk');
  if(!RS||!RS.data||!Object.keys(RS.data).length||$('cl_mode').value!=='ac'){blk.classList.add('hid');return}
  blk.classList.remove('hid');
- const country=$('rb_c').value,postal=$('rb_p').value.trim(),it=rbItems(),ready=country&&it.length;
+ const country=rbCountry(),postal=$('rb_p').value.trim(),it=rbItems(),ready=country&&it.length;
  const res=SV[RB_D].map(([k,name,car])=>({k,name,car,r:ready&&RS.data[k]?calc(k,car,country,postal,it):null}));
  const ok=res.filter(o=>o.r),best=ok.length?ok.reduce((p,q)=>q.r.total<p.r.total?q:p):null;
  if(!PICK||!res.find(o=>o.k===PICK&&o.r))PICK=best&&best.k;
