@@ -440,7 +440,7 @@ header .hd #who{display:none!important}
  <div class="acts"><button type="button" class="btn" id="cl_save">บันทึกข้อมูลสินค้าลง Lead</button></div></div>
 <div class="pn cprev"><h3>ตัวอย่างใบเสนอราคา (ภาพที่จะส่งออก)</h3><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas><div class="acts"><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn p" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกเป็นข้อความ</button></div></div></div></div>
 <div id="vRS" class="hid"><div class="rbw">
- <div class="pn"><h3>ไฟล์ Rate</h3><div class="rb-row"><input type="file" id="rs_f" accept=".xlsx,.xls"><span class="sub" id="rs_cur"></span></div><div id="rs_sh" style="margin-top:12px"></div>
+ <div class="pn"><h3>ไฟล์ Rate</h3><div class="rb-row"><input type="file" id="rs_f" accept=".xlsx,.xls" multiple><span class="sub" id="rs_cur"></span></div><div id="rs_sh" style="margin-top:12px"></div>
   <div class="g" style="margin-top:12px"><label class="f">เวอร์ชัน<b class="rq">*</b><input id="rs_v" autocomplete="off"></label><label class="f">วันที่มีผล<b class="rq">*</b><input id="rs_e" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" autocomplete="off"></label></div></div>
  <div class="pn"><h3>กฎค่าธรรมเนียมเสริม</h3><div style="overflow-x:auto"><table id="rs_rl"></table></div></div>
  <div class="rb-split">
@@ -1588,10 +1588,18 @@ function rsDraw(){const s=DR;
  $('rs_sh').innerHTML=sh.length?'<table><tr><th>ข้อมูล</th><th>ชีต</th><th>ประเทศ</th><th>สถานะ</th></tr>'+sh.map(r=>`<tr><td class="nm">${esc(r.t||'')}</td><td class="nm">${esc(r.n||'')}</td><td>${r.ok?r.countries:'-'}</td><td>${r.ok?'<span class="rb-tg ok">อ่านได้</span>':'<span class="rb-tg er">ไม่พบ</span>'}</td></tr>`).join('')+'</table>':'';
  $('rs_rl').innerHTML='<tr><th>ค่าย</th><th>ค่าธรรมเนียม</th><th>เงื่อนไข (ข้อใดข้อหนึ่ง)</th><th>ราคา (บาท/ชิ้น)</th><th>คิดขั้นต่ำ (กก.)</th></tr>'+(s.rules||[]).map((r,i)=>`<tr><td class="nm">${r.c}</td><td>${esc(r.n)}${r.appr?' <span class="rb-tg wn">ต้องอนุมัติ</span>':''}</td><td>${r.cond.map((c,j)=>esc(c[0])+` <input type="number" data-r="${i}" data-c="${j}" value="${c[1]}">`).join('<br>')}</td><td><input type="number" data-r="${i}" data-p="1" value="${r.p}"></td><td>${r.min?`<input type="number" data-r="${i}" data-m="1" value="${r.min}">`:'-'}</td></tr>`).join('');
  $('rs_rm').innerHTML=['FedEx','Aramex'].map(c=>{const m=(s.remote&&s.remote[c])||{},n=Object.values(m).reduce((a,l)=>a+l.length,0);return `<div class="rb-row" style="margin-bottom:10px"><b style="min-width:70px">${c}</b><input type="file" data-rm="${c}" accept=".xlsx,.xls,.csv"><span class="rb-tg ${n?'ok':'wn'}">${n?n.toLocaleString('th-TH')+' รายการ':'ยังไม่มี'}</span></div>`}).join('')}
-$('rs_f').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('rs_st').textContent='กำลังอ่านไฟล์…';
- try{const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),r=RP.parse(wb);
-  DR={...(DR||{}),file:f.name,data:r.data,sheets:r.sheets,rules:(DR&&DR.rules)||clone(DEF),remote:(DR&&DR.remote)||{},adj:(DR&&DR.adj)||{F:0,A:0},pm:r.params&&r.params.pk?r.params:(DR&&DR.pm)||null,ver:(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_',''),eff:''};
-  rsDraw();$('rs_st').textContent=''}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}};
+$('rs_f').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;$('rs_st').textContent='กำลังอ่านไฟล์…';
+ try{let data={...((DR&&DR.data)||{})},sheets=[...((DR&&DR.sheets)||[])],pm=(DR&&DR.pm)||null,names=DR&&DR.file?[DR.file]:[],ver=DR&&DR.ver||'';
+  for(const f of fs){const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),r=RP.parse(wb),own=!!(r.params&&r.params.pk);
+   r.sheets.forEach(x=>{const i=sheets.findIndex(y=>y.k===x.k),old=i>=0?sheets[i]:null;
+    if(!x.ok&&old&&old.ok)return;
+    if(x.ok&&old&&old.ok&&!own&&x.k!=='arx')return;
+    if(i>=0)sheets[i]=x;else sheets.push(x);if(x.ok&&r.data[x.k])data[x.k]=r.data[x.k]});
+   if(own){pm=r.params;ver=(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_','')||ver}
+   else if(!ver)ver=(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_','');
+   names.push(f.name)}
+  DR={...(DR||{}),file:names.join(', '),data,sheets,rules:(DR&&DR.rules)||clone(DEF),remote:(DR&&DR.remote)||{},adj:(DR&&DR.adj)||{F:0,A:0},pm,ver,eff:(DR&&DR.eff)||''};
+  rsDraw();$('rs_st').textContent='';e.target.value=''}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}};
 $('rs_rl').addEventListener('input',e=>{const t=e.target,i=t.dataset.r;if(i===undefined||!DR)return;const r=DR.rules[+i],v=+t.value;if(t.dataset.c!==undefined)r.cond[+t.dataset.c][1]=v;else if(t.dataset.p)r.p=v;else if(t.dataset.m)r.min=v});
 $('rs_rm').addEventListener('change',async e=>{const t=e.target;if(!t.dataset.rm||!t.files[0])return;const car=t.dataset.rm;
  try{const wb=XLSX.read(await t.files[0].arrayBuffer(),{type:'array'}),g=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:null}),map={};
