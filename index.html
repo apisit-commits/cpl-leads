@@ -376,6 +376,7 @@ header .hd #who{display:none!important}
 #vN>.nh,#vW>.nh{justify-content:flex-end}
 @media(min-width:801px){.tabs .logo{width:82px;margin:0 auto 14px}}
 @media(min-width:801px){body{padding-left:168px}.tabs{width:168px;padding-left:10px;padding-right:10px}.tabs button{padding-left:12px;padding-right:10px;gap:9px}}
+#vL .bar #q{min-width:220px}
 </style>
 
 </head>
@@ -405,9 +406,9 @@ header .hd #who{display:none!important}
   <div class="hd lhd"><div class="seg" id="seg"></div><select id="rg" class="hid" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><input type="month" id="vm" class="hid"><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
   <div class="stats" id="stats"></div>
   <div class="bar">
-    <label>ช่วงเวลา <select id="lp"></select></label><label>ตั้งแต่ <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lf"></label><label>ถึง <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lt"></label><button class="btn sm hid" id="lclr" type="button">ล้างวันที่</button>
     <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…">
     <select id="fs"></select><select id="fc"></select><select id="fa"></select><select id="fm"></select>
+    <label>ช่วงเวลา <select id="lp"></select></label><label>ตั้งแต่ <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lf"></label><label>ถึง <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lt"></label><button class="btn sm hid" id="lclr" type="button">ล้างวันที่</button>
   </div>
   <div class="wrap"><table><thead><tr>
     <th>วันที่</th><th>Ads</th><th>ลูกค้า</th><th>รายละเอียด</th><th>ช่องทาง</th><th>สถานะ</th><th>เหตุผลที่ยังไม่สนใจ</th><th>เซลล์</th><th>แบรนด์ / โปรโมชัน</th><th></th>
