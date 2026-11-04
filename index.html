@@ -432,6 +432,7 @@ header .hd #who{display:none!important}
  <div class="sub" style="margin:12px 0 4px">สินค้า: จำนวนกล่อง · ยาว · กว้าง · สูง (cm) · น้ำหนัก/กล่อง (kg)</div>
  <div id="cgc"></div>
  <div id="rb_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="rb_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศปลายทาง<input id="rb_c" list="rb_cl" autocomplete="off"><datalist id="rb_cl"></datalist></label><label class="f">รหัสไปรษณีย์ปลายทาง<input id="rb_p" autocomplete="off"></label></div><div id="rb_opts" class="rb-opts" style="margin-top:10px"></div><div id="rb_rem" class="rb-row" style="margin-top:8px"></div></div>
+ <div id="tk_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="tk_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศ<input id="tk_c" list="tk_cl" autocomplete="off"><datalist id="tk_cl"></datalist></label><label class="f">จังหวัด / โซน<input id="tk_z" list="tk_zl" autocomplete="off"><datalist id="tk_zl"></datalist></label></div><div id="tk_opts" class="rb-opts" style="margin-top:10px"></div></div>
  <div class="g" style="margin-top:10px"><label class="f"><span id="cl_ru">เรท (บาท/กก.)</span><input id="cl_rate" type="text" inputmode="decimal" data-num autocomplete="off"></label><label class="f">อื่นๆ (บาท) · รวมอัตโนมัติ<input id="cl_fee" type="text" readonly tabindex="-1"></label></div>
  <div class="sub" style="margin:12px 0 4px">บริการอื่นๆ</div><div id="cl_svc"></div>
  <div class="sub" style="margin:12px 0 4px">หมายเหตุ : ราคานี้ไม่รวม <button type="button" class="btn sm" id="cl_rall">เลือกทั้งหมด</button> <button type="button" class="btn sm" id="cl_rnone">ล้าง</button></div><div id="cl_rmk" class="rmk"></div>
@@ -1273,7 +1274,7 @@ function calc(){
  it.forEach(x=>{q+=x.q;act+=x.q*x.kg*(x.wu==='TON(S)'?1000:1);const c=x.q*x.l*x.w*x.h;cbm+=c/1e6;if(m.d)vol+=c/m.d});if(m.d)vol=Math.ceil(vol-1e-9);
  const unit=m.d?TT('กก.','kg'):'CBM',qty=m.d?Math.max(act,vol):cbm,rate=pn($('cl_rate').value),baht=TT('บาท','THB');
  const fees=[...$('cl_svc').querySelectorAll('input[type=checkbox]:checked')].map(c=>[OSV[c.dataset.i],pn($('cl_svc').querySelector(`[data-p="${c.dataset.i}"]`).value)]);
- const fee=fees.reduce((a,f)=>a+f[1],0),ship=qty*rate,tot=ship+fee;
+ const fee=fees.reduce((a,f)=>a+f[1],0),MN=window.RB_MIN||0,sh0=qty*rate,ship=Math.max(sh0,MN),tot=ship+fee;
  $('cl_fee').value=fmt(fee);
  $('cl_ru').textContent=TT('เรท (บาท/','Rate (THB/')+unit+')';
  const its=[...new Set(it.map(x=>x.it).filter(Boolean))].map(itemDisp),LI=[];
@@ -1282,7 +1283,7 @@ function calc(){
  if(m.d){L.push([TT('น้ำหนักจริง','Actual weight'),fmt(act)+' '+unit],[TT('น้ำหนักตามปริมาตร (ก×ย×ส ÷ ','Volumetric weight (L×W×H ÷ ')+fmt(m.d)+')',fmt(vol)+' '+unit],[TT('น้ำหนักที่ใช้คิดราคา (ค่าที่มากกว่า)','Chargeable weight (the greater)'),fmt(qty)+' '+unit])}else L.push([TT('ปริมาตรรวม','Total volume'),fmt(cbm)+' CBM']);
  if(m.v){const k=m.v.find(v=>cbm<=v[2]&&act<=v[3]);L.push([TT('ขนาดที่เหมาะ (โดยประมาณ)','Suggested size (approx.)'),k?TT(k[0],k[1])+TT(' (ความจุ ~'+k[2]+' CBM, <'+fmt(k[3])+' กก.)',' (capacity ~'+k[2]+' CBM, <'+fmt(k[3])+' kg)'):TT('เกินขนาดเดี่ยว ต้องใช้หลายคัน/ตู้','Exceeds a single unit; multiple trucks/containers needed')])}
  CQ={svc:m.s,LI,qty,unit,rate,ship,fees,tot};
- $('cl_out').innerHTML=L.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')+`<div><span>${TT('ค่าขนส่ง ','Freight ')}${fmt(qty)} ${unit} × ${fmt(rate)}</span><b>${fmt(ship)} ${baht}</b></div><div><span>${TT('ค่าบริการอื่นๆ','Other services')}</span><b>${fmt(fee)} ${baht}</b></div><div class="tot"><span>${TT('รวมทั้งสิ้น','Total')}</span><span>${fmt(tot)} ${baht}</span></div>`;
+ $('cl_out').innerHTML=L.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')+`<div><span>${ship>sh0?TT('ค่าขนส่งขั้นต่ำ','Minimum freight'):TT('ค่าขนส่ง ','Freight ')+fmt(qty)+' '+unit+' × '+fmt(rate)}</span><b>${fmt(ship)} ${baht}</b></div><div><span>${TT('ค่าบริการอื่นๆ','Other services')}</span><b>${fmt(fee)} ${baht}</b></div><div class="tot"><span>${TT('รวมทั้งสิ้น','Total')}</span><span>${fmt(tot)} ${baht}</span></div>`;
  try{drawQuote()}catch(e){console.error(e)}
 }
 const RMK=[['VAT 7%'],['ค่าบริการแพ็คสินค้า, ตีลังไม้, ออนพาเลท (ถ้ามี)'],['ค่าพื้นที่ห่างไกลปลายทาง, ค่าประกันสินค้า, ค่ารับสินค้า, Over Size, Over Weight (ถ้ามี)'],['ไม่รวมภาษีนำเข้าที่ประเทศปลายทางขึ้นอยู่กับกรมศุลกากร และค่าใช้จ่ายอื่นๆ ตามใบเสร็จจริงที่ปลายทาง (ถ้ามี)'],['กรณีโดนเปิดตรวจ สินค้าอาจจะโดนตีกลับหรือถูกทำลาย ขึ้นอยู่กับการพิจารณาของกรมศุลกากรปลายทาง (ถ้ามี)'],['สินค้าที่ไม่รับทำประกันและไม่รับประกัน: สินค้าประเภท แก้ว เซรามิค หินอ่อน กระเบื้อง หรือ สินค้าที่แตกหักเสียหายง่าย',1],['สินค้าที่ไม่รับขนส่ง เช่น อาหารสด อาหารแช่แข็ง บุหรี่ แอลกอฮอร์ แบตเตอรี่ สินค้าก๊อบแบรนด์ และสารเสพติดทุกชนิด เป็นต้น',1],['ค่าบริการรับ-ส่งสินค้า (Pickup/Delivery Service)'],['ค่าพื้นที่ห่างไกล (Remote Area)'],['ค่าสินค้าเกินขนาด/เกินน้ำหนัก (Oversize/Overweight)']];
@@ -1405,6 +1406,10 @@ RP.remFx=(g)=>{let h=-1;for(let i=0;i<Math.min(g.length,60);i++){const r=g[i]||[
  const out={};Object.keys(by).forEach(c=>{const l=by[c],cnt={};l.forEach(x=>{if(x[3]){const n=String(x[0]).length;cnt[n]=(cnt[n]||0)+1}});const md=+(Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]||0);
   const fx=(v,isn)=>{let t=String(v).toUpperCase().replace(/[\s\-]/g,'');if(isn&&md&&t.length<md)t=t.padStart(md,'0');return t};
   out[c]=l.map(x=>{const a=fx(x[0],x[3]),z=fx(x[2],x[3]);return z===a?[a,x[1]]:[a,x[1],z]})});return out};
+RP.trk=(wb)=>{const n=(wb.SheetNames||[]).find(x=>/ราคารถ/.test(x));if(!n)return null;const g=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:null});if(!g.length||String(g[0][0]||'').trim()!=='ทิศทาง')return null;
+ const rows=[];for(let i=1;i<g.length;i++){const r=g[i];if(!r||!r[1]||r[6]===null||r[6]==='')continue;const d=String(r[0]).trim()==='นำเข้า'?'im':'ex',cb=/cbm/i.test(String(r[7]||''));
+  const p=pn(r[6]);if(!(p>0))continue;rows.push([d,String(r[1]).trim(),String(r[2]||'').trim(),String(r[3]||'').trim(),pn(r[4])||0,cb?null:pn(r[5]),p,cb?1:0])}
+ return rows.length?{rows}:null};
 RP.cn=s=>{s=String(s).replace(/\s+/g,' ').trim();if(!s)return '';const u=s.toUpperCase();if(RP.ALIAS[u])return RP.ALIAS[u];return s.toLowerCase().replace(/(^|[\s\-\(\/])([a-z])/g,(m,a,b)=>a+b.toUpperCase())};
 RP.grid=(ws)=>XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:true});
 RP.find=(wb,name)=>{const k=Object.keys(wb.Sheets).find(n=>n.trim().toLowerCase()===name.toLowerCase());return k?wb.Sheets[k]:null};
@@ -1561,7 +1566,7 @@ const rbItems=()=>cgGet('cgc').filter(o=>o.l&&o.w&&o.h&&o.kg).map(o=>({n:Math.ma
 function fillC(){const keep=$('rb_c').value;const set=new Set();SV[RB_D].forEach(([k])=>{const d=RS&&RS.data[k];d&&Object.keys(d.pkg).forEach(c=>{if(!(d.zn&&(d.np||[]).includes(d.zn[c])))set.add(c)})});
  const a=[...set].sort((p,q)=>p.localeCompare(q));RB_L=a;$('rb_cl').innerHTML=a.map(c=>`<option value="${esc(c)}">`).join('');$('rb_c').value=a.includes(keep)?keep:''}
 function rbCountry(){const v=$('rb_c').value.trim().toLowerCase();return v?(RB_L.find(c=>c.toLowerCase()===v)||''):''}
-function rbInit(){rLoad().then(()=>{if(RS)fillC();rbRun(false)})}
+function rbInit(){rLoad().then(()=>{if(RS)fillC();rbRun(false);tkRun(false)})}
 function rbRun(ap){const blk=$('rb_blk');
  if(!RS||!RS.data||!Object.keys(RS.data).length||$('cl_mode').value!=='ac'){blk.classList.add('hid');return}
  blk.classList.remove('hid');
@@ -1585,6 +1590,32 @@ $('rb_opts').onclick=e=>{const b=e.target.closest('[data-k]');if(!b||b.disabled)
 ['rb_c','rb_p'].forEach(i=>$(i).addEventListener('input',()=>rbRun(true)));
 $('cgc').addEventListener('input',()=>rbRun(true));$('cgc').addEventListener('click',e=>{if(e.target.closest('button'))rbRun(true)});
 $('cl_mode').addEventListener('input',()=>rbRun(true));$('cl_q').addEventListener('input',()=>setTimeout(()=>rbRun(true),0));
+/* ---- sales: truck picker ---- */
+let TK_D='ex',TK_P=null,TK_SET=false;
+const tkRows=()=>(RS&&RS.data&&RS.data.trk&&RS.data.trk.rows)||[];
+const tkZones=r=>String(r[2]||'').split(',').map(x=>x.trim()).filter(Boolean);
+function tkMatch(c,z){const k=z.trim().toLowerCase();return tkRows().filter(r=>r[0]===TK_D&&r[1].toLowerCase()===c.trim().toLowerCase()&&(k?tkZones(r).some(x=>x.toLowerCase()===k):false))}
+function tkFill(){const rs=tkRows().filter(r=>r[0]===TK_D),cs=[...new Set(rs.map(r=>r[1]))].sort((a,b)=>a.localeCompare(b));$('tk_cl').innerHTML=cs.map(c=>`<option value="${esc(c)}">`).join('');
+ const c=$('tk_c').value.trim().toLowerCase(),zs=[...new Set(rs.filter(r=>r[1].toLowerCase()===c).flatMap(tkZones))];$('tk_zl').innerHTML=zs.map(z=>`<option value="${esc(z)}">`).join('')}
+function tkRun(ap){const blk=$('tk_blk'),m=$('cl_mode').value;
+ if(!tkRows().length||(m!=='tw'&&m!=='tc')){blk.classList.add('hid');if(m==='tw'||m==='tc'||m==='ac')window.RB_MIN=0;return}
+ blk.classList.remove('hid');tkFill();
+ const it=rbItems(),act=it.reduce((a,x)=>a+x.n*x.W,0),vq=Math.ceil(it.reduce((a,x)=>a+x.n*x.L0*x.W0*x.H0,0)/5000-1e-9),kg=Math.max(act,vq),cbm=it.reduce((a,x)=>a+x.n*x.L0*x.W0*x.H0,0)/1e6,rows=tkMatch($('tk_c').value,$('tk_z').value);
+ const by={};rows.forEach(r=>{(by[r[3]]=by[r[3]]||[]).push(r)});
+ const res=Object.keys(by).map(g=>{const l=by[g];let rate=null,mn=0,tot=null;
+  if(it.length){if(m==='tw'){const c=l.filter(r=>!r[7]&&r[5]!=null&&r[5]<=kg).sort((a,b)=>b[5]-a[5])[0];if(c){rate=c[6];mn=c[4];tot=Math.max(mn,Math.round(kg*rate*100)/100)}}
+   else{const c=l.find(r=>r[7]);if(c){rate=c[6];mn=c[4];tot=Math.max(mn,Math.round(cbm*rate*100)/100)}}}
+  return{g,rate,mn,tot}});
+ const ok=res.filter(o=>o.tot!=null),best=ok.length?ok.reduce((p,q)=>q.tot<p.tot?q:p):null;
+ if(!TK_P||!res.find(o=>o.g===TK_P&&o.tot!=null))TK_P=best&&best.g;
+ $('tk_opts').innerHTML=res.map(o=>`<button type="button" class="rb-o${o.g===TK_P&&o.tot!=null?' on':''}" data-g="${esc(o.g)}"${o.tot==null?' disabled':''}><span>${esc(o.g)}${best&&o.g===best.g&&ok.length>1?' · ถูกสุด':''}</span><b>${o.tot==null?'-':'฿'+N(o.tot)}</b></button>`).join('');
+ const cur=res.find(o=>o.g===TK_P&&o.tot!=null);
+ if(ap){window.RB_MIN=cur?cur.mn:0;if(cur){$('cl_rate').value=fmtIn(cur.rate);TK_SET=true;window.calc()}else if(TK_SET){$('cl_rate').value='';TK_SET=false;window.calc()}}}
+$('tk_d').onclick=e=>{const b=e.target.closest('button');if(!b)return;TK_D=b.dataset.d;[...$('tk_d').children].forEach(x=>x.classList.toggle('on',x===b));TK_P=null;tkRun(true)};
+$('tk_opts').onclick=e=>{const b=e.target.closest('[data-g]');if(!b||b.disabled)return;TK_P=b.dataset.g;tkRun(true)};
+['tk_c','tk_z'].forEach(i=>$(i).addEventListener('input',()=>{TK_P=null;tkRun(true)}));
+$('cgc').addEventListener('input',()=>tkRun(true));$('cgc').addEventListener('click',e=>{if(e.target.closest('button'))tkRun(true)});
+$('cl_mode').addEventListener('input',()=>{TK_P=null;tkRun(true)});$('cl_q').addEventListener('input',()=>setTimeout(()=>tkRun(true),0));
 /* ---- settings view ---- */
 function rsInit(){rLoad().then(()=>{if(!DR&&RS)DR=clone(RS);if(!DR)DR={data:{},sheets:[],rules:clone(DEF),remote:{},adj:{F:0,A:0},ver:'',eff:''};rsDraw()})}
 function rsDraw(){const s=DR;
@@ -1597,7 +1628,7 @@ function rsDraw(){const s=DR;
  $('rs_rm').innerHTML=['FedEx','Aramex'].map(c=>{const m=(s.remote&&s.remote[c])||{},n=Object.values(m).reduce((a,l)=>a+l.length,0);return `<div class="rb-row" style="margin-bottom:10px"><b style="min-width:70px">${c}</b><input type="file" data-rm="${c}" accept=".xlsx,.xls,.csv"><span class="rb-tg ${n?'ok':'wn'}">${n?n.toLocaleString('th-TH')+' รายการ':'ยังไม่มี'}</span></div>`}).join('')}
 $('rs_f').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;$('rs_st').textContent='กำลังอ่านไฟล์…';
  try{let data={...((DR&&DR.data)||{})},sheets=[...((DR&&DR.sheets)||[])],pm=(DR&&DR.pm)||null,names=DR&&DR.file?[DR.file]:[],ver=DR&&DR.ver||'';
-  for(const f of fs){const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),r=RP.parse(wb),own=!!(r.params&&r.params.pk);
+  for(const f of fs){const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),tk=RP.trk(wb);if(tk){data.trk=tk;const x={k:'trk',n:'ราคารถ LTL',t:'ราคารถ ส่งออก/นำเข้า',ok:true,countries:new Set(tk.rows.map(r=>r[1])).size},j=sheets.findIndex(y=>y.k==='trk');if(j>=0)sheets[j]=x;else sheets.push(x);names.push(f.name);continue}const r=RP.parse(wb),own=!!(r.params&&r.params.pk);
    r.sheets.forEach(x=>{const i=sheets.findIndex(y=>y.k===x.k),old=i>=0?sheets[i]:null;
     if(!x.ok&&old&&old.ok)return;
     if(x.ok&&old&&old.ok&&!own&&x.k!=='arx')return;
