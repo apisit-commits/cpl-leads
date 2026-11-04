@@ -326,7 +326,8 @@ legend{font-size:13px}
 #vW .nh{justify-content:flex-start;margin-bottom:10px}#vW .nh .mktabs{margin:0}#vW .nh .nbar{margin-left:auto}
 .chm{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap}.ch2i{display:inline-flex;opacity:.85;transform:scale(.85);transform-origin:left center;margin-right:-3px}
 #ch2 span{padding:3px}
-.dlr{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--bd);position:relative}.dlx{position:absolute;right:0;top:8px;width:28px;height:28px;padding:0!important;font-size:13px}.dlr select,.dlr input{min-width:0;width:100%}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}@media(max-width:640px){.g3,.dlr{grid-template-columns:1fr!important}}
+.dlr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px;position:relative}.dlx{position:absolute;right:0;top:-1px;width:26px;height:26px;padding:0!important;font-size:12px}.dlr select,.dlr input{min-width:0;width:100%}
 </style>
 
 </head>
@@ -425,13 +426,13 @@ legend{font-size:13px}
     <label class="f">วันนัดติดตามครั้งถัดไป<b class="rq">*</b><input type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" name="fu"></label>
     <label class="f" id="rsn">เหตุผลที่ยังไม่สนใจ<b class="rq">*</b><select name="reason"></select></label>
   </div></fieldset>
-  <fieldset><legend>ยอดปิดงาน และผู้รับผิดชอบ</legend><div class="g">
-    <label class="f">วันที่ปิดได้<input name="deal_date" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label><label class="f">ยอดที่ปิดได้ (บาท)<input name="deal_amt" inputmode="decimal" data-num autocomplete="off" placeholder="เช่น 50,000"></label>
+  <fieldset><legend>ยอดปิดงาน และผู้รับผิดชอบ</legend><div class="g3">
     <label class="f">เซลล์<b class="rq">*</b><select name="sales"></select></label>
     <label class="f">แบรนด์<b class="rq">*</b><select name="brand"></select></label>
+  </div><div class="g3" style="margin-top:12px">
+    <label class="f">วันที่ปิดได้<input name="deal_date" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label><label class="f">ยอดที่ปิดได้ (บาท)<input name="deal_amt" inputmode="decimal" data-num autocomplete="off" placeholder="เช่น 50,000"></label>
     <label class="f">โปรโมชัน<b class="rq">*</b><select name="promo"></select></label>
-    <div id="dl2" style="grid-column:1/-1"></div><div style="grid-column:1/-1"><button type="button" class="btn sm" id="dla">+ ปิดได้อีก</button></div>
-  </div></fieldset>
+  </div><div id="dl2"></div><div style="margin-top:12px"><button type="button" class="btn sm" id="dla">+ ปิดได้อีก</button></div></fieldset>
   <datalist id="adsl"></datalist><datalist id="dl_dial"></datalist><datalist id="dl_it"></datalist><datalist id="cl"></datalist>
   <div class="acts"><button type="button" class="btn" id="cx">ยกเลิก</button><button class="btn p" id="sv_">บันทึก</button></div>
 </form></dialog>
