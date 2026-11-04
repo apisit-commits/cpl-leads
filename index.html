@@ -1399,6 +1399,12 @@ const RP=(()=>{/* Rate sheet parser: works on SheetJS workbook (XLSX.utils.sheet
 const RP={};
 RP.num=v=>{if(typeof v==='number')return v;if(typeof v==='string'){const s=v.replace(/,/g,'').trim();if(/^-?\d+(\.\d+)?$/.test(s))return +s}return null};
 RP.ALIAS={'UK':'United Kingdom','USA':'USA','UAE':'UAE','SOUTH ARICA':'South Africa','SOUTH AFRICA':'South Africa'};
+RP.remFx=(g)=>{let h=-1;for(let i=0;i<Math.min(g.length,60);i++){const r=g[i]||[];if(/begin postal/i.test(String(r[3]||''))){h=i;break}}if(h<0)return null;
+ const by={};for(let i=h+1;i<g.length;i++){const r=g[i];if(!r||!r[0])continue;const c=RP.cn(r[0]),t=String(r[7]||'').match(/tier\s*([abc])/i);if(!c||!t||r[3]==null||r[3]==='')continue;
+  const num=x=>typeof x==='number',b=r[3],e=r[4]==null||r[4]===''?b:r[4];(by[c]=by[c]||[]).push([b,t[1].toUpperCase(),e,num(b)])}
+ const out={};Object.keys(by).forEach(c=>{const l=by[c],cnt={};l.forEach(x=>{if(x[3]){const n=String(x[0]).length;cnt[n]=(cnt[n]||0)+1}});const md=+(Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]||0);
+  const fx=(v,isn)=>{let t=String(v).toUpperCase().replace(/[\s\-]/g,'');if(isn&&md&&t.length<md)t=t.padStart(md,'0');return t};
+  out[c]=l.map(x=>{const a=fx(x[0],x[3]),z=fx(x[2],x[3]);return z===a?[a,x[1]]:[a,x[1],z]})});return out};
 RP.cn=s=>{s=String(s).replace(/\s+/g,' ').trim();if(!s)return '';const u=s.toUpperCase();if(RP.ALIAS[u])return RP.ALIAS[u];return s.toLowerCase().replace(/(^|[\s\-\(\/])([a-z])/g,(m,a,b)=>a+b.toUpperCase())};
 RP.grid=(ws)=>XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:true});
 RP.find=(wb,name)=>{const k=Object.keys(wb.Sheets).find(n=>n.trim().toLowerCase()===name.toLowerCase());return k?wb.Sheets[k]:null};
@@ -1532,7 +1538,7 @@ function lookup(svc,country,kg){const d=RS.data[svc];if(!d)return null;const row
  const w=Math.ceil(kg);return{price:Math.max(last[1],tr[1]*w),basis:N(tr[1])+' บาท/กก. × '+w+' กก.'}}
 const pn=s=>String(s||'').toUpperCase().replace(/[\s\-]/g,'');
 function remote(car,country,postal){const p=pn(postal);if(!p)return null;const l=(RS.remote&&RS.remote[car]&&RS.remote[car][country])||null;if(!l)return undefined;
- let best=null;l.forEach(x=>{const k=pn(x[0]);if(k&&p.startsWith(k)&&(!best||k.length>pn(best[0]).length))best=x});return best?(best[1]||true):false}
+ let best=null,bl=-1;l.forEach(x=>{const a=pn(x[0]);if(!a)return;let ok;if(x[2]){const z=pn(x[2]),q=p.slice(0,a.length);ok=p.length>=a.length&&q>=a&&q<=z}else ok=p.startsWith(a);if(ok&&a.length>bl){best=x;bl=a.length}});return best?(best[1]||true):false}
 function calc(svc,car,country,postal,items){
  const pc={},rows=items.map(x=>{const d=[x.L0,x.W0,x.H0].sort((p,q)=>q-p),y={...x,L:d[0],S:d[1],G:x.L0+2*x.W0+2*x.H0},vol=Math.ceil(x.L0*x.W0*x.H0/5000),per=Math.max(x.W,vol),hits=[];
   if(car==='F'){for(const id of['fun','fos','fah','faw']){const r=rl(id);if(!r)continue;const h=hit(r,y);if(h.length){hits.push({r,h});break}}}
@@ -1603,8 +1609,8 @@ $('rs_f').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;$
   rsDraw();$('rs_st').textContent='';e.target.value=''}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}};
 $('rs_rl').addEventListener('input',e=>{const t=e.target,i=t.dataset.r;if(i===undefined||!DR)return;const r=DR.rules[+i],v=+String(t.value).replace(/,/g,'');if(t.dataset.c!==undefined)r.cond[+t.dataset.c][1]=v;else if(t.dataset.p)r.p=v;else if(t.dataset.m)r.min=v});
 $('rs_rm').addEventListener('change',async e=>{const t=e.target;if(!t.dataset.rm||!t.files[0])return;const car=t.dataset.rm;
- try{const wb=XLSX.read(await t.files[0].arrayBuffer(),{type:'array'}),g=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:null}),map={};
-  g.forEach(r=>{if(!r||r.length<2)return;const c=RP.cn(r[0]||''),p=String(r[1]==null?'':r[1]).trim();if(!c||!p||/country|ประเทศ|postal|zip/i.test(c+p))return;(map[c]=map[c]||[]).push([p,r[2]?String(r[2]).trim().toUpperCase():''])});
+ try{const wb=XLSX.read(await t.files[0].arrayBuffer(),{type:'array'}),g=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:null}),map=(car==='FedEx'&&RP.remFx(g))||{};
+  if(!Object.keys(map).length)g.forEach(r=>{if(!r||r.length<2)return;const c=RP.cn(r[0]||''),p=String(r[1]==null?'':r[1]).trim();if(!c||!p||/country|ประเทศ|postal|zip/i.test(c+p))return;(map[c]=map[c]||[]).push([p,r[2]?String(r[2]).trim().toUpperCase():''])});
   DR.remote=DR.remote||{};DR.remote[car]=map;rsDraw()}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}});
 $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$('rs_st').textContent='ยังไม่ได้เลือกไฟล์ Rate';return}
  const v=$('rs_v').value.trim(),e=$('rs_e').value.trim();if(!v||!/^\d{2}\/\d{2}\/\d{4}$/.test(e)){$('rs_st').textContent='กรอกเวอร์ชันและวันที่มีผลให้ครบ';return}
