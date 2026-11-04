@@ -320,6 +320,10 @@ label.f{font-size:13px}
 legend{font-size:13px}
 .btn.sm{font-size:13px!important;padding:4px 11px}
 #acct em,.tg{font-size:12px!important}
+#vF .nh .lhd{margin:0 0 0 auto;flex-wrap:nowrap}#vF .nh .nbar{margin-left:0}#vF .nh{margin-bottom:10px}
+#vL .lhd{justify-content:flex-end;align-items:center;margin-bottom:10px}#vL .lhd .seg{margin:0 auto 0 0}
+.dtop{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}.dtop .mktabs,.dtop .dh{margin:0}
+#vW .nh{justify-content:flex-start;margin-bottom:10px}#vW .nh .mktabs{margin:0}#vW .nh .nbar{margin-left:auto}
 </style>
 
 </head>
@@ -343,12 +347,11 @@ legend{font-size:13px}
 <dialog id="cfd" style="width:min(420px,94vw)"><form method="dialog" style="padding:20px 22px" onsubmit="return false"><h3 id="cft" style="margin:0 0 8px"></h3><div id="cfm" style="white-space:pre-line;font-size:14px;line-height:1.5;margin-bottom:18px"></div><div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" id="cfn">ยกเลิก</button><button type="button" class="btn p" id="cfy">ตกลง</button></div></form></dialog>
 <dialog id="mkd" style="width:min(520px,94vw)"><form id="mkf" method="dialog" style="padding:18px 20px"><h3 id="mkt" style="margin:0 0 12px"></h3><div id="mkfl" class="g1"></div><div style="display:flex;gap:8px;justify-content:space-between;margin-top:14px"><button type="button" class="btn" id="mkdel">ลบ</button><span style="display:flex;gap:8px"><button type="button" class="btn" id="mkcx">ยกเลิก</button><button class="btn p" id="mksv">บันทึก</button></span></div></form></dialog>
 <dialog id="nl" style="width:min(820px,96vw);padding:0"><div id="nlc"></div></dialog>
-<div id="vF" class="hid"><div class="nh"><h3 style="margin:0" id="fh">งานติดตามของฉัน</h3><div class="mktabs" id="fmode" style="display:none;margin:0"><button type="button" data-m="ky">Lead ไม่ครบ</button><button type="button" data-m="fu">งานติดตาม</button></div><div class="nbar" id="fnb"><span id="fsw" class="hid"><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">ดูของเซลล์:<select id="fsel"></select></label></span><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">แจ้งเตือน Follow-up อัตโนมัติหลังรับ Lead<input id="fdays" type="number" min="1" max="30" style="width:64px"> วัน</label></div></div><div class="hd lhd" id="kyb" style="display:none"><select id="krg"></select><label class="mlb"><span>ดูเดือน:</span><input type="month" id="kvm"></label></div><div class="stats" id="fst"></div><div id="flist"></div></div>
+<div id="vF" class="hid"><div class="nh"><h3 style="margin:0" id="fh">งานติดตามของฉัน</h3><div class="mktabs" id="fmode" style="display:none;margin:0"><button type="button" data-m="ky">Lead ไม่ครบ</button><button type="button" data-m="fu">งานติดตาม</button></div><div class="hd lhd" id="kyb" style="display:none"><select id="krg"></select><label class="mlb"><span>ดูเดือน:</span><input type="month" id="kvm"></label></div><div class="nbar" id="fnb"><span id="fsw" class="hid"><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">ดูของเซลล์:<select id="fsel"></select></label></span><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">แจ้งเตือน Follow-up อัตโนมัติหลังรับ Lead<input id="fdays" type="number" min="1" max="30" style="width:64px"> วัน</label></div></div><div class="stats" id="fst"></div><div id="flist"></div></div>
 <div id="bpn" class="bpn hid"></div>
-<div id="vW" class="hid"><div class="nh"><h3 style="margin:0">Marketing</h3><div class="nbar"><button class="btn sm" id="mkre">รีเฟรช</button></div></div><div id="mktabs" class="mktabs"></div><div id="mkbody"></div></div>
+<div id="vW" class="hid"><div class="nh"><h3 style="margin:0">Marketing</h3><div id="mktabs" class="mktabs"></div><div class="nbar"><button class="btn sm" id="mkre">รีเฟรช</button></div></div><div id="mkbody"></div></div>
 <div id="vL">
-  <div class="hd lhd"><select id="rg" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><label class="mlb" title="ดูเฉพาะเดือนที่เลือก (ล้างช่อง = ทุกเดือนที่โหลด)"><span>ดูเดือน:</span><input type="month" id="vm"></label><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
-  <div class="seg" id="seg"></div>
+  <div class="hd lhd"><div class="seg" id="seg"></div><select id="rg" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><label class="mlb" title="ดูเฉพาะเดือนที่เลือก (ล้างช่อง = ทุกเดือนที่โหลด)"><span>ดูเดือน:</span><input type="month" id="vm"></label><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
   <div class="stats" id="stats"></div>
   <div class="bar">
     <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…"><label class="mlb"><span>ตั้งแต่วันที่</span><input type="date" id="lf"></label><label class="mlb"><span>ถึงวันที่</span><input type="date" id="lt"></label><button class="btn sm" id="lclr" type="button">ล้างวันที่</button>
@@ -359,8 +362,7 @@ legend{font-size:13px}
   </tr></thead><tbody id="tb"></tbody></table><div class="empty hid" id="em">ยังไม่มีข้อมูล</div><div class="sub" id="cap" style="padding:10px 14px"></div></div>
 </div>
 <div id="vD" class="hid">
-  <div id="dmodes" class="mktabs hid"></div>
-  <h2 id="dtitle" class="dh"></h2>
+  <div class="dtop"><div id="dmodes" class="mktabs hid"></div><h2 id="dtitle" class="dh"></h2></div>
   <div class="bar">
     <label>ทีม <select id="dtm"></select></label>
     <label id="dslw" class="hid">เซลล์ <select id="dsl"></select></label>
