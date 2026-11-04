@@ -328,6 +328,7 @@ legend{font-size:13px}
 #ch2 span{padding:3px}
 .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}@media(max-width:640px){.g3,.dlr{grid-template-columns:1fr!important}}
 .dlr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px;position:relative}.dlx{position:absolute;right:0;top:-1px;width:26px;height:26px;padding:0!important;font-size:12px}.dlr select,.dlr input{min-width:0;width:100%}
+.dlgx{position:sticky;top:12px;float:right;margin:12px 12px -34px 0;width:34px;height:34px;padding:0;border:1px solid var(--bd);border-radius:50%;background:var(--card);color:var(--mu);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;z-index:5}.dlgx:hover{color:var(--er);border-color:var(--er)}#dt{padding-right:44px}
 </style>
 
 </head>
@@ -394,6 +395,7 @@ legend{font-size:13px}
 </main>
 
 <dialog id="dlg"><form id="fm_" method="dialog">
+  <button type="button" class="dlgx" id="dlx" title="ปิด" aria-label="ปิด"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <h2 id="dt">เพิ่ม Lead</h2>
   <fieldset><legend>ข้อมูลเริ่มต้น</legend><div class="g">
     <label class="f">วันที่<b class="rq">*</b><input type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" name="date" required></label>
@@ -744,6 +746,7 @@ function dlRow(x){x=x||{};const po=['',...OPTS.promo.map(o=>o.value)];if(x.p&&!p
 function dlRender(a){$('dl2').innerHTML=(a||[]).map(dlRow).join('')}
 function dlRaw(){return[...$('dl2').querySelectorAll('.dlr')].map(r=>{const g=k=>r.querySelector('[data-k='+k+']').value.trim();return{d:d2i(g('d')),a:g('a')?pn(g('a')):null,p:g('p')}}).filter(x=>x.d||x.a||x.p)}
 (function(){$('dla').onclick=()=>{$('dl2').insertAdjacentHTML('beforeend',dlRow({}))};$('dl2').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(b)b.closest('.dlr').remove()})})();
+document.addEventListener('click',e=>{if(e.target.closest('#dlx'))$('cx').click()});
 function ch2Sync(){const f=$('fm_'),c=(f.querySelector('input[name=channel]:checked')||{}).value;f.querySelectorAll('input[name=ch2]').forEach(i=>{const l=i.closest('label'),same=i.value===c;if(same)i.checked=false;l.classList.toggle('hid',same)})}
 document.addEventListener('change',e=>{if(e.target&&e.target.name==='channel')ch2Sync()});
 function markEmpty(){
