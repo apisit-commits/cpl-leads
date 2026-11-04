@@ -1222,14 +1222,18 @@ function calc(){
  try{drawQuote()}catch(e){console.error(e)}
 }
 const RMK=[['VAT 7%'],['ค่าบริการแพ็คสินค้า, ตีลังไม้, ออนพาเลท (ถ้ามี)'],['ค่าพื้นที่ห่างไกลปลายทาง, ค่าประกันสินค้า, ค่ารับสินค้า, Over Size, Over Weight (ถ้ามี)'],['ไม่รวมภาษีนำเข้าที่ประเทศปลายทางขึ้นอยู่กับกรมศุลกากร และค่าใช้จ่ายอื่นๆ ตามใบเสร็จจริงที่ปลายทาง (ถ้ามี)'],['กรณีโดนเปิดตรวจ สินค้าอาจจะโดนตีกลับหรือถูกทำลาย ขึ้นอยู่กับการพิจารณาของกรมศุลกากรปลายทาง (ถ้ามี)'],['สินค้าที่ไม่รับทำประกันและไม่รับประกัน: สินค้าประเภท แก้ว เซรามิค หินอ่อน กระเบื้อง หรือ สินค้าที่แตกหักเสียหายง่าย',1],['สินค้าที่ไม่รับขนส่ง เช่น อาหารสด อาหารแช่แข็ง บุหรี่ แอลกอฮอร์ แบตเตอรี่ สินค้าก๊อบแบรนด์ และสารเสพติดทุกชนิด เป็นต้น',1]];
-function rmkInit(){const el=$('cl_rmk');if(!el||el.dataset.i)return;el.dataset.i=1;el.innerHTML=RMK.map((r,i)=>`<label class="rmkr"><input type="checkbox" data-r="${i}"><span>${r[1]?'🚫 ':''}${esc(r[0])}</span></label>`).join('');el.addEventListener('change',()=>{try{CQ&&drawQuote()}catch(e){console.error(e)}});$('cl_rall').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=true);try{CQ&&drawQuote()}catch(e){}};$('cl_rnone').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=false);try{CQ&&drawQuote()}catch(e){}}}
+const RMKE=['VAT 7%','Packing, wooden crate and palletizing fees (if any)','Remote-area surcharge at destination, cargo insurance, pick-up fee, Over Size and Over Weight charges (if any)','Excludes import duties and taxes at the destination, which are set by the destination customs, and other charges per actual receipts at the destination (if any)','If the shipment is selected for inspection, the goods may be returned or destroyed at the discretion of the destination customs (if any)','Items not insured and not covered: glass, ceramics, marble, tiles or any fragile goods','Items not accepted for shipping: e.g. fresh food, frozen food, cigarettes, alcohol, batteries, counterfeit-brand goods and all narcotics'];
+const rmkT=i=>TT(RMK[i][0],RMKE[i]);
+function rmkRender(){const el=$('cl_rmk');if(!el||!el.dataset.i)return;const on=new Set([...el.querySelectorAll('input:checked')].map(c=>+c.dataset.r));el.innerHTML=RMK.map((r,i)=>`<label class="rmkr"><input type="checkbox" data-r="${i}"${on.has(i)?' checked':''}><span>${r[1]?'🚫 ':''}${esc(rmkT(i))}</span></label>`).join('')}
+Object.assign(EN,{'หมายเหตุ : ราคานี้ไม่รวม':'Notes: price excludes','เลือกทั้งหมด':'Select all','ล้าง':'Clear','หมายเหตุเพิ่มเติม':'Additional notes'});
+function rmkInit(){const el=$('cl_rmk');if(!el||el.dataset.i)return;el.dataset.i=1;el.innerHTML=RMK.map((r,i)=>`<label class="rmkr"><input type="checkbox" data-r="${i}"><span>${r[1]?'🚫 ':''}${esc(rmkT(i))}</span></label>`).join('');el.addEventListener('change',()=>{try{CQ&&drawQuote()}catch(e){console.error(e)}});$('cl_rall').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=true);try{CQ&&drawQuote()}catch(e){}};$('cl_rnone').onclick=()=>{el.querySelectorAll('input').forEach(c=>c.checked=false);try{CQ&&drawQuote()}catch(e){}}}
 const QTHM={cplex:{a:'#f07820',d:'#00468a',t:'#fff'},clmv:{a:'#e2b93b',d:'#002040',t:'#002040'},imthai:{a:'#f07000',d:'#40007f',t:'#fff'}};
 const QTH=()=>QTHM[curBrand()]||{a:'#0096d6',d:'#0b2545',t:'#fff'};
 function drawQuote(){rmkInit();bsRender();
  const Q=CQ,c=$('qc'),W=800,r=rows.find(x=>String(x.id)===selId()),B=TT('บาท','THB');
  const it=[...Q.LI,[TT('ค่าขนส่ง','Freight')+' ('+Q.svc+')',fmt(Q.ship)+' '+B],...Q.fees.map(f=>[TR(f[0]),fmt(f[1])+' '+B])];
  const F=getComputedStyle(document.body).fontFamily,mx=document.createElement('canvas').getContext('2d');mx.font=`400 18px ${F}`;
- const RB=[];[...document.querySelectorAll('#cl_rmk input:checked')].forEach(c=>{const r=RMK[+c.dataset.r];RB.push({t:r[0],no:!!r[1]})});
+ const RB=[];[...document.querySelectorAll('#cl_rmk input:checked')].forEach(c=>{const r=RMK[+c.dataset.r];RB.push({t:rmkT(+c.dataset.r),no:!!r[1]})});
  ($('cl_remark').value||'').split('\n').map(z=>z.trim()).filter(Boolean).forEach(z=>RB.push({t:z,no:false}));
  const wrapT=t=>{const out=[];let cur='';for(const ch of t){if(mx.measureText(cur+ch).width>W-80-30){out.push(cur);cur=ch}else cur+=ch}out.push(cur);return out};
  RB.forEach(b=>b.L=wrapT(b.t));const RH=RB.length?RB.reduce((a,b)=>a+b.L.length*26+8,0)+46:0;
@@ -1285,7 +1289,7 @@ async function exportXlsx(a,b){
 }
 function relang(){
  try{
-  fillDial();fillItems();setWho();
+  fillDial();fillItems();setWho();rmkRender();try{if(typeof CQ!=='undefined'&&CQ&&!$('vC').classList.contains('hid'))drawQuote()}catch(e){}
   const f=$('fm_');
   ['cgc','cgf'].forEach(id=>{const el=$(id);if(el&&el.querySelector('.cgr'))cgRender(id,cgRaw(id).map(o=>({...o,it:itemCanon(o.it)})))});
   if(profile){render();calcLeads();if(profile.role==='admin')renderSet()}
