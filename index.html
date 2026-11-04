@@ -331,6 +331,7 @@ legend{font-size:13px}
 #dlg{overflow:visible}#dlg>form{max-height:92vh;overflow:auto;border-radius:inherit}.dlgx{position:absolute;top:0;left:calc(100% + 10px);width:38px;height:38px;padding:0;border:0;border-radius:50%;background:var(--card);color:var(--tx);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.25)}.dlgx:hover{color:var(--er)}@media(max-width:820px){.dlgx{left:auto;right:8px;top:8px;width:32px;height:32px;box-shadow:none;border:1px solid var(--bd)}#dt{padding-right:44px}}
 .nmr{display:flex;align-items:center;gap:8px}.nmr .cpn{flex:none;width:26px;height:26px;min-height:0;padding:0}
 .cpop{position:fixed;z-index:9999;width:292px;padding:14px;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:14px;box-shadow:0 12px 36px rgba(11,34,64,.25)}.cph{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:15px}.cph span{display:flex;gap:4px}.cph button{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:var(--tx);font-size:20px;line-height:1;cursor:pointer}.cph button:hover,.cpf button:hover{background:var(--gyb)}.cpg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}.cpg i{font-style:normal;font-size:12px;color:var(--mu);padding:4px 0}.cd{height:34px;border:0;border-radius:50%;background:transparent;color:var(--tx);font-size:14px;cursor:pointer;padding:0}.cd:hover{background:var(--gyb)}.cd.o{color:var(--mu);opacity:.5}.cd.t{box-shadow:inset 0 0 0 1.5px var(--pr)}.cd.s{background:var(--pr);color:var(--prt);opacity:1}.cpf{margin-top:8px}.cpf button{border:0;background:transparent;color:var(--pr);font-weight:600;font-size:14px;padding:6px 8px;border-radius:8px;cursor:pointer}
+.bar input[data-iso]{flex:none;width:122px!important;min-width:0}
 </style>
 
 </head>
@@ -361,7 +362,7 @@ legend{font-size:13px}
   <div class="hd lhd"><div class="seg" id="seg"></div><select id="rg" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><label class="mlb" title="ดูเฉพาะเดือนที่เลือก (ล้างช่อง = ทุกเดือนที่โหลด)"><span>ดูเดือน:</span><input type="month" id="vm"></label><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
   <div class="stats" id="stats"></div>
   <div class="bar">
-    <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…"><label class="mlb"><span>ตั้งแต่วันที่</span><input type="date" id="lf"></label><label class="mlb"><span>ถึงวันที่</span><input type="date" id="lt"></label><button class="btn sm" id="lclr" type="button">ล้างวันที่</button>
+    <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…"><label class="mlb"><span>ตั้งแต่วันที่</span><input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lf"></label><label class="mlb"><span>ถึงวันที่</span><input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lt"></label><button class="btn sm" id="lclr" type="button">ล้างวันที่</button>
     <select id="fs"></select><select id="fc"></select><select id="fa"></select><select id="fm"></select>
   </div>
   <div class="wrap"><table><thead><tr>
@@ -374,8 +375,8 @@ legend{font-size:13px}
     <label>ทีม <select id="dtm"></select></label>
     <label id="dslw" class="hid">เซลล์ <select id="dsl"></select></label>
     <label>ช่วงเวลา <select id="dp"><option value="all">ทั้งหมด</option><option value="7">7 วันล่าสุด</option><option value="30">30 วันล่าสุด</option><option value="m">เดือนนี้</option><option value="pm">เดือนที่แล้ว</option><option value="c">กำหนดเอง</option></select></label>
-    <label>ตั้งแต่ <input type="date" id="d1" style="flex:none;min-width:0"></label>
-    <label>ถึง <input type="date" id="d2" style="flex:none;min-width:0"></label>
+    <label>ตั้งแต่ <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="d1" style="flex:none;min-width:0"></label>
+    <label>ถึง <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="d2" style="flex:none;min-width:0"></label>
   </div>
   <div class="stats" id="dk"></div>
   <div class="dg" id="dg"></div>
@@ -540,7 +541,7 @@ function init(){
  const f=$('fm_');
  fill(f.status,OPT.status);fill(f.reason,OPT.reason);fillDial();fillItems();$('ctp').addEventListener('change',togCt);f.addEventListener('invalid',()=>{$('dd').open=true},true);togCt();
  fill($('fs'),OPT.status,'ทุก Status');fill($('fc'),OPT.channel,'ทุกช่องทาง');fill($('fm'),OPT.svc,'ทุกบริการ');
- ['q','fs','fc','fa','fm'].forEach(i=>$(i).addEventListener('input',render));$('fa').addEventListener('change',()=>{const v=$('fa').value;if(v&&$('rg').value!=='all'&&!rows.some(r=>r.team===team&&r.sales===v)){$('rg').value='all';$('rg').dispatchEvent(new Event('change'))}});
+ let _qt;$('q').addEventListener('input',()=>{clearTimeout(_qt);_qt=setTimeout(render,160)});['fs','fc','fa','fm'].forEach(i=>$(i).addEventListener('input',render));$('fa').addEventListener('change',()=>{const v=$('fa').value;if(v&&$('rg').value!=='all'&&!rows.some(r=>r.team===team&&r.sales===v)){$('rg').value='all';$('rg').dispatchEvent(new Event('change'))}});
  f.status.addEventListener('change',toggleReason);f.fu_status.addEventListener('change',toggleReason);
  $('tb').addEventListener('click',e=>{if(e.target.closest('button,a,input,select,textarea'))return;if(String(getSelection()))return;const tr=e.target.closest('tr[data-id]');if(tr)openForm(Number(tr.dataset.id))});
  $('add').onclick=()=>openForm();
@@ -549,7 +550,12 @@ function init(){
 $('cl_svc').addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.p!==undefined&&t.value!==''){const c=$('cl_svc').querySelector('input[data-i="'+t.dataset.p+'"]');if(c)c.checked=true}calc()});$('qdl').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');recQuote();const a=document.createElement('a');a.href=$('qc').toDataURL('image/png');a.download='quotation.png';a.click()};$('qcp').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');recQuote();$('qc').toBlob(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);alert('คัดลอกรูปแล้ว วางในแชทลูกค้าได้เลย')}catch(e){alert('เบราว์เซอร์นี้คัดลอกรูปไม่ได้ กรุณากดดาวน์โหลดแทน')}})};$('cx').onclick=()=>$('dlg').close();$('exp').onclick=()=>{const v=$('vm').value;$('xfrom').value=v;$('xto').value=v;$('xd').showModal()};$('xcx').onclick=()=>$('xd').close();$('xgo').onclick=()=>{const a=$('xfrom').value,b=$('xto').value;if(a&&b&&a>b)return alert(TT('เดือนเริ่มต้นต้องไม่เกินเดือนสิ้นสุด','The start month must not be after the end month'));$('xd').close();exportXlsx(a,b)};$('lf').onchange=$('lt').onchange=()=>{const a=$('lf').value,b=$('lt').value;if(a&&b&&a>b)return alert(TT('วันเริ่มต้องไม่เกินวันสิ้นสุด','The start date must not be after the end date'));const f=rangeFrom();if(a&&f&&a<f)reload();else render()};$('lclr').onclick=()=>{$('lf').value='';$('lt').value='';render()};$('vm').onchange=()=>{const v=$('vm').value,f=rangeFrom();if(v&&f&&v+'-01'<f)reload();else render()};
  f.addEventListener('submit',onSave);
  ['L','A','M','K','E','S','N','F','W'].forEach(k=>$('t'+k).onclick=()=>tab(k));$('tDB').onclick=()=>{const d=window.DRok||'';if(d)tab(d.includes(dashMode)?dashMode:d[0])};$('dmodes').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b)tab(b.dataset.m)});$('dsl').onchange=renderDash;$('imb').onclick=()=>{const f=$('imf').files[0];if(!f){$('imlog').textContent='กรุณาเลือกไฟล์ก่อน';return}importXlsx(f)};
- $('dp').onchange=preset;$('dtm').innerHTML='<option value="">ทั้งสองทีม</option>'+Object.keys(TEAMS).map(k=>`<option value="${k}">${TEAMS[k]}</option>`).join('');$('dtm').onchange=renderDash;['d1','d2'].forEach(i=>$(i).addEventListener('input',()=>{$('dp').value='c';dashLoad()}));
+ (function(){const nv=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+const toD=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');return m?m[3]+'/'+m[2]+'/'+m[1]:''};
+const toI=v=>{const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v||'');if(!m)return'';const d=new Date(+m[3],+m[2]-1,+m[1]);return d.getMonth()===+m[2]-1?m[3]+'-'+m[2]+'-'+m[1]:''};
+document.querySelectorAll('input[data-iso]').forEach(el=>Object.defineProperty(el,'value',{configurable:true,get(){return toI(nv.get.call(el))},set(v){nv.set.call(el,toD(v))}}));
+document.addEventListener('input',e=>{const t=e.target;if(t.matches&&t.matches('input[data-iso]')){const v=nv.get.call(t).replace(/\D/g,'').slice(0,8);nv.set.call(t,v.length>4?v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4):v.length>2?v.slice(0,2)+'/'+v.slice(2):v)}},true)})();
+$('dp').onchange=preset;$('dtm').innerHTML='<option value="">ทั้งสองทีม</option>'+Object.keys(TEAMS).map(k=>`<option value="${k}">${TEAMS[k]}</option>`).join('');$('dtm').onchange=renderDash;['d1','d2'].forEach(i=>$(i).addEventListener('input',()=>{$('dp').value='c';dashLoad()}));$('dp').value='30';presetSet();
  start();
 }
 function buildSeg(){$('seg').innerHTML=teamsVisible().map(k=>`<button class="${k===team?'on':''}" onclick="setTeam('${k}')">${TEAMS[k]}<em>${rows.filter(r=>r.team===k).length}</em></button>`).join('')}
@@ -650,13 +656,13 @@ async function importXlsx(file){
  }catch(e){log(TT('นำเข้าไม่สำเร็จ: ','Import failed: ')+(e.message||e)+TT('\nลองใหม่ได้ ระบบจะข้ามแถวที่นำเข้าไปแล้วให้เอง','\nYou can retry; rows already imported will be skipped.'))}
  $('imb').disabled=false;
 }
-function preset(){
- const v=$('dp').value,d=new Date(),iso=x=>x.toISOString().slice(0,10);
+function preset(){presetSet();dashLoad()}
+function presetSet(){
+ const v=$('dp').value,d=new Date(),p2=n=>String(n).padStart(2,'0'),iso=x=>x.getFullYear()+'-'+p2(x.getMonth()+1)+'-'+p2(x.getDate());
  if(v==='all'){$('d1').value=$('d2').value=''}
- else if(v==='m'){$('d1').value=iso(new Date(d.getFullYear(),d.getMonth(),2));$('d2').value=iso(d)}
- else if(v==='pm'){$('d1').value=iso(new Date(d.getFullYear(),d.getMonth()-1,2));$('d2').value=iso(new Date(d.getFullYear(),d.getMonth(),0,12))}
+ else if(v==='m'){$('d1').value=iso(new Date(d.getFullYear(),d.getMonth(),1));$('d2').value=iso(d)}
+ else if(v==='pm'){$('d1').value=iso(new Date(d.getFullYear(),d.getMonth()-1,1));$('d2').value=iso(new Date(d.getFullYear(),d.getMonth(),0))}
  else if(v!=='c'){$('d1').value=iso(new Date(Date.now()-(+v-1)*864e5));$('d2').value=iso(d)}
- dashLoad();
 }
 function dashLoad(){const a=$('d1').value,f=rangeFrom();if(a&&f&&a<f)reload();else renderDash()}
 const okS=x=>OPT.status.includes((x||'').trim())?(x||'').trim():'';
@@ -749,17 +755,17 @@ function dlRaw(){return[...$('dl2').querySelectorAll('.dlr')].map(r=>{const g=k=
 (function(){$('dla').onclick=()=>{$('dl2').insertAdjacentHTML('beforeend',dlRow({}))};$('dl2').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(b)b.closest('.dlr').remove()})})();
 document.addEventListener('click',e=>{if(e.target.closest('#dlx'))$('cx').click()});
 
-(function(){let pop=null,inp=null,vy,vm;
+(function(){const NV=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');let pop=null,inp=null,vy,vm;
 const MT=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'],ME=['January','February','March','April','May','June','July','August','September','October','November','December'],WT=['อา','จ','อ','พ','พฤ','ศ','ส'],WE=['Su','Mo','Tu','We','Th','Fr','Sa'];
 const p2=n=>String(n).padStart(2,'0');
-function cur(){const m=(inp.value||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?{d:+m[1],m:+m[2]-1,y:+m[3]}:null}
+function cur(){const m=(NV.get.call(inp)||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?{d:+m[1],m:+m[2]-1,y:+m[3]}:null}
 function close(){if(pop){pop.remove();pop=null;inp=null}}
 function draw(){const c=cur(),t=new Date(),W=LANG==='en'?WE:WT,M=LANG==='en'?ME:MT;const f=new Date(vy,vm,1).getDay(),n=new Date(vy,vm+1,0).getDate(),pn=new Date(vy,vm,0).getDate();let h='<div class="cph"><b>'+M[vm]+' '+vy+'</b><span><button type="button" data-a="p">‹</button><button type="button" data-a="n">›</button></span></div><div class="cpg">'+W.map(x=>'<i>'+x+'</i>').join('');
 for(let i=0;i<42;i++){let d,m=vm,y=vy,o='';if(i<f){d=pn-f+i+1;m--;o=' o'}else if(i>=f+n){d=i-f-n+1;m++;o=' o'}else d=i-f+1;if(m<0){m=11;y--}if(m>11){m=0;y++}
 if(c&&c.d===d&&c.m===m&&c.y===y)o+=' s';else if(t.getDate()===d&&t.getMonth()===m&&t.getFullYear()===y)o+=' t';h+='<button type="button" class="cd'+o+'" data-v="'+p2(d)+'/'+p2(m+1)+'/'+y+'">'+d+'</button>'}
 h+='</div><div class="cpf"><button type="button" data-a="t">'+(LANG==='en'?'Today':'วันนี้')+'</button></div>';pop.innerHTML=h}
 function place(){const r=inp.getBoundingClientRect(),w=pop.offsetWidth,hh=pop.offsetHeight;let x=Math.min(Math.max(8,r.left),innerWidth-w-8),y=r.bottom+6;if(y+hh>innerHeight-8)y=Math.max(8,r.top-hh-6);pop.style.left=x+'px';pop.style.top=y+'px'}
-function pick(v){inp.value=v;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));const i=inp;close();i.focus({preventScroll:true})}
+function pick(v){NV.set.call(inp,v);inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));const i=inp;close();i.focus({preventScroll:true})}
 function open(i){if(inp===i)return;close();inp=i;const c=cur(),t=new Date();vy=c?c.y:t.getFullYear();vm=c?c.m:t.getMonth();pop=document.createElement('div');pop.className='cpop';pop.addEventListener('mousedown',e=>e.preventDefault());pop.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.v)return pick(b.dataset.v);const a=b.dataset.a;if(a==='t'){const x=new Date();return pick(p2(x.getDate())+'/'+p2(x.getMonth()+1)+'/'+x.getFullYear())}vm+=a==='n'?1:-1;if(vm<0){vm=11;vy--}if(vm>11){vm=0;vy++}draw()});(i.closest('dialog')||document.body).appendChild(pop);draw();place()}
 document.addEventListener('focusin',e=>{const t=e.target;if(t.matches&&t.matches('input[data-dmy]'))open(t);else if(!(pop&&pop.contains(t)))close()});
 document.addEventListener('click',e=>{const t=e.target;if(t.matches&&t.matches('input[data-dmy]'))open(t);else if(pop&&t.isConnected&&!pop.contains(t))close()});
@@ -1260,7 +1266,7 @@ function render(){
  const n=s=>tr.filter(r=>effS(r)===s).length,due=tr.filter(r=>r.fu&&r.fu<=t&&![ST_Y,ST_N].includes(effS(r))).length;
  $('stats').innerHTML=[['Lead ทั้งหมด',tr.length],['ปิดการขาย',n(ST_Y)],['รอการตัดสินใจ',n(ST_S)],['ไม่สนใจ',n(ST_N)],['ต้อง Follow-up วันนี้/เลยกำหนด',due]]
   .map(([a,b])=>`<div class="st"><b>${N(b)}</b><span>${a}</span></div>`).join('');
- fuBadge();renderDash();fitWrap();document.querySelectorAll('#tb td').forEach(td=>{if(!td.querySelector('svg,button')&&!td.title)td.title=td.textContent.trim()});
+ fuBadge();if(!$('vD').classList.contains('hid'))renderDash();fitWrap();document.querySelectorAll('#tb td').forEach(td=>{if(!td.querySelector('svg,button')&&!td.title)td.title=td.textContent.trim()});
  $('adsl').innerHTML=[...new Set(rows.map(r=>r.ads).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join('');
  $('cl').innerHTML=[...new Set(rows.map(r=>r.country).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join('');
 }
