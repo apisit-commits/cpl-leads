@@ -453,8 +453,8 @@ header .hd #who{display:none!important}
    <label class="f">สูง (ซม.)<b class="rq">*</b><input id="rb_h" type="number" min="0"></label>
    <label class="f">น้ำหนัก/กล่อง (กก.)<b class="rq">*</b><input id="rb_k" type="number" min="0" step="0.5"></label></div>
    <h3 style="margin-top:16px">บริการ</h3><div id="rb_opts" class="rb-opts"></div></div>
-  <div class="pn"><h3>ราคาที่เสนอลูกค้า</h3><div id="rb_who" class="sub"></div><div class="rb-big" id="rb_big">-</div><div class="sub" id="rb_unit"></div><div id="rb_ln"></div><div id="rb_ap" style="margin-top:8px"></div>
-   <div class="rb-row" style="margin-top:14px"><button class="btn p" id="rb_sv" type="button">บันทึกเข้า Lead</button><button class="btn" id="rb_cp" type="button">คัดลอกข้อความ</button><span class="sub" id="rb_st"></span></div></div>
+  <div class="pn"><h3>เรทที่ได้</h3><div id="rb_who" class="sub"></div><div class="rb-big" id="rb_big">-</div><div class="sub" id="rb_unit"></div><div id="rb_ln"></div><div id="rb_ap" style="margin-top:8px"></div>
+   <div class="rb-row" style="margin-top:14px"><button class="btn p" id="rb_sv" type="button">ใช้ในใบเสนอราคา</button></div></div>
  </div></div></div>
 <div id="vRS" class="hid"><div class="rbw">
  <div class="pn"><h3>ไฟล์ Rate</h3><div class="rb-row"><input type="file" id="rs_f" accept=".xlsx,.xls"><span class="sub" id="rs_cur"></span></div><div id="rs_sh" style="margin-top:12px"></div>
@@ -462,7 +462,7 @@ header .hd #who{display:none!important}
  <div class="pn"><h3>กฎค่าธรรมเนียมเสริม</h3><div style="overflow-x:auto"><table id="rs_rl"></table></div></div>
  <div class="rb-split">
   <div class="pn"><h3>รหัสไปรษณีย์ Remote Area</h3><div id="rs_rm"></div></div>
-  <div class="pn"><h3>ปรับราคา (%)</h3><div class="g" style="grid-template-columns:1fr"><label class="f">FedEx<input id="rs_aF" type="number" step="0.5"></label><label class="f">Aramex<input id="rs_aA" type="number" step="0.5"></label></div>
+  <div class="pn"><h3>ค่าน้ำมันและปรับราคา</h3><div class="g"><label class="f">ค่าน้ำมัน FedEx (%)<input id="rs_fF" type="number" step="0.01"></label><label class="f">ค่าน้ำมัน Aramex (%)<input id="rs_fA" type="number" step="0.01"></label><label class="f">ปรับราคา FedEx (%)<input id="rs_aF" type="number" step="0.5"></label><label class="f">ปรับราคา Aramex (%)<input id="rs_aA" type="number" step="0.5"></label></div>
    <div class="rb-row" style="margin-top:14px"><button class="btn p" id="rs_pub" type="button">เผยแพร่</button><span class="sub" id="rs_st"></span></div></div>
  </div></div></div>
 <div id="vS" class="hid"><div class="mktabs" id="sst"><button type="button" data-s="o" class="on">ตัวเลือกในฟอร์ม</button><button type="button" data-s="u">จัดการผู้ใช้</button></div><div class="pn" id="vSu"></div><div id="vSo"></div>
@@ -1479,7 +1479,9 @@ async function rLoad(){if(RS)return RS;
 async function rSave(set){let ok=false;try{const{error}=await sb.from('rate_sets').insert(set);ok=!error}catch(e){}
  if(!ok){try{localStorage.setItem(RK,JSON.stringify(set))}catch(e){}}RS=set}
 /* ---- nav / gate ---- */
-const gate=()=>{['R','RS'].forEach(k=>$('t'+k).classList.toggle('hid',!isJ()))};
+const OSV_OV='ค่าธรรมเนียมสินค้าเกินขนาด/เกินน้ำหนัก',OSV_RM='ค่าพื้นที่ห่างไกล (Remote Area)';
+const gate=()=>{['R','RS'].forEach(k=>$('t'+k).classList.toggle('hid',!isJ()));
+ if(isJ()&&!OSV.includes(OSV_OV)){OSV.push(OSV_OV,OSV_RM);try{svcRender()}catch(e){}}};
 const _ar=applyRoleUI;applyRoleUI=function(p){_ar(p);gate()};
 const _tab=tab;
 tab=function(k){const mine=k==='R'||k==='RS';
@@ -1488,7 +1490,7 @@ tab=function(k){const mine=k==='R'||k==='RS';
  if(mine){['L','D','S','C','N','F','W'].forEach(x=>$('v'+x).classList.add('hid'));['L','A','M','K','E','C','S','N','F','W'].forEach(x=>$('t'+x).classList.remove('on'));$('tDB').classList.remove('on');$('fnb').classList.add('hid');k==='R'?rInit():rsInit();return}
  _tab(k)};
 $('tR').onclick=()=>tab('R');$('tRS').onclick=()=>tab('RS');
-if(typeof EN==='object')Object.assign(EN,{'ราคา Rate':'Rate Quote','ตั้งค่า Rate':'Rate Settings'});
+if(typeof EN==='object')Object.assign(EN,{'ราคา Rate':'Rate','ตั้งค่า Rate':'Rate Settings','ค่าธรรมเนียมสินค้าเกินขนาด/เกินน้ำหนัก':'Oversize / overweight charge','ค่าพื้นที่ห่างไกล (Remote Area)':'Remote Area surcharge'});
 gate();
 /* ---- engine ---- */
 const rl=id=>(RS.rules||[]).find(r=>r.id===id);
@@ -1508,14 +1510,15 @@ function calc(svc,car,country,postal,x){
  else{for(const id of['aos','aow']){const r=rl(id);if(!r)continue;const h=hit(r,x);if(h.length)F.push({r,h})}}
  let mp=0;F.forEach(f=>{if(f.r.min)mp=Math.max(mp,f.r.min)});
  const pb=Math.max(per,mp),chw=Math.ceil(pb*n*2)/2,base=lookup(svc,country,chw);if(!base)return null;
- const adj=1+((RS.adj&&RS.adj[car])||0)/100;let total=base.price*adj;const lines=[],fees=[];
+ const adj=1+((RS.adj&&RS.adj[car])||0)/100,fp=(RS.fuel&&RS.fuel[car])||0,fuel=base.price*adj*fp/100;let total=base.price*adj+fuel;const lines=[],fees=[];let ovAmt=0,rmAmt=0;
  lines.push({t:'ค่าขนส่ง',s:'น้ำหนักที่ใช้คิด '+chw+' กก. ('+(pb>x.W?(vol>=mp?'ปริมาตร '+vol+' กก./กล่อง':'ขั้นต่ำ '+mp+' กก./กล่อง'):'น้ำหนักจริง')+') · '+base.basis,v:base.price*adj});
+ if(fuel>0)lines.push({t:'ค่าน้ำมัน',s:fp+'% ของค่าขนส่ง',v:fuel});
  let appr=false;
- F.forEach(f=>{const v=f.r.p*n;total+=v;if(f.r.appr)appr=true;fees.push(f.r.n);lines.push({t:f.r.n,s:f.h.join(' · ')+' · '+N(f.r.p)+' บาท × '+n+' ชิ้น',v})});
+ F.forEach(f=>{const v=f.r.p*n;total+=v;ovAmt+=v;if(f.r.appr)appr=true;fees.push(f.r.n);lines.push({t:f.r.n,s:f.h.join(' · ')+' · '+N(f.r.p)+' บาท × '+n+' ชิ้น',v})});
  const rm=remote(car==='F'?'FedEx':'Aramex',country,postal);
  if(rm){let v,s;if(car==='F'){const t=REM_F[rm]||REM_F.C;v=rm==='A'?200:Math.max(t[0],t[1]*chw);s='ระดับ '+(REM_F[rm]?rm:'C')+(rm==='A'?' · 200 บาท/ชิ้น':' · '+t[1]+' บาท/กก. ขั้นต่ำ '+N(t[0]))}else{v=Math.max(REM_A[0],REM_A[1]*chw);s=REM_A[1]+' บาท/กก. ขั้นต่ำ '+N(REM_A[0])}
-  total+=v;fees.push('Remote Area');lines.push({t:'Remote Area',s:'รหัส '+String(postal).toUpperCase()+' · '+s,v})}
- return{total,lines,appr,chw,fees}}
+  total+=v;rmAmt=v;fees.push('Remote Area');lines.push({t:'Remote Area',s:'รหัส '+String(postal).toUpperCase()+' · '+s,v})}
+ return{total,lines,appr,chw,fees,freight:base.price*adj+fuel,ovAmt,rmAmt}}
 /* ---- sales view ---- */
 function rInit(){rLoad().then(()=>{
  const dl=$('rb_dl');const m={};dl.innerHTML=rows.filter(r=>can(r)).slice(0,500).map(r=>{let k=r.name+' · '+(r.country||'-');if(m[k])k+=' #'+r.id;m[k]=String(r.id);return `<option value="${esc(k)}"></option>`}).join('');window.__rbm=m;
@@ -1536,28 +1539,31 @@ function rv(){
  const rF=country&&postal?remote('FedEx',country,postal):null;
  $('rb_rem').innerHTML=!postal||!country?'':(rF===undefined&&remote('Aramex',country,postal)===undefined)?'<span class="rb-tg inf">ไม่มีรายชื่อ Remote Area</span>':(rF&&rF!==false)||remote('Aramex',country,postal)?'<span class="rb-tg wn">Remote Area</span><span>รหัส '+esc(postal.toUpperCase())+(rF&&rF!==true?' · FedEx ระดับ '+rF:'')+'</span>':'<span class="rb-tg ok">ไม่อยู่ในพื้นที่ห่างไกล</span>';
  if(!cur){$('rb_big').textContent='-';$('rb_ln').innerHTML='';$('rb_who').textContent='';$('rb_unit').textContent='';$('rb_ap').innerHTML='';sv0();return}
- const r=cur.r;LASTQ={svc:cur.name,tot:Math.round(r.total),fees:r.fees,lines:r.lines,country,dir:DIR,x};
- $('rb_who').textContent=cur.name+' · '+country+' · '+(DIR==='ex'?'ส่งออก':'นำเข้า');$('rb_big').textContent='฿'+N(r.total);
- $('rb_unit').textContent=x.n+' กล่อง · '+x.L0+'×'+x.W0+'×'+x.H0+' ซม. · '+x.W+' กก./กล่อง';
+ const r=cur.r,act=x.n*x.W,vq=Math.ceil(x.n*x.L0*x.W0*x.H0/5000),qq=Math.max(act,vq,0.5),rate=Math.round(r.freight/qq*100)/100;
+ LASTQ={svc:cur.name,tot:Math.round(r.total),fees:r.fees,lines:r.lines,country,dir:DIR,x,rate,qq,r};
+ $('rb_who').textContent=cur.name+' · '+country+' · '+(DIR==='ex'?'ส่งออก':'นำเข้า');$('rb_big').textContent='฿'+rate.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})+' /กก.';
+ $('rb_unit').textContent=x.n+' กล่อง · '+x.L0+'×'+x.W0+'×'+x.H0+' ซม. · '+x.W+' กก./กล่อง · น้ำหนักที่ใช้คิดในใบเสนอราคา '+qq+' กก.';
  $('rb_ln').innerHTML=r.lines.map(l=>`<div class="rb-kv"><span>${esc(l.t)}<small>${esc(l.s)}</small></span><span>${N(l.v)}</span></div>`).join('')+`<div class="rb-kv tot"><span>ราคารวม (บาท)</span><span>${N(r.total)}</span></div>`;
  $('rb_ap').innerHTML=r.appr?'<span class="rb-tg wn">ต้องขออนุมัติจากค่ายก่อนส่ง</span>':'';sv0()}
-function sv0(){const id=window.__rbm&&window.__rbm[$('rb_q').value.trim()];$('rb_sv').disabled=!(LASTQ&&id);$('rb_cp').disabled=!LASTQ}
+function sv0(){$('rb_sv').disabled=!LASTQ}
 $('rb_d').onclick=e=>{const b=e.target.closest('button');if(!b)return;DIR=b.dataset.d;[...$('rb_d').children].forEach(x=>x.classList.toggle('on',x===b));PICK=null;if(RS){fillC();rv()}};
 $('rb_opts').onclick=e=>{const b=e.target.closest('[data-k]');if(!b||b.disabled)return;PICK=b.dataset.k;rv()};
 ['rb_c','rb_p','rb_n','rb_l','rb_w','rb_h','rb_k'].forEach(i=>$(i).addEventListener('input',rv));
 $('rb_q').addEventListener('input',sv0);
-$('rb_sv').onclick=async()=>{const id=window.__rbm[$('rb_q').value.trim()],r=rows.find(x=>String(x.id)===id);if(!r||!can(r)||!LASTQ){$('rb_st').textContent='ไม่มีสิทธิ์แก้ไข Lead นี้';return}
- const qt={t:today(),m:LASTQ.svc,tot:LASTQ.tot,f:LASTQ.fees,by:profile&&profile.name||'',rv:RS.ver||''};
- const d={...(r.detail||{}),qt};const{error}=await sb.from('leads').update({detail:d}).eq('id',r.id);
- if(error){$('rb_st').textContent='บันทึกไม่สำเร็จ';return}r.detail=d;$('rb_st').textContent='บันทึกแล้ว'};
-$('rb_cp').onclick=async()=>{if(!LASTQ)return;const q=LASTQ,x=q.x;
- const t=['ใบเสนอราคา '+q.svc,(q.dir==='ex'?'ส่งออก ':'นำเข้า ')+q.country,x.n+' กล่อง '+x.L0+'x'+x.W0+'x'+x.H0+' ซม. '+x.W+' กก./กล่อง',...q.lines.map(l=>l.t+' '+N(l.v)+' บาท'),'รวม '+N(q.tot)+' บาท'].join('\n');
- try{await navigator.clipboard.writeText(t);$('rb_st').textContent='คัดลอกแล้ว'}catch(e){$('rb_st').textContent='คัดลอกไม่สำเร็จ'}};
+$('rb_sv').onclick=()=>{if(!LASTQ)return;const q=LASTQ,x=q.x,id=window.__rbm&&window.__rbm[$('rb_q').value.trim()];
+ tab('C');
+ try{if(id){const k=Object.keys(CLM).find(k=>CLM[k]===id);if(k){$('cl_q').value=k;calcPick()}}}catch(e){}
+ $('cl_mode').value='ac';
+ cgRender('cgc',[{q:x.n,l:x.L0,w:x.W0,h:x.H0,kg:x.W,wu:'KILOGRAM(S)',pk:'CARTON(S)',it:''}]);
+ $('cl_rate').value=String(q.rate);
+ const set=(name,amt)=>{const i=OSV.indexOf(name);if(i<0)return;const c=$('cl_svc').querySelector(`input[type=checkbox][data-i="${i}"]`),p=$('cl_svc').querySelector(`[data-p="${i}"]`);if(!c||!p)return;c.checked=amt>0;p.value=amt>0?String(Math.round(amt)):''};
+ set(OSV_OV,q.r.ovAmt);set(OSV_RM,q.r.rmAmt);
+ window.calc()};
 /* ---- settings view ---- */
 function rsInit(){rLoad().then(()=>{if(!DR&&RS)DR=clone(RS);if(!DR)DR={data:{},sheets:[],rules:clone(DEF),remote:{},adj:{F:0,A:0},ver:'',eff:''};rsDraw()})}
 function rsDraw(){const s=DR;
  $('rs_cur').textContent=RS?'ใช้งานอยู่ '+(RS.ver||'')+' · มีผล '+(RS.eff||'')+(RS.file?' · '+RS.file:''):'';
- $('rs_v').value=s.ver||'';$('rs_e').value=s.eff||'';$('rs_aF').value=(s.adj&&s.adj.F)||0;$('rs_aA').value=(s.adj&&s.adj.A)||0;
+ $('rs_v').value=s.ver||'';$('rs_e').value=s.eff||'';$('rs_aF').value=(s.adj&&s.adj.F)||0;$('rs_aA').value=(s.adj&&s.adj.A)||0;$('rs_fF').value=(s.fuel&&s.fuel.F)||0;$('rs_fA').value=(s.fuel&&s.fuel.A)||0;
  const sh=s.sheets&&s.sheets.length?s.sheets:Object.keys(s.data||{}).map(k=>({k,ok:true,t:k,countries:Object.keys(s.data[k].pkg).length}));
  $('rs_sh').innerHTML=sh.length?'<table><tr><th>ข้อมูล</th><th>ชีต</th><th>ประเทศ</th><th>สถานะ</th></tr>'+sh.map(r=>`<tr><td class="nm">${esc(r.t||'')}</td><td class="nm">${esc(r.n||'')}</td><td>${r.ok?r.countries:'-'}</td><td>${r.ok?'<span class="rb-tg ok">อ่านได้</span>':'<span class="rb-tg er">ไม่พบ</span>'}</td></tr>`).join('')+'</table>':'';
  $('rs_rl').innerHTML='<tr><th>ค่าย</th><th>ค่าธรรมเนียม</th><th>เงื่อนไข (ข้อใดข้อหนึ่ง)</th><th>ราคา (บาท/ชิ้น)</th><th>คิดขั้นต่ำ (กก.)</th></tr>'+(s.rules||[]).map((r,i)=>`<tr><td class="nm">${r.c}</td><td>${esc(r.n)}${r.appr?' <span class="rb-tg wn">ต้องอนุมัติ</span>':''}</td><td>${r.cond.map((c,j)=>esc(c[0])+` <input type="number" data-r="${i}" data-c="${j}" value="${c[1]}">`).join('<br>')}</td><td><input type="number" data-r="${i}" data-p="1" value="${r.p}"></td><td>${r.min?`<input type="number" data-r="${i}" data-m="1" value="${r.min}">`:'-'}</td></tr>`).join('');
@@ -1573,8 +1579,8 @@ $('rs_rm').addEventListener('change',async e=>{const t=e.target;if(!t.dataset.rm
   DR.remote=DR.remote||{};DR.remote[car]=map;rsDraw()}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}});
 $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$('rs_st').textContent='ยังไม่ได้เลือกไฟล์ Rate';return}
  const v=$('rs_v').value.trim(),e=$('rs_e').value.trim();if(!v||!/^\d{2}\/\d{2}\/\d{4}$/.test(e)){$('rs_st').textContent='กรอกเวอร์ชันและวันที่มีผลให้ครบ';return}
- DR.ver=v;DR.eff=e;DR.adj={F:+$('rs_aF').value||0,A:+$('rs_aA').value||0};
- await rSave({kind:'courier',ver:v,eff:e,file:DR.file||'',data:DR.data,rules:DR.rules,remote:DR.remote||{},adj:DR.adj,by:profile&&profile.name||''});
+ DR.ver=v;DR.eff=e;DR.adj={F:+$('rs_aF').value||0,A:+$('rs_aA').value||0};DR.fuel={F:+$('rs_fF').value||0,A:+$('rs_fA').value||0};
+ await rSave({kind:'courier',ver:v,eff:e,file:DR.file||'',data:DR.data,rules:DR.rules,remote:DR.remote||{},adj:DR.adj,fuel:DR.fuel,by:profile&&profile.name||''});
  $('rs_st').textContent='เผยแพร่แล้ว';rsDraw()};
 })();
 
