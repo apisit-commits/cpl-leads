@@ -324,6 +324,8 @@ legend{font-size:13px}
 #vL .lhd{justify-content:flex-end;align-items:center;margin-bottom:10px}#vL .lhd .seg{margin:0 auto 0 0}
 .dtop{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}.dtop .mktabs,.dtop .dh{margin:0}
 #vW .nh{justify-content:flex-start;margin-bottom:10px}#vW .nh .mktabs{margin:0}#vW .nh .nbar{margin-left:auto}
+.chm{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap}.ch2i{display:inline-flex;opacity:.85;transform:scale(.85);transform-origin:left center;margin-right:-3px}
+#ch2 span{padding:3px}
 </style>
 
 </head>
@@ -397,7 +399,7 @@ legend{font-size:13px}
     <label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required></label>
     <label class="f">เบอร์โทรศัพท์<input name="d_p0" type="tel" autocomplete="off"></label>
   </div>
-  <div style="margin-top:12px"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div></fieldset>
+  <div style="margin-top:12px"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div><div style="margin-top:10px"><div class="sub" style="margin-bottom:4px">ช่องทางอื่นที่ลูกค้าทักมาด้วย</div><div class="chips pico" id="ch2"></div></div></fieldset>
   <fieldset><legend>รายละเอียดงาน (แทนการพิมพ์ยาว)</legend><div id="ints"></div><button type="button" class="btn sm" id="intadd">+ เพิ่มบริการที่สนใจ</button>
   <label class="f" style="margin-top:12px">หมายเหตุเพิ่มเติม (ถ้ามี)<input name="note"></label></fieldset>
   <fieldset id="cgb"><legend>สินค้า</legend><div class="sub" style="margin:0 0 6px">ประเภทสินค้า · ขนาด/น้ำหนัก</div><div id="cgf"></div></fieldset>
@@ -524,10 +526,10 @@ function pvApply(v){if(!PVR){PVR=profile;PVW=WHO}if(!PVR||PVR.role!=='admin')ret
  $('pvs').classList.toggle('pv',role!=='admin');buildSeg();setSales();refresh();
  tab('N')}
 function fill(sel,arr,all){sel.innerHTML=(all?`<option value="">${all}</option>`:'')+arr.map(v=>`<option value="${esc(v)}">${esc(v)||'—'}</option>`).join('')}
-function chips(id,name,arr,type){$(id).innerHTML=arr.map((v,i)=>`<label><input type="${type}" name="${name}" value="${v}" ${type=='radio'&&i==0&&name!='channel'?'':''}><span>${name=='channel'?chIcon(v):v}</span></label>`).join('')}
+function chips(id,name,arr,type){$(id).innerHTML=arr.map((v,i)=>`<label><input type="${type}" name="${name}" value="${v}" ${type=='radio'&&i==0&&name!='channel'?'':''}><span>${name=='channel'||name=='ch2'?chIcon(v):v}</span></label>`).join('')}
 
 function init(){
- chips('ch','channel',OPT.channel,'radio');intsRender([]);
+ chips('ch','channel',OPT.channel,'radio');chips('ch2','ch2',OPT.channel,'checkbox');intsRender([]);
  const f=$('fm_');
  fill(f.status,OPT.status);fill(f.reason,OPT.reason);fillDial();fillItems();$('ctp').addEventListener('change',togCt);f.addEventListener('invalid',()=>{$('dd').open=true},true);togCt();
  fill($('fs'),OPT.status,'ทุก Status');fill($('fc'),OPT.channel,'ทุกช่องทาง');fill($('fm'),OPT.svc,'ทุกบริการ');
@@ -701,7 +703,7 @@ function renderDash(){
  const adsTail=g=>{const T=['ลูกค้าเก่า','(ไม่ระบุ Ads)'];return[...g.filter(x=>!T.includes(x[0])),...T.map(t=>g.find(x=>x[0]===t)).filter(Boolean)]};
  const ds=l.map(r=>r.date).sort(),mo=ds.length&&(new Date(ds[ds.length-1])-new Date(ds[0]))/864e5>62;
  const trend=vcol(mo?'Lead รายเดือน':'Lead รายวัน',grp(r=>mo?r.date.slice(0,7):r.date,'').sort((x,y)=>x[0].localeCompare(y[0])).slice(-31).map(([k,v])=>[mo?k:k.slice(5),v.length,cnt(v,ST_Y)]),'Lead','ปิดการขาย');
- const U='(ไม่ระบุ)',ch=grp(r=>r.channel,U),cty=grp(r=>r.country?r.country.split(/\s*,\s*/):'',U);
+ const U='(ไม่ระบุ)',ch=grp(r=>r.channel,U),chAll=()=>l.some(r=>r.detail&&r.detail.ch2&&r.detail.ch2.length)?bars(TT('ทักมาตามช่องทาง (รวมช่องทางอื่น)','Contacts by channel (incl. other channels)'),grp(r=>[r.channel,...((r.detail&&r.detail.ch2)||[])].filter(Boolean),U),10):'',cty=grp(r=>r.country?r.country.split(/\s*,\s*/):'',U);
  const nf=l.filter(r=>!closedR(r)&&!okS(r.fu_status)).length,rw=(t,a,b,c)=>`<tr><td>${t}</td><td class="num">${N(a)}</td><td class="num">${N(b)}</td><td class="num">${N(c)}</td></tr>`;
  const sum=`<div class="pn w8"><h3>สรุปสถานะ · สถานะหลัก เทียบ สถานะการติดตาม</h3><table><thead><tr><th style="position:static">สถานะ</th><th class="num" style="position:static">สถานะหลัก</th><th class="num" style="position:static">สถานะการติดตาม</th><th class="num" style="position:static">ใช้นับ KPI</th></tr></thead><tbody>`+rw('ปิดการขาย',l.filter(r=>r.status===ST_Y).length,l.filter(r=>r.fu_status===ST_Y).length,W)+[ST_S,ST_N].map(s=>rw(s,cM(l,s),cF(l,s),cn(s))).join('')+rw('ยังไม่ระบุ Follow-up','-',nf,'-')+`</tbody></table></div>`;
  const rb=(t,g,n,fn)=>{fn=fn||lb;g=g.map(([k,v])=>[k,v,amt(v)]).filter(x=>x[2]>0).sort((x,y)=>y[2]-x[2]).slice(0,n||8);const mx=Math.max(1,...g.map(x=>x[2]));return `<div class="pn"><h3>${t}</h3>${g.length?g.map(([k,v,a])=>`<div class="br" style="grid-template-columns:120px 1fr 110px"><span title="${esc(k)}">${fn(k)}</span><i style="width:${a/mx*100}%"></i><span class="num">฿${N(a)}</span></div>`).join(''):'<div class="sub">ยังไม่มียอดปิดงาน</div>'}</div>`};
@@ -709,8 +711,8 @@ function renderDash(){
 const sstrip=(()=>{const g={};l.forEach(r=>{const k=dkey((r.svc||[])[0]);if(k){const e=g[k]=g[k]||{n:0,w:0};e.n++;if(effS(r)===ST_Y)e.w++}});const L={air:TT('เครื่องบิน','Air'),sea:TT('เรือ','Sea'),truck:TT('รถ','Truck'),train:TT('รถไฟ','Rail')},o=['air','sea','truck','train'].filter(k=>g[k]);if(!o.length)return'';return `<div class="pn w12${o.length<3?' slim':''}"><h3>${TT('สรุปตามบริการขนส่ง','By transport')}</h3><div class="svs">${o.map(k=>`<div><span class="ib">${dsv(k,26)}</span><span><b>${N(g[k].n)}</b><span class="s">${L[k]} · ${pc(g[k].n,T)}</span><br><em>${TT('ปิดการขาย','Closed')} ${N(g[k].w)}</em></span></div>`).join('')}</div></div>`})();
 const osg=(()=>{const m={};l.forEach(r=>{const q=r.detail&&r.detail.qt;if(q&&q.f)q.f.forEach(n=>{(m[n]=m[n]||[]).push(r)})});return Object.entries(m).sort((x,y)=>y[1].length-x[1].length)})(),osT=l.filter(r=>r.detail&&r.detail.qt).length,osp=osg.length?stb(TT('บริการเสริมที่ลูกค้าเลือก','Add-on services selected')+' ('+TT('จากใบเสนอราคา ','from ')+N(osT)+TT(' ราย',' quoted leads')+')',osg.map(([k,v])=>[TR(k),v]),12):'';
  let h='';
- if(dashMode==='A')h=sdn+sum+stb('ประสิทธิภาพตาม Ads (Lead และผลลัพธ์)',adsTail(grp(r=>r.ads,'(ไม่ระบุ Ads)')),25,1)+bars('Ads ที่ได้ Lead มากสุด',grp(r=>r.ads,'(ไม่ระบุ Ads)'),10)+bars('Ads ที่ปิดได้ (Yes) มากสุด',grp(r=>won(r)?(r.ads||'(ไม่ระบุ Ads)'):'',''),10)+donut('Lead ตามช่องทาง',ch)+trend;
- else if(dashMode==='M')h=sdn+sum+(tm?'':stb('เปรียบเทียบทีมขาย',grp(r=>TEAMS[r.team],'')))+osp+stb('แบรนด์',grp(r=>r.brand,U))+stb('โปรโมชัน',grp(r=>r.promo,U))+donut('Lead ตามช่องทาง',ch)+bars('ประเทศที่ลูกค้าสอบถาม',cty,10,lbc)+donut('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+donut('บริการที่ลูกค้าสนใจ',grp(r=>r.svc,''))+bars('เหตุผลที่ลูกค้ายังไม่สนใจ',grp(r=>effS(r)===ST_N?(r.reason||'(ไม่ระบุเหตุผล)'):'',''),8)+donut('สถานะหลัก',grp(r=>r.status,''),3,SCOL)+donut('สถานะการติดตาม',grp(r=>r.fu_status,''),3,SCOL)+trend;
+ if(dashMode==='A')h=sdn+sum+stb('ประสิทธิภาพตาม Ads (Lead และผลลัพธ์)',adsTail(grp(r=>r.ads,'(ไม่ระบุ Ads)')),25,1)+bars('Ads ที่ได้ Lead มากสุด',grp(r=>r.ads,'(ไม่ระบุ Ads)'),10)+bars('Ads ที่ปิดได้ (Yes) มากสุด',grp(r=>won(r)?(r.ads||'(ไม่ระบุ Ads)'):'',''),10)+donut('Lead ตามช่องทาง',ch)+chAll()+trend;
+ else if(dashMode==='M')h=sdn+sum+(tm?'':stb('เปรียบเทียบทีมขาย',grp(r=>TEAMS[r.team],'')))+osp+stb('แบรนด์',grp(r=>r.brand,U))+stb('โปรโมชัน',grp(r=>r.promo,U))+donut('Lead ตามช่องทาง',ch)+chAll()+bars('ประเทศที่ลูกค้าสอบถาม',cty,10,lbc)+donut('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+donut('บริการที่ลูกค้าสนใจ',grp(r=>r.svc,''))+bars('เหตุผลที่ลูกค้ายังไม่สนใจ',grp(r=>effS(r)===ST_N?(r.reason||'(ไม่ระบุเหตุผล)'):'',''),8)+donut('สถานะหลัก',grp(r=>r.status,''),3,SCOL)+donut('สถานะการติดตาม',grp(r=>r.fu_status,''),3,SCOL)+trend;
  else if(dashMode==='E'){const mo2=grp(r=>(r.deal_date||r.date||'').slice(0,7),'');h=ceoK+osp+vcol('ยอดปิดงานรายเดือน (ตามวันที่ปิดได้)',mo2.sort((x,y)=>x[0].localeCompare(y[0])).slice(-24).map(([k,v])=>[k,amt(v)]),'ยอดที่ปิดได้ (บาท)',null,'฿')+sdn+donut('สัดส่วนยอดปิดตามบริการ',grp(r=>r.svc,''),6,null,amt)+donut('สัดส่วนยอดปิดตามช่องทาง',ch,6,null,amt)+(tm?'':stb('เปรียบเทียบทีมขาย',grp(r=>TEAMS[r.team],'')))+stb('KPI รายเซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)',base),30)+rb('ยอดปิดตามเซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)'),10)+rb('ยอดปิดตามประเทศ',cty,10,lbc)+rb('ยอดปิดตามแบรนด์',grp(r=>r.brand,U))+rb('ยอดปิดตามนำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+sum+trend}
  else h=sdn+vcol('Lead และการปิดการขายรายเซลล์',grp(r=>r.sales,'(ไม่ระบุ)',base).map(([k,v])=>[k,v.length,cnt(v,ST_Y)]),'Lead','ปิดการขาย')+sum+stb('KPI รายเซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)',base),30)+`<div class="sub w12">ลูกค้าที่ปิดได้ (Yes) ของ <b>${esc(sl||'เซลล์ทุกคน')}</b> · ตัวเลขหน้าแท่ง = จำนวนที่ปิดได้ · % = ปิดได้กี่ % ของ Lead กลุ่มนั้น</div>`+wr('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+wr('ประเทศ',cty,10,lbc)+wr('บริการ',grp(r=>r.svc,''))+wr('ช่องทาง',ch)+wr('แบรนด์',grp(r=>r.brand,U))+wr('Ads',grp(r=>r.ads,'(ไม่ระบุ Ads)'),10)+wr('โปรโมชัน',grp(r=>r.promo,U));
  $('dg').innerHTML=sstrip+h;
@@ -727,11 +729,13 @@ function openForm(id){
  if(r.channel)f.channel.value=r.channel;
  intsRender(intsFrom(r));
  cgRender('cgf',(r.cargo&&r.cargo.items)||[]);
- {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'&&k!=='p0'));['d_ph','d_ctt'].forEach(n=>{delete f[n].dataset.t;delete f[n].dataset.sy});f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d)}
- f.querySelectorAll('input[name=channel]').forEach(i=>i.checked=i.value===r.channel)
+ {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'&&k!=='p0'&&k!=='ch2'));['d_ph','d_ctt'].forEach(n=>{delete f[n].dataset.t;delete f[n].dataset.sy});f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d)}
+ f.querySelectorAll('input[name=channel]').forEach(i=>i.checked=i.value===r.channel);{const x=(r.detail&&r.detail.ch2)||[];f.querySelectorAll('input[name=ch2]').forEach(i=>i.checked=x.includes(i.value));ch2Sync()}
  {const bl=f.brand.closest('label.f');if(team==='B'){if(![...f.brand.options].some(o=>o.value==='CPLEx'))f.brand.add(new Option('CPLEx','CPLEx'));f.brand.value='CPLEx';bl.classList.add('hid')}else bl.classList.remove('hid')}
  if(!id&&!f.sales.value)f.sales.value=profile.role==='keyer'?'':(profile.name||'');toggleReason();$('dlg').showModal();markEmpty();
 }
+function ch2Sync(){const f=$('fm_'),c=(f.querySelector('input[name=channel]:checked')||{}).value;f.querySelectorAll('input[name=ch2]').forEach(i=>{const l=i.closest('label'),same=i.value===c;if(same)i.checked=false;l.classList.toggle('hid',same)})}
+document.addEventListener('change',e=>{if(e.target&&e.target.name==='channel')ch2Sync()});
 function markEmpty(){
  const f=$('fm_'),st=f.status.value,closed=[ST_Y,ST_N].includes(st);
  ['date','ads','name','fu','fu_status','reason','quo','sales','brand','promo'].forEach(k=>{const e=f[k];if(!e)return;const need=!((k==='fu'||k==='fu_status')&&closed)&&!(k==='reason'&&formEff(f)!==ST_N);const lb=e.closest('label.f');if(lb)lb.classList.toggle('norq',!need);e.classList.toggle('em-f',need&&!e.value.trim())});
@@ -747,7 +751,7 @@ function onSave(e){
   reason:formEff(f)===ST_N?v('reason'):'',sales:v('sales'),brand:v('brand'),promo:v('promo')};
  if(DEAL_OK){o.deal_amt=v('deal_amt')?pn(v('deal_amt')):null;o.deal_date=iso('deal_date')||(o.deal_amt?today():null)}
  if(!editId&&!o.fu&&![ST_Y,ST_N].includes(o.status)&&o.fu_status!==ST_Y)o.fu=addDays(o.date||today(),fuDays());
- {const it=cgGet('cgf'),d={};o.cargo=it.length?{items:it}:null;DK.forEach(k=>{const x=k==='sd'?iso('d_sd'):(k==='cpd'||k==='ctd')?dialCode(v('d_'+k)):v('d_'+k);if(x)d[k]=x});if((f.querySelector('input[name=d_cm]:checked')||{}).value==='Y'){const cj=cnRaw().filter(x=>x.t);if(cj.length){d.cj=cj;d.cn=cj.map(x=>x.t+(x.q>1?' x'+x.q:'')+(x.kg?' ('+x.kg.toLocaleString('en-US')+' kg)':'')).join(', ')}}{const ox=editId&&rows.find(y=>y.id===editId);if(ox&&ox.detail&&ox.detail.qt)d.qt=ox.detail.qt}if(ints.length>1)d.ints=ints;o.detail=Object.keys(d).length?d:null}
+ {const it=cgGet('cgf'),d={};o.cargo=it.length?{items:it}:null;DK.forEach(k=>{const x=k==='sd'?iso('d_sd'):(k==='cpd'||k==='ctd')?dialCode(v('d_'+k)):v('d_'+k);if(x)d[k]=x});if((f.querySelector('input[name=d_cm]:checked')||{}).value==='Y'){const cj=cnRaw().filter(x=>x.t);if(cj.length){d.cj=cj;d.cn=cj.map(x=>x.t+(x.q>1?' x'+x.q:'')+(x.kg?' ('+x.kg.toLocaleString('en-US')+' kg)':'')).join(', ')}}{const ox=editId&&rows.find(y=>y.id===editId);if(ox&&ox.detail&&ox.detail.qt)d.qt=ox.detail.qt}if(ints.length>1)d.ints=ints;{const c2=[...f.querySelectorAll('input[name=ch2]:checked')].map(i=>i.value).filter(x=>x!==o.channel);if(c2.length)d.ch2=c2}o.detail=Object.keys(d).length?d:null}
  saveLead(editId,o);
 }
 async function del(id){if(!await ask('ลบ Lead นี้?\nลบแล้วกู้คืนไม่ได้',{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ Lead',oke:'Delete lead',danger:true}))return;const bk=rows;rows=rows.filter(x=>x.id!==id);refresh();const{error}=await sb.from('leads').delete().eq('id',id);if(error){alert('ลบไม่สำเร็จ: '+error.message);rows=bk;reload()}}
@@ -755,7 +759,7 @@ const inLr=r=>{const a=$('lf').value,b=$('lt').value,d=r.date||'';return (!a||d>
 const inVm=r=>{const m=$('vm').value;return !m||(r.date||'').slice(0,7)===m};
 function filtered(){
  const q=$('q').value.toLowerCase(),s=$('fs').value,c=$('fc').value,a=$('fa').value,m=$('fm').value;
- return rows.filter(r=>r.team===team&&inVm(r)&&inLr(r)&&(!s||effS(r)===s)&&(!c||r.channel===c)&&(!a||r.sales===a)&&(!m||r.svc.some(x=>svcCat(x)===m))&&
+ return rows.filter(r=>r.team===team&&inVm(r)&&inLr(r)&&(!s||effS(r)===s)&&(!c||r.channel===c||((r.detail&&r.detail.ch2)||[]).includes(c))&&(!a||r.sales===a)&&(!m||r.svc.some(x=>svcCat(x)===m))&&
   (!q||[r.name,r.ads,r.country,r.note,r.quo].join(' ').toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
 }
 
@@ -952,6 +956,7 @@ Object.assign(EN,{"ประเภท": "Type", "ช่องส่งงาน"
 Object.assign(EN,{"วันที่": "Date", "วันกำหนดส่ง": "Due date", "วันกำหนด Approve": "Approve due", "ช่องส่งงาน (ลิงก์)": "Submitted link", "วางลิงก์ Drive / Docs / Sheets": "Paste Drive / Docs / Sheets link", "ขออนุมัติ (Approval)": "Request approval", "ลิงก์ส่งงาน": "Submitted link (Google Slides / Docs / Sheets / Drive)", "หัวข้อ": "Title"});
 Object.assign(EN,{"ZIMP · Out Source":"ZIMP · Out Source (Approval + Ads + News)"});
 Object.assign(EN,{"แดชบอร์ด": "Dashboard", "การตลาด": "Marketing"});
+Object.assign(EN,{"ช่องทางอื่นที่ลูกค้าทักมาด้วย":"Other channels the customer used"});
 Object.assign(EN,{"นำเข้า / ส่งออก": "Import / Export", "1. นำเข้า / ส่งออก": "1. Import / Export (both allowed)", "3. บริการที่ลูกค้าสนใจ": "3. Services of interest", "— เลือกบริการ —": "— Select service —", "+ เพิ่มบริการที่สนใจ": "+ Add another service", "สินค้า": "Products", "ประเภทสินค้า · ขนาด/น้ำหนัก": "Product type · size/weight (for pricing)", "คัดลอกเป็นข้อความ": "Copy as text", "ยอดปิดงาน และผู้รับผิดชอบ": "Closed deal & owner", "ยอดที่ปิดได้ (บาท)": "Closed amount (THB)", "วันที่ปิดได้": "Closed date", "ยอดปิด / เซลล์": "Closed amount / Sales", "รมยาไม้": "Wood fumigation", "งานของฉัน": "My follow-ups", "งานติดตามของฉัน": "My follow-ups", "ดูของเซลล์:": "View sales:", "แจ้งเตือน Follow-up อัตโนมัติหลังรับ Lead": "Auto follow-up reminder after a lead arrives", "วัน": "days", "แดชบอร์ด CEO": "CEO Dashboard", "CEO · ผู้บริหาร": "CEO · Executive", "(ไม่ระบุประเภท)": "(type n/a)"});
 
 /* ===== Marketing workspace ===== */
@@ -1214,7 +1219,7 @@ function render(){
  $('tb').innerHTML=l.slice(0,300).map(r=>`<tr${can(r)?` class="rw" data-id="${r.id}" title="คลิกเพื่อแก้ไข"`:''}>
   <td${E(r.date)}>${esc(fmtD(r.date))}</td><td${E(r.ads)}>${esc(r.ads)}</td><td${E(r.name)}><b>${esc(r.name)}</b></td>
   <td${E(r.dir||r.country||r.svc.length||r.note)}><div class="dl2">${cinfo(r)}${r.note?`<div class="sub">${esc(r.note)}</div>`:''}</div></td>
-  <td${E(r.channel)}>${chIcon(r.channel)}</td><td title="${r.fu?TT('ติดตาม: ','Follow-up: ')+fmtD(r.fu):''}"><span class="tag ${SC[dispSt(r)]||''}">${esc(dispSt(r))}</span>${r.deal_amt||r.deal_date?`<div class="sub" style="margin-top:3px">${r.deal_amt?`<b>${N(r.deal_amt)} ฿</b>`:''}${r.deal_amt&&r.deal_date?' · ':''}${r.deal_date?esc(fmtD(r.deal_date)):''}</div>`:''}</td>
+  <td${E(r.channel)}><span class="chm">${chIcon(r.channel)}${((r.detail&&r.detail.ch2)||[]).map(c=>`<span class="ch2i">${chIcon(c,20)}</span>`).join('')}</span></td><td title="${r.fu?TT('ติดตาม: ','Follow-up: ')+fmtD(r.fu):''}"><span class="tag ${SC[dispSt(r)]||''}">${esc(dispSt(r))}</span>${r.deal_amt||r.deal_date?`<div class="sub" style="margin-top:3px">${r.deal_amt?`<b>${N(r.deal_amt)} ฿</b>`:''}${r.deal_amt&&r.deal_date?' · ':''}${r.deal_date?esc(fmtD(r.deal_date)):''}</div>`:''}</td>
   
   <td${E(r.reason,effS(r)===ST_N)}>${esc(r.reason)}</td><td${E(r.sales)}>${esc(r.sales)}</td><td${E(r.brand&&r.promo)}>${esc(r.brand)}<div class="sub">${esc(r.promo)}</div></td>
   <td>${can(r)?`<button class="btn sm rb${r.detail?' p':''}" title="รายละเอียด" aria-label="รายละเอียด" onclick="openDetail(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg></button><button class="btn sm rb" title="แก้ไข" aria-label="แก้ไข" onclick="openForm(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>${profile.role!=='keyer'?`<button class="btn sm rb" title="ลบ" aria-label="ลบ" onclick="del(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>`:''}`:''}</td></tr>`).join('');
