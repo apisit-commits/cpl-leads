@@ -457,7 +457,8 @@ header .hd #who{display:none!important}
    <div class="rb-row" style="margin-top:14px"><button class="btn p" id="rs_pub" type="button">เผยแพร่</button><span class="sub" id="rs_st"></span></div></div>
  </div></div></div>
 <div id="vS" class="hid"><div class="mktabs" id="sst"><button type="button" data-s="o" class="on">ตัวเลือกในฟอร์ม</button><button type="button" data-s="u">จัดการผู้ใช้</button></div><div class="pn" id="vSu"></div><div id="vSo"></div>
- <div class="pn" style="margin-top:12px"><h3>นำเข้า Lead จาก Excel</h3><p class="sub" style="margin:0 0 10px">เลือกไฟล์ .xlsx ที่ต้องการนำเข้า</p><div class="oa"><input type="file" id="imf" accept=".xlsx,.xls"><button class="btn p sm" id="imb">เริ่มนำเข้า</button></div><pre id="imlog" class="sub" style="white-space:pre-wrap;margin:10px 0 0"></pre></div></div>
+ <div class="pn" style="margin-top:12px"><h3>นำเข้า Lead จาก Excel</h3><p class="sub" style="margin:0 0 10px">เลือกไฟล์ .xlsx ที่ต้องการนำเข้า</p><div class="oa"><input type="file" id="imf" accept=".xlsx,.xls"><button class="btn p sm" id="imb">เริ่มนำเข้า</button></div><pre id="imlog" class="sub" style="white-space:pre-wrap;margin:10px 0 0"></pre></div>
+ <div class="pn" style="margin-top:12px"><h3>ปรับข้อมูล Lead เดิม</h3><div class="oa"><label class="f">ถึงวันที่<input type="date" id="fxd" value="2026-09-30"></label><button class="btn p sm" id="fxb">ตรวจสอบและปรับข้อมูล</button></div><pre id="fxlog" class="sub" style="white-space:pre-wrap;margin:10px 0 0"></pre></div></div>
 </main>
 
 <dialog id="dlg"><button type="button" class="dlgx" id="dlx" title="ปิด" aria-label="ปิด"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><form id="fm_" method="dialog">
@@ -719,6 +720,25 @@ async function importXlsx(file){
  }catch(e){log(TT('นำเข้าไม่สำเร็จ: ','Import failed: ')+(e.message||e)+TT('\nลองใหม่ได้ ระบบจะข้ามแถวที่นำเข้าไปแล้วให้เอง','\nYou can retry; rows already imported will be skipped.'))}
  $('imb').disabled=false;
 }
+const FX_RS=[['ราคาสูงเกินไป',/ราคาสูง|ราคาแพง|แพงเกิน|สูงเกินไป|แพงไป/],['เปรียบเทียบเจ้าอื่นอยู่',/เปรียบเทียบ|เทียบราคา|เจ้าอื่น/],['ยังไม่พร้อมส่งสินค้า',/ยังไม่พร้อม|ไม่พร้อมส่ง|สินค้ายังไม่/],['ส่งสินค้าไม่ได้/ไม่มีบริการ',/ไม่มีบริการ|ไม่สามารถ(?:สั่ง|ส่ง|นำเข้า|ส่งออก)|ส่งไม่ได้|ไม่รับ(?:ส่ง|ขน)|ห้ามส่ง|ส่งสินค้าไม่ได้/],['ระยะเวลาไม่ตรงความต้องการ',/ระยะเวลา|นานเกินไป|ช้าเกินไป|ไม่ทันใช้/]],FX_BR={EARTH:'CPL-Inter',MIND:'CPL-Inter',OAT:'CPL-Inter',NUNE:'CPLEx',BELL:'CPLEx'};
+async function fixLeads(){const log=t=>{$('fxlog').textContent=t},to=$('fxd').value;
+ if(!profile||profile.role!=='admin'){log('เฉพาะผู้ดูแลเท่านั้น');return}if(!to){log('เลือกวันที่');return}
+ $('fxb').disabled=true;
+ try{log('กำลังตรวจสอบ…');const all=await fetchRows('',to),pt=new Map(),cnt={ads:0,brand:0,reason:0};
+  all.forEach(r=>{const p={};
+   if(!String(r.ads||'').trim()){p.ads='ไม่ระบุ Ads';cnt.ads++}
+   const sn=String(r.sales||'').trim().toUpperCase();if(FX_BR[sn]&&r.brand!==FX_BR[sn]){p.brand=FX_BR[sn];cnt.brand++}
+   if(effS(r)===ST_N&&!String(r.reason||'').trim()){const n=String(r.note||'');let rs='ไม่ตอบกลับ';for(const[l,x]of FX_RS)if(x.test(n)){rs=l;break}p.reason=rs;cnt.reason++}
+   const k=JSON.stringify(p);if(k==='{}')return;if(!pt.has(k))pt.set(k,[]);pt.get(k).push(r.id)});
+  const tot=[...pt.values()].reduce((a,x)=>a+x.length,0);
+  if(!tot){log('ไม่มี Lead ที่ต้องปรับ (ตรวจ '+all.length+' แถว)');$('fxb').disabled=false;return}
+  const msg='ตรวจ '+all.length+' แถว (ถึง '+to+')\nต้องปรับ '+tot+' แถว\n· Ads ว่าง → ไม่ระบุ Ads: '+cnt.ads+'\n· แบรนด์ตามชื่อเซลล์: '+cnt.brand+'\n· เหตุผลที่ไม่สนใจ: '+cnt.reason;
+  if(!await ask(msg,{t:'ยืนยันการปรับข้อมูล',te:'Confirm update',ok:'ปรับข้อมูล',oke:'Update'})){log('ยกเลิก');$('fxb').disabled=false;return}
+  let done=0;for(const[k,ids]of pt){const p=JSON.parse(k);for(let i=0;i<ids.length;i+=100){const part=ids.slice(i,i+100),{error}=await sb.from('leads').update(p).in('id',part);if(error)throw error;done+=part.length;log('กำลังปรับ… '+done+'/'+tot)}}
+  log('เสร็จแล้ว ✔\nปรับ '+done+' แถว');await reload();
+ }catch(e){log('ปรับข้อมูลไม่สำเร็จ: '+(e.message||e))}
+ $('fxb').disabled=false}
+$('fxb').onclick=fixLeads;
 const PER_OPTS=['7','30','m','pm','y','all','c'];
 function perSet(v,A,B){const d=new Date(),p2=n=>String(n).padStart(2,'0'),iso=x=>x.getFullYear()+'-'+p2(x.getMonth()+1)+'-'+p2(x.getDate());
  if(v==='all'){A.value=B.value=''}
