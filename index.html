@@ -748,7 +748,7 @@ const dkey=k=>{k=String(k||'');const c=svcCat(k).toLowerCase();if(/^air/.test(c)
 const dIc=(k,z)=>{if(typeof CHI!=='undefined'&&CHI[k])return `<span class="dicw">${chIcon(k,z||18)}</span>`;const t=dkey(k);return t?`<span class="dicw">${dsv(t,z)}</span>`:''};
 const lb=k=>dIc(k)+esc(k);
 function renderDash(){
- const DM=[['A','Ads',''],['M','การตลาด','Marketing'],['K','Sales','Sales'],['E','CEO','CEO']].filter(x=>(window.DRok||'AMKE').includes(x[0]));$('dmodes').innerHTML=DM.map(([k,l,e])=>`<button data-m="${k}" class="${dashMode===k?'on':''}">${e?TT(l,e):l}</button>`).join('');$('dmodes').classList.toggle('hid',DM.length<2);
+ const DM=[['A','Ads',''],['M','Marketing','Marketing'],['K','Sales','Sales'],['E','CEO','CEO']].filter(x=>(window.DRok||'AMKE').includes(x[0]));$('dmodes').innerHTML=DM.map(([k,l,e])=>`<button data-m="${k}" class="${dashMode===k?'on':''}">${e?TT(l,e):l}</button>`).join('');$('dmodes').classList.toggle('hid',DM.length<2);
  const a=$('d1').value,b=$('d2').value,tm=$('dtm').value;
  const base=rows.filter(r=>inVm(r)&&(!tm||r.team===tm)&&(!a||r.date>=a)&&(!b||r.date<=b));
  const names=[...new Set(rows.map(r=>r.sales).filter(Boolean))].sort(),cur=$('dsl').value;
