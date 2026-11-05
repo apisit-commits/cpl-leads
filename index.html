@@ -1259,7 +1259,7 @@ function calcLeads(){
  if(v&&!CLM[v])q.value='';
  if(!$('cgc').children.length)cgRender('cgc',[]);
  calc();renderQL()}
-function calcPick(){QB='';const r=rows.find(x=>String(x.id)===selId());if(r){cgRender('cgc',(r.cargo&&r.cargo.items)||[]);const sv=r.svc||[];$('cl_mode').value=svcCat(sv[0])==='Sea'?'sea':svcCat(sv[0])==='Truck'?'tc':sv[0]==='Air - Cargo'?'ak':'ac'}else if(!$('cgc').children.length)cgRender('cgc',[]);calc();renderQL()}
+function calcPick(){QB='';const r=rows.find(x=>String(x.id)===selId());if(r){cgRender('cgc',(r.cargo&&r.cargo.items)||[]);try{window.RB_LEAD&&window.RB_LEAD(r)}catch(e){}const sv=r.svc||[];$('cl_mode').value=svcCat(sv[0])==='Sea'?'sea':svcCat(sv[0])==='Truck'?'tc':sv[0]==='Air - Cargo'?'ak':'ac'}else if(!$('cgc').children.length)cgRender('cgc',[]);calc();renderQL()}
 const OSV=['แพ็คใหม่','แพ็คชั้นนอก','รมยาไม้','ส่งออกของเก่า/โบราณวัตถุ','ใบรับรองสุขอนามัยพืช','ใบอนุญาต อย. (เครื่องสำอาง)','ลงทะเบียนศุลกากร'];
 function svcRender(){$('cl_svc').innerHTML=OSV.map((n,i)=>`<div class="osr"><label><input type="checkbox" data-i="${i}"> ${n}</label><input type="text" inputmode="decimal" data-num autocomplete="off" placeholder="บาท" data-p="${i}"></div>`).join('')}
 let CQ={};
@@ -1433,6 +1433,21 @@ RP.trk=(wb)=>{const n=(wb.SheetNames||[]).find(x=>/ราคารถ/.test(x));
  const rows=[];for(let i=1;i<g.length;i++){const r=g[i];if(!r||!r[1]||r[6]===null||r[6]==='')continue;const d=String(r[0]).trim()==='นำเข้า'?'im':'ex',cb=/cbm/i.test(String(r[7]||''));
   const p=pn(r[6]);if(!(p>0))continue;rows.push([d,String(r[1]).trim(),String(r[2]||'').trim(),String(r[3]||'').trim(),pn(r[4])||0,cb?null:pn(r[5]),p,cb?1:0])}
  return rows.length?{rows}:null};
+RP.ard=(wb)=>{const R=RP.find(wb,'Round up');if(!R)return null;const g=RP.grid(R);let h=-1;for(let i=0;i<Math.min(g.length,30);i++)if(/^destination/i.test(String((g[i]||[])[0]||''))){h=i;break}if(h<0)return null;
+ const M={'USA':['USA'],'UK':['UK'],'CANADA':['Canada'],'NORWAY AND SWITZERLAND':['Norway','Switzerland']},cols=[];
+ for(let c=1;c<g[h].length;c++){const k=String(g[h][c]||'').replace(/\s+/g,' ').trim().toUpperCase();if(M[k])cols.push([c,M[k]])}if(!cols.length)return null;
+ const pkg={},perkg={};let r=h+1,ro=[];for(;r<g.length;r++){const w=RP.num((g[r]||[])[0]);if(w===null)break;ro.push(r)}
+ let ov=-1;for(let i=r;i<Math.min(g.length,r+6);i++)if(/^over/i.test(String((g[i]||[])[0]||''))){ov=i;break}
+ cols.forEach(([c,ns])=>{const rows=ro.map(i=>{const v=RP.num(g[i][c]);return v===null?null:[RP.num(g[i][0]),v]}).filter(Boolean);ns.forEach(n=>{pkg[n]=rows;if(ov>=0){const v=RP.num(g[ov][c]);if(v!==null)perkg[n]=v}})});
+ return{pkg,perkg,n:Object.keys(pkg).length}};
+RP.dgn=(wb)=>{const S=RP.find(wb,'Sheet1');if(!S)return null;const g=RP.grid(S);if(!/dragon/i.test(String((g[0]||[])[1]||''))||!/weight/i.test(String((g[4]||[])[0]||'')))return null;
+ const C={dyc:1,dys:2,dye:3},out={};let r=5;const ro=[];for(;r<g.length;r++){const w=RP.num((g[r]||[])[0]);if(w===null){if(!g[r]||g[r][0]==null||String(g[r][0]).trim()==='')continue;break}ro.push(r)}
+ const bands=[];for(let i=r;i<Math.min(g.length,r+10);i++){const m=String((g[i]||[])[0]||'').match(/^\s*(\d+(?:\.\d+)?)/);if(m&&i>r)bands.push(i);}
+ const pm={fuel:0,vat:7,mg:1.43,pk:{Z:0}};
+ Object.entries(C).forEach(([k,c])=>{const rows=ro.map(i=>{const v=RP.num(g[i][c]);return v===null?null:[RP.num(g[i][0]),v,null]}).filter(Boolean);if(!rows.length)return;
+  const kg=k==='dyc'?[]:bands.map(i=>{const v=RP.num(g[i][c]);return v===null?null:[+String(g[i][0]).match(/^\s*(\d+(?:\.\d+)?)/)[1],v,null]}).filter(Boolean);
+  out[k]={pkg:{USA:rows},kg:kg.length?{USA:kg}:{},zn:{USA:'Z'},pk:{Z:'Z'},np:[],pm}});
+ return Object.keys(out).length?out:null};
 RP.UPN={"HONG KONG":"Hong Kong SAR, China","KOREA, SOUTH":"South Korea","SOUTH KOREA":"South Korea","PEOPLE'S REPUBLIC OF CHINA":"China (Excluding China South)"};
 RP.ups=(wb)=>{const A=RP.find(wb,'Express Expedited rate'),B=RP.find(wb,'rate + peak');if(!A||!B)return null;const ga=RP.grid(A),gb=RP.grid(B);
  let h=-1;for(let i=0;i<Math.min(ga.length,60);i++){if(/^UPS Express\s*$/i.test(String((ga[i]||[])[11]||''))&&/^zone/i.test(String((ga[i-1]||[])[12]||''))){h=i;break}}if(h<0)return null;
@@ -1523,6 +1538,8 @@ RP.parse=(wb)=>{
     const b=RP.block(RP.grid(ws),{sec:/PACK/i,not:/PAK/i});
     if(!b){res.sheets.push({k,n,t,ok:false});return}
     res.data[k]={pkg:b.pkg,kg:b.kg};res.sheets.push({k,n,t,ok:true,countries:Object.keys(b.pkg).length,sec:b.sec})});
+  const ad=RP.ard(wb);if(ad){res.data.ard=ad;res.sheets.push({k:'ard',n:'Round up',t:'Aramex DDP ส่งออก',ok:true,countries:ad.n})}
+  const dg=RP.dgn(wb);if(dg){Object.assign(res.data,dg);Object.entries({dyc:'Dragon E-commerce (USA)',dys:'Dragon Standard (USA)',dye:'Dragon Express (USA)'}).forEach(([k,t])=>{if(dg[k])res.sheets.push({k,n:'Sheet1',t,ok:true,countries:1})})}
   const up=RP.ups(wb);if(up){res.data.upx=up;res.sheets.push({k:'upx',n:'Express Expedited rate',t:'UPS Expedited ส่งออก',ok:true,countries:up.n})}
   const wa=RP.find(wb,'Export Express (ARAMEX)');
   if(wa){const g=RP.grid(wa),b=RP.block(g,{sec:/NON/i,headerCountries:true});
@@ -1535,7 +1552,7 @@ RP.parse=(wb)=>{
 
 
 return RP})();
-const RK='cpl_rate_set',SV={ex:[['ipx','FedEx Priority (IP)','F'],['iex','FedEx Economy (IE)','F'],['arx','Aramex Express','A'],['upx','UPS Expedited','U']],im:[['ipi','FedEx Priority (IP)','F'],['iei','FedEx Economy (IE)','F']]};
+const RK='cpl_rate_set',SV={ex:[['ipx','FedEx Priority (IP)','F'],['iex','FedEx Economy (IE)','F'],['arx','Aramex Express','A'],['upx','UPS Expedited','U'],['ard','Aramex DDP (รวมภาษีปลายทาง)','D'],['dye','Dragon Express','R'],['dys','Dragon Standard','R'],['dyc','Dragon E-commerce','R']],im:[['ipi','FedEx Priority (IP)','F'],['iei','FedEx Economy (IE)','F']]};
 const DEF=[
  {id:'fah',c:'FedEx',n:'Additional Handling · ขนาด',cond:[['ด้านยาวสุดเกิน (ซม.)',121,'L'],['ด้านรองเกิน (ซม.)',76,'S'],['L+2W+2H เกิน (ซม.)',266,'G']],p:1500,min:18},
  {id:'faw',c:'FedEx',n:'Additional Handling · น้ำหนัก',cond:[['น้ำหนักจริงเกิน (กก.)',25,'W']],p:1500,min:18},
@@ -1598,7 +1615,7 @@ function calc(svc,car,country,postal,items){
  lines.push({t:'ค่าขนส่ง',s:'น้ำหนักที่ใช้คิด '+chw+' กก. ('+why+') · '+base.basis,v:base.price*adj});
  if(fuel>0)lines.push({t:'ค่าน้ำมัน',s:fp+'% ของค่าขนส่ง',v:fuel});
  Object.values(pc).forEach(f=>{const v=f.r.p*f.n;total+=v;ovAmt+=v;if(f.r.appr)appr=true;fees.push(f.r.n);lines.push({t:f.r.n,s:f.h.join(' · ')+' · '+N(f.r.p)+' บาท × '+f.n+' ชิ้น',v})});
- const rm=car==='U'?null:remote(car==='F'?'FedEx':'Aramex',country,postal);
+ const rm=(car==='F'||car==='A')?remote(car==='F'?'FedEx':'Aramex',country,postal):null;
  if(rm){let v,s;if(car==='F'){const t=REM_F[rm]||REM_F.C;v=rm==='A'?200:Math.max(t[0],t[1]*chw);s='ระดับ '+(REM_F[rm]?rm:'C')+(rm==='A'?' · 200 บาท/ชิ้น':' · '+t[1]+' บาท/กก. ขั้นต่ำ '+N(t[0]))}else{v=Math.max(REM_A[0],REM_A[1]*chw);s=REM_A[1]+' บาท/กก. ขั้นต่ำ '+N(REM_A[0])}
   total+=v;rmAmt=v;fees.push('Remote Area');lines.push({t:'Remote Area',s:'รหัส '+String(postal).toUpperCase()+' · '+s,v})}
  return{total,lines,appr,chw,fees,freight:base.price*adj+fuel,ovAmt,rmAmt}}
@@ -1627,6 +1644,13 @@ function rbRun(ap){const blk=$('rb_blk');window.RB_VER=RS&&RS.ver||'';window.RB_
   $('cl_rate').value=fmtIn(rate);
   const set=(name,amt)=>{const i=OSV.indexOf(name);if(i<0)return;const c=$('cl_svc').querySelector(`input[type=checkbox][data-i="${i}"]`),p=$('cl_svc').querySelector(`[data-p="${i}"]`);if(!c||!p)return;c.checked=amt>0;p.value=amt>0?fmtIn(Math.round(amt)):''};
   set(OSV_OV,cur.r.ovAmt);set(OSV_RM,cur.r.rmAmt);window.calc()}}
+window.RB_LEAD=r=>{if(!r)return;const dr=String(r.dir||'');const d=/ส่งออก/.test(dr)?'ex':/นำเข้า/.test(dr)?'im':'';
+ if(d&&d!==RB_D){RB_D=d;[...$('rb_d').children].forEach(x=>x.classList.toggle('on',x.dataset.d===d));PICK=null;if(RS)fillC()}
+ const raw=String(r.country||'').split(/\s*[,/]\s*/).filter(Boolean)[0];if(!raw)return;
+ const k=raw.trim().toLowerCase().replace(/^ประเทศ/,'').trim(),code=CTYM[k]||CTYM['ประเทศ'+k]||'',al=new Set([k]);
+ if(code)Object.keys(CTYM).forEach(x=>{if(CTYM[x]===code&&/^[a-z .,'-]+$/.test(x))al.add(x)});
+ const hit=RB_L.find(c=>al.has(c.toLowerCase()))||RB_L.find(c=>{const l=c.toLowerCase();return[...al].some(a=>a.length>2&&(l.startsWith(a+' ')||l.startsWith(a+'(')||l.startsWith(a+',')))});
+ if(hit){$('rb_c').value=hit;PICK=null}};
 $('rb_d').onclick=e=>{const b=e.target.closest('button');if(!b)return;RB_D=b.dataset.d;[...$('rb_d').children].forEach(x=>x.classList.toggle('on',x===b));PICK=null;if(RS)fillC();rbRun(true)};
 $('rb_opts').onclick=e=>{const b=e.target.closest('[data-k]');if(!b||b.disabled)return;PICK=b.dataset.k;rbRun(true)};
 ['rb_c','rb_p'].forEach(i=>$(i).addEventListener('input',()=>rbRun(true)));
@@ -1664,7 +1688,7 @@ function rsDraw(){const s=DR;
  $('rs_cur').textContent=RS?'ใช้งานอยู่ '+(RS.ver||'')+' · มีผล '+(RS.eff||'')+(RS.file?' · '+RS.file:''):'';
  $('rs_v').value=s.ver||'';$('rs_e').value=s.eff||'';$('rs_aA').value=(s.adj&&s.adj.A)||0;$('rs_fA').value=(s.fuel&&s.fuel.A)||0;const pm=s.pm||{};$('rs_fu').value=pm.fuel==null?'':pm.fuel;$('rs_vt').value=pm.vat==null?'':pm.vat;$('rs_mg').value=pm.mg==null?'':pm.mg;
  $('rs_pk').innerHTML=Object.keys(pm.pk||{}).sort((a,b)=>pm.pk[b]-pm.pk[a]).map(k=>{const zs=Object.entries((s.data&&s.data.ipx&&s.data.ipx.pk)||{}).filter(x=>x[1]===k).map(x=>x[0]).join(', ');return `<label class="f">Peak โซน ${zs||'-'} (บาท/กก.)<input type="number" step="0.01" data-pk="${k}" value="${pm.pk[k]}"></label>`}).join('');
- const sh=s.sheets&&s.sheets.length?s.sheets:Object.keys(s.data||{}).map(k=>{const d=s.data[k]||{},nm={trk:'ราคารถ ส่งออก/นำเข้า',arx:'Aramex Express ส่งออก',upx:'UPS Expedited ส่งออก',ipx:'FedEx Priority ส่งออก',iex:'FedEx Economy ส่งออก',ipi:'FedEx Priority นำเข้า',iei:'FedEx Economy นำเข้า'};return{k,ok:true,t:nm[k]||k,countries:d.pkg?Object.keys(d.pkg).length:d.rows?new Set(d.rows.map(r=>r[1])).size:0}});
+ const sh=s.sheets&&s.sheets.length?s.sheets:Object.keys(s.data||{}).map(k=>{const d=s.data[k]||{},nm={trk:'ราคารถ ส่งออก/นำเข้า',arx:'Aramex Express ส่งออก',upx:'UPS Expedited ส่งออก',ard:'Aramex DDP ส่งออก',dye:'Dragon Express (USA)',dys:'Dragon Standard (USA)',dyc:'Dragon E-commerce (USA)',ipx:'FedEx Priority ส่งออก',iex:'FedEx Economy ส่งออก',ipi:'FedEx Priority นำเข้า',iei:'FedEx Economy นำเข้า'};return{k,ok:true,t:nm[k]||k,countries:d.pkg?Object.keys(d.pkg).length:d.rows?new Set(d.rows.map(r=>r[1])).size:0}});
  $('rs_sh').innerHTML=sh.length?'<table><tr><th>ข้อมูล</th><th>ชีต</th><th>ประเทศ</th><th>สถานะ</th></tr>'+sh.map(r=>`<tr><td class="nm">${esc(r.t||'')}</td><td class="nm">${esc(r.n||'')}</td><td>${r.ok?r.countries:'-'}</td><td>${r.ok?'<span class="rb-tg ok">อ่านได้</span>':'<span class="rb-tg er">ไม่พบ</span>'}</td></tr>`).join('')+'</table>':'';
  $('rs_rl').innerHTML='<tr><th>ค่าย</th><th>ค่าธรรมเนียม</th><th>เงื่อนไข (ข้อใดข้อหนึ่ง)</th><th>ราคา (บาท/ชิ้น)</th><th>คิดขั้นต่ำ (กก.)</th></tr>'+(s.rules||[]).map((r,i)=>`<tr><td class="nm">${r.c}</td><td>${esc(r.n)}${r.appr?' <span class="rb-tg wn">ต้องอนุมัติ</span>':''}</td><td>${r.cond.map((c,j)=>esc(c[0])+` <input type="text" inputmode="decimal" data-num autocomplete="off" data-r="${i}" data-c="${j}" value="${fmtIn(c[1])}">`).join('<br>')}</td><td><input type="text" inputmode="decimal" data-num autocomplete="off" data-r="${i}" data-p="1" value="${fmtIn(r.p)}"></td><td>${r.min?`<input type="text" inputmode="decimal" data-num autocomplete="off" data-r="${i}" data-m="1" value="${fmtIn(r.min)}">`:'-'}</td></tr>`).join('');
  $('rs_rm').innerHTML=['FedEx','Aramex'].map(c=>{const m=(s.remote&&s.remote[c])||{},n=Object.values(m).reduce((a,l)=>a+l.length,0);return `<div class="rb-row" style="margin-bottom:10px"><b style="min-width:70px">${c}</b><input type="file" data-rm="${c}" accept=".xlsx,.xls,.csv"><span class="rb-tg ${n?'ok':'wn'}">${n?n.toLocaleString('th-TH')+' รายการ':'ยังไม่มี'}</span></div>`}).join('')}
@@ -1673,7 +1697,7 @@ $('rs_f').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;$
   for(const f of fs){const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),tk=RP.trk(wb);if(tk){data.trk=tk;const x={k:'trk',n:'ราคารถ LTL',t:'ราคารถ ส่งออก/นำเข้า',ok:true,countries:new Set(tk.rows.map(r=>r[1])).size},j=sheets.findIndex(y=>y.k==='trk');if(j>=0)sheets[j]=x;else sheets.push(x);names.push(f.name);continue}const r=RP.parse(wb),own=!!(r.params&&r.params.pk);
    r.sheets.forEach(x=>{const i=sheets.findIndex(y=>y.k===x.k),old=i>=0?sheets[i]:null;
     if(!x.ok&&old&&old.ok)return;
-    if(x.ok&&old&&old.ok&&!own&&x.k!=='arx'&&x.k!=='upx')return;
+    if(x.ok&&old&&old.ok&&!own&&!['arx','upx','ard','dyc','dys','dye'].includes(x.k))return;
     if(i>=0)sheets[i]=x;else sheets.push(x);if(x.ok&&r.data[x.k])data[x.k]=r.data[x.k]});
    if(own){pm=r.params;ver=(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_','')||ver}
    else if(!ver)ver=(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_','');
