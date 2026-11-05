@@ -1678,6 +1678,8 @@ $('rs_f').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;$
    if(own){pm=r.params;ver=(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_','')||ver}
    else if(!ver)ver=(f.name.match(/V_?\d+/i)||[''])[0].toUpperCase().replace('_','');
    names.push(f.name)}
+  const NM={trk:'ราคารถ ส่งออก/นำเข้า',arx:'Aramex Express ส่งออก',upx:'UPS Expedited ส่งออก',ipx:'FedEx Priority ส่งออก',iex:'FedEx Economy ส่งออก',ipi:'FedEx Priority นำเข้า',iei:'FedEx Economy นำเข้า'};
+  sheets=sheets.filter(x=>x.ok||!data[x.k]);Object.keys(data).forEach(k=>{if(!sheets.some(x=>x.k===k&&x.ok)){const d=data[k]||{};sheets.push({k,n:'',t:NM[k]||k,ok:true,countries:d.pkg?Object.keys(d.pkg).length:d.rows?new Set(d.rows.map(r=>r[1])).size:0})}});
   DR={...(DR||{}),file:names.join(', '),data,sheets,rules:(DR&&DR.rules)||clone(DEF),remote:(DR&&DR.remote)||{},adj:(DR&&DR.adj)||{F:0,A:0},pm,ver,eff:(DR&&DR.eff)||''};
   rsDraw();$('rs_st').textContent='';e.target.value=''}catch(x){$('rs_st').textContent='นำเข้าไม่สำเร็จ'}};
 $('rs_rl').addEventListener('input',e=>{const t=e.target,i=t.dataset.r;if(i===undefined||!DR)return;const r=DR.rules[+i],v=+String(t.value).replace(/,/g,'');if(t.dataset.c!==undefined)r.cond[+t.dataset.c][1]=v;else if(t.dataset.p)r.p=v;else if(t.dataset.m)r.min=v});
