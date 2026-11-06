@@ -395,7 +395,7 @@ header .hd #who{display:none!important}
 <header>
     <div class="hd"><span class="sub" id="who"></span><div class="nbar hid" id="fnb"><span id="fsw" class="hid"><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">ดูของเซลล์:<select id="fsel"></select></label></span><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">แจ้งเตือน Follow-up อัตโนมัติหลังรับ Lead<input id="fdays" type="number" min="1" max="30" style="width:64px"> วัน</label></div><select id="pvs" class="hid" title="ดูตัวอย่างตามบทบาท" aria-label="ดูตัวอย่างตามบทบาท"><option value="admin">มุมมอง: ADMIN</option><option value="sales:A">SALES · CPL-Inter</option><option value="sales:B">SALES · CPLEx</option><option value="sales_lead">หัวหน้าเซลล์ (ทุกทีม)</option><option value="marketing">MARKETING</option><option value="ads">ADS</option><option value="ceo">CEO</option><option value="keyer">KEYER</option><option value="zimp">ZIMP</option></select><button class="btn hid" id="bell" type="button" aria-label="แจ้งเตือน" title="แจ้งเตือน"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b id="bn" class="bn hid">0</b></button><button class="btn ico-b" id="lo" type="button" aria-label="ออกจากระบบ" title="ออกจากระบบ"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg></button></div>
 </header>
-<nav class="tabs"><div class="logo" role="img" aria-label="CPL Group"></div><button id="tN"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v2a1 1 0 0 0 1 1h2l5 4V6L7 10H5a1 1 0 0 0-1 1z"/><path d="M16 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>ข่าวสาร<i id="ndot" class="hid"></i></button><button id="tDB" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด</button><button id="tF" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span id="tFt">งานของฉัน</span><i id="fdot" class="hid"></i></button><button id="tL" class="on"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Lead</button><button id="tW" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="M7 14h4M7 17h8"/></svg>Marketing</button><button class="hid" id="tA"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด Ads</button><button id="tE" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 16l4-5 3 3 5-7"/><circle cx="18" cy="7" r="1.2"/></svg>แดชบอร์ด CEO</button><button class="hid" id="tM"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ดการตลาด</button><button class="hid" id="tK"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Sales</button><button id="tC"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>คำนวณ</button><button id="tRS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--card)"/><circle cx="15" cy="12" r="2" fill="var(--card)"/><circle cx="8" cy="18" r="2" fill="var(--card)"/></svg>Rate</button><button id="tS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>ตั้งค่า</button><div id="acct"><span class="av" id="av"></span><span class="ai"><b id="wn"></b><em id="wr"></em></span></div></nav>
+<nav class="tabs"><div class="logo" role="img" aria-label="CPL Group"></div><button id="tN"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v2a1 1 0 0 0 1 1h2l5 4V6L7 10H5a1 1 0 0 0-1 1z"/><path d="M16 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>ข่าวสาร<i id="ndot" class="hid"></i></button><button id="tDB" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด</button><button id="tF" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span id="tFt">งานของฉัน</span><i id="fdot" class="hid"></i></button><button id="tL" class="on"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Lead</button><button id="tW" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="M7 14h4M7 17h8"/></svg>Marketing</button><button class="hid" id="tA"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด Ads</button><button id="tE" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 16l4-5 3 3 5-7"/><circle cx="18" cy="7" r="1.2"/></svg>แดชบอร์ด CEO</button><button class="hid" id="tM"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ดการตลาด</button><button class="hid" id="tK"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Sales</button><button id="tC"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>คำนวณ</button><button id="tCU" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>ลูกค้า</button><button id="tRS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--card)"/><circle cx="15" cy="12" r="2" fill="var(--card)"/><circle cx="8" cy="18" r="2" fill="var(--card)"/></svg>Rate</button><button id="tS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>ตั้งค่า</button><div id="acct"><span class="av" id="av"></span><span class="ai"><b id="wn"></b><em id="wr"></em></span></div></nav>
 <main>
 <div id="vN" class="hid"><div class="nh"><h3 style="margin:0">ข่าวสาร</h3><div class="nbar"><label class="sub" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="n_old"> แสดงที่หมดอายุแล้ว</label><button class="btn p hid" id="n_add">+ เพิ่มประกาศ</button></div></div><div id="n_msg" class="sub hid" style="margin:0 0 10px"></div><div id="n_list" class="ng"></div><div class="empty hid" id="n_em">ยังไม่มีประกาศ</div></div>
 <dialog id="nd" style="width:min(560px,94vw)"><form id="nf" style="padding:18px 20px"><h3 id="nt" style="margin:0 0 12px">เพิ่มประกาศ</h3><div class="g">
@@ -454,6 +454,7 @@ header .hd #who{display:none!important}
 <div class="pn cprev"><h3>สรุปราคา</h3><div class="cres" id="cl_out"></div>
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
+<div id="vCU" class="hid"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn" id="cu_dup">ตรวจรายชื่อซ้ำ</button><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div>
 <div id="vRS" class="hid"><div class="rbw rsw">
  <div class="rs-hd"><div class="rs-cur" id="rs_cur"></div><div class="rb-seg" id="rs_svc"><button type="button" data-v="a" class="on">Air Courier</button><button type="button" data-v="t">Trucking</button></div></div>
  <div id="rsAir" class="rsv"><div class="mktabs" id="rs_tabs"><button type="button" data-r="f" class="on">ไฟล์เรท</button><button type="button" data-r="p">ราคาขาย</button><button type="button" data-r="m">Remote Area</button><button type="button" data-r="x">ค่าธรรมเนียมเสริม</button></div>
@@ -479,6 +480,7 @@ header .hd #who{display:none!important}
     <label class="f">วันที่<b class="rq">*</b><input type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" name="date" required></label>
     <label class="f">Ads ที่ลูกค้าทักเข้ามา<b class="rq">*</b><select name="ads"></select></label>
     <label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required></label>
+    <label class="f" id="cu_lw">ลูกค้าในระบบ<span style="display:flex;gap:6px"><input name="cu_name" list="cu_dl" autocomplete="off" style="flex:1;min-width:0"><button type="button" class="btn sm" id="cu_mk">สร้างจากชื่อนี้</button></span><datalist id="cu_dl"></datalist></label>
     <label class="f">เบอร์โทรศัพท์<input name="d_p0" type="tel" autocomplete="off"></label>
   </div>
   <div style="margin-top:12px"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div><div style="margin-top:10px"><div class="sub" style="margin-bottom:4px">ช่องทางอื่นที่ลูกค้าทักมาด้วย</div><div class="chips pico" id="ch2"></div></div></fieldset>
@@ -517,6 +519,8 @@ header .hd #who{display:none!important}
   <div class="acts"><button type="button" class="btn" id="cx">ยกเลิก</button><button class="btn p" id="sv_">บันทึก</button></div>
 </form><aside id="fq" class="hid"><h3>ใบเสนอราคา</h3><div id="fq_list"></div></aside></dialog>
 
+<dialog id="cud"><form id="cuf" method="dialog"><h3 id="cud_t" style="margin:0 0 12px">ลูกค้า</h3><fieldset><legend>ข้อมูลลูกค้า</legend><div class="g"><label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required maxlength="160"></label><label class="f">เลขผู้เสียภาษี<input name="tax_id" maxlength="20"></label><label class="f">เจ้าของ<select name="owner"></select></label></div><label class="f" style="margin-top:12px">หมายเหตุ<textarea name="note" rows="2" maxlength="500"></textarea></label></fieldset><fieldset><legend>ผู้ติดต่อ</legend><div id="cu_ct"></div><button type="button" class="btn" id="cu_addc">เพิ่มผู้ติดต่อ</button></fieldset><fieldset id="cu_lf" class="hid"><legend>Lead ของลูกค้า</legend><div id="cu_ll"></div></fieldset><div class="acts"><button type="button" class="btn p dgr hid" id="cu_del" style="margin-right:auto">ลบลูกค้า</button><button type="button" class="btn" id="cu_x">ยกเลิก</button><button class="btn p" id="cu_sv">บันทึก</button></div></form></dialog>
+<dialog id="cum"><form method="dialog" onsubmit="return false"><h3 style="margin:0 0 12px">ตรวจรายชื่อซ้ำ</h3><label class="sub" style="display:flex;gap:6px;align-items:center;margin-bottom:10px"><input type="checkbox" id="cum_s"> แสดงรายชื่อที่ไม่ซ้ำด้วย</label><div id="cum_b"></div><div class="acts"><button type="button" class="btn" id="cum_c">ปิด</button><button type="button" class="btn p" id="cum_go">สร้างลูกค้าและผูก Lead</button></div></form></dialog>
 <dialog id="xd" style="width:min(460px,94vw)"><form method="dialog" id="xf" style="padding:18px 20px"><h3 style="margin:0 0 6px">ส่งออก Excel</h3><div class="g"><label class="f">ตั้งแต่เดือน<input type="month" id="xfrom"></label><label class="f">ถึงเดือน<input type="month" id="xto"></label></div><div class="acts"><button type="button" class="btn" id="xcx">ยกเลิก</button><button type="button" class="btn p" id="xgo">ส่งออก</button></div></form></dialog>
 <div id="lg" class="lg"><form id="lgf" class="lgc"><div id="lgimg" class="logo" role="img" aria-label="CPL Group"></div><h2>เข้าสู่ระบบ</h2><label class="f">อีเมล<b class="rq">*</b><input id="lgm" type="email" required autocomplete="username"></label><label class="f">รหัสผ่าน<b class="rq">*</b><input id="lgp" type="password" required autocomplete="current-password"></label><div id="lge" class="od"></div><button class="btn p">เข้าสู่ระบบ</button></form></div>
 <script>
@@ -1764,5 +1768,136 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 })();
 
 </script>
+<style>
+#vCU .cu-r{cursor:pointer}#vCU table th{white-space:nowrap}
+.cub{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;white-space:nowrap;background:var(--bg);border:1px solid var(--bd);color:var(--mu)}
+.cub-g{background:#e6f6ec;border-color:#b7e3c6;color:#1b6b3a}.cub-a{background:#fff4e0;border-color:#f3d9a4;color:#8a5a00}
+.cu-ct{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr 1fr auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.cu-ct input:not([type=radio]){padding:8px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);font-size:14px;min-width:0}
+.cu-pm{display:flex;gap:4px;align-items:center;font-size:13px;white-space:nowrap}
+.cu-st{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:8px;font-size:13px;color:var(--mu)}
+#cud form,#cum form{padding:18px 20px}#cud,#cum{width:min(900px,96vw)}#cu_ll{overflow-x:auto}#cu_ll table{width:100%;min-width:0}
+#cum_b{max-height:55vh;overflow:auto}#cum_b input[data-n]{padding:6px 8px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);width:100%}
+</style>
+<script>
+(function(){
+const CU={list:[],cts:{},ls:{},ok:false,loaded:false,sel:null,edit:[],q:'',own:''};window.CU=CU;
+const H=s=>esc(s==null?'':String(s)),DAY=864e5,CHURN=90,N=v=>Math.round(+v||0).toLocaleString('th-TH');
+async function pg(q){let o=[],i=0;for(;;){const{data,error}=await q().range(i,i+999);if(error)return null;o=o.concat(data||[]);if(!data||data.length<1000)break;i+=1000}return o}
+async function cuLoad(force){
+ if(CU.loaded&&!force)return CU.ok;
+ try{return await cuLoad0()}catch(e){CU.ok=false;CU.loaded=true;return false}}
+async function cuLoad0(){
+ const a=await sb.from('customers').select('*').order('name');
+ if(a.error){CU.ok=false;CU.loaded=true;return false}
+ const b=await sb.from('customer_contacts').select('*').order('created_at');
+ const l=await pg(()=>sb.from('leads').select('id,customer_id,name,sales,status,fu_status,date,deal_date,deal_amt,detail').not('customer_id','is',null));
+ CU.list=a.data||[];CU.cts={};(b.data||[]).forEach(c=>(CU.cts[c.customer_id]=CU.cts[c.customer_id]||[]).push(c));
+ CU.ls={};(l||[]).forEach(r=>(CU.ls[r.customer_id]=CU.ls[r.customer_id]||[]).push(r));
+ CU.ok=true;CU.loaded=true;return true}
+function stats(id){const ls=CU.ls[id]||[],w=ls.filter(r=>effS(r)===ST_Y);return{n:ls.length,w:w.length,last:ls.map(r=>r.date||'').sort().pop()||'',lw:w.map(r=>r.deal_date||r.date||'').sort().pop()||'',amt:w.reduce((t,r)=>t+(+r.deal_amt||0),0)}}
+function badge(s){const d=s.lw?Math.floor((Date.now()-new Date(s.lw))/DAY):0,old=d>CHURN;
+ if(s.w>=2)return old?['ลูกค้าประจำ · ไม่ส่งมานาน','a']:['ลูกค้าประจำ','g'];
+ if(s.w===1)return old?['เคยปิดการขาย · ไม่ส่งมานาน','a']:['เคยปิดการขาย','g'];
+ return[s.n?'ยังไม่ปิดการขาย':'ยังไม่มี Lead','n']}
+const ownersOf=()=>[...new Set([...salesFor(''),...CU.list.map(c=>c.owner).filter(Boolean)])].sort();
+function fillOwner(sel,v){const o=[...new Set([...salesFor(''),...(v?[v]:[])])];sel.innerHTML='<option value=""></option>'+o.map(x=>`<option>${H(x)}</option>`).join('');sel.value=v||''}
+function cuRender(){
+ const so=$('cu_o'),cur=CU.own;so.innerHTML='<option value="">ทั้งหมด</option>'+ownersOf().map(x=>`<option>${H(x)}</option>`).join('');so.value=cur;
+ const q=(CU.q||'').toLowerCase().trim();
+ const L=CU.list.filter(c=>(!CU.own||c.owner===CU.own)&&(!q||[c.name,c.tax_id,...(CU.cts[c.id]||[]).flatMap(x=>[x.name,x.phone,x.email,x.line])].join(' ').toLowerCase().includes(q)));
+ if(!CU.ok){$('cu_b').innerHTML='<tr><td colspan="7" class="sub">โหลดข้อมูลลูกค้าไม่ได้</td></tr>';return}
+ $('cu_b').innerHTML=L.length?L.map(c=>{const s=stats(c.id),b=badge(s),ct=(CU.cts[c.id]||[]),pm=ct.find(x=>x.is_primary)||ct[0];
+  return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="7" class="sub">ไม่พบลูกค้า</td></tr>'}
+async function cuInit(){await cuLoad(true);cuRender()}
+function ctRender(){
+ $('cu_ct').innerHTML=CU.edit.length?CU.edit.map((c,i)=>`<div class="cu-ct" data-i="${i}"><input data-k="name" placeholder="ชื่อ *" value="${H(c.name)}" maxlength="80"><input data-k="role" placeholder="ตำแหน่ง" value="${H(c.role)}" maxlength="60"><input data-k="phone" placeholder="เบอร์โทร" value="${H(c.phone)}" maxlength="40"><input data-k="email" placeholder="อีเมล" value="${H(c.email)}" maxlength="80"><input data-k="line" placeholder="LINE" value="${H(c.line)}" maxlength="60"><label class="cu-pm"><input type="radio" name="cu_pm"${c.is_primary?' checked':''}>หลัก</label><button type="button" class="btn sm" data-rm aria-label="ลบผู้ติดต่อ">×</button></div>`).join(''):'<div class="sub">ยังไม่มีผู้ติดต่อ</div>'}
+function llRender(id){
+ const ls=(CU.ls[id]||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')),s=stats(id||'');
+ $('cu_lf').classList.toggle('hid',!id);
+ $('cu_ll').innerHTML=(ls.length?`<div class="cu-st"><span>Lead ${s.n}</span><span>ปิดการขาย ${s.w}</span><span>ยอดที่ปิดได้ ${N(s.amt)} บาท</span><span>ล่าสุด ${s.last?fmtD(s.last):'—'}</span></div><table><thead><tr><th>วันที่</th><th>ชื่อ Lead</th><th>เซลล์</th><th>สถานะ</th><th class="num">ใบเสนอราคา</th></tr></thead><tbody>${ls.map(r=>`<tr><td>${fmtD(r.date)}</td><td>${H(r.name)}</td><td>${H(r.sales)||'—'}</td><td>${H(effS(r))}</td><td class="num">${((r.detail&&r.detail.quotes)||[]).length}</td></tr>`).join('')}</tbody></table>`:'<div class="sub">ยังไม่มี Lead ที่ผูกกับลูกค้านี้</div>')}
+function cuOpen(id){
+ const c=id?CU.list.find(x=>x.id===id):{},f=$('cuf');CU.sel=id||null;CU.edit=(CU.cts[id]||[]).map(x=>({...x}));
+ f.name.value=c.name||'';f.tax_id.value=c.tax_id||'';f.note.value=c.note||'';fillOwner(f.owner,c.owner);
+ $('cud_t').textContent=id?'ลูกค้า':'เพิ่มลูกค้า';$('cu_del').classList.toggle('hid',!id);ctRender();llRender(id);$('cud').showModal()}
+function bind(){
+ $('cu_q').oninput=e=>{CU.q=e.target.value;cuRender()};$('cu_o').onchange=e=>{CU.own=e.target.value;cuRender()};
+ $('cu_new').onclick=()=>cuOpen();$('cu_b').onclick=e=>{const r=e.target.closest('tr[data-id]');if(r)cuOpen(r.dataset.id)};
+ $('cu_x').onclick=()=>$('cud').close();
+ $('cu_addc').onclick=()=>{CU.edit.push({name:'',is_primary:!CU.edit.length});ctRender()};
+ const ct=$('cu_ct');
+ ct.addEventListener('input',e=>{const t=e.target,row=t.closest('.cu-ct');if(row&&t.dataset.k)CU.edit[+row.dataset.i][t.dataset.k]=t.value});
+ ct.addEventListener('change',e=>{if(e.target.name==='cu_pm'){const i=+e.target.closest('.cu-ct').dataset.i;CU.edit.forEach((c,j)=>c.is_primary=j===i)}});
+ ct.addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(!b)return;const i=+b.closest('.cu-ct').dataset.i,was=CU.edit[i].is_primary;CU.edit.splice(i,1);if(was&&CU.edit.length)CU.edit[0].is_primary=true;ctRender()});
+ $('cuf').onsubmit=async e=>{e.preventDefault();const f=$('cuf'),name=f.name.value.trim();if(!name)return;
+  if(CU.edit.some(c=>!(c.name||'').trim()&&(c.phone||c.email||c.line||c.role)))return alert('ผู้ติดต่อต้องมีชื่อ');
+  const cts=CU.edit.filter(c=>(c.name||'').trim());if(cts.length&&!cts.some(c=>c.is_primary))cts[0].is_primary=true;
+  const row={name,tax_id:f.tax_id.value.trim()||null,owner:f.owner.value||null,note:f.note.value.trim()||null};
+  let id=CU.sel,err;
+  if(id){err=(await sb.from('customers').update(row).eq('id',id)).error}else{const r=await sb.from('customers').insert(row).select('id').single();err=r.error;id=r.data&&r.data.id}
+  if(err||!id)return alert('บันทึกไม่สำเร็จ');
+  if((await sb.from('customer_contacts').delete().eq('customer_id',id)).error)return alert('บันทึกไม่สำเร็จ');
+  if(cts.length&&(await sb.from('customer_contacts').insert(cts.map(c=>({customer_id:id,name:c.name.trim(),role:c.role||null,phone:c.phone||null,email:c.email||null,line:c.line||null,is_primary:!!c.is_primary})))).error)return alert('บันทึกไม่สำเร็จ');
+  $('cud').close();await cuLoad(true);cuRender()};
+ $('cu_del').onclick=async()=>{if(!CU.sel)return;if(!await ask('ลบลูกค้านี้?\nLead ที่ผูกอยู่จะยังอยู่ แต่จะไม่ผูกกับลูกค้าแล้ว',{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบลูกค้า',oke:'Delete customer',danger:true}))return;
+  const{error}=await sb.from('customers').delete().eq('id',CU.sel);if(error)return alert('ลบไม่สำเร็จ');$('cud').close();await cuLoad(true);cuRender()};
+ $('cu_dup').onclick=cumOpen;$('cum_c').onclick=()=>$('cum').close();
+ $('cum_s').onchange=cumRender;$('cum_go').onclick=cumGo;
+ $('cu_mk').onclick=async()=>{const f=$('fm_'),nm=(f.cu_name.value||f.name.value||'').trim();if(!nm)return;
+  const ex=CU.list.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());if(ex){f.cu_name.value=ex.name;return}
+  const r=await sb.from('customers').insert({name:nm,owner:f.sales.value||null}).select('id').single();if(r.error||!r.data)return alert('สร้างลูกค้าไม่สำเร็จ');
+  await cuLoad(true);cuFormList();f.cu_name.value=nm}}
+/* ---- merge duplicates ---- */
+let CUM=[];
+async function cumOpen(){
+ $('cum_b').innerHTML='<p class="sub">กำลังโหลด…</p>';$('cum_go').disabled=true;$('cum').showModal();
+ const ls=await pg(()=>sb.from('leads').select('id,name,sales,date,detail').is('customer_id',null).order('date',{ascending:false}));
+ if(!ls){$('cum_b').innerHTML='<p class="sub">โหลด Lead ไม่ได้</p>';return}
+ const par={},find=x=>par[x]===x?x:(par[x]=find(par[x])),uni=(a,b)=>{a=find(a);b=find(b);if(a!==b)par[a]=b},by={};
+ ls.forEach(r=>par[r.id]=r.id);
+ ls.forEach(r=>{const ks=[],nk=dupKey(r.name),d=r.detail||{};if(nk.length>=3)ks.push('n:'+nk);[d.ph,d.cpt,d.ctt].map(dupPh).filter(Boolean).forEach(p=>ks.push('p:'+p));ks.forEach(k=>{if(by[k])uni(by[k],r.id);else by[k]=r.id})});
+ const g={};ls.forEach(r=>(g[find(r.id)]=g[find(r.id)]||[]).push(r));
+ const top=a=>{const m={};a.forEach(x=>{if(x)m[x]=(m[x]||0)+1});return Object.entries(m).sort((x,y)=>y[1]-x[1])[0]?.[0]||''};
+ CUM=Object.values(g).map(a=>({ls:a,name:top(a.map(x=>(x.name||'').trim())),owner:top(a.map(x=>x.sales))})).sort((x,y)=>y.ls.length-x.ls.length);
+ cumRender()}
+function cumRender(){
+ const all=$('cum_s').checked,G=CUM.filter(x=>all||x.ls.length>1).slice(0,300);
+ $('cum_b').innerHTML=G.length?`<table><thead><tr><th></th><th>ชื่อลูกค้า</th><th>เจ้าของ</th><th class="num">Lead</th><th>รายการ</th></tr></thead><tbody>${G.map(x=>`<tr data-g="${CUM.indexOf(x)}"><td><input type="checkbox" data-c checked></td><td><input data-n value="${H(x.name)}" maxlength="160"></td><td>${H(x.owner)||'—'}</td><td class="num">${x.ls.length}</td><td class="sub">${x.ls.slice(0,3).map(r=>H(r.name)+' ('+fmtD(r.date)+')').join(' · ')}${x.ls.length>3?' …':''}</td></tr>`).join('')}</tbody></table>`:'<p class="sub">ไม่พบรายชื่อที่ซ้ำกัน</p>';
+ $('cum_go').disabled=!G.length;$('cum_go').textContent='สร้างลูกค้าและผูก Lead'}
+async function cumGo(){
+ const sel=[...$('cum_b').querySelectorAll('tr[data-g]')].filter(tr=>tr.querySelector('[data-c]').checked).map(tr=>({g:CUM[+tr.dataset.g],name:tr.querySelector('[data-n]').value.trim()})).filter(x=>x.name);
+ if(!sel.length)return;if(!await ask('สร้างลูกค้า '+sel.length+' ราย และผูก Lead เข้ากับลูกค้าเหล่านี้?',{t:'ยืนยัน',te:'Confirm',ok:'ดำเนินการ',oke:'Proceed'}))return;
+ const b=$('cum_go');b.disabled=true;let done=0;
+ for(let i=0;i<sel.length;i+=50){const ch=sel.slice(i,i+50);
+  const r=await sb.from('customers').insert(ch.map(x=>({name:x.name,owner:x.g.owner||null}))).select('id');
+  if(r.error||!r.data||r.data.length!==ch.length){alert('บันทึกไม่สำเร็จ');b.disabled=false;return}
+  const cts=[];
+  for(let j=0;j<ch.length;j++){const cid=r.data[j].id,seen=new Set();let n=0;ch[j].g.ls.forEach(l=>{const d=l.detail||{},nm=(d.ctn||d.fn||'').trim(),ph=d.ctt||d.ph||d.cpt||'',em=d.cpe||d.em||'',k=dupPh(ph)||em.toLowerCase();if(!nm||n>=3||(k&&seen.has(k)))return;if(k)seen.add(k);cts.push({customer_id:cid,name:nm,phone:ph||null,email:em||null,is_primary:n===0});n++})}
+  if(cts.length&&(await sb.from('customer_contacts').insert(cts)).error){alert('บันทึกไม่สำเร็จ');b.disabled=false;return}
+  for(let j=0;j<ch.length;j++){const ids=ch[j].g.ls.map(l=>l.id);for(let k=0;k<ids.length;k+=100){if((await sb.from('leads').update({customer_id:r.data[j].id}).in('id',ids.slice(k,k+100))).error){alert('บันทึกไม่สำเร็จ');b.disabled=false;return}}}
+  done+=ch.length;b.textContent='กำลังสร้าง '+done+'/'+sel.length}
+ await cuLoad(true);cuRender();$('cum').close()}
+/* ---- lead form link ---- */
+function cuFormList(){$('cu_dl').innerHTML=CU.list.map(c=>`<option value="${H(c.name)}"></option>`).join('')}
+function cuForm(id){
+ const w=$('cu_lw');w.classList.toggle('hid',!isBeta());if(!isBeta())return;
+ cuLoad().then(async ok=>{if(!ok){w.classList.add('hid');return}cuFormList();const f=$('fm_');f.cu_name.value='';
+  if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();const c=data&&CU.list.find(x=>x.id===data.customer_id);if(c)f.cu_name.value=c.name}CU.fr=true})}
+const _of=openForm;openForm=function(id){CU.fp=null;CU.fr=false;_of(id);cuForm(id)};
+$('fm_').addEventListener('submit',()=>{if(!CU.ok||!isBeta()||!CU.fr)return;const v=$('fm_').cu_name.value.trim().toLowerCase(),c=CU.list.find(x=>x.name.trim().toLowerCase()===v);CU.fp={id:c?c.id:null}},true);
+const _sl=saveLead;saveLead=function(id,o){if(CU.fp){o={...o,customer_id:CU.fp.id};CU.fp=null}return _sl(id,o)};
+/* ---- tab ---- */
+const _t=tab,gate=()=>$('tCU').classList.toggle('hid',!isBeta());
+tab=function(k){const mine=k==='CU';if(mine&&!isBeta())return;
+ $('vCU').classList.toggle('hid',!mine);$('tCU').classList.toggle('on',mine);
+ if(mine){['L','D','S','C','N','F','W','RS'].forEach(x=>$('v'+x).classList.add('hid'));['L','A','M','K','E','C','S','N','F','W','RS'].forEach(x=>$('t'+x).classList.remove('on'));$('tDB').classList.remove('on');$('fnb').classList.add('hid');cuInit();return}
+ _t(k)};
+$('tCU').onclick=()=>tab('CU');
+const _ar2=applyRoleUI;applyRoleUI=function(p){_ar2(p);gate()};gate();
+bind();
+if(typeof EN==='object')Object.assign(EN,{'ลูกค้า':'Customers','เพิ่มลูกค้า':'Add customer','ตรวจรายชื่อซ้ำ':'Find duplicates','ผู้ติดต่อ':'Contacts','ลูกค้าในระบบ':'Customer record','เจ้าของ':'Owner','ลูกค้าประจำ':'Repeat customer','เคยปิดการขาย':'Has closed','ยังไม่ปิดการขาย':'Not closed yet','ยังไม่มี Lead':'No leads yet'});
+})();
+</script>
+
 </body>
 </html>
