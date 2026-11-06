@@ -529,7 +529,7 @@ const TR=x=>LANG==='en'&&x&&EN[x]!=null?EN[x]:x;
 function TR2(m){m=String(m);if(LANG!=='en')return m;return m.split('\n').map(l=>{if(EN[l]!=null)return EN[l];const i=l.indexOf(': ');if(i>0&&EN[l.slice(0,i)]!=null)return EN[l.slice(0,i)]+': '+TR2(l.slice(i+2));return l}).join('\n')}
 {const _al=window.alert.bind(window),_cf=window.confirm.bind(window);window.alert=m=>_al(TR2(m));window.confirm=m=>_cf(TR2(m))}
 let WHO=null;
-function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '+(TEAMS[WHO.t]||''),sales_lead:'SALES HEAD',marketing:'MARKETING',ads:'ADS'};{const rl=R[WHO.r]||String(WHO.r).toUpperCase();$('who').textContent=WHO.n+' · '+rl;$('wn').textContent=WHO.n||'';$('wr').textContent=rl;$('av').textContent=String(WHO.n||'?').trim().charAt(0).toUpperCase()}}
+function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '+(TEAMS[WHO.t]||''),sales_lead:'SALES HEAD',marketing:'MARKETING',ads:'ADS'};{const rl=(R[WHO.r]||String(WHO.r).toUpperCase())+(isBeta()?' · BETA':'');$('who').textContent=WHO.n+' · '+rl;$('wn').textContent=WHO.n||'';$('wr').textContent=rl;$('av').textContent=String(WHO.n||'?').trim().charAt(0).toUpperCase()}}
 const ST_Y='ปิดการขาย',ST_H='มีโอกาสเปลี่ยนใจ',ST_S='รอการตัดสินใจ',ST_N='ยังไม่สนใจบริการ';
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
 const OPT={
@@ -563,6 +563,16 @@ const COLS0='detail,cargo,id,team,date,ads,name,dir,country,svc,note,channel,sta
 const isSl=r=>r==='sales'||r==='sales_lead';
 const can=r=>profile&&(profile.role==='admin'||profile.role==='keyer'||profile.role==='sales_lead'||(profile.role==='sales'&&r.team===profile.team));
 const seeAll=()=>!!profile&&['admin','keyer','sales_lead'].includes(profile.role);
+const isBeta=()=>!!(profile&&profile.beta);
+const dupKey=s=>String(s||'').toLowerCase().replace(/บริษัท|บจก\.?|หจก\.?|ห้างหุ้นส่วนจำกัด|จำกัด|\(มหาชน\)|คุณ/g,'').replace(/[\s.,()\-_\/]+/g,'');
+const dupPh=s=>{const d=String(s||'').replace(/\D/g,'');return d.length>=8?d.slice(-9):''};
+async function dupCheck(o){const d=o.detail||{},ph=[d.ph,d.cpt,d.ctt].filter(Boolean),key=dupKey(o.name),san=x=>String(x).replace(/["%,()*\\]/g,''),cond=[],core=san(String(o.name||'').replace(/บริษัท|จำกัด|\(มหาชน\)|คุณ/g,'').trim());
+ if(core.length>=3)cond.push('name.ilike."%'+core+'%"');
+ ph.forEach(p=>{[san(p),san(p).replace(/\D/g,'')].filter((x,i,a)=>x&&a.indexOf(x)===i).forEach(x=>['ph','cpt','ctt'].forEach(k=>cond.push('detail->>'+k+'.eq."'+x+'"')))});
+ if(!cond.length)return[];
+ const{data,error}=await sb.from('leads').select('id,name,sales,status,date,team,detail').or(cond.join(',')).limit(50);if(error)return[];
+ const mine=new Set(ph.map(dupPh).filter(Boolean));
+ return(data||[]).filter(r=>{const dd=r.detail||{};return(key&&dupKey(r.name)===key)||[dd.ph,dd.cpt,dd.ctt].map(dupPh).some(x=>x&&mine.has(x))})}
 const teamsVisible=()=>profile&&profile.role==='sales'?[profile.team]:Object.keys(TEAMS);
 async function fetchRows(from,to){let out=[],i=0;for(;;){let q=sb.from('leads').select(cols()).order('date',{ascending:false}).order('id',{ascending:false}).range(i,i+999);if(from)q=q.gte('date',from);if(to)q=q.lte('date',to);const{data,error}=await q;if(error){if(DEAL_OK&&/deal_/.test(error.message||'')){DEAL_OK=false;return fetchRows(from,to)}throw error}out=out.concat(data);if(data.length<1000)return out;i+=1000}}
 const norm=r=>{const o={...r,svc:r.svc||[]};['ads','country','note','dir','channel','reason','quo','sales','brand','promo','fu','fu_status'].forEach(k=>o[k]=o[k]||'');o.status=o.status||ST_S;if(o.status===ST_H)o.status=ST_S;if(o.fu_status===ST_H)o.fu_status=ST_S;o.deal_amt=(r.deal_amt==null||r.deal_amt==='')?null:+r.deal_amt;o.deal_date=r.deal_date||'';return o};
@@ -590,7 +600,8 @@ async function start(){
 }
 async function enter(){
  const{data:{user}}=await sb.auth.getUser();
- const{data:p}=await sb.from('profiles').select('id,name,role,team').eq('id',user.id).single();
+ let{data:p,error:pe}=await sb.from('profiles').select('id,name,role,team,beta').eq('id',user.id).single();
+ if(pe&&!p)({data:p}=await sb.from('profiles').select('id,name,role,team').eq('id',user.id).single());
  if(!p){$('lge').textContent='บัญชีนี้ยังไม่มีสิทธิ์ใช้งาน ติดต่อผู้ดูแลระบบ';return}
  if(p.role==='sales'&&!TEAMS[p.team]){$('lge').textContent='บัญชีเซลล์ยังไม่ได้กำหนดทีม ติดต่อผู้ดูแลระบบ';return}
  profile=p;document.body.classList.remove('out');
@@ -607,7 +618,7 @@ function applyRoleUI(p){tFlabel();const r=p.role,H=(id,h)=>$(id).classList.toggl
  H('tF',!has(['sales','sales_lead','admin','keyer']));H('tW',!has(['admin','marketing','zimp']));H('tL',r==='zimp');H('tN',0);
  ['A','M','K','E'].forEach(k=>H('t'+k,1));H('rg',1);H('exp',r==='zimp')}
 let PVR=null,PVW=null;
-function pvApply(v){if(!PVR){PVR=profile;PVW=WHO}if(!PVR||PVR.role!=='admin')return;const[role,tm]=v.split(':'),p=role==='admin'?PVR:{...PVR,role,team:tm||PVR.team};
+function pvApply(v){if(!PVR){PVR=profile;PVW=WHO}if(!PVR||PVR.role!=='admin')return;const[role,tm]=v.split(':'),p=role==='admin'?PVR:{...PVR,role,team:tm||PVR.team,beta:false};
  profile=p;WHO={...PVW,r:p.role,t:p.team};setWho();applyRoleUI(p);if(role==='sales')team=p.team;
  $('pvs').classList.toggle('pv',role!=='admin');buildSeg();setSales();refresh();
  tab('N')}
@@ -879,6 +890,7 @@ function onSave(e){
  if(DEAL_OK){o.deal_amt=v('deal_amt')?pn(v('deal_amt')):null;o.deal_date=iso('deal_date')||(o.deal_amt?today():null)}
  if(!editId&&!o.fu&&![ST_Y,ST_N].includes(o.status)&&o.fu_status!==ST_Y)o.fu=addDays(o.date||today(),fuDays());
  {const it=cgGet('cgf'),d={};o.cargo=it.length?{items:it}:null;DK.forEach(k=>{const x=k==='sd'?iso('d_sd'):(k==='cpd'||k==='ctd')?dialCode(v('d_'+k)):v('d_'+k);if(x)d[k]=x});if((f.querySelector('input[name=d_cm]:checked')||{}).value==='Y'){const cj=cnRaw().filter(x=>x.t);if(cj.length){d.cj=cj;d.cn=cj.map(x=>x.t+(x.q>1?' x'+x.q:'')+(x.kg?' ('+x.kg.toLocaleString('en-US')+' kg)':'')).join(', ')}}{const ox=editId&&rows.find(y=>y.id===editId);if(ox&&ox.detail&&ox.detail.qt)d.qt=ox.detail.qt}if(ints.length>1)d.ints=ints;{const dl=dlRaw();if(dl.length)d.deals=dl}{const c2=[...f.querySelectorAll('input[name=ch2]:checked')].map(i=>i.value).filter(x=>x!==o.channel);if(c2.length)d.ch2=c2}o.detail=Object.keys(d).length?d:null}
+ if(!editId&&isBeta()){e.preventDefault();dupCheck(o).then(async d=>{if(d.length&&!await ask('พบลูกค้าที่อาจซ้ำกับ Lead เดิม\n'+d.slice(0,3).map(r=>'• '+r.name+' · '+(r.sales||'ยังไม่ระบุเซลล์')+' · '+(r.status||'')+' · '+(r.date||'')).join('\n'),{t:'พบลูกค้าที่อาจซ้ำ',te:'Possible duplicate customer',ok:'บันทึกเป็น Lead ใหม่',oke:'Save as new lead'}))return;$('dlg').close();saveLead(editId,o)}).catch(()=>{$('dlg').close();saveLead(editId,o)});return}
  saveLead(editId,o);
 }
 async function del(id){if(!await ask('ลบ Lead นี้?\nลบแล้วกู้คืนไม่ได้',{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ Lead',oke:'Delete lead',danger:true}))return;const bk=rows;rows=rows.filter(x=>x.id!==id);refresh();const{error}=await sb.from('leads').delete().eq('id',id);if(error){alert('ลบไม่สำเร็จ: '+error.message);rows=bk;reload()}}
@@ -988,22 +1000,23 @@ Object.assign(EN,{"ข่าวสาร": "News", "ข่าวสาร / ป�
 Object.assign(EN,{"ตั้งแต่วันที่": "From date", "ถึงวันที่": "To date", "ล้างวันที่": "Clear dates"});
 
 /* ===== User management (admin) ===== */
-let USERS=[],UEMAIL=true;
+let USERS=[],UEMAIL=true,UBETA=false;
 const UROLES=[['admin','ADMIN · ผู้ดูแลระบบ'],['zimp','ZIMP · Out Source'],['keyer','KEYER · คีย์ข้อมูล'],['ceo','CEO · ผู้บริหาร'],['sales','SALES · เซลล์'],['sales_lead','SALES HEAD · หัวหน้าเซลล์ (ทุกทีม)'],['marketing','MARKETING · การตลาด'],['ads','ADS · ยิงแอด']];
 async function loadUsers(){const box=$('vSu');if(!profile||profile.role!=='admin'){box.classList.add('hid');return}box.classList.remove('hid');
- let r=await sb.from('profiles').select('id,name,role,team,email').order('name');UEMAIL=true;
+ let r=await sb.from('profiles').select('id,name,role,team,email,beta').order('name');UEMAIL=true;UBETA=true;
+ if(r.error){UBETA=false;r=await sb.from('profiles').select('id,name,role,team,email').order('name')}
  if(r.error){r=await sb.from('profiles').select('id,name,role,team').order('name');UEMAIL=false}
  if(r.error){box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub">โหลดรายชื่อผู้ใช้ไม่ได้: '+esc(r.error.message||'')+'</p>';return}
  USERS=r.data||[];renderUsers()}
 function renderUsers(){const box=$('vSu');const pend=USERS.filter(u=>!u.role).length;
- box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub" style="margin:0 0 10px">กำหนดบทบาทและทีมของแต่ละบัญชี (เซลล์ต้องเลือกทีม)'+(pend?' · <b>รอกำหนดสิทธิ์ '+pend+' บัญชี</b>':'')+'</p><div style="overflow-x:auto"><table class="ut"><thead><tr><th>บัญชี</th><th>ชื่อที่แสดง</th><th>บทบาท</th><th>ทีม</th><th></th></tr></thead><tbody>'+
- USERS.map(u=>{const me=profile&&u.id===profile.id;return `<tr data-u="${u.id}"><td>${esc(u.email||'')||'<span class="sub">—</span>'}${!u.role?'<div><span class="wait">รอกำหนดสิทธิ์</span></div>':''}</td><td><input data-k="name" value="${esc(u.name||'')}"></td><td><select data-k="role"${me?' disabled title="ไม่สามารถเปลี่ยนบทบาทของตัวเอง"':''}><option value="">— เลือก —</option>${UROLES.map(r=>`<option value="${r[0]}"${u.role===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select></td><td><select data-k="team"${u.role==='sales'?'':' disabled'}><option value="">— เลือก —</option>${Object.entries(TEAMS).map(([k,v])=>`<option value="${k}"${u.team===k?' selected':''}>${esc(v)}</option>`).join('')}</select></td><td><button class="btn sm p" data-save>บันทึก</button></td></tr>`}).join('')+'</tbody></table></div>'}
+ box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub" style="margin:0 0 10px">กำหนดบทบาทและทีมของแต่ละบัญชี (เซลล์ต้องเลือกทีม)'+(pend?' · <b>รอกำหนดสิทธิ์ '+pend+' บัญชี</b>':'')+'</p><div style="overflow-x:auto"><table class="ut"><thead><tr><th>บัญชี</th><th>ชื่อที่แสดง</th><th>บทบาท</th><th>ทีม</th>'+(UBETA?'<th>Beta</th>':'')+'<th></th></tr></thead><tbody>'+
+ USERS.map(u=>{const me=profile&&u.id===profile.id;return `<tr data-u="${u.id}"><td>${esc(u.email||'')||'<span class="sub">—</span>'}${!u.role?'<div><span class="wait">รอกำหนดสิทธิ์</span></div>':''}</td><td><input data-k="name" value="${esc(u.name||'')}"></td><td><select data-k="role"${me?' disabled title="ไม่สามารถเปลี่ยนบทบาทของตัวเอง"':''}><option value="">— เลือก —</option>${UROLES.map(r=>`<option value="${r[0]}"${u.role===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select></td><td><select data-k="team"${u.role==='sales'?'':' disabled'}><option value="">— เลือก —</option>${Object.entries(TEAMS).map(([k,v])=>`<option value="${k}"${u.team===k?' selected':''}>${esc(v)}</option>`).join('')}</select></td>${UBETA?`<td><input type="checkbox" data-k="beta"${u.beta?' checked':''}></td>`:''}<td><button class="btn sm p" data-save>บันทึก</button></td></tr>`}).join('')+'</tbody></table></div>'}
 (function(){const set=k=>{$('vSu').style.display=k==='u'?'':'none';$('vSo').style.display=k==='o'?'':'none';$('sst').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.s===k))};$('sst').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b)set(b.dataset.s)});set('o')})();
 (function(){const box=$('vSu');
  box.addEventListener('change',e=>{const t=e.target;if(t.dataset.k!=='role')return;const tr=t.closest('tr'),tm=tr.querySelector('[data-k=team]');tm.disabled=t.value!=='sales';if(t.value!=='sales')tm.value=''});
  box.addEventListener('click',async e=>{const b=e.target.closest('[data-save]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.u,g=k=>tr.querySelector('[data-k='+k+']').value;
   const role=g('role'),team=g('team'),name=g('name').trim();if(!role)return alert(TT('เลือกบทบาทก่อน','Choose a role first'));if(role==='sales'&&!team)return alert(TT('เซลล์ต้องเลือกทีม','A sales account needs a team'));
-  b.disabled=true;const{error}=await sb.from('profiles').update({name:name||null,role,team:role==='sales'?team:null}).eq('id',id);b.disabled=false;
+  b.disabled=true;const{error}=await sb.from('profiles').update({name:name||null,role,team:role==='sales'?team:null,...(UBETA?{beta:tr.querySelector('[data-k=beta]').checked}:{})}).eq('id',id);b.disabled=false;
   if(error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message+'');
   b.textContent=TT('บันทึกแล้ว ✓','Saved ✓');setTimeout(()=>{b.textContent=TT('บันทึก','Save')},1500);loadUsers()})})();
 Object.assign(EN,{"จัดการผู้ใช้": "User management", "บัญชี": "Account", "ชื่อที่แสดง": "Display name", "บทบาท": "Role", "ทีม": "Team", "บันทึก": "Save", "รอกำหนดสิทธิ์": "Awaiting access"});
