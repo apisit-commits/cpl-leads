@@ -454,7 +454,7 @@ header .hd #who{display:none!important}
 <div class="pn cprev"><h3>สรุปราคา</h3><div class="cres" id="cl_out"></div>
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
-<div id="vCU" class="hid"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn" id="cu_dup">ตรวจรายชื่อซ้ำ</button><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div>
+<div id="vCU" class="hid"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn" id="cu_dup">ตรวจรายชื่อซ้ำ</button><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div>
 <div id="vRS" class="hid"><div class="rbw rsw">
  <div class="rs-hd"><div class="rs-cur" id="rs_cur"></div><div class="rb-seg" id="rs_svc"><button type="button" data-v="a" class="on">Air Courier</button><button type="button" data-v="t">Trucking</button></div></div>
  <div id="rsAir" class="rsv"><div class="mktabs" id="rs_tabs"><button type="button" data-r="f" class="on">ไฟล์เรท</button><button type="button" data-r="p">ราคาขาย</button><button type="button" data-r="m">Remote Area</button><button type="button" data-r="x">ค่าธรรมเนียมเสริม</button></div>
@@ -1791,11 +1791,11 @@ async function cuLoad0(){
  const a=await sb.from('customers').select('*').order('name');
  if(a.error){CU.ok=false;CU.loaded=true;return false}
  const b=await sb.from('customer_contacts').select('*').order('created_at');
- const l=await pg(()=>sb.from('leads').select('id,customer_id,name,sales,status,fu_status,date,deal_date,deal_amt,detail').not('customer_id','is',null));
+ const l=await pg(()=>sb.from('leads').select('id,customer_id,name,ads,sales,status,fu_status,date,deal_date,deal_amt,detail').not('customer_id','is',null));
  CU.list=a.data||[];CU.cts={};(b.data||[]).forEach(c=>(CU.cts[c.customer_id]=CU.cts[c.customer_id]||[]).push(c));
  CU.ls={};(l||[]).forEach(r=>(CU.ls[r.customer_id]=CU.ls[r.customer_id]||[]).push(r));
  CU.ok=true;CU.loaded=true;return true}
-function stats(id){const ls=CU.ls[id]||[],w=ls.filter(r=>effS(r)===ST_Y);return{n:ls.length,w:w.length,last:ls.map(r=>r.date||'').sort().pop()||'',lw:w.map(r=>r.deal_date||r.date||'').sort().pop()||'',amt:w.reduce((t,r)=>t+(+r.deal_amt||0),0)}}
+function stats(id){const ls=CU.ls[id]||[],w=ls.filter(r=>effS(r)===ST_Y);return{n:ls.length,w:w.length,last:ls.map(r=>r.date||'').sort().pop()||'',lw:w.map(r=>r.deal_date||r.date||'').sort().pop()||'',amt:w.reduce((t,r)=>t+(+r.deal_amt||0),0),ads:[...new Set(ls.map(r=>r.ads).filter(Boolean))],fa:(ls.filter(r=>r.ads).sort((a,b)=>(a.date||'').localeCompare(b.date||''))[0]||{}).ads||''}}
 function badge(s){const d=s.lw?Math.floor((Date.now()-new Date(s.lw))/DAY):0,old=d>CHURN;
  if(s.w>=2)return old?['ลูกค้าประจำ · ไม่ส่งมานาน','a']:['ลูกค้าประจำ','g'];
  if(s.w===1)return old?['เคยปิดการขาย · ไม่ส่งมานาน','a']:['เคยปิดการขาย','g'];
@@ -1806,16 +1806,16 @@ function cuRender(){
  const so=$('cu_o'),cur=CU.own;so.innerHTML='<option value="">ทั้งหมด</option>'+ownersOf().map(x=>`<option>${H(x)}</option>`).join('');so.value=cur;
  const q=(CU.q||'').toLowerCase().trim();
  const L=CU.list.filter(c=>(!CU.own||c.owner===CU.own)&&(!q||[c.name,c.tax_id,...(CU.cts[c.id]||[]).flatMap(x=>[x.name,x.phone,x.email,x.line])].join(' ').toLowerCase().includes(q)));
- if(!CU.ok){$('cu_b').innerHTML='<tr><td colspan="7" class="sub">โหลดข้อมูลลูกค้าไม่ได้</td></tr>';return}
+ if(!CU.ok){$('cu_b').innerHTML='<tr><td colspan="8" class="sub">โหลดข้อมูลลูกค้าไม่ได้</td></tr>';return}
  $('cu_b').innerHTML=L.length?L.map(c=>{const s=stats(c.id),b=badge(s),ct=(CU.cts[c.id]||[]),pm=ct.find(x=>x.is_primary)||ct[0];
-  return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="7" class="sub">ไม่พบลูกค้า</td></tr>'}
+  return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td>${s.fa?H(s.fa)+(s.ads.length>1?' +'+(s.ads.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="8" class="sub">ไม่พบลูกค้า</td></tr>'}
 async function cuInit(){await cuLoad(true);cuRender()}
 function ctRender(){
  $('cu_ct').innerHTML=CU.edit.length?CU.edit.map((c,i)=>`<div class="cu-ct" data-i="${i}"><input data-k="name" placeholder="ชื่อ *" value="${H(c.name)}" maxlength="80"><input data-k="role" placeholder="ตำแหน่ง" value="${H(c.role)}" maxlength="60"><input data-k="phone" placeholder="เบอร์โทร" value="${H(c.phone)}" maxlength="40"><input data-k="email" placeholder="อีเมล" value="${H(c.email)}" maxlength="80"><input data-k="line" placeholder="LINE" value="${H(c.line)}" maxlength="60"><label class="cu-pm"><input type="radio" name="cu_pm"${c.is_primary?' checked':''}>หลัก</label><button type="button" class="btn sm" data-rm aria-label="ลบผู้ติดต่อ">×</button></div>`).join(''):'<div class="sub">ยังไม่มีผู้ติดต่อ</div>'}
 function llRender(id){
  const ls=(CU.ls[id]||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')),s=stats(id||'');
  $('cu_lf').classList.toggle('hid',!id);
- $('cu_ll').innerHTML=(ls.length?`<div class="cu-st"><span>Lead ${s.n}</span><span>ปิดการขาย ${s.w}</span><span>ยอดที่ปิดได้ ${N(s.amt)} บาท</span><span>ล่าสุด ${s.last?fmtD(s.last):'—'}</span></div><table><thead><tr><th>วันที่</th><th>ชื่อ Lead</th><th>เซลล์</th><th>สถานะ</th><th class="num">ใบเสนอราคา</th></tr></thead><tbody>${ls.map(r=>`<tr><td>${fmtD(r.date)}</td><td>${H(r.name)}</td><td>${H(r.sales)||'—'}</td><td>${H(effS(r))}</td><td class="num">${((r.detail&&r.detail.quotes)||[]).length}</td></tr>`).join('')}</tbody></table>`:'<div class="sub">ยังไม่มี Lead ที่ผูกกับลูกค้านี้</div>')}
+ $('cu_ll').innerHTML=(ls.length?`<div class="cu-st"><span>Lead ${s.n}</span><span>แอด ${s.ads.length}</span><span>ปิดการขาย ${s.w}</span><span>ยอดที่ปิดได้ ${N(s.amt)} บาท</span><span>ล่าสุด ${s.last?fmtD(s.last):'—'}</span></div><table><thead><tr><th>วันที่</th><th>ชื่อ Lead</th><th>แอด</th><th>เซลล์</th><th>สถานะ</th><th class="num">ใบเสนอราคา</th></tr></thead><tbody>${ls.map(r=>`<tr><td>${fmtD(r.date)}</td><td>${H(r.name)}</td><td>${H(r.ads)||'—'}</td><td>${H(r.sales)||'—'}</td><td>${H(effS(r))}</td><td class="num">${((r.detail&&r.detail.quotes)||[]).length}</td></tr>`).join('')}</tbody></table>`:'<div class="sub">ยังไม่มี Lead ที่ผูกกับลูกค้านี้</div>')}
 function cuOpen(id){
  const c=id?CU.list.find(x=>x.id===id):{},f=$('cuf');CU.sel=id||null;CU.edit=(CU.cts[id]||[]).map(x=>({...x}));
  f.name.value=c.name||'';f.tax_id.value=c.tax_id||'';f.note.value=c.note||'';fillOwner(f.owner,c.owner);
