@@ -176,7 +176,7 @@ input[list]::-webkit-calendar-picker-indicator,input[data-dl]::-webkit-calendar-
 .mksel{border:0;border-radius:99px;padding:3px 8px;font:inherit;font-size:12px;font-weight:500;cursor:pointer;max-width:100%}.apt1{overflow-x:visible!important}.apt1 table{width:100%;min-width:0!important;table-layout:auto}.apt1 td,.apt1 th{vertical-align:middle;white-space:normal!important;padding:8px 6px!important;font-size:13px}.apt1 .chp,.apt1 .btn{white-space:nowrap}.lkc{display:flex;align-items:center;gap:6px}.lkc input{min-width:110px;width:100%;padding:5px 8px;border:1px solid var(--bd);border-radius:8px;font:inherit;font-size:12px;background:var(--card);color:inherit}.apt1 .mksel{white-space:nowrap}.apt{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:14px;align-items:start}.ico svg{width:28px;height:28px;display:block}.apt td,.apt th{white-space:normal!important;vertical-align:top}.apt .wrap{overflow-x:auto}.apg{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}.apc{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;border-left:4px solid var(--pr)}.apc:hover{border-color:var(--pr)}.apc.od{border-left-color:#e03131}.apc.ok{border-left-color:#2f9e5b}.apc.cx{opacity:.65;border-left-color:#9aa5b1}.apm{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px}.apm span{color:var(--mt,#6b7a8c)}.apm b{color:inherit;font-weight:600}
 .fg{margin-bottom:14px}.fg h4{margin:0 0 6px;font-size:15px}.ftag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11px;background:#e1efff;color:#1456a0;margin-left:6px}
 .cgr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;gap:6px;margin-bottom:6px}.cgr input{min-width:0}
-#vC .cwrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(280px,.9fr);gap:12px;align-items:start}#vC .cprev{position:sticky;top:8px}@media(max-width:1180px){#vC .cwrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#vC .cprev{position:static;grid-column:1/-1}}@media(max-width:760px){#vC .cwrap{grid-template-columns:minmax(0,1fr)}#vC .cprev{order:-1}}
+#vC .cwrap{display:grid;grid-template-columns:minmax(0,3fr) minmax(300px,2fr);gap:16px;align-items:start}#vC .cprev{position:sticky;top:12px}@media(max-width:900px){#vC .cwrap{grid-template-columns:minmax(0,1fr)}#vC .cprev{position:static;order:-1}}
 .bsel{display:flex;gap:6px;flex-wrap:nowrap;margin-bottom:10px}.bsel button{flex:1 1 0;min-width:0;justify-content:center;border:1px solid var(--bd);background:#fff;border-radius:10px;padding:4px 6px;cursor:pointer;height:44px;display:flex;align-items:center}.bsel button img{height:24px;max-width:100%;object-fit:contain;display:block}.bsel button.on{outline:2px solid #0096d6;border-color:#0096d6}
 .cres{display:grid;gap:6px;margin-top:10px}.cres div{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--bd)}.cres .tot{font-size:18px;font-weight:700;color:var(--pr);border:0}
 details.dt>summary{cursor:pointer;font-weight:600;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;list-style:none}details.dt[open]>summary{margin-bottom:10px;color:var(--pr)}
@@ -201,11 +201,10 @@ details.dt>summary{cursor:pointer;font-weight:600;padding:10px 12px;border:1px s
 .osr{display:flex;align-items:center;gap:10px}
 .osr label{flex:1 1 auto;display:flex;align-items:center;gap:8px;min-width:0;cursor:pointer}
 .osr input[data-p]{width:120px;flex:none;padding:6px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}
-#cl_svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 10px}#cl_svc .osr input[data-p]{display:none}#cl_svc .osr:has(input[type=checkbox]:checked){grid-column:1/-1}#cl_svc .osr:has(input[type=checkbox]:checked) input[data-p]{display:block}
-#vC .ccol{display:flex;flex-direction:column;gap:10px;min-width:0}#vC .ccol>.pn h3 .btn{margin-left:auto;font-size:12px;padding:3px 12px;min-height:0;background:transparent;box-shadow:none;color:var(--sub)}
+#cl_svc{display:grid;gap:8px}
+#vC .cform{display:flex;flex-direction:column;gap:14px;min-width:0}#vC .cform>.pn h3 .btn{margin-left:auto;font-size:12px;padding:3px 12px;min-height:0;background:transparent;box-shadow:none;color:var(--sub)}
 #vC .csub{font-size:12px;font-weight:600;color:var(--mu);margin:0 0 8px}#vC .csub2{margin-top:18px;padding-top:14px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:10px}#vC .cbt{display:flex;gap:6px}#vC .cbt .btn{font-size:12px;padding:3px 12px;min-height:0;white-space:nowrap}
-#vC .cprev{max-height:calc(100vh - 16px);overflow-y:auto}#vC .cact{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}#vC .cact .btn{white-space:nowrap;padding:6px 4px;justify-content:center;font-size:12px}#vC .cact .p{grid-column:1/-1}
-#vC{font-size:13px}#vC .pn{padding:10px 12px;overflow-x:hidden}#vC .pn h3{margin:0 0 8px;font-size:13px}#vC label.f{font-size:11px;gap:2px}#vC label.f input,#vC label.f select,#vC label.f textarea{padding:5px 9px;font-size:13px}#vC .g{gap:8px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}#vC .csub{margin:0 0 6px}#vC .csub2{margin-top:10px;padding-top:8px}#vC .osr{gap:6px}#vC .osr label{font-size:12.5px;gap:6px;line-height:1.25}#vC .osr input[data-p]{width:76px;padding:4px 8px;font-size:12.5px}#vC .rmk{gap:3px}#vC .rmkr{font-size:11.5px;line-height:1.3;gap:6px}#vC .rmkr input{margin-top:2px}#vC .cres{gap:0;margin-top:0}#vC .cres div{padding:3px 0;font-size:12.5px}#vC .cres .tot{font-size:16px;padding-top:6px}main:has(#vC:not(.hid)){padding-bottom:8px}#vC .rb-seg button{white-space:nowrap;padding:5px 10px}#vC .cprev>.sub{display:none}#vC .cprev canvas{display:block;width:84%!important;margin:0 auto}#vC .cprev .csub2{margin-top:8px;padding-top:6px;margin-bottom:6px}#vC .bsel button{height:34px}#vC .bsel{margin-bottom:6px}#vC .cgr{gap:4px;margin-bottom:4px}#vC .cgr input,#vC .cgr select,#vC .cgr button{font-size:12px;padding:4px 6px}#vC textarea{min-height:0}
+#vC .cprev{max-height:calc(100vh - 24px);overflow-y:auto}#vC .cact{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}#vC .cact .btn{white-space:nowrap;padding:8px 6px;justify-content:center}#vC .cact .p{grid-column:1/-1}
 /* หัวตารางต้องอยู่บรรทัดเดียวเสมอ (ยกเว้นหน้า Lead) */
 #vD th,#vW th,#vF th,#vS th,#vN th,#vC th,#flist th,.apt1 th,.ut th{white-space:nowrap!important;vertical-align:middle!important}
 .apt1{overflow-x:auto!important}
@@ -438,7 +437,7 @@ header .hd #who{display:none!important}
   <div class="stats" id="dk"></div>
   <div class="dg" id="dg"></div>
 </div>
-<div id="vC" class="hid"><div class="cwrap"><div class="ccol">
+<div id="vC" class="hid"><div class="cwrap"><div class="cform">
 <div class="pn"><h3>ลูกค้า<button type="button" class="btn sm" id="cl_clear">ล้างข้อมูล</button></h3>
  <label class="f">Lead<input id="cl_q" list="cl_dl" autocomplete="off" placeholder="ค้นหาชื่อลูกค้า / ประเทศ"><datalist id="cl_dl"></datalist></label></div>
 <div class="pn"><h3>การขนส่ง</h3>
@@ -447,11 +446,10 @@ header .hd #who{display:none!important}
  <div id="tk_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="tk_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศ<input id="tk_c" list="tk_cl" autocomplete="off"><datalist id="tk_cl"></datalist></label><label class="f">จังหวัด / โซน<input id="tk_z" list="tk_zl" autocomplete="off"><datalist id="tk_zl"></datalist></label></div><div id="tk_opts" class="rb-opts" style="margin-top:10px"></div></div>
  <div class="g" style="margin-top:12px"><label class="f"><span id="cl_ru">เรท (บาท/กก.)</span><input id="cl_rate" type="text" inputmode="decimal" data-num autocomplete="off"></label></div></div>
 <div class="pn"><h3>สินค้า</h3><div id="cgc"></div></div>
-</div><div class="ccol">
 <div class="pn"><h3>ค่าบริการเสริม</h3>
  <div class="csub">คิดเงินเพิ่ม</div><div id="cl_svc"></div>
  <div class="csub csub2">ไม่รวมในราคานี้<span class="cbt"><button type="button" class="btn sm" id="cl_rall">เลือกทั้งหมด</button><button type="button" class="btn sm" id="cl_rnone">ยกเลิกทั้งหมด</button></span></div><div id="cl_rmk" class="rmk"></div>
- <label class="f" style="margin-top:8px">หมายเหตุเพิ่มเติม<textarea id="cl_remark" rows="1" maxlength="300"></textarea></label></div>
+ <label class="f" style="margin-top:14px">หมายเหตุเพิ่มเติม<textarea id="cl_remark" rows="2" maxlength="300"></textarea></label></div>
 </div>
 <div class="pn cprev"><h3>สรุปราคา</h3><div class="cres" id="cl_out"></div>
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
