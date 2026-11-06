@@ -900,6 +900,7 @@ const inLr=r=>{const a=$('lf').value,b=$('lt').value,d=r.date||'';return (!a||d>
 const inVm=r=>{const m=$('vm').value;return !m||(r.date||'').slice(0,7)===m};
 function filtered(){
  const q=$('q').value.toLowerCase(),s=$('fs').value,c=$('fc').value,a=$('fa').value,m=$('fm').value;
+ if(q)return rows.filter(r=>r.team===team&&[r.name,r.ads,r.country,r.note,r.quo].join(' ').toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date));
  return rows.filter(r=>r.team===team&&inVm(r)&&inLr(r)&&(!s||effS(r)===s)&&(!c||r.channel===c||((r.detail&&r.detail.ch2)||[]).includes(c))&&(!a||r.sales===a)&&(!m||r.svc.some(x=>svcCat(x)===m))&&
   (!q||[r.name,r.ads,r.country,r.note,r.quo].join(' ').toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
 }
