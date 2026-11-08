@@ -60,6 +60,7 @@ body{padding-left:210px}
 .tabs button:hover{background:var(--bg)}
 .tabs button.on{color:var(--pr);background:var(--infb)}
 .st b small.stu{font-size:.55em;font-weight:500;color:var(--mu);margin-left:4px}
+#tRS{display:none!important}.csb{margin:0 0 12px;width:max-content}
 .tabs .navsep{height:1px;background:var(--bd);margin:6px 10px;flex:none}
 @media (max-width:760px){body{padding-left:0}.tabs{position:static;width:auto;flex-direction:row;padding:6px 12px;border-right:0;border-bottom:1px solid var(--bd)}.tabs::before{display:none}}
 .dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
@@ -440,7 +441,7 @@ header .hd #who{display:none!important}
   <div class="stats" id="dk"></div>
   <div class="dg" id="dg"></div>
 </div>
-<div id="vC" class="hid"><div class="cwrap"><div class="cform">
+<div id="vC" class="hid"><div class="seg csb hid"><button type="button" data-s="C" class="on">คำนวณ</button><button type="button" data-s="R">Rate</button></div><div class="cwrap"><div class="cform">
 <div class="pn"><h3>ลูกค้า<button type="button" class="btn sm" id="cl_clear">ล้างข้อมูล</button></h3>
  <label class="f">Lead<input id="cl_q" list="cl_dl" autocomplete="off" placeholder="ค้นหาชื่อลูกค้า / ประเทศ"><datalist id="cl_dl"></datalist></label></div>
 <div class="pn"><h3>การขนส่ง</h3>
@@ -458,7 +459,7 @@ header .hd #who{display:none!important}
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
 <div id="vCU" class="hid"><div id="cu_lv"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div><div id="cu_dv" class="hid"></div></div>
-<div id="vRS" class="hid"><div class="rbw rsw">
+<div id="vRS" class="hid"><div class="seg csb hid"><button type="button" data-s="C">คำนวณ</button><button type="button" data-s="R" class="on">Rate</button></div><div class="rbw rsw">
  <div class="rs-hd"><div class="rs-cur" id="rs_cur"></div><div class="rb-seg" id="rs_svc"><button type="button" data-v="a" class="on">Air Courier</button><button type="button" data-v="t">Trucking</button></div></div>
  <div id="rsAir" class="rsv"><div class="mktabs" id="rs_tabs"><button type="button" data-r="f" class="on">ไฟล์เรท</button><button type="button" data-r="p">ราคาขาย</button><button type="button" data-r="m">Remote Area</button><button type="button" data-r="x">ค่าธรรมเนียมเสริม</button></div>
  <section class="rsec" data-r="f"><div class="pn"><h3>ไฟล์ที่ใช้งานอยู่</h3><div id="rs_fl"></div></div><div class="pn"><h3>อัปโหลดไฟล์เรท</h3><div class="rs-up"><input type="file" id="rs_f" accept=".xlsx,.xls" multiple></div><div id="rs_sh" class="rs-sh"></div></div></section>
@@ -1615,14 +1616,14 @@ async function rSave(set){let ok=false;try{const{error}=await sb.from('rate_sets
 /* ---- nav / gate ---- */
 const OSV_OV='ค่าธรรมเนียมสินค้าเกินขนาด/เกินน้ำหนัก',OSV_RM='ค่าพื้นที่ห่างไกล (Remote Area)';
 const canSet=()=>!!(profile&&(['admin','sales_lead'].includes(profile.role)||(isJ()&&(typeof PVR==='undefined'||!PVR||profile===PVR))));
-const gate=()=>{$('tRS').classList.toggle('hid',!canSet())};
+window.canSetRate=canSet;const gate=()=>{$('tRS').classList.toggle('hid',!canSet())};
 if(!OSV.includes(OSV_OV)){OSV.push(OSV_OV,OSV_RM);try{svcRender()}catch(e){}}
 const _ar=applyRoleUI;applyRoleUI=function(p){_ar(p);gate()};
 const _tab=tab;
 tab=function(k){const mine=k==='RS';
  if(mine&&!canSet())return;
  $('vRS').classList.toggle('hid',!mine);$('tRS').classList.toggle('on',mine);
- if(mine){['L','D','S','C','N','F','W'].forEach(x=>$('v'+x).classList.add('hid'));['L','A','M','K','E','C','S','N','F','W'].forEach(x=>$('t'+x).classList.remove('on'));$('tDB').classList.remove('on');$('fnb').classList.add('hid');rsInit();return}
+ if(mine){['L','D','S','C','N','F','W'].forEach(x=>$('v'+x).classList.add('hid'));['L','A','M','K','E','C','S','N','F','W'].forEach(x=>$('t'+x).classList.remove('on'));$('tC').classList.add('on');$('tDB').classList.remove('on');$('fnb').classList.add('hid');rsInit();return}
  _tab(k);if(k==='C')rbInit()};
 $('tRS').onclick=()=>tab('RS');
 if(typeof EN==='object')Object.assign(EN,{'ตั้งค่า Rate':'Rate','ค่าธรรมเนียมสินค้าเกินขนาด/เกินน้ำหนัก':'Oversize / overweight charge','ค่าพื้นที่ห่างไกล (Remote Area)':'Remote Area surcharge'});
@@ -1982,6 +1983,14 @@ function fix(st){
 function scan(n){if(n.nodeType!==1)return;if(n.matches&&n.matches('.st'))fix(n);n.querySelectorAll&&n.querySelectorAll('.st:not([data-uf])').forEach(fix)}
 new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(scan))).observe(document.body,{childList:true,subtree:true});
 scan(document.body)})();
+</script>
+<script>
+(function(){
+const sync=()=>document.querySelectorAll('.csb').forEach(e=>e.classList.toggle('hid',!(window.canSetRate&&window.canSetRate())));
+document.addEventListener('click',e=>{const b=e.target.closest('.csb [data-s]');if(b)tab(b.dataset.s==='R'?'RS':'C')});
+const _t6=tab;tab=function(k){_t6(k);sync()};
+const _ar6=applyRoleUI;applyRoleUI=function(p){_ar6(p);sync()};sync();
+})();
 </script>
 </body>
 </html>
