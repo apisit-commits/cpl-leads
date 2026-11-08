@@ -1348,7 +1348,7 @@ function drawQuote(){rmkInit();bsRender();
  const x=c.getContext('2d');
  const T=(s,px,py,sz,w,col,al)=>{x.font=`${w} ${sz}px ${F}`;x.fillStyle=col;x.textAlign=al||'left';x.fillText(s,px,py)};
  x.fillStyle='#fff';x.fillRect(0,0,W,H);
- const bk=curBrand(),lg=LIMG[bk],ld=LOGOS[bk];[...$('cl_bs').children].forEach(b=>b.classList.toggle('on',b.dataset.b===bk));if(lg&&lg.complete&&lg.naturalWidth){const sc=Math.min(440/ld.w,46/ld.h),lw=Math.round(ld.w*sc),lh=Math.round(ld.h*sc);x.drawImage(lg,40,55-Math.round(lh/2),lw,lh)}
+ const bk=curBrand(),lg=LIMG[bk],ld=LOGOS[bk];[...$('cl_bs').children].forEach(b=>b.classList.toggle('on',b.dataset.b===bk));if(lg&&lg.complete&&lg.naturalWidth){const sc=Math.min(280/ld.w,34/ld.h),lw=Math.round(ld.w*sc),lh=Math.round(ld.h*sc);x.drawImage(lg,40,55-Math.round(lh/2),lw,lh)}
  T(TT('ใบเสนอราคา','Quotation'),W-40,68,38,'700',QTH().d,'right');T(fmtD(today()),W-40,102,20,'400','#6b7280','right');
  x.fillStyle=QTH().a;x.fillRect(0,126,W,6);
  let y=178;if(r&&r.name){T(TT('เรียน คุณ ','Dear ')+r.name,40,y,28,'600','#111827');y+=40}
