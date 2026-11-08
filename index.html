@@ -568,7 +568,7 @@ const COLS0='detail,cargo,id,team,date,ads,name,dir,country,svc,note,channel,sta
 const isSl=r=>r==='sales'||r==='sales_lead';
 const can=r=>profile&&(profile.role==='admin'||profile.role==='keyer'||profile.role==='sales_lead'||(profile.role==='sales'&&r.team===profile.team));
 const seeAll=()=>!!profile&&['admin','keyer','sales_lead'].includes(profile.role);
-const isBeta=()=>!!(profile&&profile.beta);
+const isBeta=()=>!!(profile&&(profile.beta||profile.role==='admin'));
 const dupKey=s=>String(s||'').toLowerCase().replace(/บริษัท|บจก\.?|หจก\.?|ห้างหุ้นส่วนจำกัด|จำกัด|\(มหาชน\)|คุณ/g,'').replace(/[\s.,()\-_\/]+/g,'');
 const dupPh=s=>{const d=String(s||'').replace(/\D/g,'');return d.length>=8?d.slice(-9):''};
 async function dupCheck(o){const d=o.detail||{},ph=[d.ph,d.cpt,d.ctt].filter(Boolean),key=dupKey(o.name),san=x=>String(x).replace(/["%,()*\\]/g,''),cond=[],core=san(String(o.name||'').replace(/บริษัท|จำกัด|\(มหาชน\)|คุณ/g,'').trim());
