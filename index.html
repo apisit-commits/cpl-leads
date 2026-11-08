@@ -327,7 +327,7 @@ legend{font-size:13px}
 .btn.sm{font-size:13px!important;padding:4px 11px}
 #acct em,.tg{font-size:12px!important}
 #vF .nh .lhd{margin:0 0 0 auto;flex-wrap:nowrap}#vF .nh .nbar{margin-left:0}#vF .nh{margin-bottom:10px}
-#vL .lhd{justify-content:flex-end;align-items:center;margin-bottom:10px}#vL .lhd .seg{margin:0}#vL .lhd #lsub{margin:0 auto 0 0}#pl_pn th{white-space:nowrap}#pl_pn table{width:100%;min-width:0;table-layout:auto}#pl_pn th,#pl_pn td{width:auto!important}#pl_pn .pn{overflow-x:auto}#pl_b td:last-child{width:1%!important}#pl_b select{max-width:130px}#pl_b tr[data-id]{cursor:pointer}
+#vL .lhd{justify-content:flex-end;align-items:center;margin-bottom:10px}#vL .lhd .seg{margin:0}#vL .lhd #lsub{margin:0 auto 0 0}#pl_b select{max-width:130px;margin-right:6px}#pl_w table{min-width:0}#pl_w th{white-space:nowrap!important}#pl_w th:nth-child(7),#pl_w td:nth-child(7),#pl_w th:nth-child(8),#pl_w td:nth-child(8){display:none}#pl_w th:last-child,#pl_w td:last-child{width:1%;white-space:nowrap}#pl_b tr[data-id]{cursor:pointer}
 .dtop{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}.dtop .mktabs,.dtop .dh{margin:0}
 #vW .nh{justify-content:flex-start;margin-bottom:10px}#vW .nh .mktabs{margin:0}#vW .nh .nbar{margin-left:auto}
 .chm{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap}.ch2i{display:inline-flex;opacity:.85;transform:scale(.85);transform-origin:left center;margin-right:-3px}
@@ -424,7 +424,7 @@ header .hd #who{display:none!important}
   <div class="wrap"><table><thead><tr>
     <th>วันที่</th><th>Ads</th><th>ลูกค้า</th><th>รายละเอียด</th><th>ช่องทาง</th><th>สถานะ</th><th>เหตุผลที่ยังไม่สนใจ</th><th>เซลล์</th><th>แบรนด์ / โปรโมชัน</th><th></th>
   </tr></thead><tbody id="tb"></tbody></table><div class="empty hid" id="em">ยังไม่มีข้อมูล</div><div class="sub" id="cap" style="padding:10px 14px"></div></div>
-  <div class="hid" id="pl_pn"><div class="stats" id="pl_st"></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>ช่องทาง</th><th>บริการ</th><th>ปลายทาง</th><th>รอมาแล้ว</th><th>Ads</th><th></th></tr></thead><tbody id="pl_b"></tbody></table></div></div>
+  <div class="hid" id="pl_pn"><div class="stats" id="pl_st"></div><div class="wrap" id="pl_w"><table><thead id="pl_h"></thead><tbody id="pl_b"></tbody></table></div></div>
 </div>
 <div id="vD" class="hid">
   <div class="dtop"><div id="dmodes" class="mktabs hid"></div><h2 id="dtitle" class="dh"></h2></div>
@@ -621,7 +621,7 @@ function applyRoleUI(p){tFlabel();const r=p.role,H=(id,h)=>$(id).classList.toggl
  H('tF',!has(['sales','sales_lead','admin','keyer']));H('tW',!has(['admin','marketing','zimp']));H('tL',r==='zimp');H('tN',0);
  ['A','M','K','E'].forEach(k=>H('t'+k,1));H('rg',1);H('exp',r==='zimp')}
 let PVR=null,PVW=null;
-function pvApply(v){if(!PVR){PVR=profile;PVW=WHO}if(!PVR||PVR.role!=='admin')return;const[role,tm]=v.split(':'),p=role==='admin'?PVR:{...PVR,role,team:tm||PVR.team,beta:false};
+function pvApply(v){if(!PVR){PVR=profile;PVW=WHO}if(!PVR||PVR.role!=='admin')return;const[role,tm]=v.split(':'),p=role==='admin'?PVR:{...PVR,role,team:tm||PVR.team};
  profile=p;WHO={...PVW,r:p.role,t:p.team};setWho();applyRoleUI(p);if(role==='sales')team=p.team;
  $('pvs').classList.toggle('pv',role!=='admin');buildSeg();setSales();refresh();
  tab('N')}
@@ -1385,15 +1385,16 @@ async function calcSave(q){const r=rows.find(x=>String(x.id)===selId());if(!r)re
 function openDetail(id){openForm(id);const d=$('dd');d.open=true;setTimeout(()=>d.scrollIntoView({block:'start',behavior:'smooth'}),60)}
 function fitWrap(){const w=document.querySelector('#vL .wrap');if(!w||w.offsetParent===null)return;const t=w.getBoundingClientRect().top+window.scrollY;w.style.maxHeight=Math.max(300,window.innerHeight-t-16)+'px'}
 window.addEventListener('resize',fitWrap);
-function render(){
- const l=filtered(),t=today(),tr=rows.filter(r=>r.team===team&&inVm(r)&&inLr(r));buildSeg();
- $('tb').innerHTML=l.slice(0,300).map(r=>`<tr${can(r)?` class="rw" data-id="${r.id}" title="คลิกเพื่อแก้ไข"`:''}>
+function leadRow(r,act){return `<tr${can(r)?` class="rw" data-id="${r.id}" title="คลิกเพื่อแก้ไข"`:''}>
   <td${E(r.date)}>${esc(fmtD(r.date))}</td><td${E(r.ads)}>${esc(r.ads)}</td><td${E(r.name)}><b>${esc(r.name)}</b></td>
   <td${E(r.dir||r.country||r.svc.length||r.note)}><div class="dl2">${cinfo(r)}${r.note?`<div class="sub">${esc(r.note)}</div>`:''}</div></td>
   <td${E(r.channel)}><span class="chm">${chIcon(r.channel)}${((r.detail&&r.detail.ch2)||[]).map(c=>`<span class="ch2i">${chIcon(c,20)}</span>`).join('')}</span></td><td title="${r.fu?TT('ติดตาม: ','Follow-up: ')+fmtD(r.fu):''}"><span class="tag ${SC[dispSt(r)]||''}">${esc(dispSt(r))}</span>${r.deal_amt||r.deal_date?`<div class="sub" style="margin-top:3px">${r.deal_amt?`<b>${N(r.deal_amt)} ฿</b>`:''}${r.deal_amt&&r.deal_date?' · ':''}${r.deal_date?esc(fmtD(r.deal_date)):''}${((r.detail&&r.detail.deals)||[]).length?' · +'+r.detail.deals.length:''}</div>`:''}</td>
   
   <td${E(r.reason,effS(r)===ST_N)}>${esc(r.reason)}</td><td${E(r.sales)}>${esc(r.sales)}</td><td${E(r.brand&&r.promo)}>${esc(r.brand)}<div class="sub">${esc(r.promo)}</div></td>
-  <td>${can(r)?`<button class="btn sm rb${r.detail?' p':''}" title="รายละเอียด" aria-label="รายละเอียด" onclick="openDetail(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg></button><button class="btn sm rb" title="แก้ไข" aria-label="แก้ไข" onclick="openForm(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>${profile.role!=='sales_lead'?`<button class="btn sm rb" title="ลบ" aria-label="ลบ" onclick="del(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>`:''}`:''}</td></tr>`).join('');
+  <td>${act!=null?act:can(r)?`<button class="btn sm rb${r.detail?' p':''}" title="รายละเอียด" aria-label="รายละเอียด" onclick="openDetail(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg></button><button class="btn sm rb" title="แก้ไข" aria-label="แก้ไข" onclick="openForm(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>${profile.role!=='sales_lead'?`<button class="btn sm rb" title="ลบ" aria-label="ลบ" onclick="del(${r.id})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>`:''}`:''}</td></tr>`}
+function render(){
+ const l=filtered(),t=today(),tr=rows.filter(r=>r.team===team&&inVm(r)&&inLr(r));buildSeg();
+ $('tb').innerHTML=l.slice(0,300).map(r=>leadRow(r)).join('');
  $('em').classList.toggle('hid',l.length>0);$('cap').textContent=l.length>300?TT('แสดง 300 จาก '+N(l.length)+' รายการ (ใหม่สุดก่อน) · ใช้ช่องค้นหา/ตัวกรอง หรือส่งออก Excel เพื่อดูทั้งหมด','Showing 300 of '+N(l.length)+' items (newest first) · use search/filters or export to Excel to see everything'):'';
  const n=s=>tr.filter(r=>effS(r)===s).length,due=tr.filter(r=>r.fu&&r.fu<=t&&![ST_Y,ST_N].includes(effS(r))).length;
  $('stats').innerHTML=[['Lead ทั้งหมด',tr.length],['ปิดการขาย',n(ST_Y)],['รอการตัดสินใจ',n(ST_S)],['ไม่สนใจ',n(ST_N)],['ต้อง Follow-up วันนี้/เลยกำหนด',due]]
@@ -1969,7 +1970,10 @@ function plRender(){
  const L=pool().sort((a,b)=>(a.date||'').localeCompare(b.date||'')),sn=salesFor(team),t=today(),d=x=>Math.max(0,Math.floor((new Date(t)-new Date(x))/DAY));
  $('pl_n').textContent=L.length;
  $('pl_st').innerHTML=[[L.length,'รอรับดูแล'],[L.length?d(L[0].date)+' วัน':'—','รอนานสุด'],[L.filter(r=>r.date===t).length,'เข้ามาวันนี้']].map(([v,k])=>`<div class="st"><b>${v}</b><span>${k}</span></div>`).join('');
- $('pl_b').innerHTML=L.length?L.slice(0,300).map(r=>`<tr data-id="${r.id}"><td><b>${H(r.name)}</b></td><td>${H(r.channel)||'—'}</td><td>${H((r.svc||[]).join(', '))||'—'}</td><td>${H(r.country)||'—'}</td><td>${age(r.date)}</td><td>${r.ads?H(r.ads):'—'}</td><td class="num" style="white-space:nowrap">${canAssign()?`<select data-pk style="margin-right:6px"><option value="">เลือกเซลล์</option>${sn.map(x=>`<option>${H(x)}</option>`).join('')}</select><button type="button" class="btn sm p" data-pa>มอบหมาย</button>`:`<button type="button" class="btn sm p" data-pa>รับดูแล</button>`}</td></tr>`).join(''):'<tr><td colspan="7" class="sub">ไม่มี Lead ใน Pool</td></tr>'}
+ $('pl_h').innerHTML=document.querySelector('#vL .wrap thead').innerHTML;
+ const act=r=>canAssign()?`<select data-pk><option value="">เลือกเซลล์</option>${sn.map(x=>`<option>${H(x)}</option>`).join('')}</select><button type="button" class="btn sm p" data-pa>มอบหมาย</button>`:`<button type="button" class="btn sm p" data-pa>รับดูแล</button>`;
+ $('pl_b').innerHTML=L.length?L.slice(0,300).map(r=>leadRow(r,act(r))).join(''):'<tr><td colspan="10" class="sub">ไม่มี Lead ใน Pool</td></tr>';fitWrap2()}
+function fitWrap2(){const w=$('pl_w');if(!w||w.offsetParent===null)return;const t=w.getBoundingClientRect().top+window.scrollY;w.style.maxHeight=Math.max(300,window.innerHeight-t-16)+'px'}
 function apply(){
  const o=on(),p=o&&sub==='P';$('lsub').classList.toggle('hid',!o);
  [...$('lsub').children].forEach(b=>b.classList.toggle('on',b.dataset.s===(o?sub:'L')));
@@ -1982,10 +1986,11 @@ async function claim(id,name){
  if(!data||!data.length){alert('Lead นี้มีผู้ดูแลแล้ว')}
  else{const r=rows.find(x=>String(x.id)===String(id));if(r)r.sales=name;POOL=POOL.filter(x=>String(x.id)!==String(id))}
  refresh();plRender()}
-$('pl_b').addEventListener('click',e=>{if(!e.target.closest('[data-pa],[data-pk]')){const tr=e.target.closest('tr[data-id]');if(tr){const id=isNaN(+tr.dataset.id)?tr.dataset.id:+tr.dataset.id,x=rows.find(y=>y.id===id)||POOL.find(y=>y.id===id);if(x&&can(x)){if(!rows.some(y=>y.id===id))rows.push(x);openForm(id)}}return}const b=e.target.closest('[data-pa]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.id;
+$('pl_b').addEventListener('click',e=>{if(!e.target.closest('[data-pa],[data-pk],button')){const tr=e.target.closest('tr[data-id]');if(tr){const id=isNaN(+tr.dataset.id)?tr.dataset.id:+tr.dataset.id,x=rows.find(y=>y.id===id)||POOL.find(y=>y.id===id);if(x&&can(x)){if(!rows.some(y=>y.id===id))rows.push(x);openForm(id)}}return}const b=e.target.closest('[data-pa]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.id;
  const nm=canAssign()?tr.querySelector('[data-pk]').value:(profile&&profile.name);claim(isNaN(+id)?id:+id,nm)});
 $('lsub').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;sub=b.dataset.s;if(sub==='P')lt0=0;apply()});
 const _sl2=saveLead;saveLead=async function(){const x=await _sl2.apply(this,arguments);if(loaded)plLoad();return x};
+const _of2=openForm;openForm=function(id){if(id!=null&&!rows.some(y=>y.id===id)){const x=POOL.find(y=>y.id===id);if(x)rows.push(x)}_of2.apply(this,arguments)};
 const _rd=render;render=function(){_rd.apply(this,arguments);apply()};
 const _ar3=applyRoleUI;applyRoleUI=function(p){_ar3(p);apply()};apply();
 })();
