@@ -1866,6 +1866,17 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 #vSo .tg2{align-items:stretch!important}#vSo .oads{height:100%}
 #cu_dv .st b:has(>.sti){display:flex!important;align-items:center;gap:10px}#cu_dv .st b>.sti{order:-1;margin:0!important}
 label.f.hid,#aed .hid,#aud .hid,#aed select.hid,#aed input.hid{display:none!important}
+
+/* floating action cluster, content moves to the very top */
+#fnb{display:flex;align-items:center;gap:12px;margin:0 0 0 auto}#fnb .sub{white-space:nowrap}#fnb.hid{display:none!important}
+@media(min-width:761px){
+header{position:fixed!important;top:10px;right:16px;z-index:60;width:auto!important;padding:0!important;background:none!important;border:0!important}
+header .hd{width:auto!important;flex-wrap:nowrap;gap:6px;padding:5px;background:var(--card);border:1px solid var(--bd);border-radius:14px;box-shadow:var(--sh)}
+header .hd #pvs{max-width:150px;padding:5px 8px;font-size:12.5px;border:0;background:var(--fld)}
+header .hd .btn{height:34px}
+main{padding-top:12px!important}
+}
+@media(min-width:761px){#vN>.nh,#vW>.nh,#vF>.nh,#vD>.dtop,#vL>.hd.lhd,#vCU>.bar:first-child,#vCU>:first-child:not(.hid){padding-right:270px}}
 </style>
 <script>
 (function(){
@@ -2136,6 +2147,9 @@ Object.assign(EN,{"เพิ่มผู้ใช้":"Add user","อีเม�
 i.addEventListener('change',async()=>{const r=rows.find(x=>String(x.id)===selId());if(!r||!can(r))return;const v=i.value.trim(),cur=(r.detail&&r.detail.qn)||'';if(v===cur||(!cur&&v===(r.name||'')))return;
  const d={...(r.detail||{})};if(v&&v!==(r.name||''))d.qn=v;else delete d.qn;const{error}=await sb.from('leads').update({detail:d}).eq('id',r.id);if(error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message);r.detail=d;if(!v)i.value=r.name||'';calc()});
 Object.assign(EN,{"ชื่อลูกค้าในใบเสนอราคา":"Customer name on quotation"})})();
+</script>
+<script>
+(function(){const f=$('fnb'),h=document.querySelector('#vF .nh');if(f&&h)h.appendChild(f)})();
 </script>
 </body>
 </html>
