@@ -958,7 +958,7 @@ async function loadNews(){const msg=$('n_msg');let r;try{r=await sb.from('announ
 const nExp=(n,t)=>{const e=n.end_date||(n.tag==='ประชุม'?n.start_date:'');return !!e&&e<t};
 const nDur=(n,t)=>{if(n.tag==='แคมเปญ'&&(n.start_date||n.end_date))return 'Period: '+(n.start_date?fmtD(n.start_date):'')+(n.end_date?' – '+fmtD(n.end_date):'');if(n.tag==='ประชุม'&&n.start_date){const d=Math.round((Date.parse(n.start_date)-Date.parse(t))/864e5);return d>0?TT('อีก '+d+' วัน','In '+d+(d===1?' day':' days')):d===0?TT('วันนี้','Today'):TT('ผ่านไปแล้ว','Past')}return''};
 function renderNews(){const t=today(),old=$('n_old').checked;const l=NEWS.filter(n=>old||!nExp(n,t));
- $('n_list').innerHTML=l.map(n=>{const ex=nExp(n,t),du=nDur(n,t),per=(n.start_date||n.end_date)?fmtD(n.start_date)+(n.end_date?' – '+fmtD(n.end_date):''):'';
+ $('n_list').style.setProperty('--nc',Math.min(5,Math.max(2,l.length)));$('n_list').innerHTML=l.map(n=>{const ex=nExp(n,t),du=nDur(n,t),per=(n.start_date||n.end_date)?fmtD(n.start_date)+(n.end_date?' – '+fmtD(n.end_date):''):'';
   return `<div class="nc${ex?' ex':''}" data-n="${n.id}">${n.image?`<img src="${n.image}" alt="">`:''}<div class="nb"><span class="ntag" style="background:${NCOL[n.tag]||'#868e96'}">${n.pinned?'📌 ':''}${esc(n.tag||'')}</span><h4>${esc(n.title)}</h4>${n.body?`<div class="nbd">${esc(String(n.body).slice(0,220))}</div>`:''}${du?`<div class="ndu">${esc(du)}</div>`:''}</div></div>`}).join('');
  $('n_em').classList.toggle('hid',l.length>0)}
 function nShow(id){const n=NEWS.find(x=>x.id===id);if(!n)return;const t=today(),ex=nExp(n,t),per=nDur(n,t)||((n.start_date||n.end_date)?fmtD(n.start_date)+(n.end_date?' – '+fmtD(n.end_date):''):'');
@@ -1887,7 +1887,7 @@ body:not(.hdo) header{transform:translateX(calc(100% + 60px));opacity:0;pointer-
 #hdt .bn{top:-7px;right:-7px}body.hdo #hdb{display:none}
 @media(max-width:760px){#hdt{display:none}}
 @media(min-width:761px){
-.ng{grid-template-columns:repeat(auto-fill,minmax(max(230px,calc((100% - 72px)/5.001)),1fr))!important;gap:18px}
+.ng{grid-template-columns:repeat(auto-fill,minmax(max(230px,calc((100% - (var(--nc,5) - 1)*18px)/var(--nc,5) - 1px)),1fr))!important;gap:18px;max-width:calc(var(--nc,5)*420px + (var(--nc,5) - 1)*18px)}
 .nc{border-radius:18px!important;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s}
 .nc:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,23,42,.14)}
 .nc img{max-height:none!important;height:auto!important;width:100%!important;aspect-ratio:388/450;object-fit:cover}
