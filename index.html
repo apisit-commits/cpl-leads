@@ -959,7 +959,7 @@ const nExp=(n,t)=>{const e=n.end_date||(n.tag==='ประชุม'?n.start_dat
 const nDur=(n,t)=>{if(n.tag==='แคมเปญ'&&(n.start_date||n.end_date))return 'Period: '+(n.start_date?fmtD(n.start_date):'')+(n.end_date?' – '+fmtD(n.end_date):'');if(n.tag==='ประชุม'&&n.start_date){const d=Math.round((Date.parse(n.start_date)-Date.parse(t))/864e5);return d>0?TT('อีก '+d+' วัน','In '+d+(d===1?' day':' days')):d===0?TT('วันนี้','Today'):TT('ผ่านไปแล้ว','Past')}return''};
 function renderNews(){const t=today(),old=$('n_old').checked;const l=NEWS.filter(n=>old||!nExp(n,t));
  $('n_list').innerHTML=l.map(n=>{const ex=nExp(n,t),du=nDur(n,t),per=(n.start_date||n.end_date)?fmtD(n.start_date)+(n.end_date?' – '+fmtD(n.end_date):''):'';
-  return `<div class="nc${ex?' ex':''}" data-n="${n.id}">${n.image?`<img src="${n.image}" alt="">`:''}<div class="nb"><span class="ntag" style="background:${NCOL[n.tag]||'#868e96'}">${n.pinned?'📌 ':''}${esc(n.tag||'')}</span><h4>${esc(n.title)}</h4>${du?`<div class="ndu">${esc(du)}</div>`:''}</div></div>`}).join('');
+  return `<div class="nc${ex?' ex':''}" data-n="${n.id}">${n.image?`<img src="${n.image}" alt="">`:''}<div class="nb"><span class="ntag" style="background:${NCOL[n.tag]||'#868e96'}">${n.pinned?'📌 ':''}${esc(n.tag||'')}</span><h4>${esc(n.title)}</h4>${n.body?`<div class="nbd">${esc(String(n.body).slice(0,220))}</div>`:''}${du?`<div class="ndu">${esc(du)}</div>`:''}</div></div>`}).join('');
  $('n_em').classList.toggle('hid',l.length>0)}
 function nShow(id){const n=NEWS.find(x=>x.id===id);if(!n)return;const t=today(),ex=nExp(n,t),per=nDur(n,t)||((n.start_date||n.end_date)?fmtD(n.start_date)+(n.end_date?' – '+fmtD(n.end_date):''):'');
  $('nlc').innerHTML=`<button class="nx" data-x>✕</button>${n.image?`<img src="${n.image}" alt="">`:''}<div class="nb"><span class="ntag" style="background:${NCOL[n.tag]||'#868e96'}">${n.pinned?'📌 ':''}${esc(n.tag||'')}</span><h4>${esc(n.title)}</h4>${n.body?`<p>${esc(n.body)}</p>`:''}<div class="nm">${per?'🗓 '+per+' · ':''}${ex?TT('หมดอายุแล้ว','Expired')+' · ':''}${esc(n.author||'')} · ${fmtD((n.created_at||'').slice(0,10))}</div>${canEditN(n)?`<div class="na"><button class="btn sm" data-e="${n.id}">แก้ไข</button><button class="btn sm" data-d="${n.id}">ลบ</button></div>`:''}</div>`;$('nl').showModal()}
@@ -1886,6 +1886,15 @@ body:not(.hdo) header{transform:translateX(calc(100% + 60px));opacity:0;pointer-
 }
 #hdt .bn{top:-7px;right:-7px}body.hdo #hdb{display:none}
 @media(max-width:760px){#hdt{display:none}}
+@media(min-width:761px){
+.ng{grid-template-columns:repeat(auto-fit,minmax(520px,1fr))!important;gap:18px}
+.nc{flex-direction:row!important;align-items:stretch;min-height:340px}
+.nc img{width:48%!important;max-width:360px;max-height:none!important;height:auto;object-fit:cover;flex:none}
+.nc .nb{flex:1;justify-content:center;padding:22px 24px!important;gap:10px}
+.nc .nb h4{font-size:22px!important}
+.nc .nbd{font-size:14px;line-height:1.55;color:var(--mu);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+.nc .ndu{font-size:13px}
+}
 </style>
 <script>
 (function(){
