@@ -1816,7 +1816,7 @@ function cuRender(){
  if(!CU.ok){$('cu_b').innerHTML='<tr><td colspan="8" class="sub">โหลดข้อมูลลูกค้าไม่ได้</td></tr>';return}
  $('cu_b').innerHTML=L.length?L.map(c=>{const s=stats(c.id),b=badge(s),ct=(CU.cts[c.id]||[]),pm=ct.find(x=>x.is_primary)||ct[0];
   return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td>${s.fa?H(s.fa)+(s.ads.length>1?' +'+(s.ads.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="8" class="sub">ไม่พบลูกค้า</td></tr>'}
-async function cuInit(){await cuLoad(true);cuRender();if(CU.det)cuDet(CU.det)}
+async function cuInit(){await cuLoad(true);cuRender();if(CU.det)cuDet(CU.det);cuAuto()}
 function ctRender(){
  $('cu_ct').innerHTML=CU.edit.length?CU.edit.map((c,i)=>`<div class="cu-ct" data-i="${i}"><input data-k="name" placeholder="ชื่อ *" value="${H(c.name)}" maxlength="80"><input data-k="role" placeholder="ตำแหน่ง" value="${H(c.role)}" maxlength="60"><input data-k="phone" placeholder="เบอร์โทร" value="${H(c.phone)}" maxlength="40"><input data-k="email" placeholder="อีเมล" value="${H(c.email)}" maxlength="80"><input data-k="line" placeholder="LINE" value="${H(c.line)}" maxlength="60"><label class="cu-pm"><input type="radio" name="cu_pm"${c.is_primary?' checked':''}>หลัก</label><button type="button" class="btn sm" data-rm aria-label="ลบผู้ติดต่อ">×</button></div>`).join(''):'<div class="sub">ยังไม่มีผู้ติดต่อ</div>'}
 function cuEv(id){
@@ -1872,18 +1872,47 @@ function bind(){
   const ex=CU.list.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());if(ex){f.cu_name.value=ex.name;return}
   const r=await sb.from('customers').insert({name:nm,owner:f.sales.value||null}).select('id').single();if(r.error||!r.data)return alert('สร้างลูกค้าไม่สำเร็จ');
   await cuLoad(true);cuFormList();f.cu_name.value=nm}}
+const keyOf=n=>{const k=dupKey(n);return k.length>=3?k:''},leadPh=d=>[d.ph,d.cpt,d.ctt].filter(Boolean);
+function cuCts(ls,cid,have){const seen=new Set(have||[]),out=[];let n=0;ls.forEach(l=>{const d=l.detail||{},nm=(d.ctn||d.fn||'').trim(),ph=d.ctt||d.ph||d.cpt||'',em=d.cpe||d.em||'',k=dupPh(ph)||em.toLowerCase();if(!nm||n>=3||(k&&seen.has(k)))return;if(k)seen.add(k);out.push({customer_id:cid,name:nm,phone:ph||null,email:em||null,is_primary:!have&&n===0});n++});return out}
+function cuIdx(){const nm={},ph={};CU.list.forEach(c=>{const k=keyOf(c.name);if(k)nm[k]=c.id;(CU.cts[c.id]||[]).forEach(x=>{const p=dupPh(x.phone);if(p)ph[p]=c.id})});return{nm,ph}}
+function cuFind(idx,names,phones){for(const n of names){const k=keyOf(n);if(k&&idx.nm[k])return idx.nm[k]}for(const p of phones){const q=dupPh(p);if(q&&idx.ph[q])return idx.ph[q]}return null}
+async function cuAuto(){
+ if(CU.busy||!CU.ok)return false;CU.busy=true;let ch=false;
+ try{
+  const ls=await pg(()=>sb.from('leads').select('id,name,sales,date,detail').is('customer_id',null).order('date',{ascending:false}));
+  if(!ls||!ls.length)return false;
+  const idx=cuIdx(),G=cuGroups(ls),nw=[];
+  for(const g of G){const cid=cuFind(idx,g.ls.map(l=>l.name),g.ls.flatMap(l=>leadPh(l.detail||{})));
+   if(cid){const ids=g.ls.map(l=>l.id);for(let k=0;k<ids.length;k+=100){if((await sb.from('leads').update({customer_id:cid}).in('id',ids.slice(k,k+100))).error)return ch;ch=true}}
+   else if(g.name)nw.push(g)}
+  for(let i=0;i<nw.length;i+=50){const c=nw.slice(i,i+50);
+   const r=await sb.from('customers').insert(c.map(x=>({name:x.name,owner:x.owner||null}))).select('id');
+   if(r.error||!r.data||r.data.length!==c.length)return ch;ch=true;
+   const cts=[];c.forEach((x,j)=>cts.push(...cuCts(x.ls,r.data[j].id)));
+   if(cts.length&&(await sb.from('customer_contacts').insert(cts)).error)return ch;
+   for(let j=0;j<c.length;j++){const ids=c[j].ls.map(l=>l.id);for(let k=0;k<ids.length;k+=100){if((await sb.from('leads').update({customer_id:r.data[j].id}).in('id',ids.slice(k,k+100))).error)return ch}}}
+  return ch}
+ catch(e){return ch}
+ finally{CU.busy=false;if(ch){await cuLoad(true);if($('vCU')&&!$('vCU').classList.contains('hid')){cuRender();if(CU.det)cuDet(CU.det)}}}}
+async function cuLink(o){
+ const idx=cuIdx();let cid=cuFind(idx,[o.name],leadPh(o.detail||{}));
+ if(!cid){const nm=(o.name||'').trim();if(!nm)return null;const r=await sb.from('customers').insert({name:nm,owner:o.sales||null}).select('id').single();if(r.error||!r.data)return null;cid=r.data.id;
+  const cts=cuCts([{detail:o.detail||{}}],cid);if(cts.length)await sb.from('customer_contacts').insert(cts);await cuLoad(true)}
+ return cid}
+function cuGroups(ls){
+ const par={},find=x=>par[x]===x?x:(par[x]=find(par[x])),uni=(a,b)=>{a=find(a);b=find(b);if(a!==b)par[a]=b},by={};
+ ls.forEach(r=>par[r.id]=r.id);
+ ls.forEach(r=>{const ks=[],nk=dupKey(r.name),d=r.detail||{};if(nk.length>=3)ks.push('n:'+nk);[d.ph,d.cpt,d.ctt].map(dupPh).filter(Boolean).forEach(p=>ks.push('p:'+p));ks.forEach(k=>{if(by[k])uni(by[k],r.id);else by[k]=r.id})});
+ const g={};ls.forEach(r=>(g[find(r.id)]=g[find(r.id)]||[]).push(r));
+ const top=a=>{const m={};a.forEach(x=>{if(x)m[x]=(m[x]||0)+1});return Object.entries(m).sort((x,y)=>y[1]-x[1])[0]?.[0]||''};
+return Object.values(g).map(a=>({ls:a,name:top(a.map(x=>(x.name||'').trim())),owner:top(a.map(x=>x.sales))}))}
 /* ---- merge duplicates ---- */
 let CUM=[];
 async function cumOpen(){
  $('cum_b').innerHTML='<p class="sub">กำลังโหลด…</p>';$('cum_go').disabled=true;$('cum').showModal();
  const ls=await pg(()=>sb.from('leads').select('id,name,sales,date,detail').is('customer_id',null).order('date',{ascending:false}));
  if(!ls){$('cum_b').innerHTML='<p class="sub">โหลด Lead ไม่ได้</p>';return}
- const par={},find=x=>par[x]===x?x:(par[x]=find(par[x])),uni=(a,b)=>{a=find(a);b=find(b);if(a!==b)par[a]=b},by={};
- ls.forEach(r=>par[r.id]=r.id);
- ls.forEach(r=>{const ks=[],nk=dupKey(r.name),d=r.detail||{};if(nk.length>=3)ks.push('n:'+nk);[d.ph,d.cpt,d.ctt].map(dupPh).filter(Boolean).forEach(p=>ks.push('p:'+p));ks.forEach(k=>{if(by[k])uni(by[k],r.id);else by[k]=r.id})});
- const g={};ls.forEach(r=>(g[find(r.id)]=g[find(r.id)]||[]).push(r));
- const top=a=>{const m={};a.forEach(x=>{if(x)m[x]=(m[x]||0)+1});return Object.entries(m).sort((x,y)=>y[1]-x[1])[0]?.[0]||''};
- CUM=Object.values(g).map(a=>({ls:a,name:top(a.map(x=>(x.name||'').trim())),owner:top(a.map(x=>x.sales))})).sort((x,y)=>y.ls.length-x.ls.length);
+ CUM=cuGroups(ls).sort((x,y)=>y.ls.length-x.ls.length);
  cumRender()}
 function cumRender(){
  const all=$('cum_s').checked,G=CUM.filter(x=>all||x.ls.length>1).slice(0,300);
@@ -1897,7 +1926,7 @@ async function cumGo(){
   const r=await sb.from('customers').insert(ch.map(x=>({name:x.name,owner:x.g.owner||null}))).select('id');
   if(r.error||!r.data||r.data.length!==ch.length){alert('บันทึกไม่สำเร็จ');b.disabled=false;return}
   const cts=[];
-  for(let j=0;j<ch.length;j++){const cid=r.data[j].id,seen=new Set();let n=0;ch[j].g.ls.forEach(l=>{const d=l.detail||{},nm=(d.ctn||d.fn||'').trim(),ph=d.ctt||d.ph||d.cpt||'',em=d.cpe||d.em||'',k=dupPh(ph)||em.toLowerCase();if(!nm||n>=3||(k&&seen.has(k)))return;if(k)seen.add(k);cts.push({customer_id:cid,name:nm,phone:ph||null,email:em||null,is_primary:n===0});n++})}
+  for(let j=0;j<ch.length;j++)cts.push(...cuCts(ch[j].g.ls,r.data[j].id));
   if(cts.length&&(await sb.from('customer_contacts').insert(cts)).error){alert('บันทึกไม่สำเร็จ');b.disabled=false;return}
   for(let j=0;j<ch.length;j++){const ids=ch[j].g.ls.map(l=>l.id);for(let k=0;k<ids.length;k+=100){if((await sb.from('leads').update({customer_id:r.data[j].id}).in('id',ids.slice(k,k+100))).error){alert('บันทึกไม่สำเร็จ');b.disabled=false;return}}}
   done+=ch.length;b.textContent='กำลังสร้าง '+done+'/'+sel.length}
@@ -1907,10 +1936,10 @@ function cuFormList(){$('cu_dl').innerHTML=CU.list.map(c=>`<option value="${H(c.
 function cuForm(id){
  const w=$('cu_lw');w.classList.toggle('hid',!isBeta());if(!isBeta())return;
  cuLoad().then(async ok=>{if(!ok){w.classList.add('hid');return}cuFormList();const f=$('fm_');f.cu_name.value='';
-  if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();const c=data&&CU.list.find(x=>x.id===data.customer_id);if(c)f.cu_name.value=c.name}CU.fr=true})}
-const _of=openForm;openForm=function(id){CU.fp=null;CU.fr=false;_of(id);cuForm(id)};
+  if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();const c=data&&CU.list.find(x=>x.id===data.customer_id);if(c){f.cu_name.value=c.name;CU.cur=c.id}}CU.fr=true})}
+const _of=openForm;openForm=function(id){CU.fp=null;CU.fr=false;CU.cur=null;_of(id);cuForm(id)};
 $('fm_').addEventListener('submit',()=>{if(!CU.ok||!isBeta()||!CU.fr)return;const v=$('fm_').cu_name.value.trim().toLowerCase(),c=CU.list.find(x=>x.name.trim().toLowerCase()===v);CU.fp={id:c?c.id:null}},true);
-const _sl=saveLead;saveLead=function(id,o){if(CU.fp){o={...o,customer_id:CU.fp.id};CU.fp=null}return _sl(id,o)};
+const _sl=saveLead;saveLead=async function(id,o){if(CU.fp){const f=CU.fp;CU.fp=null;let cid=f.id;if(!cid&&!CU.cur&&o.name){try{cid=await cuLink(o)}catch(e){cid=null}}if(cid||CU.cur)o={...o,customer_id:cid||null}}return _sl(id,o)};
 /* ---- tab ---- */
 const _t=tab,gate=()=>$('tCU').classList.toggle('hid',!isBeta());
 tab=function(k){const mine=k==='CU';if(mine&&!isBeta())return;
