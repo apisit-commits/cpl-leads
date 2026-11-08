@@ -327,7 +327,7 @@ legend{font-size:13px}
 .btn.sm{font-size:13px!important;padding:4px 11px}
 #acct em,.tg{font-size:12px!important}
 #vF .nh .lhd{margin:0 0 0 auto;flex-wrap:nowrap}#vF .nh .nbar{margin-left:0}#vF .nh{margin-bottom:10px}
-#vL .lhd{justify-content:flex-end;align-items:center;margin-bottom:10px}#vL .lhd .seg{margin:0 auto 0 0}
+#vL .lhd{justify-content:flex-end;align-items:center;margin-bottom:10px}#vL .lhd .seg{margin:0}#vL .lhd #lsub{margin:0 auto 0 0}#pl_pn th{white-space:nowrap}#pl_pn table{width:100%;min-width:0;table-layout:auto}#pl_pn th,#pl_pn td{width:auto!important}#pl_pn .pn{overflow-x:auto}#pl_b td:last-child{width:1%!important}#pl_b select{max-width:130px}#pl_b tr[data-id]{cursor:pointer}
 .dtop{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}.dtop .mktabs,.dtop .dh{margin:0}
 #vW .nh{justify-content:flex-start;margin-bottom:10px}#vW .nh .mktabs{margin:0}#vW .nh .nbar{margin-left:auto}
 .chm{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap}.ch2i{display:inline-flex;opacity:.85;transform:scale(.85);transform-origin:left center;margin-right:-3px}
@@ -414,8 +414,7 @@ header .hd #who{display:none!important}
 <div id="bpn" class="bpn hid"></div>
 <div id="vW" class="hid"><div class="nh"><h3 style="margin:0">Marketing</h3><div id="mktabs" class="mktabs"></div><div class="nbar"><button class="btn sm" id="mkre">รีเฟรช</button></div></div><div id="mkbody"></div></div>
 <div id="vL">
-  <div class="hd lhd"><div class="seg" id="seg"></div><select id="rg" class="hid" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><input type="month" id="vm" class="hid"><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
-  <div class="mktabs hid" id="lsub"><button type="button" class="on" data-s="L">Lead</button><button type="button" data-s="P">Pool <em id="pl_n"></em></button></div>
+  <div class="hd lhd"><div class="seg" id="seg"></div><div class="seg hid" id="lsub"><button type="button" class="on" data-s="L">Lead</button><button type="button" data-s="P">Pool<em id="pl_n">0</em></button></div><select id="rg" class="hid" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><input type="month" id="vm" class="hid"><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
   <div class="stats" id="stats"></div>
   <div class="bar">
     <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…">
@@ -425,7 +424,7 @@ header .hd #who{display:none!important}
   <div class="wrap"><table><thead><tr>
     <th>วันที่</th><th>Ads</th><th>ลูกค้า</th><th>รายละเอียด</th><th>ช่องทาง</th><th>สถานะ</th><th>เหตุผลที่ยังไม่สนใจ</th><th>เซลล์</th><th>แบรนด์ / โปรโมชัน</th><th></th>
   </tr></thead><tbody id="tb"></tbody></table><div class="empty hid" id="em">ยังไม่มีข้อมูล</div><div class="sub" id="cap" style="padding:10px 14px"></div></div>
-  <div class="pn hid" id="pl_pn"><table><thead><tr><th>ลูกค้า</th><th>ช่องทาง</th><th>ปลายทาง</th><th>รอมาแล้ว</th><th>Ads</th><th></th></tr></thead><tbody id="pl_b"></tbody></table></div>
+  <div class="hid" id="pl_pn"><div class="stats" id="pl_st"></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>ช่องทาง</th><th>บริการ</th><th>ปลายทาง</th><th>รอมาแล้ว</th><th>Ads</th><th></th></tr></thead><tbody id="pl_b"></tbody></table></div></div>
 </div>
 <div id="vD" class="hid">
   <div class="dtop"><div id="dmodes" class="mktabs hid"></div><h2 id="dtitle" class="dh"></h2></div>
@@ -1962,9 +1961,10 @@ const age=d=>{if(!d)return'—';const n=Math.max(0,Math.floor((new Date(today())
 const canAssign=()=>profile&&['admin','sales_lead','keyer'].includes(profile.role);
 const on=()=>isBeta()&&profile&&['admin','sales','sales_lead','keyer'].includes(profile.role);
 function plRender(){
- const L=pool().sort((a,b)=>(a.date||'').localeCompare(b.date||'')),sn=salesFor(team);
- $('pl_n').textContent=L.length?L.length:'';
- $('pl_b').innerHTML=L.length?L.slice(0,300).map(r=>`<tr data-id="${r.id}"><td><b>${H(r.name)}</b></td><td>${H(r.channel)||'—'}</td><td>${H(r.country)||'—'}</td><td>${age(r.date)}</td><td>${r.ads?H(r.ads):'—'}</td><td class="num">${canAssign()?`<select data-pk style="margin-right:6px"><option value="">เลือกเซลล์</option>${sn.map(x=>`<option>${H(x)}</option>`).join('')}</select><button type="button" class="btn sm p" data-pa>มอบหมาย</button>`:`<button type="button" class="btn sm p" data-pa>รับดูแล</button>`}</td></tr>`).join(''):'<tr><td colspan="6" class="sub">ไม่มี Lead ใน Pool</td></tr>'}
+ const L=pool().sort((a,b)=>(a.date||'').localeCompare(b.date||'')),sn=salesFor(team),t=today(),d=x=>Math.max(0,Math.floor((new Date(t)-new Date(x))/DAY));
+ $('pl_n').textContent=L.length;
+ $('pl_st').innerHTML=[[L.length,'รอรับดูแล'],[L.length?d(L[0].date)+' วัน':'—','รอนานสุด'],[L.filter(r=>r.date===t).length,'เข้ามาวันนี้']].map(([v,k])=>`<div class="st"><b>${v}</b><span>${k}</span></div>`).join('');
+ $('pl_b').innerHTML=L.length?L.slice(0,300).map(r=>`<tr data-id="${r.id}"><td><b>${H(r.name)}</b></td><td>${H(r.channel)||'—'}</td><td>${H((r.svc||[]).join(', '))||'—'}</td><td>${H(r.country)||'—'}</td><td>${age(r.date)}</td><td>${r.ads?H(r.ads):'—'}</td><td class="num" style="white-space:nowrap">${canAssign()?`<select data-pk style="margin-right:6px"><option value="">เลือกเซลล์</option>${sn.map(x=>`<option>${H(x)}</option>`).join('')}</select><button type="button" class="btn sm p" data-pa>มอบหมาย</button>`:`<button type="button" class="btn sm p" data-pa>รับดูแล</button>`}</td></tr>`).join(''):'<tr><td colspan="7" class="sub">ไม่มี Lead ใน Pool</td></tr>'}
 function apply(){
  const o=on(),p=o&&sub==='P';$('lsub').classList.toggle('hid',!o);
  [...$('lsub').children].forEach(b=>b.classList.toggle('on',b.dataset.s===(o?sub:'L')));
@@ -1977,7 +1977,7 @@ async function claim(id,name){
  if(!data||!data.length){alert('Lead นี้มีผู้ดูแลแล้ว')}
  else{const r=rows.find(x=>String(x.id)===String(id));if(r)r.sales=name}
  refresh();apply()}
-$('pl_b').addEventListener('click',e=>{const b=e.target.closest('[data-pa]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.id;
+$('pl_b').addEventListener('click',e=>{if(!e.target.closest('[data-pa],[data-pk]')){const tr=e.target.closest('tr[data-id]');if(tr){const id=isNaN(+tr.dataset.id)?tr.dataset.id:+tr.dataset.id,x=rows.find(y=>y.id===id);if(x&&can(x))openForm(id)}return}const b=e.target.closest('[data-pa]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.id;
  const nm=canAssign()?tr.querySelector('[data-pk]').value:(profile&&profile.name);claim(isNaN(+id)?id:+id,nm)});
 $('lsub').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;sub=b.dataset.s;apply()});
 const _rd=render;render=function(){_rd.apply(this,arguments);apply()};
