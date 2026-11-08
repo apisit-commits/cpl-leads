@@ -1958,19 +1958,50 @@ html:not([data-theme=dark]) .tabs .sbr .btn:hover{background:rgba(255,255,255,.2
 #vW .nh{justify-content:flex-start!important}#vW .nh #mktabs{margin:0 auto 0 0!important}
 #vW #mkbody>.nh{justify-content:space-between!important;gap:12px}
 #fxm{position:fixed;left:110px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:60;width:40px;height:40px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:1px solid var(--bd,#ccc);background:var(--card,#fff);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:20px;line-height:1}
-html[data-fest] #fxm{border-color:#c2262f;box-shadow:0 0 0 3px rgba(194,38,47,.2)}
+html[data-fest=xmas] #fxm{border-color:#c2262f;box-shadow:0 0 0 3px rgba(194,38,47,.2)}
 #fxm.hid{display:none}
-html[data-fest] body::before{content:"";position:fixed;left:0;right:0;top:0;height:14px;z-index:40;pointer-events:none;background:radial-gradient(circle at 8px 8px,#ff3b3b 0 4px,transparent 5px) 0 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#ffc93c 0 4px,transparent 5px) 19px 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#2fd06b 0 4px,transparent 5px) 38px 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#46a6ff 0 4px,transparent 5px) 57px 0/76px 14px repeat-x,linear-gradient(#3b3b3b,#3b3b3b) 0 2px/100% 1.5px no-repeat;filter:drop-shadow(0 0 4px rgba(255,200,80,.7));animation:fsTw 1.5s ease-in-out infinite alternate}
-html[data-fest] body::after{content:"";position:fixed;inset:0;z-index:55;pointer-events:none;background-image:radial-gradient(circle at 40px 60px,#fff 0 2px,rgba(130,180,230,.85) 3.5px,transparent 4.5px),radial-gradient(circle at 200px 120px,#fff 0 1.5px,rgba(130,180,230,.85) 3px,transparent 4px),radial-gradient(circle at 90px 300px,#fff 0 3px,rgba(130,180,230,.85) 4.5px,transparent 5.5px),radial-gradient(circle at 130px 30px,#fff 0 1.5px,rgba(130,180,230,.85) 3px,transparent 4px);background-size:150px 150px,210px 210px,260px 260px,120px 120px;animation:fsSn 16s linear infinite}
+html[data-fest=xmas] body::before{content:"";position:fixed;left:0;right:0;top:0;height:14px;z-index:40;pointer-events:none;background:radial-gradient(circle at 8px 8px,#ff3b3b 0 4px,transparent 5px) 0 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#ffc93c 0 4px,transparent 5px) 19px 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#2fd06b 0 4px,transparent 5px) 38px 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#46a6ff 0 4px,transparent 5px) 57px 0/76px 14px repeat-x,linear-gradient(#3b3b3b,#3b3b3b) 0 2px/100% 1.5px no-repeat;filter:drop-shadow(0 0 4px rgba(255,200,80,.7));animation:fsTw 1.5s ease-in-out infinite alternate}
+html[data-fest=xmas] body::after{content:"";position:fixed;inset:0;z-index:55;pointer-events:none;background-image:radial-gradient(circle at 40px 60px,#fff 0 2px,rgba(130,180,230,.85) 3.5px,transparent 4.5px),radial-gradient(circle at 200px 120px,#fff 0 1.5px,rgba(130,180,230,.85) 3px,transparent 4px),radial-gradient(circle at 90px 300px,#fff 0 3px,rgba(130,180,230,.85) 4.5px,transparent 5.5px),radial-gradient(circle at 130px 30px,#fff 0 1.5px,rgba(130,180,230,.85) 3px,transparent 4px);background-size:150px 150px,210px 210px,260px 260px,120px 120px;animation:fsSn 16s linear infinite}
 @keyframes fsTw{from{opacity:.6}to{opacity:1}}
 @keyframes fsSn{from{background-position:0 0,0 0,0 0,0 0}to{background-position:0 150px,0 210px,0 260px,0 120px}}
-@media(prefers-reduced-motion:reduce){html[data-fest] body::before,html[data-fest] body::after{animation:none}}
-@media print{html[data-fest] body::before,html[data-fest] body::after{display:none}}
 @media(min-width:761px){
-html[data-fest]:not([data-theme=dark]) .tabs{background:linear-gradient(180deg,#c2262f 0%,#a41d2b 48%,#0f5c3b 100%)}
-html[data-fest]:not([data-theme=dark]) .tabs button.on{color:#b01e28}
-html[data-fest]:not([data-theme=dark]) .tabs .logo{border-bottom:3px solid #e8b84a}
+html[data-fest=xmas]:not([data-theme=dark]) .tabs{background:linear-gradient(180deg,#c2262f 0%,#a41d2b 48%,#0f5c3b 100%)}
+html[data-fest=xmas]:not([data-theme=dark]) .tabs button.on{color:#b01e28}
+html[data-fest=xmas]:not([data-theme=dark]) .tabs .logo{border-bottom:3px solid #e8b84a}
 }
+html[data-fest=sakura] body::before{content:"";position:fixed;left:0;right:0;top:0;height:8px;z-index:40;pointer-events:none;background:repeating-linear-gradient(90deg,#ffb3cc 0 14px,#fff 14px 28px)}
+html[data-fest=sakura] body::after{content:"";position:fixed;inset:0;z-index:55;pointer-events:none;background-image:radial-gradient(ellipse 5px 3px at 40px 60px,#ff9fbe 0 90%,transparent 100%),radial-gradient(ellipse 4px 6px at 160px 140px,#ffc2d6 0 90%,transparent 100%),radial-gradient(ellipse 6px 3px at 90px 220px,#ff8fb3 0 90%,transparent 100%),radial-gradient(ellipse 3px 5px at 220px 30px,#ffb3cc 0 90%,transparent 100%);background-size:240px 240px,300px 300px,360px 360px,170px 170px;animation:fxFall 18s linear infinite}
+@media(min-width:761px){
+html[data-fest=sakura]:not([data-theme=dark]) .tabs{background:linear-gradient(180deg,#f6a5c0 0%,#e5628f 50%,#a83a6e 100%)}
+html[data-fest=sakura]:not([data-theme=dark]) .tabs button.on{color:#c2185b}
+html[data-fest=sakura]:not([data-theme=dark]) .tabs .logo{border-bottom:3px solid #ffd1e1}
+}
+html[data-fest=sakura] #fxm{border-color:#c2185b;box-shadow:0 0 0 3px rgba(229,98,143,.25)}
+html[data-fest=candy] body::before{content:"";position:fixed;left:0;right:0;top:0;height:8px;z-index:40;pointer-events:none;background:repeating-linear-gradient(45deg,#ff9ccf 0 10px,#fff 10px 20px,#9be8d8 20px 30px,#fff 30px 40px)}
+html[data-fest=candy] body::after{content:"";position:fixed;inset:0;z-index:55;pointer-events:none;background-image:radial-gradient(circle at 50px 80px,transparent 0 5px,rgba(255,150,205,.8) 5.5px 7px,transparent 7.5px),radial-gradient(circle at 170px 170px,rgba(155,232,216,.9) 0 4px,transparent 4.5px),radial-gradient(circle at 100px 40px,rgba(255,226,120,.95) 0 3.5px,transparent 4px),radial-gradient(circle at 230px 230px,transparent 0 6px,rgba(167,139,250,.75) 6.5px 8px,transparent 8.5px);background-size:260px 260px,320px 320px,200px 200px,380px 380px;animation:fxRise 18s linear infinite}
+@media(min-width:761px){
+html[data-fest=candy]:not([data-theme=dark]) .tabs{background:linear-gradient(180deg,#b9a6ff 0%,#8b72f0 50%,#4aa8a0 100%)}
+html[data-fest=candy]:not([data-theme=dark]) .tabs button.on{color:#6a4fd8}
+html[data-fest=candy]:not([data-theme=dark]) .tabs .logo{border-bottom:3px solid #ffd6f0}
+}
+html[data-fest=candy] #fxm{border-color:#6a4fd8;box-shadow:0 0 0 3px rgba(139,114,240,.25)}
+html[data-fest=ocean] body::before{content:"";position:fixed;left:0;right:0;top:0;height:8px;z-index:40;pointer-events:none;background:repeating-radial-gradient(circle at 10px 12px,#7be8dc 0 8px,#fff 8px 16px)}
+html[data-fest=ocean] body::after{content:"";position:fixed;inset:0;z-index:55;pointer-events:none;background-image:radial-gradient(circle at 60px 70px,rgba(255,255,255,.55) 0 2px,rgba(80,200,220,.7) 3px 4px,transparent 5px),radial-gradient(circle at 180px 180px,transparent 0 6px,rgba(80,200,220,.7) 6.5px 8px,transparent 9px),radial-gradient(circle at 110px 20px,transparent 0 3px,rgba(80,200,220,.7) 3.5px 5px,transparent 5.5px),radial-gradient(circle at 250px 100px,transparent 0 9px,rgba(80,200,220,.6) 9.5px 11px,transparent 11.5px);background-size:280px 280px,340px 340px,190px 190px,400px 400px;animation:fxRise 18s linear infinite}
+@media(min-width:761px){
+html[data-fest=ocean]:not([data-theme=dark]) .tabs{background:linear-gradient(180deg,#3fd6c4 0%,#12a39a 50%,#0b5f6b 100%)}
+html[data-fest=ocean]:not([data-theme=dark]) .tabs button.on{color:#0b8a82}
+html[data-fest=ocean]:not([data-theme=dark]) .tabs .logo{border-bottom:3px solid #c9fff6}
+}
+html[data-fest=ocean] #fxm{border-color:#0b8a82;box-shadow:0 0 0 3px rgba(18,163,154,.25)}
+@keyframes fxFall{from{background-position:0 0,0 0,0 0,0 0}to{background-position:90px 240px,-60px 300px,70px 360px,-40px 170px}}
+@keyframes fxRise{from{background-position:0 0,0 0,0 0,0 0}to{background-position:30px -260px,-20px -320px,20px -200px,-30px -380px}}
+html[data-fest] body::before,html[data-fest] body::after{}
+@media(prefers-reduced-motion:reduce){html[data-fest] body::after,html[data-fest] body::before{animation:none!important}}
+@media print{html[data-fest] body::before,html[data-fest] body::after{display:none}}
+#fxp{position:fixed;left:110px;bottom:calc(60px + env(safe-area-inset-bottom,0px));z-index:61;display:flex;gap:8px;padding:8px;border-radius:16px;border:1px solid var(--bd,#ccc);background:var(--card,#fff);box-shadow:0 6px 20px rgba(0,0,0,.18)}
+#fxp.hid{display:none}
+#fxp button{width:40px;height:40px;border-radius:50%;border:1px solid var(--bd,#ccc);background:var(--fld,#f3f5f8);cursor:pointer;font-size:19px;line-height:1;padding:0;display:flex;align-items:center;justify-content:center}
+#fxp button.on{border-color:var(--pr,#0a78c2);box-shadow:0 0 0 3px rgba(10,120,194,.2);background:var(--card,#fff)}
 </style>
 <script>
 (function(){
@@ -2279,14 +2310,19 @@ $('sps').onclick=async()=>{
 </script>
 <script>
 (function(){
-const R=document.documentElement,b=document.createElement('button');b.type='button';b.id='fxm';b.textContent='🎄';b.classList.add('hid');
-let on=false;try{on=localStorage.getItem('fest')==='1'}catch(e){}
-const set=o=>{on=o;o?R.setAttribute('data-fest','1'):R.removeAttribute('data-fest');try{localStorage.setItem('fest',o?'1':'0')}catch(e){}b.title=b.ariaLabel=o?TT('ปิดธีมเทศกาล','Festive theme off'):TT('เปิดธีมคริสต์มาส / ปีใหม่','Festive theme on')};
-async function pull(){const r=await sb.from('app_settings').select('value').eq('key','festive').maybeSingle();if(!r.error&&r.data)set(r.data.value==='1')}
-b.onclick=async()=>{b.disabled=true;const e=(await sb.from('app_settings').upsert({key:'festive',value:on?'0':'1'})).error;b.disabled=false;if(e)return alert(e.message);set(!on)};
-document.body.appendChild(b);set(on);
-const _af=applyRoleUI;applyRoleUI=function(p){_af(p);b.classList.toggle('hid',p.role!=='admin');pull()};
-if(typeof profile!=='undefined'&&profile){b.classList.toggle('hid',profile.role!=='admin');pull()}
+const R=document.documentElement,b=document.createElement('button'),pp=document.createElement('div');b.type='button';b.id='fxm';b.classList.add('hid');pp.id='fxp';pp.className='hid';
+const TH=[['0','✕',['ปิดธีม','Theme off']],['xmas','🎄',['คริสต์มาส / ปีใหม่','Christmas / New Year']],['sakura','🌸',['ซากุระ','Sakura']],['candy','🧁',['ขนมหวาน','Candy']],['ocean','🫧',['ทะเลฟองสบู่','Bubble ocean']]];
+const norm=v=>v==='1'?'xmas':(TH.some(t=>t[0]===v)?v:'0');
+let cur='0';try{cur=norm(localStorage.getItem('fest'))}catch(e){}
+const set=v=>{cur=norm(v);cur==='0'?R.removeAttribute('data-fest'):R.setAttribute('data-fest',cur);try{localStorage.setItem('fest',cur)}catch(e){}b.textContent=cur==='0'?'🎨':TH.find(t=>t[0]===cur)[1];b.title=b.ariaLabel=TT('ธีมเทศกาล','Festive theme');[...pp.children].forEach(c=>c.classList.toggle('on',c.dataset.v===cur))};
+TH.forEach(t=>{const c=document.createElement('button');c.type='button';c.dataset.v=t[0];c.textContent=t[1];c.title=c.ariaLabel=TT(t[2][0],t[2][1]);c.onclick=async()=>{pp.classList.add('hid');const e=(await sb.from('app_settings').upsert({key:'festive',value:t[0]})).error;if(e)return alert(e.message);set(t[0])};pp.appendChild(c)});
+async function pull(){const r=await sb.from('app_settings').select('value').eq('key','festive').limit(1);if(!r.error&&r.data&&r.data[0])set(r.data[0].value)}
+b.onclick=()=>pp.classList.toggle('hid');
+document.addEventListener('click',ev=>{if(ev.target!==b&&!pp.contains(ev.target))pp.classList.add('hid')});
+document.body.appendChild(pp);document.body.appendChild(b);set(cur);
+const vis=p=>{const a=p.role==='admin';b.classList.toggle('hid',!a);if(!a)pp.classList.add('hid');pull()};
+const _af=applyRoleUI;applyRoleUI=function(p){_af(p);vis(p)};
+if(typeof profile!=='undefined'&&profile)vis(profile);
 })();
 </script>
 </body>
