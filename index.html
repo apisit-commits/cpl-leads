@@ -241,7 +241,7 @@ label.f:has(>.rq)>:is(input,select,textarea){flex:0 0 100%;width:100%;min-width:
 #vD .pn{padding:8px 10px}#vD .pn h3{margin:0 0 4px;font-size:13px}#vD .dn svg{width:96px;height:96px}#vD .dnl{font-size:12px}
 #vD .pn table{width:100%;border-collapse:collapse;font-size:12.5px}#vD .pn td,#vD .pn th{padding:3px 8px}#vD .pn tbody tr:nth-child(even){background:rgba(120,140,170,.07)}#vD .pn tbody tr:hover{background:var(--infb)}
 #vD .pn table.stt{table-layout:auto;width:100%}#vD .pn:has(table.stt){overflow-x:auto}#vD .pn table.stt th{white-space:nowrap}#vD .pn table.stt td:first-child{min-width:120px}#vD .pn table.stt th:last-child,#vD .pn table.stt td:last-child{padding-right:16px!important}#vD .pn table.stt td.num{padding-right:10px}
-#vD .chart{max-height:210px}
+#vD .chart{max-height:300px}
 #vD .pn table.stt td:first-child{white-space:normal!important;overflow-wrap:anywhere;line-height:1.3}#vD .br{grid-template-columns:minmax(130px,40%) 1fr auto!important}#vD .br span:first-child{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}#vD .br .num{min-width:34px;white-space:nowrap}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -790,6 +790,7 @@ function renderDash(){
  const pc=(x,y)=>y?(Math.round(x/y*1000)/10)+'%':'-';
  const amt=v=>v.reduce((t,r)=>t+(closedR(r)?(r.deal_amt?+r.deal_amt:0)+(((r.detail&&r.detail.deals)||[]).reduce((a,x)=>a+(+x.a||0),0)):0),0),AMT=amt(l);
  const st=[['Lead',T],['ปิดการขาย',W],['% ปิดการขาย (ปิดการขาย ÷ Lead)',pc(W,T)],['ยอดที่ปิดได้ (บาท)',AMT]];
+ st.push(['รอการตัดสินใจ',cn(ST_S)],['ไม่สนใจ',cn(ST_N)],dashMode==='A'?['Lead ที่ระบุ Ads',pc(l.filter(r=>r.ads).length,T)]:['ออกใบเสนอราคา',l.filter(isQ).length]);
  $('dk').innerHTML=st.map(([x,y])=>`<div class="st"><b>${N(y)}</b><span>${x}</span></div>`).join('');
  const chips=`<div class="dchips w12">${[['รอการตัดสินใจ',cn(ST_S)],['ไม่สนใจ',cn(ST_N)],dashMode==='A'?['Lead ที่ระบุ Ads',pc(l.filter(r=>r.ads).length,T)]:['ออกใบเสนอราคา',l.filter(isQ).length]].map(([x,y])=>`<span>${x} <b>${typeof y==='number'?N(y):y}</b></span>`).join('')}</div>`;
  const grp=(fn,empty,src)=>{const m={};(src||l).forEach(r=>{[].concat(fn(r)).forEach(k=>{k=k||empty;if(!k)return;(m[k]=m[k]||[]).push(r)})});return Object.entries(m).sort((x,y)=>y[1].length-x[1].length)};
@@ -806,7 +807,7 @@ function renderDash(){
   const arcs=g.map(([k,v],i)=>{const len=v/tot*C,a=`<circle cx="60" cy="60" r="40" fill="none" stroke="${cc(k,i)}" stroke-width="22" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"><title>${esc(k)}: ${N(v)}</title></circle>`;off+=len;return a}).join('');
   return `<div class="pn"><h3>${t}</h3><div class="dn"><svg viewBox="0 0 120 120">${arcs}<text x="60" y="64" text-anchor="middle" style="font-size:${String(N(tot)).length>5?11:15}px;font-weight:700">${N(tot)}</text></svg><div class="dnl">${g.map(([k,v],i)=>`<div><i style="background:${cc(k,i)}"></i><span>${lb(k)}</span><b>${N(v)} · ${Math.round(v/tot*100)}%</b></div>`).join('')}</div></div></div>`};
  const vcol=(t,d,l1,l2,pre)=>{d=d.filter(x=>x);if(!d.length||!d.some(x=>x[1]))return `<div class="pn w12"><h3>${t}</h3><div class="sub">ไม่มีข้อมูล</div></div>`;
-  const sm=d.length<=8,W=Math.max(420,Math.min(1400,Math.round(($('dg').clientWidth||900)*1)-40)),H=170,L=58,B=26,T=14,mx=Math.max(1,...d.map(x=>x[1])),bw=(W-L)/d.length,step=Math.ceil(d.length/14),ch=H-B-T;
+  const sm=d.length<=8,W=Math.max(420,Math.min(1400,Math.round(($('dg').clientWidth||900)*1)-40)),H=230,L=58,B=26,T=14,mx=Math.max(1,...d.map(x=>x[1])),bw=(W-L)/d.length,step=Math.ceil(d.length/14),ch=H-B-T;
   const nice=(()=>{const p=Math.pow(10,Math.floor(Math.log10(mx)));return [1,2,5,10].map(m=>m*p).find(v=>v>=mx)||mx})();
   const y=v=>T+ch-v/nice*ch;
   const grid=[0,.5,1].map(f=>`<line x1="${L}" x2="${W}" y1="${y(nice*f)}" y2="${y(nice*f)}" stroke="currentColor" stroke-opacity=".12"/><text x="${L-4}" y="${y(nice*f)+3}" text-anchor="end">${N(nice*f)}</text>`).join('');
@@ -834,7 +835,7 @@ const osg=(()=>{const m={};l.forEach(r=>{const q=r.detail&&r.detail.qt;if(q&&q.f
  else if(dashMode==='M')h=trend+sec('ลูกค้าและตลาด')+bars('ประเทศที่ลูกค้าสอบถาม',cty,8,lbc)+donut('บริการที่ลูกค้าสนใจ',grp(r=>r.svc,''))+donut('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+donut('Lead ตามช่องทาง',ch)+bars('เหตุผลที่ลูกค้ายังไม่สนใจ',grp(r=>effS(r)===ST_N?(r.reason||'(ไม่ระบุเหตุผล)'):'',''),8)+sdn+DET('ตารางละเอียด (ทีม แบรนด์ โปรโมชัน)',sum+(tm?'':stb('เปรียบเทียบทีมขาย',grp(r=>TEAMS[r.team],'')))+stb('แบรนด์',grp(r=>r.brand,U))+stb('โปรโมชัน',grp(r=>r.promo,U))+osp+donut('สถานะหลัก',grp(r=>r.status,''),3,SCOL)+donut('สถานะการติดตาม',grp(r=>r.fu_status,''),3,SCOL)+chAll());
  else if(dashMode==='E'){const mo2=grp(r=>(r.deal_date||r.date||'').slice(0,7),'');h=ceoK+vcol('ยอดปิดงานรายเดือน (ตามวันที่ปิดได้)',mo2.sort((x,y)=>x[0].localeCompare(y[0])).slice(-24).map(([k,v])=>[k,amt(v)]),'ยอดที่ปิดได้ (บาท)',null,'฿')+sec('ยอดปิดตาม')+rb('เซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)'),8)+rb('ประเทศ',cty,8,lbc)+rb('แบรนด์',grp(r=>r.brand,U))+rb('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+donut('สัดส่วนยอดปิดตามบริการ',grp(r=>r.svc,''),6,null,amt)+donut('สัดส่วนยอดปิดตามช่องทาง',ch,6,null,amt)+DET('ตารางละเอียด',sdn+sum+(tm?'':stb('เปรียบเทียบทีมขาย',grp(r=>TEAMS[r.team],'')))+stb('KPI รายเซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)',base),30)+osp+trend)}
  else h=trend+(sl?'':vcol('Lead และการปิดการขายรายเซลล์',grp(r=>r.sales,'(ไม่ระบุ)').map(([k,v])=>[k,v.length,cnt(v,ST_Y)]),'Lead','ปิดการขาย')+stb('KPI รายเซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)'),30))+sec('ลูกค้าที่ปิดได้ (Yes) ของ <b>'+esc(sl||'เซลล์ทุกคน')+'</b> <small>แท่ง = จำนวนที่ปิดได้ · % = ปิดได้กี่ % ของ Lead กลุ่มนั้น</small>')+wr('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+wr('ประเทศ',cty,8,lbc)+wr('บริการ',grp(r=>r.svc,''))+wr('ช่องทาง',ch)+wr('แบรนด์',grp(r=>r.brand,U))+wr('Ads',grp(r=>r.ads,'(ไม่ระบุ Ads)'),8)+wr('โปรโมชัน',grp(r=>r.promo,U))+qd+DET('สถานะและตารางสรุป',sdn+sum);
- $('dg').innerHTML=chips+sstrip+h;
+ $('dg').innerHTML=sstrip+h;
 }
 function formEff(f){f=f||$('fm_');return closedR({status:f.status.value,fu_status:f.fu_status.value})?ST_Y:(okS(f.fu_status.value)||f.status.value)}
 function toggleReason(){$('rsn').classList.toggle('hid',formEff()!==ST_N)}
@@ -1787,6 +1788,15 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 .cu-hr{display:flex;justify-content:space-between;gap:12px;padding:8px 0 8px 12px;border-bottom:1px solid var(--bd);border-left:3px solid var(--bd)}.cu-hr:last-child{border-bottom-color:transparent}.cu-hr-q{border-left-color:#f3d9a4}.cu-hr-w{border-left-color:#7fcf9c}.cu-hr-f{border-left-color:#a9c7ee}.cu-hr>span{white-space:nowrap}
 #cu_dv .st{display:flex;flex-direction:column;gap:6px;align-items:flex-start}#cu_dv .st span,#cu_dv .st b{display:block;position:static;margin:0;line-height:1.3}#cu_dv .st b{font-size:22px;order:2}#cu_dv .st span{order:1}
 .cub-r{background:#fde8e8;border-color:#f3b8b8;color:#9b1c1c}#cu_ll table{width:100%;min-width:0}
+
+/* dashboard density */
+#vD .stats#dk{grid-template-columns:repeat(7,minmax(0,1fr))}
+@media(max-width:1250px){#vD .stats#dk{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:760px){#vD .stats#dk{grid-template-columns:repeat(2,minmax(0,1fr))}}
+#vD .stats#dk .st span{white-space:normal}
+#vD .dn svg{width:140px;height:140px}#vD .dn{gap:14px;justify-content:center}#vD .dnl{font-size:12.5px}
+#vD .pn.slim,#vD .pn:has(>.svs){display:flex;align-items:center;gap:18px;padding:8px 14px!important}#vD .pn:has(>.svs) h3{margin:0!important;white-space:nowrap}
+#vD .pn:has(>.svs) .svs{display:flex;flex:1;gap:10px}#vD .pn:has(>.svs) .svs>div{flex:1;padding:6px 12px;gap:10px;border-radius:12px}#vD .pn:has(>.svs) .svs .ib{width:34px;height:34px;border-radius:10px}#vD .pn:has(>.svs) .svs .ib svg{width:20px;height:20px}#vD .pn:has(>.svs) .svs b{font-size:19px}
 </style>
 <script>
 (function(){
@@ -1987,7 +1997,7 @@ const P={
  cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'};
 function pick(t,u,v){
  if(/บาท|THB/.test(u||''))return'baht';if(/กก|kg/.test(u||''))return'weight';if(/วัน|days/.test(u||''))return'cal';
- if(/^\s*%|%\s*(ปิด|close)/i.test(t)||/%$/.test((v||'').trim()))return'pct';
+ if(/^\s*%|%\s*(ปิด|close)/i.test(t)||/%$/.test((v||'').trim()))return'';
  if(/ไม่สนใจ|not interested/i.test(t))return'no';
  if(/รอ|await|pending/i.test(t))return'clock';
  if(/follow|ติดตาม|เลยกำหนด|overdue/i.test(t))return'bell';
