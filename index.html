@@ -454,7 +454,7 @@ header .hd #who{display:none!important}
 <div class="pn cprev"><h3>สรุปราคา</h3><div class="cres" id="cl_out"></div>
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
-<div id="vPL" class="hid"><div class="bar"><h3 style="margin:0">Pool</h3><span style="flex:1"></span><label>ช่องทาง <select id="pl_c"></select></label><label>ประเทศ <select id="pl_k"></select></label></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>ช่องทาง</th><th>ปลายทาง</th><th>รอมาแล้ว</th><th>Ads</th><th></th></tr></thead><tbody id="pl_b"></tbody></table></div></div>
+<div id="vPL" class="hid"><div class="bar"><h3 style="margin:0">Pool</h3></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>ช่องทาง</th><th>ปลายทาง</th><th>รอมาแล้ว</th><th>Ads</th><th></th></tr></thead><tbody id="pl_b"></tbody></table></div></div>
 <div id="vCU" class="hid"><div id="cu_lv"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn" id="cu_dup">ตรวจรายชื่อซ้ำ</button><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div><div id="cu_dv" class="hid"></div></div>
 <div id="vRS" class="hid"><div class="rbw rsw">
  <div class="rs-hd"><div class="rs-cur" id="rs_cur"></div><div class="rb-seg" id="rs_svc"><button type="button" data-v="a" class="on">Air Courier</button><button type="button" data-v="t">Trucking</button></div></div>
@@ -1961,9 +1961,7 @@ const age=d=>{if(!d)return'—';const n=Math.max(0,Math.floor((new Date(today())
 const canAssign=()=>profile&&['admin','sales_lead','keyer'].includes(profile.role);
 function fill(sel,vals,all){const v=sel.value;sel.innerHTML='<option value="">ทั้งหมด</option>'+vals.map(x=>`<option>${H(x)}</option>`).join('');sel.value=vals.includes(v)?v:''}
 function plRender(){
- const all=pool();fill($('pl_c'),[...new Set(all.map(r=>r.channel).filter(Boolean))].sort());fill($('pl_k'),[...new Set(all.map(r=>r.country).filter(Boolean))].sort());
- PL.c=$('pl_c').value;PL.k=$('pl_k').value;
- const L=all.filter(r=>(!PL.c||r.channel===PL.c)&&(!PL.k||r.country===PL.k)).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+ const all=pool();const L=all.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
  const sn=salesFor(team);
  $('pl_b').innerHTML=L.length?L.slice(0,300).map(r=>`<tr data-id="${r.id}"><td><b>${H(r.name)}</b></td><td>${H(r.channel)||'—'}</td><td>${H(r.country)||'—'}</td><td>${age(r.date)}</td><td>${r.ads?H(r.ads):'—'}</td><td class="num">${canAssign()?`<select data-pk style="margin-right:6px"><option value="">เลือกเซลล์</option>${sn.map(x=>`<option>${H(x)}</option>`).join('')}</select><button type="button" class="btn sm p" data-pa>มอบหมาย</button>`:`<button type="button" class="btn sm p" data-pa>รับดูแล</button>`}</td></tr>`).join(''):'<tr><td colspan="6" class="sub">ไม่มี Lead ใน Pool</td></tr>'}
 async function claim(id,name){
@@ -1975,7 +1973,6 @@ async function claim(id,name){
  plRender()}
 $('pl_b').addEventListener('click',e=>{const b=e.target.closest('[data-pa]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.id;
  const nm=canAssign()?tr.querySelector('[data-pk]').value:(profile&&profile.name);claim(isNaN(+id)?id:+id,nm)});
-['pl_c','pl_k'].forEach(i=>$(i).addEventListener('change',plRender));
 const _t2=tab,gate=()=>$('tPL').classList.toggle('hid',!(isBeta()&&profile&&['admin','sales','sales_lead','keyer'].includes(profile.role)));
 tab=function(k){const mine=k==='PL';if(mine&&$('tPL').classList.contains('hid'))return;
  $('vPL').classList.toggle('hid',!mine);$('tPL').classList.toggle('on',mine);
