@@ -395,7 +395,7 @@ header .hd #who{display:none!important}
 
 </head>
 <body>
-<button id="hdt" type="button" aria-label="เมนูด่วน" title="เมนูด่วน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+<button id="hdt" type="button" aria-label="เมนูด่วน" title="เมนูด่วน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg><b id="hdb" class="bn hid">0</b></button>
 <header>
     <div class="hd"><span class="sub" id="who"></span><div class="nbar hid" id="fnb"><span id="fsw" class="hid"><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">ดูของเซลล์:<select id="fsel"></select></label></span><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">แจ้งเตือน Follow-up อัตโนมัติหลังรับ Lead<input id="fdays" type="number" min="1" max="30" style="width:64px"> วัน</label></div><select id="pvs" class="hid" title="ดูตัวอย่างตามบทบาท" aria-label="ดูตัวอย่างตามบทบาท"><option value="admin">มุมมอง: ADMIN</option><option value="sales:A">SALES · CPL-Inter</option><option value="sales:B">SALES · CPLEx</option><option value="sales_lead">หัวหน้าเซลล์</option><option value="marketing">MARKETING</option><option value="ceo">CEO</option><option value="keyer">KEYER</option><option value="zimp">ZIMP</option></select><button class="btn hid" id="bell" type="button" aria-label="แจ้งเตือน" title="แจ้งเตือน"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b id="bn" class="bn hid">0</b></button><button class="btn ico-b" id="lo" type="button" aria-label="ออกจากระบบ" title="ออกจากระบบ"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg></button></div>
 </header>
@@ -1884,6 +1884,7 @@ body:not(.hdo) header{transform:translateX(calc(100% + 60px));opacity:0;pointer-
 #hdt{position:fixed;top:14px;right:8px;z-index:61;width:30px;height:34px;display:flex;align-items:center;justify-content:center;padding:0;background:var(--card);border:1px solid var(--bd);border-radius:10px;box-shadow:var(--sh);color:var(--mut,#64748b);cursor:pointer}
 #hdt:hover{color:var(--ink,#0f172a)}#hdt svg{transition:transform .25s}body.hdo #hdt svg{transform:rotate(180deg)}
 }
+#hdt .bn{top:-7px;right:-7px}body.hdo #hdb{display:none}
 @media(max-width:760px){#hdt{display:none}}
 </style>
 <script>
@@ -2161,6 +2162,8 @@ Object.assign(EN,{"ชื่อลูกค้าในใบเสนอรา�
 </script>
 <script>(function(){const b=document.getElementById('hdt');if(!b)return;try{if(localStorage.getItem('hdo')==='1')document.body.classList.add('hdo')}catch(e){}
 b.onclick=function(){const o=document.body.classList.toggle('hdo');try{localStorage.setItem('hdo',o?'1':'0')}catch(e){}};
+const bn=document.getElementById('bn'),hb=document.getElementById('hdb'),bl=document.getElementById('bell');function sy(){if(!bn||!hb)return;hb.textContent=bn.textContent;hb.classList.toggle('hid',bn.classList.contains('hid')||(bl&&bl.classList.contains('hid')))}
+if(bn){new MutationObserver(sy).observe(bn,{childList:true,characterData:true,subtree:true,attributes:true});if(bl)new MutationObserver(sy).observe(bl,{attributes:true});sy()}
 document.addEventListener('click',function(e){if(document.body.classList.contains('hdo')&&!e.target.closest('header,#hdt,dialog')&&innerWidth>760){document.body.classList.remove('hdo');try{localStorage.setItem('hdo','0')}catch(x){}}})})();</script>
 </body>
 </html>
