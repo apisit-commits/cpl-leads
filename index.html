@@ -2039,6 +2039,7 @@ table tbody tr:nth-child(even){background:rgba(120,140,170,.11)}table tbody tr:h
 #vCU .pn{overflow-x:auto}#vCU table{width:100%}#vCU td:first-child,#vCU td:nth-child(4){white-space:normal;min-width:120px;max-width:240px;overflow-wrap:anywhere}#vCU .cub{white-space:normal;text-align:left;line-height:1.35;border-radius:12px}#vCU td:last-child{min-width:150px;max-width:220px}
 #vW .nh #mkgear{height:48px;width:48px;padding:3px;box-sizing:border-box;align-items:stretch;justify-content:center}#vW #mkgear button{padding:0!important;width:100%;display:flex;align-items:center;justify-content:center}#hdt{top:12px;height:48px}
 #mkfl.mk2{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}#mkfl.mk2 .mkw{grid-column:1/-1}#mkfl.mk2 .f{margin:0}@media(max-width:560px){#mkfl.mk2{grid-template-columns:1fr}}
+#spd,#nd,#mkd,#aed,#aud,#cud,#xd{overflow:visible}#spd>form,#nd>form,#mkd>form,#aed>form,#aud>form,#cud>form,#xd>form{max-height:92vh;overflow:auto;overscroll-behavior:contain;border-radius:inherit}
 </style>
 <script>
 (function(){
@@ -2357,6 +2358,9 @@ b.onclick=()=>pp.classList.toggle('hid');
 document.addEventListener('click',ev=>{if(!b.contains(ev.target)&&!pp.contains(ev.target))pp.classList.add('hid')});
 document.body.appendChild(pp);document.body.appendChild(b);set(cur);
 })();
+</script>
+<script>
+(function(){const X='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';['spd','nd','mkd','aed','aud','cud','xd'].forEach(id=>{const d=document.getElementById(id);if(!d||d.querySelector(':scope>.dlgx'))return;const b=document.createElement('button');b.type='button';b.className='dlgx';b.title=b.ariaLabel=TT('ปิด','Close');b.innerHTML=X;b.onclick=()=>d.close();d.append(b)})})();
 </script>
 </body>
 </html>
