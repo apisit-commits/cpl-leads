@@ -1957,6 +1957,19 @@ html:not([data-theme=dark]) .tabs .sbr .btn:hover{background:rgba(255,255,255,.2
 .sg2 button.on em{background:rgba(0,150,214,.14);color:var(--pr)}
 #vW .nh{justify-content:flex-start!important}#vW .nh #mktabs{margin:0 auto 0 0!important}
 #vW #mkbody>.nh{justify-content:space-between!important;gap:12px}
+#fxm{position:fixed;left:110px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:60;width:40px;height:40px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:1px solid var(--bd,#ccc);background:var(--card,#fff);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:20px;line-height:1}
+html[data-fest] #fxm{border-color:#c2262f;box-shadow:0 0 0 3px rgba(194,38,47,.2)}
+html[data-fest] body::before{content:"";position:fixed;left:0;right:0;top:0;height:14px;z-index:40;pointer-events:none;background:radial-gradient(circle at 8px 8px,#ff3b3b 0 4px,transparent 5px) 0 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#ffc93c 0 4px,transparent 5px) 19px 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#2fd06b 0 4px,transparent 5px) 38px 0/76px 14px repeat-x,radial-gradient(circle at 8px 8px,#46a6ff 0 4px,transparent 5px) 57px 0/76px 14px repeat-x,linear-gradient(#3b3b3b,#3b3b3b) 0 2px/100% 1.5px no-repeat;filter:drop-shadow(0 0 4px rgba(255,200,80,.7));animation:fsTw 1.5s ease-in-out infinite alternate}
+html[data-fest] body::after{content:"";position:fixed;inset:0;z-index:55;pointer-events:none;background-image:radial-gradient(circle at 40px 60px,#fff 0 2px,rgba(130,180,230,.85) 3.5px,transparent 4.5px),radial-gradient(circle at 200px 120px,#fff 0 1.5px,rgba(130,180,230,.85) 3px,transparent 4px),radial-gradient(circle at 90px 300px,#fff 0 3px,rgba(130,180,230,.85) 4.5px,transparent 5.5px),radial-gradient(circle at 130px 30px,#fff 0 1.5px,rgba(130,180,230,.85) 3px,transparent 4px);background-size:150px 150px,210px 210px,260px 260px,120px 120px;animation:fsSn 16s linear infinite}
+@keyframes fsTw{from{opacity:.6}to{opacity:1}}
+@keyframes fsSn{from{background-position:0 0,0 0,0 0,0 0}to{background-position:0 150px,0 210px,0 260px,0 120px}}
+@media(prefers-reduced-motion:reduce){html[data-fest] body::before,html[data-fest] body::after{animation:none}}
+@media print{html[data-fest] body::before,html[data-fest] body::after{display:none}}
+@media(min-width:761px){
+html[data-fest]:not([data-theme=dark]) .tabs{background:linear-gradient(180deg,#c2262f 0%,#a41d2b 48%,#0f5c3b 100%)}
+html[data-fest]:not([data-theme=dark]) .tabs button.on{color:#b01e28}
+html[data-fest]:not([data-theme=dark]) .tabs .logo{border-bottom:3px solid #e8b84a}
+}
 </style>
 <script>
 (function(){
@@ -2261,6 +2274,17 @@ $('sps').onclick=async()=>{
   if(r&&r.error)err=r.error.message}
  if(err)return alert('บันทึกไม่สำเร็จ: '+err);
  $('spd').close();await loadSpend()};
+})();
+</script>
+<script>
+(function(){
+let v=null;try{v=localStorage.getItem('fest')}catch(e){}
+const d=new Date(),auto=d.getMonth()===11||(d.getMonth()===0&&d.getDate()<=7),R=document.documentElement;
+if(v==null?auto:v==='1')R.setAttribute('data-fest','1');
+const b=document.createElement('button');b.type='button';b.id='fxm';b.textContent='🎄';
+const t=()=>{b.title=b.ariaLabel=R.hasAttribute('data-fest')?TT('ปิดธีมเทศกาล','Festive theme off'):TT('เปิดธีมคริสต์มาส / ปีใหม่','Festive theme on')};
+b.onclick=()=>{const o=!R.hasAttribute('data-fest');if(o)R.setAttribute('data-fest','1');else R.removeAttribute('data-fest');try{localStorage.setItem('fest',o?'1':'0')}catch(e){}t()};
+document.body.appendChild(b);t();
 })();
 </script>
 </body>
