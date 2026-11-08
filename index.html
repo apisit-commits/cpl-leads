@@ -667,13 +667,13 @@ async function loadOpts(){let r=await sb.from('options').select('id,kind,value,t
  data.sort((a,b)=>((a.pos==null?1e12:a.pos)-(b.pos==null?1e12:b.pos))||a.id-b.id);
  OPTS={ads:[],brand:[],promo:[],sales:[]};data.forEach(o=>OPTS[o.kind]&&OPTS[o.kind].push({id:o.id,value:o.value,team:o.team,pos:o.pos}));applyOpts();if(profile&&profile.role==='admin')renderSet()}
 const adsFor=t=>OPTS.ads.filter(o=>!o.team||!t||o.team===t).map(o=>o.value);
+const brandFor=t=>OPTS.brand.filter(o=>!o.team||!t||o.team===t).map(o=>o.value),promoFor=t=>OPTS.promo.filter(o=>!o.team||!t||o.team===t).map(o=>o.value);
 const salesFor=t=>OPTS.sales.filter(o=>!t||o.team===t).map(o=>o.value);
-function applyOpts(){const f=$('fm_'),v=k=>['',...OPTS[k].map(o=>o.value)];fill(f.ads,['',...adsFor(team)]);fill(f.brand,v('brand'));fill(f.promo,v('promo'));fill(f.fu_status,['',...OPT.status]);fill(f.sales,['',...salesFor(team)])}
-function renderSet(){setTimeout(dndInit,0);const li=(o,x,k)=>`<div class="oi" data-id="${o.id}"><span class="dh2" draggable="true" title="ลากเพื่อเรียงลำดับ">⋮⋮</span><span class="ov" title="คลิกเพื่อแก้ไขชื่อ" onclick="editOpt(${o.id},'${k}',this)">${esc(o.value)}</span>${x||''}<button class="btn sm" onclick="delOpt(${o.id})">ลบ</button></div>`;
- $('vSo').innerHTML='<div class="dg">'
- +adsPanels()
- +KINDS.map(([k,t])=>`<div class="pn"><h3>${t}</h3><div class="ol" data-k="${k}">${OPTS[k].map(o=>li(o,'',k)).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><input id="n_${k}" placeholder="เพิ่มรายการใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'${k}\')"><button class="btn p sm" onclick="addOpt('${k}')">เพิ่ม</button></div></div>`).join('')
- +`<div class="pn"><h3>ชื่อเซลล์</h3><div class="ol" data-k="sales">${OPTS.sales.map(o=>li(o,`<em class="tg">${esc(TEAMS[o.team]||'-')}</em>`,'sales')).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><select id="n_st">${Object.keys(TEAMS).map(k=>`<option value="${k}">${TEAMS[k]}</option>`).join('')}</select><input id="n_sales" placeholder="ชื่อเซลล์ใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'sales\')"><button class="btn p sm" onclick="addOpt('sales')">เพิ่ม</button></div></div></div>`}
+function applyOpts(){const f=$('fm_'),v=k=>['',...OPTS[k].map(o=>o.value)];fill(f.ads,['',...adsFor(team)]);fill(f.brand,['',...brandFor(team)]);fill(f.promo,['',...promoFor(team)]);fill(f.fu_status,['',...OPT.status]);fill(f.sales,['',...salesFor(team)])}
+function renderSet(){setTimeout(dndInit,0);
+ const li=(o,k)=>`<div class="oi" data-id="${o.id}"><span class="dh2" draggable="true" title="ลากเพื่อเรียงลำดับ">⋮⋮</span><span class="ov" title="คลิกเพื่อแก้ไขชื่อ" onclick="editOpt(${o.id},'${k}',this)">${esc(o.value)}</span>${o.team?'':'<em class="tg">ทุกทีม</em>'}<button class="btn sm" onclick="delOpt(${o.id})">ลบ</button></div>`;
+ const sec=(k,t,tm)=>{const L=OPTS[k].filter(o=>k==='sales'?o.team===tm:(!o.team||o.team===tm));return `<div class="osec"><h4>${t}</h4><div class="ol" data-k="${k}">${L.map(o=>li(o,k)).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><input id="n_${k}_${tm}" placeholder="เพิ่มรายการใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'${k}\',\'${tm}\')"><button class="btn p sm" onclick="addOpt('${k}','${tm}')">เพิ่ม</button></div></div>`};
+ $('vSo').innerHTML='<div class="otp">'+Object.keys(TEAMS).map(tm=>`<div class="pn"><h3>${esc(TEAMS[tm])}</h3><div class="tg2">${sec('ads','Ads',tm)}${sec('brand','แบรนด์',tm)}${sec('promo','โปรโมชัน',tm)}${sec('sales','ชื่อเซลล์',tm)}</div></div>`).join('')+'</div>'}
 
 let DR=null;
 function dndInit(){const el=$('vSo');if(el.dataset.dnd)return;el.dataset.dnd='1';
@@ -694,13 +694,7 @@ async function saveOrder(ol){
  const bad=rs.find(r=>r.error||!r.data||!r.data.length);
  if(bad){alert(TT('บันทึกลำดับไม่สำเร็จ'+(bad.error?': '+bad.error.message:'\nระบบยังไม่อนุญาตให้แก้ไขรายการ กรุณาแจ้งผู้ดูแลระบบ'),'Failed to save the order'+(bad.error?': '+bad.error.message:'\nEditing items is not allowed yet. Please contact the administrator')));loadOpts()}
 }
-function adsPanels(){
- const li=o=>`<div class="oi" data-id="${o.id}"><span class="dh2" draggable="true" title="ลากเพื่อเรียงลำดับ">⋮⋮</span><span class="ov" title="คลิกเพื่อแก้ไขชื่อ" onclick="editOpt(${o.id},'ads',this)">${esc(o.value)}</span><button class="btn sm" onclick="delOpt(${o.id})">ลบ</button></div>`;
- const box=(t,arr,tm)=>`<div class="pn"><h3>${t}</h3><div class="ol" data-k="ads">${arr.map(li).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div>${tm?`<div class="oa"><input id="n_ads_${tm}" placeholder="เพิ่ม Ads ใหม่…" onkeydown="if(event.key==='Enter')addOpt('ads','${tm}')"><button class="btn p sm" onclick="addOpt('ads','${tm}')">เพิ่ม</button></div>`:''}</div>`;
- const shared=OPTS.ads.filter(o=>!o.team);
- return Object.keys(TEAMS).map(k=>box('Ads · '+TEAMS[k],OPTS.ads.filter(o=>o.team===k),k)).join('')+(shared.length?box('Ads · ใช้ร่วมทุกทีม (ยังไม่ระบุทีม)',shared,''):'');
-}
-async function addOpt(k,t){const v=$('n_'+k+(t?'_'+t:'')).value.trim();if(!v)return;const o={kind:k,value:v};if(k==='sales')o.team=$('n_st').value;else if(t)o.team=t;const{error}=await sb.from('options').insert(o);if(error)alert(error.code==='23505'?'มีรายการนี้อยู่แล้ว':'เพิ่มไม่สำเร็จ: '+error.message);else loadOpts()}
+async function addOpt(k,t){const v=$('n_'+k+(t?'_'+t:'')).value.trim();if(!v)return;const o={kind:k,value:v};if(t)o.team=t;const{error}=await sb.from('options').insert(o);if(error)alert(error.code==='23505'?'มีรายการนี้อยู่แล้ว':'เพิ่มไม่สำเร็จ: '+error.message);else loadOpts()}
 function editOpt(id,k,el){
  const o=OPTS[k].find(x=>x.id===id);if(!o||el.querySelector('input'))return;
  const inp=document.createElement('input');inp.className='ed';inp.value=o.value;el.textContent='';el.appendChild(inp);inp.focus();inp.select();
@@ -829,7 +823,7 @@ function openForm(id){
  {const bl=f.brand.closest('label.f');if(team==='B'){if(![...f.brand.options].some(o=>o.value==='CPLEx'))f.brand.add(new Option('CPLEx','CPLEx'));f.brand.value='CPLEx';bl.classList.add('hid')}else bl.classList.remove('hid')}
  if(!id&&!f.sales.value)f.sales.value=profile.role==='keyer'?'':(profile.name||'');toggleReason();$('dlg').showModal();renderQL();markEmpty();
 }
-function dlRow(x){x=x||{};const po=['',...OPTS.promo.map(o=>o.value)];if(x.p&&!po.includes(x.p))po.push(x.p);return `<div class="dlr"><label class="f">วันที่ปิดได้<input data-k="d" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" value="${esc(fmtD(x.d||''))}"></label><label class="f">ยอดที่ปิดได้<span class="nf" data-u="บาท"><input data-k="a" inputmode="decimal" data-num autocomplete="off" placeholder="เช่น 50,000" value="${x.a!=null&&x.a!==''?esc(fmtIn(x.a)):''}"></span></label><label class="f">โปรโมชัน<select data-k="p">${po.map(o=>`<option value="${esc(o)}"${o===(x.p||'')?' selected':''}>${esc(o||'—')}</option>`).join('')}</select></label><button type="button" class="btn sm dlx" data-x title="ลบ" aria-label="ลบ">✕</button></div>`}
+function dlRow(x){x=x||{};const po=['',...promoFor(team)];if(x.p&&!po.includes(x.p))po.push(x.p);return `<div class="dlr"><label class="f">วันที่ปิดได้<input data-k="d" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" value="${esc(fmtD(x.d||''))}"></label><label class="f">ยอดที่ปิดได้<span class="nf" data-u="บาท"><input data-k="a" inputmode="decimal" data-num autocomplete="off" placeholder="เช่น 50,000" value="${x.a!=null&&x.a!==''?esc(fmtIn(x.a)):''}"></span></label><label class="f">โปรโมชัน<select data-k="p">${po.map(o=>`<option value="${esc(o)}"${o===(x.p||'')?' selected':''}>${esc(o||'—')}</option>`).join('')}</select></label><button type="button" class="btn sm dlx" data-x title="ลบ" aria-label="ลบ">✕</button></div>`}
 function dlRender(a){$('dl2').innerHTML=(a||[]).map(dlRow).join('')}
 function dlRaw(){return[...$('dl2').querySelectorAll('.dlr')].map(r=>{const g=k=>r.querySelector('[data-k='+k+']').value.trim();return{d:d2i(g('d')),a:g('a')?pn(g('a')):null,p:g('p')}}).filter(x=>x.d||x.a||x.p)}
 (function(){$('dla').onclick=()=>{$('dl2').insertAdjacentHTML('beforeend',dlRow({}))};$('dl2').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(b)b.closest('.dlr').remove()})})();
@@ -1830,6 +1824,13 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 #vSu .usb h5{display:flex;align-items:center;gap:8px;margin:2px 0 4px;font-size:13px;font-weight:600;color:var(--mu)}#vSu .usb h5 em{font-style:normal;font-size:12px;background:var(--fld);padding:1px 9px;border-radius:999px;margin-left:auto}
 #vSu .usb:not(:first-child){border-left:1px solid var(--bd);padding-left:22px}#vSu .usb .ur:first-of-type{border-top:0}
 @media(max-width:900px){#vSu .usb:not(:first-child){border-left:0;padding-left:0}}
+
+#vSo .otp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}#vSo .otp>.pn>h3{font-size:16px;margin:0 0 12px}
+#vSo .tg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 22px}#vSo .osec h4{margin:0 0 6px;font-size:13.5px;font-weight:700}#vSo .osec .ol{max-height:240px}
+#vSo .oi .tg{font-style:normal;font-size:11px;color:var(--mu);background:var(--fld);padding:1px 8px;border-radius:999px;margin-left:auto;margin-right:6px;white-space:nowrap}
+@media(max-width:1250px){#vSo .otp{grid-template-columns:1fr}}@media(max-width:700px){#vSo .tg2{grid-template-columns:1fr}}
+
+#vSo .osec{display:flex;flex-direction:column}#vSo .osec .oa{margin-top:auto;padding-top:12px}#vSo .osec .ol{margin-bottom:0}
 </style>
 <script>
 (function(){
