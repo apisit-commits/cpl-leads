@@ -791,7 +791,7 @@ function renderDash(){
  const amt=v=>v.reduce((t,r)=>t+(closedR(r)?(r.deal_amt?+r.deal_amt:0)+(((r.detail&&r.detail.deals)||[]).reduce((a,x)=>a+(+x.a||0),0)):0),0),AMT=amt(l);
  const st=[['Lead',T],['ปิดการขาย',W],['% ปิดการขาย|ปิดการขาย ÷ Lead',pc(W,T)],['ยอดที่ปิดได้ (บาท)',AMT]];
  st.push(['รอการตัดสินใจ',cn(ST_S)],['ไม่สนใจ',cn(ST_N)],dashMode==='A'?['Lead ที่ระบุ Ads',pc(l.filter(r=>r.ads).length,T)]:['ออกใบเสนอราคา',l.filter(isQ).length]);
- $('dk').innerHTML=st.map(([x,y])=>{const q=x.split('|');return `<div class="st"><b>${N(y)}</b><span>${q[0]}${q[1]?`<small class="rm">${q[1]}</small>`:''}</span></div>`}).join('');
+ $('dk').innerHTML=st.map(([x,y])=>{const q=x.split('|');return `<div class="st"><b>${N(y)}</b><span>${q[0]}${q[1]?`<i class="ri" tabindex="0" data-tip="${q[1]}" aria-label="${q[1]}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></svg></i>`:''}</span></div>`}).join('');
  const chips=`<div class="dchips w12">${[['รอการตัดสินใจ',cn(ST_S)],['ไม่สนใจ',cn(ST_N)],dashMode==='A'?['Lead ที่ระบุ Ads',pc(l.filter(r=>r.ads).length,T)]:['ออกใบเสนอราคา',l.filter(isQ).length]].map(([x,y])=>`<span>${x} <b>${typeof y==='number'?N(y):y}</b></span>`).join('')}</div>`;
  const grp=(fn,empty,src)=>{const m={};(src||l).forEach(r=>{[].concat(fn(r)).forEach(k=>{k=k||empty;if(!k)return;(m[k]=m[k]||[]).push(r)})});return Object.entries(m).sort((x,y)=>y[1].length-x[1].length)};
  const cnt=(v,s)=>v.filter(r=>effS(r)===s).length,cM=(v,s)=>v.filter(r=>!closedR(r)&&r.status===s).length,cF=(v,s)=>v.filter(r=>!closedR(r)&&okS(r.fu_status)===s).length;
@@ -1801,6 +1801,9 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 #vD .st span{font-size:13.5px!important;font-weight:600;color:var(--tx)}#vD .st span .rm{display:block;font-weight:400;font-size:10.5px;color:var(--mu);margin-top:1px;white-space:nowrap}
 #vD .pn h3{font-size:15.5px!important;font-weight:700;letter-spacing:.1px;margin:0 0 8px!important}
 #vD .dsec{font-size:14.5px!important;font-weight:700;color:var(--tx)!important}
+
+#vD .st span .ri{display:inline-flex;vertical-align:middle;margin-left:5px;color:var(--mu);position:relative;cursor:help;outline:0}
+#vD .st span .ri:hover::after,#vD .st span .ri:focus::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);background:var(--tx);color:var(--card);font-size:11.5px;font-weight:500;padding:4px 9px;border-radius:7px;white-space:nowrap;z-index:20;box-shadow:var(--sh)}
 </style>
 <script>
 (function(){
