@@ -454,7 +454,7 @@ header .hd #who{display:none!important}
 <div class="pn cprev"><h3>สรุปราคา</h3><div class="cres" id="cl_out"></div>
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
-<div id="vCU" class="hid"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn" id="cu_dup">ตรวจรายชื่อซ้ำ</button><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div>
+<div id="vCU" class="hid"><div id="cu_lv"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn" id="cu_dup">ตรวจรายชื่อซ้ำ</button><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div><div id="cu_dv" class="hid"></div></div>
 <div id="vRS" class="hid"><div class="rbw rsw">
  <div class="rs-hd"><div class="rs-cur" id="rs_cur"></div><div class="rb-seg" id="rs_svc"><button type="button" data-v="a" class="on">Air Courier</button><button type="button" data-v="t">Trucking</button></div></div>
  <div id="rsAir" class="rsv"><div class="mktabs" id="rs_tabs"><button type="button" data-r="f" class="on">ไฟล์เรท</button><button type="button" data-r="p">ราคาขาย</button><button type="button" data-r="m">Remote Area</button><button type="button" data-r="x">ค่าธรรมเนียมเสริม</button></div>
@@ -519,7 +519,7 @@ header .hd #who{display:none!important}
   <div class="acts"><button type="button" class="btn" id="cx">ยกเลิก</button><button class="btn p" id="sv_">บันทึก</button></div>
 </form><aside id="fq" class="hid"><h3>ใบเสนอราคา</h3><div id="fq_list"></div></aside></dialog>
 
-<dialog id="cud"><form id="cuf" method="dialog"><h3 id="cud_t" style="margin:0 0 12px">ลูกค้า</h3><div class="stats hid" id="cu_k"></div><fieldset><legend>ข้อมูลลูกค้า</legend><div class="g"><label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required maxlength="160"></label><label class="f">เลขผู้เสียภาษี<input name="tax_id" maxlength="20"></label><label class="f">เจ้าของ<select name="owner"></select></label></div><label class="f" style="margin-top:12px">หมายเหตุ<textarea name="note" rows="2" maxlength="500"></textarea></label></fieldset><fieldset><legend>ผู้ติดต่อ</legend><div id="cu_ct"></div><button type="button" class="btn" id="cu_addc">เพิ่มผู้ติดต่อ</button></fieldset><fieldset id="cu_lf" class="hid"><legend>Lead ของลูกค้า</legend><div id="cu_ll"></div></fieldset><fieldset id="cu_tf" class="hid"><legend>ไทม์ไลน์</legend><div id="cu_tl"></div></fieldset><fieldset id="cu_qf" class="hid"><legend>ใบเสนอราคา</legend><div id="cu_ql"></div></fieldset><div class="acts"><button type="button" class="btn p dgr hid" id="cu_del" style="margin-right:auto">ลบลูกค้า</button><button type="button" class="btn" id="cu_x">ยกเลิก</button><button class="btn p" id="cu_sv">บันทึก</button></div></form></dialog>
+<dialog id="cud"><form id="cuf" method="dialog"><h3 id="cud_t" style="margin:0 0 12px">ลูกค้า</h3><fieldset><legend>ข้อมูลลูกค้า</legend><div class="g"><label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required maxlength="160"></label><label class="f">เลขผู้เสียภาษี<input name="tax_id" maxlength="20"></label><label class="f">เจ้าของ<select name="owner"></select></label></div><label class="f" style="margin-top:12px">หมายเหตุ<textarea name="note" rows="2" maxlength="500"></textarea></label></fieldset><fieldset><legend>ผู้ติดต่อ</legend><div id="cu_ct"></div><button type="button" class="btn" id="cu_addc">เพิ่มผู้ติดต่อ</button></fieldset><div class="acts"><button type="button" class="btn p dgr hid" id="cu_del" style="margin-right:auto">ลบลูกค้า</button><button type="button" class="btn" id="cu_x">ยกเลิก</button><button class="btn p" id="cu_sv">บันทึก</button></div></form></dialog>
 <dialog id="cum"><form method="dialog" onsubmit="return false"><h3 style="margin:0 0 12px">ตรวจรายชื่อซ้ำ</h3><label class="sub" style="display:flex;gap:6px;align-items:center;margin-bottom:10px"><input type="checkbox" id="cum_s"> แสดงรายชื่อที่ไม่ซ้ำด้วย</label><div id="cum_b"></div><div class="acts"><button type="button" class="btn" id="cum_c">ปิด</button><button type="button" class="btn p" id="cum_go">สร้างลูกค้าและผูก Lead</button></div></form></dialog>
 <dialog id="xd" style="width:min(460px,94vw)"><form method="dialog" id="xf" style="padding:18px 20px"><h3 style="margin:0 0 6px">ส่งออก Excel</h3><div class="g"><label class="f">ตั้งแต่เดือน<input type="month" id="xfrom"></label><label class="f">ถึงเดือน<input type="month" id="xto"></label></div><div class="acts"><button type="button" class="btn" id="xcx">ยกเลิก</button><button type="button" class="btn p" id="xgo">ส่งออก</button></div></form></dialog>
 <div id="lg" class="lg"><form id="lgf" class="lgc"><div id="lgimg" class="logo" role="img" aria-label="CPL Group"></div><h2>เข้าสู่ระบบ</h2><label class="f">อีเมล<b class="rq">*</b><input id="lgm" type="email" required autocomplete="username"></label><label class="f">รหัสผ่าน<b class="rq">*</b><input id="lgp" type="password" required autocomplete="current-password"></label><div id="lge" class="od"></div><button class="btn p">เข้าสู่ระบบ</button></form></div>
@@ -1777,7 +1777,12 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 .cu-ct input:not([type=radio]){padding:8px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);font-size:14px;min-width:0}
 .cu-pm{display:flex;gap:4px;align-items:center;font-size:13px;white-space:nowrap}
 .cu-st{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:8px;font-size:13px;color:var(--mu)}
-#cud form,#cum form{padding:18px 20px}#cud,#cum{width:min(900px,96vw)}#cu_ll,#cu_ql{overflow-x:auto}#cu_ql table{width:100%;min-width:0}#cu_tl{max-height:300px;overflow:auto}.cu-ev{display:grid;grid-template-columns:96px 110px 1fr;gap:10px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:14px}.cu-ev:last-child{border-bottom:0}.cu-ed,.cu-ek{color:var(--mu);white-space:nowrap}.cu-ev-w .cu-ek{color:#1b6b3a;font-weight:600}#cu_ll table{width:100%;min-width:0}
+#cud form,#cum form{padding:18px 20px}#cud,#cum{width:min(900px,96vw)}#cu_dv .pn{margin-bottom:12px}.cu-hd{display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap}.cu-hd h2{margin:0 0 4px;font-size:20px}.cu-hm{display:flex;gap:28px;flex-wrap:wrap}.cu-hm span{display:block;font-size:12px;color:var(--mu)}.cu-hm b{font-size:15px}
+.cu-two{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;align-items:start}@media(max-width:900px){.cu-two{grid-template-columns:1fr}}
+#cu_dv .pn h3{margin:0 0 10px;font-size:15px}.cu-cr{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}.cu-cr:last-child{border-bottom:0}.cu-cr i{width:30px;height:30px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-style:normal;font-weight:600;color:var(--pr)}
+.cu-hr{display:flex;justify-content:space-between;gap:12px;padding:8px 0 8px 12px;border-bottom:1px solid var(--bd);border-left:3px solid var(--bd)}.cu-hr:last-child{border-bottom-color:transparent}.cu-hr-q{border-left-color:#f3d9a4}.cu-hr-w{border-left-color:#7fcf9c}.cu-hr-f{border-left-color:#a9c7ee}.cu-hr>span{white-space:nowrap}
+#cu_dv .st{display:flex;flex-direction:column;gap:6px;align-items:flex-start}#cu_dv .st span,#cu_dv .st b{display:block;position:static;margin:0;line-height:1.3}#cu_dv .st b{font-size:22px;order:2}#cu_dv .st span{order:1}
+.cub-r{background:#fde8e8;border-color:#f3b8b8;color:#9b1c1c}#cu_ll table{width:100%;min-width:0}
 #cum_b{max-height:55vh;overflow:auto}#cum_b input[data-n]{padding:6px 8px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);width:100%}
 </style>
 <script>
@@ -1810,33 +1815,38 @@ function cuRender(){
  if(!CU.ok){$('cu_b').innerHTML='<tr><td colspan="8" class="sub">โหลดข้อมูลลูกค้าไม่ได้</td></tr>';return}
  $('cu_b').innerHTML=L.length?L.map(c=>{const s=stats(c.id),b=badge(s),ct=(CU.cts[c.id]||[]),pm=ct.find(x=>x.is_primary)||ct[0];
   return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td>${s.fa?H(s.fa)+(s.ads.length>1?' +'+(s.ads.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="8" class="sub">ไม่พบลูกค้า</td></tr>'}
-async function cuInit(){await cuLoad(true);cuRender()}
+async function cuInit(){await cuLoad(true);cuRender();if(CU.det)cuDet(CU.det)}
 function ctRender(){
  $('cu_ct').innerHTML=CU.edit.length?CU.edit.map((c,i)=>`<div class="cu-ct" data-i="${i}"><input data-k="name" placeholder="ชื่อ *" value="${H(c.name)}" maxlength="80"><input data-k="role" placeholder="ตำแหน่ง" value="${H(c.role)}" maxlength="60"><input data-k="phone" placeholder="เบอร์โทร" value="${H(c.phone)}" maxlength="40"><input data-k="email" placeholder="อีเมล" value="${H(c.email)}" maxlength="80"><input data-k="line" placeholder="LINE" value="${H(c.line)}" maxlength="60"><label class="cu-pm"><input type="radio" name="cu_pm"${c.is_primary?' checked':''}>หลัก</label><button type="button" class="btn sm" data-rm aria-label="ลบผู้ติดต่อ">×</button></div>`).join(''):'<div class="sub">ยังไม่มีผู้ติดต่อ</div>'}
-function t360(id){
+function cuEv(id){
  const ls=CU.ls[id]||[],ev=[],B='บาท';
  ls.forEach(l=>{
-  if(l.date)ev.push({d:l.date,k:'Lead',t:l.name+(l.ads?' · '+l.ads:'')+(l.sales?' · '+l.sales:'')+' · '+effS(l)});
-  ((l.detail&&l.detail.quotes)||[]).forEach(q=>q.t&&ev.push({d:q.t,k:'ใบเสนอราคา',t:l.name+' · '+(QMD[q.mode]||q.m||'')+' · '+N(q.tot)+' '+B+' · '+(q.st||'เสนอแล้ว')}));
-  if(l.fu)ev.push({d:l.fu,k:'นัดติดตาม',t:l.name+(l.fu_status&&!['-','—'].includes(l.fu_status.trim())?' · '+l.fu_status:'')});
-  if(effS(l)===ST_Y)ev.push({d:l.deal_date||l.date,k:'ปิดการขาย',t:l.name+(l.deal_amt?' · '+N(l.deal_amt)+' '+B:'')})});
- ev.sort((a,b)=>(b.d||'').localeCompare(a.d||''));
- $('cu_tf').classList.toggle('hid',!id||!ev.length);
- const s=stats(id||'');
- $('cu_k').classList.toggle('hid',!id||!s.n);
- $('cu_k').innerHTML=[['Lead',s.n],['แอด',s.ads.length],['ปิดการขาย',s.w],['ยอดที่ปิดได้ (บาท)',N(s.amt)],['Lead ล่าสุด',s.last?fmtD(s.last):'—']].map(([t,v])=>`<div class="st"><b>${v}</b><span>${t}</span></div>`).join('');
- $('cu_tl').innerHTML=''+ev.map(e=>`<div class="cu-ev cu-ev-${e.k==='ปิดการขาย'?'w':''}"><span class="cu-ed">${fmtD(e.d)}</span><span class="cu-ek">${e.k}</span><span>${H(e.t)}</span></div>`).join('');
- const qs=[];ls.forEach(l=>((l.detail&&l.detail.quotes)||[]).forEach(q=>qs.push({l,q})));qs.sort((a,b)=>(b.q.t||'').localeCompare(a.q.t||''));
- $('cu_qf').classList.toggle('hid',!id||!qs.length);
- $('cu_ql').innerHTML=qs.length?`<table><thead><tr><th>วันที่</th><th>Lead</th><th>บริการ</th><th>ปลายทาง</th><th class="num">ยอดรวม (บาท)</th><th>สถานะ</th></tr></thead><tbody>${qs.map(({l,q})=>`<tr><td>${fmtD(q.t)}</td><td>${H(l.name)}</td><td>${H(QMD[q.mode]||q.m||'')}${q.sv?' · '+H(q.sv):''}</td><td>${H([q.country,q.postal].filter(Boolean).join(' · '))||'—'}</td><td class="num">${N(q.tot)}</td><td>${H(q.st||'เสนอแล้ว')}</td></tr>`).join('')}</tbody></table>`:''}
-function llRender(id){t360(id);$('cu_lf').classList.add('hid')}
+  if(l.date)ev.push({d:l.date,c:'l',k:'Lead ใหม่'+(l.ads?' · '+l.ads:''),s:l.name+(l.sales?' · '+l.sales:'')+' · '+effS(l)});
+  ((l.detail&&l.detail.quotes)||[]).forEach(q=>q.t&&ev.push({d:q.t,c:'q',k:'เสนอราคา'+(q.country?' · '+q.country:'')+' · '+(QMD[q.mode]||q.m||''),s:l.name+' · '+N(q.tot)+' '+B+' · '+(q.st||'เสนอแล้ว')}));
+  if(l.fu)ev.push({d:l.fu,c:'f',k:'นัดติดตาม',s:l.name+(l.fu_status&&!['-','—'].includes(l.fu_status.trim())?' · '+l.fu_status:'')});
+  if(effS(l)===ST_Y)ev.push({d:l.deal_date||l.date,c:'w',k:'ปิดการขาย',s:l.name+(l.deal_amt?' · '+N(l.deal_amt)+' '+B:'')})});
+ return ev.sort((a,b)=>(b.d||'').localeCompare(a.d||''))}
+function risk(s){if(!s.w)return['—','n'];const d=Math.floor((Date.now()-new Date(s.lw))/DAY);return d<=CHURN?['ต่ำ','g']:d<=180?['กลาง','a']:['สูง','r']}
+function cuDet(id){
+ const c=CU.list.find(x=>x.id===id);if(!c){cuBack();return}
+ CU.det=id;$('cu_lv').classList.add('hid');$('cu_dv').classList.remove('hid');
+ const s=stats(id),b=badge(s),rk=risk(s),ct=CU.cts[id]||[],ev=cuEv(id),nq=ev.filter(e=>e.c==='q').length,dd=s.lw?Math.floor((Date.now()-new Date(s.lw))/DAY):null;
+ const chs=x=>[x.phone&&'โทร',x.line&&'LINE',x.email&&'อีเมล'].filter(Boolean).join(' · ');
+ $('cu_dv').innerHTML=`<div class="bar"><button type="button" class="btn" id="cd_back">← ลูกค้าทั้งหมด</button><span style="flex:1"></span><button type="button" class="btn" id="cd_edit">แก้ไข</button><button type="button" class="btn p" id="cd_add">เพิ่มผู้ติดต่อ</button></div>
+<div class="pn cu-hd"><div><h2>${H(c.name)}</h2><div class="sub">${[c.tax_id?'เลขผู้เสียภาษี '+H(c.tax_id):'',c.note?H(c.note):''].filter(Boolean).join(' · ')||'&nbsp;'}</div></div><div class="cu-hm"><div><span>เจ้าของ</span><b>${H(c.owner)||'—'}</b></div><div><span>สถานะลูกค้า</span><b><span class="cub cub-${b[1]}">${b[0]}</span></b></div><div><span>ยอดที่ปิดได้</span><b>${N(s.amt)} บาท</b></div><div><span>ส่งล่าสุด</span><b>${dd==null?'—':dd+' วันก่อน'}</b></div></div></div>
+<div class="stats">${[['Lead',s.n+' รายการ'],['ใบเสนอราคา',nq+' ใบ'],['ปิดการขาย',s.w+' ครั้ง'],['ความเสี่ยงหาย',`<span class="cub cub-${rk[1]}">${rk[0]}</span>`]].map(([t,v])=>`<div class="st"><span>${t}</span><b>${v}</b></div>`).join('')}</div>
+<div class="cu-two"><div class="pn"><h3>ผู้ติดต่อ</h3>${ct.length?ct.map((x,i)=>`<div class="cu-cr"><i>${i+1}</i><div><b>${H(x.name)}</b>${x.is_primary?' <span class="cub">หลัก</span>':''}<div class="sub">${H([x.role,x.phone,x.email,x.line].filter(Boolean).join(' · '))||'—'}</div></div><span class="sub">${chs(x)}</span></div>`).join(''):'<div class="sub">ยังไม่มีผู้ติดต่อ</div>'}</div>
+<div class="pn"><h3>ประวัติ Lead และใบเสนอราคา</h3>${ev.length?ev.map(e=>`<div class="cu-hr cu-hr-${e.c}"><div><b>${H(e.k)}</b><div class="sub">${H(e.s)}</div></div><span class="sub">${fmtD(e.d)}</span></div>`).join(''):'<div class="sub">ยังไม่มี Lead ที่ผูกกับลูกค้านี้</div>'}</div></div>`;
+ $('cd_back').onclick=cuBack;$('cd_edit').onclick=()=>cuOpen(id);$('cd_add').onclick=()=>{cuOpen(id);CU.edit.push({name:'',is_primary:!CU.edit.length});ctRender()}}
+function cuBack(){CU.det=null;$('cu_dv').classList.add('hid');$('cu_lv').classList.remove('hid');cuRender()}
+function llRender(){}
 function cuOpen(id){
  const c=id?CU.list.find(x=>x.id===id):{},f=$('cuf');CU.sel=id||null;CU.edit=(CU.cts[id]||[]).map(x=>({...x}));
  f.name.value=c.name||'';f.tax_id.value=c.tax_id||'';f.note.value=c.note||'';fillOwner(f.owner,c.owner);
  $('cud_t').textContent=id?'ลูกค้า':'เพิ่มลูกค้า';$('cu_del').classList.toggle('hid',!id);ctRender();llRender(id);$('cud').showModal()}
 function bind(){
  $('cu_q').oninput=e=>{CU.q=e.target.value;cuRender()};$('cu_o').onchange=e=>{CU.own=e.target.value;cuRender()};
- $('cu_new').onclick=()=>cuOpen();$('cu_b').onclick=e=>{const r=e.target.closest('tr[data-id]');if(r)cuOpen(r.dataset.id)};
+ $('cu_new').onclick=()=>cuOpen();$('cu_b').onclick=e=>{const r=e.target.closest('tr[data-id]');if(r)cuDet(r.dataset.id)};
  $('cu_x').onclick=()=>$('cud').close();
  $('cu_addc').onclick=()=>{CU.edit.push({name:'',is_primary:!CU.edit.length});ctRender()};
  const ct=$('cu_ct');
@@ -1852,9 +1862,9 @@ function bind(){
   if(err||!id)return alert('บันทึกไม่สำเร็จ');
   if((await sb.from('customer_contacts').delete().eq('customer_id',id)).error)return alert('บันทึกไม่สำเร็จ');
   if(cts.length&&(await sb.from('customer_contacts').insert(cts.map(c=>({customer_id:id,name:c.name.trim(),role:c.role||null,phone:c.phone||null,email:c.email||null,line:c.line||null,is_primary:!!c.is_primary})))).error)return alert('บันทึกไม่สำเร็จ');
-  $('cud').close();await cuLoad(true);cuRender()};
+  $('cud').close();await cuLoad(true);cuRender();if(CU.det)cuDet(CU.det)};
  $('cu_del').onclick=async()=>{if(!CU.sel)return;if(!await ask('ลบลูกค้านี้?\nLead ที่ผูกอยู่จะยังอยู่ แต่จะไม่ผูกกับลูกค้าแล้ว',{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบลูกค้า',oke:'Delete customer',danger:true}))return;
-  const{error}=await sb.from('customers').delete().eq('id',CU.sel);if(error)return alert('ลบไม่สำเร็จ');$('cud').close();await cuLoad(true);cuRender()};
+  const{error}=await sb.from('customers').delete().eq('id',CU.sel);if(error)return alert('ลบไม่สำเร็จ');$('cud').close();await cuLoad(true);cuBack()};
  $('cu_dup').onclick=cumOpen;$('cum_c').onclick=()=>$('cum').close();
  $('cum_s').onchange=cumRender;$('cum_go').onclick=cumGo;
  $('cu_mk').onclick=async()=>{const f=$('fm_'),nm=(f.cu_name.value||f.name.value||'').trim();if(!nm)return;
