@@ -1613,7 +1613,7 @@ async function rSave(set){let ok=false;try{const{error}=await sb.from('rate_sets
  if(!ok){try{localStorage.setItem(RK,JSON.stringify(set))}catch(e){}}RS=set}
 /* ---- nav / gate ---- */
 const OSV_OV='ค่าธรรมเนียมสินค้าเกินขนาด/เกินน้ำหนัก',OSV_RM='ค่าพื้นที่ห่างไกล (Remote Area)';
-const canSet=()=>isJ()||!!(profile&&['admin','sales_lead'].includes(profile.role));
+const canSet=()=>!!(profile&&(['admin','sales_lead'].includes(profile.role)||(isJ()&&(typeof PVR==='undefined'||!PVR||profile===PVR))));
 const gate=()=>{$('tRS').classList.toggle('hid',!canSet())};
 if(!OSV.includes(OSV_OV)){OSV.push(OSV_OV,OSV_RM);try{svcRender()}catch(e){}}
 const _ar=applyRoleUI;applyRoleUI=function(p){_ar(p);gate()};
