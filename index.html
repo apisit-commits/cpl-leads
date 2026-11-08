@@ -1344,7 +1344,7 @@ function drawQuote(){rmkInit();bsRender();
  ($('cl_remark').value||'').split('\n').map(z=>z.trim()).filter(Boolean).forEach(z=>RB.push({t:z,no:false}));
  const wrapT=t=>{const out=[];let cur='';for(const ch of t){if(mx.measureText(cur+ch).width>W-80-30){out.push(cur);cur=ch}else cur+=ch}out.push(cur);return out};
  RB.forEach(b=>b.L=wrapT(b.t));const RH=RB.length?RB.reduce((a,b)=>a+b.L.length*26+8,0)+46:0;
- const y0=268,H=y0+it.length*46+150+(RB.length?RH+10:0);c.width=W;c.height=H;
+ const sn=(r&&r.sales)||'',y0=268+(sn?28:0),H=y0+it.length*46+150+(RB.length?RH+10:0);c.width=W;c.height=H;
  const x=c.getContext('2d');
  const T=(s,px,py,sz,w,col,al)=>{x.font=`${w} ${sz}px ${F}`;x.fillStyle=col;x.textAlign=al||'left';x.fillText(s,px,py)};
  x.fillStyle='#fff';x.fillRect(0,0,W,H);
@@ -1353,6 +1353,7 @@ function drawQuote(){rmkInit();bsRender();
  x.fillStyle=QTH().a;x.fillRect(0,126,W,6);
  let y=178;if(r&&r.name){T(TT('เรียน คุณ ','Dear ')+r.name,40,y,28,'600','#111827');y+=40}
  T(TT('บริการ: ','Service: ')+Q.svc+(r&&(r.dir||r.country)?'  ·  '+[TR(r.dir),r.country].filter(Boolean).join(' · '):''),40,y,21,'400','#374151');
+ if(sn)T(TT('เซลล์ผู้ดูแล: ','Sales: ')+sn,40,y+28,21,'400','#374151');
  it.forEach((a,i)=>{const yy=y0+i*46;x.fillStyle='#e5e7eb';x.fillRect(40,yy-30,W-80,1);T(a[0],40,yy,22,'400','#374151');T(a[1],W-40,yy,22,'600','#111827','right')});
  const ty=y0+it.length*46+10;x.fillStyle=QTH().a;x.fillRect(40,ty,W-80,84);
  T(TT('รวมทั้งสิ้น','Total'),64,ty+54,28,'600',QTH().t);T(fmt(Q.tot)+' '+B,W-64,ty+56,36,'700',QTH().t,'right');
