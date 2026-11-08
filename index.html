@@ -1956,7 +1956,12 @@ if(typeof EN==='object')Object.assign(EN,{'ลูกค้า':'Customers','เ�
 <script>
 (function(){
 const H=s=>esc(s==null?'':String(s)),DAY=864e5;let sub='L';
-const pool=()=>rows.filter(r=>r.team===team&&!(r.sales||'').trim()&&effS(r)===ST_S);
+let POOL=[],loaded=0,lt0=0;
+const pool=()=>POOL.filter(r=>r.team===team);
+async function plLoad(){
+ lt0=Date.now();
+ try{let out=[],i=0;for(;;){const{data,error}=await sb.from('leads').select(cols()).or('sales.is.null,sales.eq.').order('date',{ascending:true}).range(i,i+999);if(error)return;out=out.concat(data||[]);if(!data||data.length<1000)break;i+=1000}
+  POOL=out.map(norm).filter(x=>!(x.sales||'').trim()&&effS(x)===ST_S);plRender()}catch(e){}}
 const age=d=>{if(!d)return'—';const n=Math.max(0,Math.floor((new Date(today())-new Date(d))/DAY));return n?n+' วัน':'วันนี้'};
 const canAssign=()=>profile&&['admin','sales_lead','keyer'].includes(profile.role);
 const on=()=>isBeta()&&profile&&['admin','sales','sales_lead','keyer'].includes(profile.role);
@@ -1969,17 +1974,18 @@ function apply(){
  const o=on(),p=o&&sub==='P';$('lsub').classList.toggle('hid',!o);
  [...$('lsub').children].forEach(b=>b.classList.toggle('on',b.dataset.s===(o?sub:'L')));
  $('stats').classList.toggle('hid',p);document.querySelector('#vL>.bar').classList.toggle('hid',p);document.querySelector('#vL>.wrap').classList.toggle('hid',p);$('pl_pn').classList.toggle('hid',!p);
- if(o)plRender()}
+ if(o){if(!loaded){loaded=1;plLoad()}else if(Date.now()-lt0>60000)plLoad();plRender()}}
 async function claim(id,name){
  if(!name)return;
  const{data,error}=await sb.from('leads').update({sales:name}).eq('id',id).or('sales.is.null,sales.eq.').select('id');
  if(error)return alert('บันทึกไม่สำเร็จ');
  if(!data||!data.length){alert('Lead นี้มีผู้ดูแลแล้ว')}
- else{const r=rows.find(x=>String(x.id)===String(id));if(r)r.sales=name}
- refresh();apply()}
-$('pl_b').addEventListener('click',e=>{if(!e.target.closest('[data-pa],[data-pk]')){const tr=e.target.closest('tr[data-id]');if(tr){const id=isNaN(+tr.dataset.id)?tr.dataset.id:+tr.dataset.id,x=rows.find(y=>y.id===id);if(x&&can(x))openForm(id)}return}const b=e.target.closest('[data-pa]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.id;
+ else{const r=rows.find(x=>String(x.id)===String(id));if(r)r.sales=name;POOL=POOL.filter(x=>String(x.id)!==String(id))}
+ refresh();plRender()}
+$('pl_b').addEventListener('click',e=>{if(!e.target.closest('[data-pa],[data-pk]')){const tr=e.target.closest('tr[data-id]');if(tr){const id=isNaN(+tr.dataset.id)?tr.dataset.id:+tr.dataset.id,x=rows.find(y=>y.id===id)||POOL.find(y=>y.id===id);if(x&&can(x)){if(!rows.some(y=>y.id===id))rows.push(x);openForm(id)}}return}const b=e.target.closest('[data-pa]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.id;
  const nm=canAssign()?tr.querySelector('[data-pk]').value:(profile&&profile.name);claim(isNaN(+id)?id:+id,nm)});
-$('lsub').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;sub=b.dataset.s;apply()});
+$('lsub').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;sub=b.dataset.s;if(sub==='P')lt0=0;apply()});
+const _sl2=saveLead;saveLead=async function(){const x=await _sl2.apply(this,arguments);if(loaded)plLoad();return x};
 const _rd=render;render=function(){_rd.apply(this,arguments);apply()};
 const _ar3=applyRoleUI;applyRoleUI=function(p){_ar3(p);apply()};apply();
 })();
