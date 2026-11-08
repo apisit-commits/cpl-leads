@@ -2200,7 +2200,8 @@ scan(document.body)})();
 const sync=()=>document.querySelectorAll('.csb').forEach(e=>e.classList.toggle('hid',!(window.canSetRate&&window.canSetRate())));
 document.addEventListener('click',e=>{const b=e.target.closest('.csb [data-s]');if(b)tab(b.dataset.s==='R'?'RS':'C')});
 const _t6=tab;tab=function(k){_t6(k);sync()};
-const _ar6=applyRoleUI;applyRoleUI=function(p){_ar6(p);sync()};sync();
+const _ar6=applyRoleUI;applyRoleUI=function(p){_ar6(p);sync();mkPlace()};sync();
+function mkPlace(){const w=$('tW'),d=$('tDB'),l=$('tL');if(!w||!d||!l)return;const ad=!!profile&&profile.role==='admin';if(ad)d.after(w);else l.after(w)}mkPlace();
 })();
 </script>
 <script>
