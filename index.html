@@ -475,7 +475,7 @@ header .hd #who{display:none!important}
  <div class="rs-bar"><label class="f">เวอร์ชัน<b class="rq">*</b><input id="rs_v" autocomplete="off"></label><label class="f">วันที่มีผล<b class="rq">*</b><input id="rs_e" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" autocomplete="off"></label><span class="sub" id="rs_st"></span><button class="btn p" id="rs_pub" type="button">เผยแพร่</button></div>
 </div></div>
 <div id="vS" class="hid"><div class="mktabs" id="sst"><button type="button" data-s="o" class="on">ตัวเลือกในฟอร์ม</button><button type="button" data-s="u">จัดการผู้ใช้</button></div><div class="pn" id="vSu"></div><div id="vSo"></div>
- <div class="pn" style="margin-top:12px"><h3>นำเข้า Lead จาก Excel</h3><p class="sub" style="margin:0 0 10px">เลือกไฟล์ .xlsx ที่ต้องการนำเข้า</p><div class="oa"><input type="file" id="imf" accept=".xlsx,.xls"><button class="btn p sm" id="imb">เริ่มนำเข้า</button></div><pre id="imlog" class="sub" style="white-space:pre-wrap;margin:10px 0 0"></pre></div></div>
+ </div>
 </main>
 
 <dialog id="dlg"><button type="button" class="dlgx" id="dlx" title="ปิด" aria-label="ปิด"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><form id="fm_" method="dialog">
@@ -644,7 +644,7 @@ function init(){
  cgBind('cgf');cgBind('cgc',calc);$('tC').onclick=()=>tab('C');['cl_mode','cl_rate'].forEach(i=>$(i).oninput=calc);$('cl_q').addEventListener('input',calcPick);$('cl_clear').onclick=clClear;$('qsv').onclick=async()=>{if(!selId())return alert('เลือก Lead ก่อน');if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');const ok=await recQuote();if(!ok)return alert('บันทึกไม่สำเร็จ');await calcSave(true)};$('fq_list').addEventListener('click',e=>{const b=e.target.closest('[data-ql]');if(!b)return;const id=b.closest('[data-q]').dataset.q,r=rows.find(x=>x.id===editId),q=((r&&r.detail&&r.detail.quotes)||[]).find(x=>x.id===id);if(!q)return;$('dlg').close();tab('C');const k=Object.keys(CLM).find(x=>CLM[x]===String(r.id));if(k){$('cl_q').value=k;calcPick()}qlLoad(q)});$('fq_list').addEventListener('change',async e=>{const t=e.target;if(!t.matches('[data-qs]'))return;const id=t.closest('[data-q]').dataset.q,r=rows.find(x=>x.id===editId);if(!r||!can(r))return;const qs=((r.detail&&r.detail.quotes)||[]).map(x=>x.id===id?{...x,st:t.value}:x),d={...(r.detail||{}),quotes:qs},{error}=await sb.from('leads').update({detail:d}).eq('id',r.id);if(!error)r.detail=d;else alert('บันทึกไม่สำเร็จ')});svcRender();bsInit();$('cl_remark').addEventListener('input',()=>{if(typeof CQ!=='undefined'&&CQ)try{drawQuote()}catch(e){console.error(e)}});
 $('cl_svc').addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.p!==undefined&&t.value!==''){const c=$('cl_svc').querySelector('input[data-i="'+t.dataset.p+'"]');if(c)c.checked=true}calc()});$('qdl').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');recQuote();const a=document.createElement('a');a.href=$('qc').toDataURL('image/png');a.download='quotation.png';a.click()};$('qcp').onclick=()=>{if(!CQ.qty)return alert('กรอกขนาด/น้ำหนักสินค้าก่อน');recQuote();$('qc').toBlob(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);alert('คัดลอกรูปแล้ว วางในแชทลูกค้าได้เลย')}catch(e){alert('เบราว์เซอร์นี้คัดลอกรูปไม่ได้ กรุณากดดาวน์โหลดแทน')}})};$('cx').onclick=()=>$('dlg').close();$('exp').onclick=()=>{const v=$('vm').value;$('xfrom').value=v;$('xto').value=v;$('xd').showModal()};$('xcx').onclick=()=>$('xd').close();$('xgo').onclick=()=>{const a=$('xfrom').value,b=$('xto').value;if(a&&b&&a>b)return alert(TT('เดือนเริ่มต้นต้องไม่เกินเดือนสิ้นสุด','The start month must not be after the end month'));$('xd').close();exportXlsx(a,b)};$('lf').onchange=$('lt').onchange=$('lf').oninput=$('lt').oninput=()=>{const a=$('lf').value,b=$('lt').value;if(a&&b&&a>b)return alert(TT('วันเริ่มต้องไม่เกินวันสิ้นสุด','The start date must not be after the end date'));covLoad(a,render)};$('lclr').onclick=()=>{$('lp').value='all';$('lp').onchange()};$('vm').onchange=()=>{const v=$('vm').value,f=rangeFrom();if(v&&f&&v+'-01'<f)reload();else render()};
  f.addEventListener('submit',onSave);
- ['L','A','M','K','E','S','N','F','W'].forEach(k=>$('t'+k).onclick=()=>tab(k));$('tDB').onclick=()=>{const d=window.DRok||'';if(d)tab(d.includes(dashMode)?dashMode:d[0])};$('dmodes').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b)tab(b.dataset.m)});$('dsl').onchange=renderDash;$('imb').onclick=()=>{const f=$('imf').files[0];if(!f){$('imlog').textContent='กรุณาเลือกไฟล์ก่อน';return}importXlsx(f)};
+ ['L','A','M','K','E','S','N','F','W'].forEach(k=>$('t'+k).onclick=()=>tab(k));$('tDB').onclick=()=>{const d=window.DRok||'';if(d)tab(d.includes(dashMode)?dashMode:d[0])};$('dmodes').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b)tab(b.dataset.m)});$('dsl').onchange=renderDash;
  (function(){const nv=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
 const toD=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');return m?m[3]+'/'+m[2]+'/'+m[1]:''};
 const toI=v=>{const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v||'');if(!m)return'';const d=new Date(+m[3],+m[2]-1,+m[1]);return d.getMonth()===+m[2]-1?m[3]+'-'+m[2]+'-'+m[1]:''};
@@ -724,33 +724,6 @@ async function renameOpt(o,k,nv){
  await loadOpts();reload();
 }
 async function delOpt(id){if(!await ask('ลบรายการนี้?',{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ',oke:'Delete',danger:true}))return;const{error}=await sb.from('options').delete().eq('id',id);if(error)alert('ลบไม่สำเร็จ: '+error.message);else loadOpts()}
-const HMAP={'ทีม':'team','วันที่':'date','Ads':'ads','ชื่อลูกค้า':'name','นำเข้า/ส่งออก':'dir','ประเทศ':'country','บริการ':'svc','หมายเหตุ':'note','ช่องทาง':'channel','Status':'status','Follow-up (สถานะ)':'fu_status','วันนัดติดตาม':'fu','เหตุผลที่ยังไม่สนใจ':'reason','Quotation':'quo','Sales':'sales','Brand':'brand','Promotion':'promo'};
-Object.assign(HMAP,{'Team':'team','Date':'date','Customer name':'name','Import/Export':'dir','Country':'country','Service':'svc','Notes':'note','Channel':'channel','Follow-up (status)':'fu_status','Follow-up date':'fu','Reason not interested':'reason'});
-function toIso(v){v=String(v||'').trim();let m=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return m[1]+'-'+m[2].padStart(2,'0')+'-'+m[3].padStart(2,'0');m=v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);return m?m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'):''}
-async function importXlsx(file){
- const log=t=>{$('imlog').textContent=t};
- if(!profile||profile.role!=='admin'){log('เฉพาะผู้ดูแลเท่านั้น');return}
- $('imb').disabled=true;
- try{
-  log('กำลังอ่านไฟล์…');
-  const wb=XLSX.read(await file.arrayBuffer(),{type:'array'}),rev={};Object.keys(TEAMS).forEach(k=>rev[TEAMS[k].toLowerCase()]=k);
-  const cand=[];let bad=0;
-  wb.SheetNames.forEach(sn=>{XLSX.utils.sheet_to_json(wb.Sheets[sn],{raw:false,defval:''}).forEach(o=>{
-   const r={};let any=false;for(const h in o){const k=HMAP[String(h).trim()];if(k){r[k]=String(o[h]).trim();any=true}}
-   if(!any||!('name' in r))return;
-   const t=rev[(r.team||'').toLowerCase()]||rev[sn.toLowerCase()],d=toIso(r.date);
-   if(!t||!d||!r.name){bad++;return}
-   cand.push({team:t,date:d,ads:r.ads||null,name:r.name,dir:['นำเข้า','ส่งออก'].includes(r.dir)?r.dir:null,country:r.country||null,svc:(r.svc||'').split('/').map(x=>x.trim()).filter(x=>OPT.svc.includes(x)),note:r.note||null,channel:r.channel||null,status:OPT.status.includes(stN(r.status))?stN(r.status):ST_S,fu:toIso(r.fu)||null,fu_status:OPT.status.includes(stN(r.fu_status))?stN(r.fu_status):null,reason:r.reason||null,quo:r.quo||null,sales:r.sales||null,brand:r.brand||null,promo:r.promo||null})})});
-  log(TT('อ่านได้ '+cand.length+' แถว · กำลังตรวจรายการที่มีอยู่แล้ว…','Read '+cand.length+' rows · checking existing records…'));
-  const have=new Set();
-  for(let i=0;;i+=1000){const{data,error}=await sb.from('leads').select('team,date,name').range(i,i+999);if(error)throw error;data.forEach(x=>have.add(x.team+'|'+x.date+'|'+x.name.toLowerCase()));if(data.length<1000)break}
-  const todo=cand.filter(c=>!have.has(c.team+'|'+c.date+'|'+c.name.toLowerCase()));let done=0;
-  for(let i=0;i<todo.length;i+=500){const part=todo.slice(i,i+500),{error}=await sb.from('leads').insert(part);if(error)throw error;done+=part.length;log(TT('กำลังนำเข้า… ','Importing… ')+done+'/'+todo.length)}
-  log(TT('เสร็จแล้ว ✔\nนำเข้าใหม่ '+done+' แถว\nข้าม (มีอยู่แล้ว) '+(cand.length-todo.length)+' แถว\nข้าม (ไม่มีทีม/วันที่/ชื่อ) '+bad+' แถว','Done ✔\nNewly imported: '+done+' rows\nSkipped (already exist): '+(cand.length-todo.length)+' rows\nSkipped (missing team/date/name): '+bad+' rows'));
-  await reload();
- }catch(e){log(TT('นำเข้าไม่สำเร็จ: ','Import failed: ')+(e.message||e)+TT('\nลองใหม่ได้ ระบบจะข้ามแถวที่นำเข้าไปแล้วให้เอง','\nYou can retry; rows already imported will be skipped.'))}
- $('imb').disabled=false;
-}
 const PER_OPTS=['7','30','m','pm','y','all','c'];
 function perSet(v,A,B){const d=new Date(),p2=n=>String(n).padStart(2,'0'),iso=x=>x.getFullYear()+'-'+p2(x.getMonth()+1)+'-'+p2(x.getDate());
  if(v==='all'){A.value=B.value=''}
@@ -1015,15 +988,27 @@ async function loadUsers(){const box=$('vSu');if(!profile||profile.role!=='admin
  if(r.error){r=await sb.from('profiles').select('id,name,role,team').order('name');UEMAIL=false}
  if(r.error){box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub">โหลดรายชื่อผู้ใช้ไม่ได้: '+esc(r.error.message||'')+'</p>';return}
  USERS=r.data||[];renderUsers()}
-function renderUsers(){const box=$('vSu');const pend=USERS.filter(u=>!u.role).length;
- box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub" style="margin:0 0 10px">กำหนดบทบาทและทีมของแต่ละบัญชี (เซลล์ต้องเลือกทีม)'+(pend?' · <b>รอกำหนดสิทธิ์ '+pend+' บัญชี</b>':'')+'</p><div style="overflow-x:auto"><table class="ut"><thead><tr><th>บัญชี</th><th>ชื่อที่แสดง</th><th>บทบาท</th><th>ทีม</th>'+(UBETA?'<th>Beta</th>':'')+'<th></th></tr></thead><tbody>'+
- USERS.map(u=>{const me=profile&&u.id===profile.id;return `<tr data-u="${u.id}"><td>${esc(u.email||'')||'<span class="sub">—</span>'}${!u.role?'<div><span class="wait">รอกำหนดสิทธิ์</span></div>':''}</td><td><input data-k="name" value="${esc(u.name||'')}"></td><td><select data-k="role"${me?' disabled title="ไม่สามารถเปลี่ยนบทบาทของตัวเอง"':''}><option value="">— เลือก —</option>${UROLES.map(r=>`<option value="${r[0]}"${u.role===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select></td><td><select data-k="team"${u.role==='sales'?'':' disabled'}><option value="">— เลือก —</option>${Object.entries(TEAMS).map(([k,v])=>`<option value="${k}"${u.team===k?' selected':''}>${esc(v)}</option>`).join('')}</select></td>${UBETA?`<td><input type="checkbox" data-k="beta"${u.beta?' checked':''}></td>`:''}<td><button class="btn sm p" data-save>บันทึก</button></td></tr>`}).join('')+'</tbody></table></div>'}
+const UTRP={admin:'#0096d6',zimp:'#8e5bd6',keyer:'#2aa7a0',ceo:'#e0b020',sales:'#2fb170',sales_lead:'#f08a24',marketing:'#e05a7a',ads:'#5a6b85'};
+function renderUsers(){const box=$('vSu'),pend=USERS.filter(u=>!u.role);
+ const row=u=>{const me=profile&&u.id===profile.id,nm=u.name||(u.email||'?').split('@')[0],c=UTRP[u.role]||'#9aa7b8';
+  return `<div class="ur" data-u="${u.id}"><span class="uav" style="background:${c}">${esc((nm[0]||'?').toUpperCase())}</span><div class="unm"><input data-k="name" value="${esc(u.name||'')}" placeholder="${esc(nm)}"><span class="uem">${esc(u.email||'')||'—'}</span></div><select data-k="role"${me?' disabled':''}><option value="">— เลือก —</option>${UROLES.map(r=>`<option value="${r[0]}"${u.role===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select><select data-k="team"${u.role==='sales'?'':' disabled'}><option value="">— เลือก —</option>${Object.entries(TEAMS).map(([k,v])=>`<option value="${k}"${u.team===k?' selected':''}>${esc(v)}</option>`).join('')}</select><span class="uac"><button type="button" class="btn sm p" data-save>บันทึก</button>${me?'':'<button type="button" class="btn sm dgr" data-del aria-label="ลบผู้ใช้" title="ลบผู้ใช้"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'}</span></div>`};
+ const sec=(t,c,list,warn)=>list.length?`<section class="usec${warn?' warn':''}"><h4><i style="background:${c}"></i>${t}<em>${list.length}</em></h4>${list.map(row).join('')}</section>`:'';
+ let h='';
+ h+=sec('รอกำหนดสิทธิ์','#e05a5a',pend,1);
+ UROLES.forEach(([k,l])=>{const L=USERS.filter(u=>u.role===k);if(k==='sales'){const t=Object.entries(TEAMS);const parts=t.map(([tk,tv])=>sec(l.split(' · ')[0]+' · '+esc(tv),UTRP.sales,L.filter(u=>u.team===tk)));const rest=L.filter(u=>!TEAMS[u.team]);h+=parts.join('')+sec(l.split(' · ')[0]+' · ไม่ระบุทีม',UTRP.sales,rest)}else h+=sec(l,UTRP[k],L)});
+ box.innerHTML=`<div class="uhd"><h3>จัดการผู้ใช้</h3><span class="ucnt">${USERS.length} บัญชี</span><button type="button" class="btn p sm" id="au_add">${TT('เพิ่มผู้ใช้','Add user')}</button></div><div class="ulb"><span></span><span>ชื่อที่แสดง</span><span>บทบาท</span><span>ทีม</span><span></span></div>${h||'<div class="sub">ไม่มีผู้ใช้</div>'}`}
 (function(){const set=k=>{$('vSu').style.display=k==='u'?'':'none';$('vSo').style.display=k==='o'?'':'none';$('sst').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.s===k))};$('sst').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b)set(b.dataset.s)});set('o')})();
 (function(){const box=$('vSu');
- box.addEventListener('change',e=>{const t=e.target;if(t.dataset.k!=='role')return;const tr=t.closest('tr'),tm=tr.querySelector('[data-k=team]');tm.disabled=t.value!=='sales';if(t.value!=='sales')tm.value=''});
- box.addEventListener('click',async e=>{const b=e.target.closest('[data-save]');if(!b)return;const tr=b.closest('tr'),id=tr.dataset.u,g=k=>tr.querySelector('[data-k='+k+']').value;
+ box.addEventListener('change',e=>{const t=e.target;if(t.dataset.k!=='role')return;const tr=t.closest('[data-u]'),tm=tr.querySelector('[data-k=team]');tm.disabled=t.value!=='sales';if(t.value!=='sales')tm.value=''});
+ box.addEventListener('click',async e=>{const d=e.target.closest('[data-del]');
+  if(d){const tr=d.closest('[data-u]'),u=USERS.find(x=>x.id===tr.dataset.u);if(!u)return;
+   if(!await ask(TT('ลบผู้ใช้ ','Delete user ')+(u.name||u.email||'')+(u.email&&u.name?' ('+u.email+')':'')+TT(' ?\nบัญชีนี้จะเข้าสู่ระบบไม่ได้อีก',' ?\nThis account will no longer be able to sign in'),{t:'ลบผู้ใช้',te:'Delete user',ok:'ลบ',oke:'Delete',danger:true}))return;
+   d.disabled=true;const{error}=await sb.rpc('admin_delete_user',{uid:u.id});d.disabled=false;
+   if(error)return alert(TT('ลบผู้ใช้ไม่สำเร็จ: ','Delete failed: ')+(error.message||''));
+   loadUsers();return}
+  const b=e.target.closest('[data-save]');if(!b)return;const tr=b.closest('[data-u]'),id=tr.dataset.u,g=k=>tr.querySelector('[data-k='+k+']').value;
   const role=g('role'),team=g('team'),name=g('name').trim();if(!role)return alert(TT('เลือกบทบาทก่อน','Choose a role first'));if(role==='sales'&&!team)return alert(TT('เซลล์ต้องเลือกทีม','A sales account needs a team'));
-  b.disabled=true;const{error}=await sb.from('profiles').update({name:name||null,role,team:role==='sales'?team:null,...(UBETA?{beta:tr.querySelector('[data-k=beta]').checked}:{})}).eq('id',id);b.disabled=false;
+  b.disabled=true;const{error}=await sb.from('profiles').update({name:name||null,role,team:role==='sales'?team:null}).eq('id',id);b.disabled=false;
   if(error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message+'');
   b.textContent=TT('บันทึกแล้ว ✓','Saved ✓');setTimeout(()=>{b.textContent=TT('บันทึก','Save')},1500);loadUsers()})})();
 Object.assign(EN,{"จัดการผู้ใช้": "User management", "บัญชี": "Account", "ชื่อที่แสดง": "Display name", "บทบาท": "Role", "ทีม": "Team", "บันทึก": "Save", "รอกำหนดสิทธิ์": "Awaiting access"});
@@ -1823,6 +1808,16 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 #vD .pn:has(>.svs) .svs .ib{width:46px;height:46px;flex:none}#vD .pn:has(>.svs) .svs .ib svg{width:28px;height:28px}
 
 .st b:has(>.sti){display:flex;align-items:center;gap:10px}.st b>.sti{order:-1;margin:0!important}
+
+#vSu .uhd{display:flex;align-items:center;gap:12px;margin-bottom:12px}#vSu .uhd h3{margin:0}#vSu .ucnt{color:var(--mu);font-size:13px;margin-right:auto}
+#vSu .ulb,#vSu .ur{display:grid;grid-template-columns:40px minmax(180px,1.3fr) minmax(210px,1fr) 150px 116px;gap:12px;align-items:center}
+#vSu .ulb{padding:0 12px 6px;font-size:12px;color:var(--mu);font-weight:600;white-space:nowrap}
+#vSu .usec{margin-top:14px}#vSu .usec h4{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:14px;font-weight:700}#vSu .usec h4 i{width:10px;height:10px;border-radius:3px}#vSu .usec h4 em{font-style:normal;font-weight:600;font-size:12px;color:var(--mu);background:var(--fld);padding:1px 9px;border-radius:999px}
+#vSu .ur{padding:8px 12px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;background:var(--card)}#vSu .usec.warn .ur{border-color:#e05a5a}
+#vSu .uav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+#vSu .unm{display:flex;flex-direction:column;gap:3px;min-width:0}#vSu .unm input{width:100%}#vSu .uem{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-left:2px}
+#vSu .uac{display:flex;gap:6px;justify-content:flex-end}#vSu .uac .btn.dgr{display:inline-flex;align-items:center;padding:0 9px}
+@media(max-width:900px){#vSu .ulb{display:none}#vSu .ur{grid-template-columns:40px 1fr}#vSu .ur select,#vSu .ur .uac{grid-column:1/-1}}
 </style>
 <script>
 (function(){
