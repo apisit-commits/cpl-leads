@@ -534,7 +534,7 @@ const TR=x=>LANG==='en'&&x&&EN[x]!=null?EN[x]:x;
 function TR2(m){m=String(m);if(LANG!=='en')return m;return m.split('\n').map(l=>{if(EN[l]!=null)return EN[l];const i=l.indexOf(': ');if(i>0&&EN[l.slice(0,i)]!=null)return EN[l.slice(0,i)]+': '+TR2(l.slice(i+2));return l}).join('\n')}
 {const _al=window.alert.bind(window),_cf=window.confirm.bind(window);window.alert=m=>_al(TR2(m));window.confirm=m=>_cf(TR2(m))}
 let WHO=null;
-function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '+(TEAMS[WHO.t]||''),sales_lead:'SALES HEAD',marketing:'MARKETING',ads:'ADS'};{const rl=(R[WHO.r]||String(WHO.r).toUpperCase())+(isBeta()?' · BETA':'');$('who').textContent=WHO.n+' · '+rl;$('wn').textContent=WHO.n||'';$('wr').textContent=rl;$('av').textContent=String(WHO.n||'?').trim().charAt(0).toUpperCase()}}
+function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '+(TEAMS[WHO.t]||''),sales_lead:'SALES HEAD',marketing:'MARKETING',ads:'ADS'};{const rl=(R[WHO.r]||String(WHO.r).toUpperCase());$('who').textContent=WHO.n+' · '+rl;$('wn').textContent=WHO.n||'';$('wr').textContent=rl;$('av').textContent=String(WHO.n||'?').trim().charAt(0).toUpperCase()}}
 const ST_Y='ปิดการขาย',ST_H='มีโอกาสเปลี่ยนใจ',ST_S='รอการตัดสินใจ',ST_N='ยังไม่สนใจบริการ';
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
 const OPT={
@@ -568,7 +568,7 @@ const COLS0='detail,cargo,id,team,date,ads,name,dir,country,svc,note,channel,sta
 const isSl=r=>r==='sales'||r==='sales_lead';
 const can=r=>profile&&(profile.role==='admin'||profile.role==='keyer'||profile.role==='sales_lead'||(profile.role==='sales'&&r.team===profile.team));
 const seeAll=()=>!!profile&&['admin','keyer','sales_lead'].includes(profile.role);
-const isBeta=()=>!!(profile&&(profile.beta||profile.role==='admin'));
+const isBeta=()=>!!(profile&&['admin','sales','sales_lead','keyer','marketing'].includes(profile.role));
 const dupKey=s=>String(s||'').toLowerCase().replace(/บริษัท|บจก\.?|หจก\.?|ห้างหุ้นส่วนจำกัด|จำกัด|\(มหาชน\)|คุณ/g,'').replace(/[\s.,()\-_\/]+/g,'');
 const dupPh=s=>{const d=String(s||'').replace(/\D/g,'');return d.length>=8?d.slice(-9):''};
 async function dupCheck(o){const d=o.detail||{},ph=[d.ph,d.cpt,d.ctt].filter(Boolean),key=dupKey(o.name),san=x=>String(x).replace(/["%,()*\\]/g,''),cond=[],core=san(String(o.name||'').replace(/บริษัท|จำกัด|\(มหาชน\)|คุณ/g,'').trim());
