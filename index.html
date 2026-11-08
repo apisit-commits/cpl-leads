@@ -2052,9 +2052,19 @@ const P={
  pct:'<path d="M5 19L19 5"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/>',
  baht:'<path d="M9 4.5v15M9 6h4.2a3.1 3.1 0 0 1 0 6.200H9m4.600 0a3.200 3.200 0 0 1 0 6.400H9M12 2.500V6m0 12v3.500"/>',
  weight:'<path d="M6 8h12l2 12H4z"/><circle cx="12" cy="5" r="2"/>',
- cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'};
+ cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+ bld:'<path d="M4 21V5l8-2v18"/><path d="M12 9h8v12"/><path d="M8 8v.01M8 12v.01M8 16v.01M16 13v.01M16 17v.01"/>',
+ play:'<circle cx="12" cy="12" r="9"/><path d="M10 8.500l5 3.500-5 3.500z"/>',
+ post:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'};
 function pick(t,u,v){
  if(/บาท|THB/.test(u||''))return'baht';if(/กก|kg/.test(u||''))return'weight';if(/วัน|days/.test(u||''))return'cal';
+ if(/^\s*(CPL-Inter|CPLEx)\s*$/i.test(t))return'bld';
+ if(/ครบแล้ว|complete/i.test(t))return'check';
+ if(/กำลังทำ|in progress/i.test(t))return'play';
+ if(/โพสต์|posts?\b/i.test(t))return'post';
+ if(/เสร็จ|\bdone\b/i.test(t))return'check';
+ if(/จำนวนดีล|deals?\b/i.test(t))return'check';
+ if(/ยังไม่ใส่ยอด/.test(t))return'baht';
  if(/^\s*%|%\s*(ปิด|close)/i.test(t)||/%$/.test((v||'').trim()))return'';
  if(/ไม่สนใจ|not interested/i.test(t))return'no';
  if(/รอ|await|pending/i.test(t))return'clock';
