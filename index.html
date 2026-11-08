@@ -666,14 +666,15 @@ let POS_OK=true;
 async function loadOpts(){let r=await sb.from('options').select('id,kind,value,team,pos').order('id');POS_OK=!r.error;if(r.error)r=await sb.from('options').select('id,kind,value,team').order('id');const{data,error}=r;if(error){console.error(error);return}
  data.sort((a,b)=>((a.pos==null?1e12:a.pos)-(b.pos==null?1e12:b.pos))||a.id-b.id);
  OPTS={ads:[],brand:[],promo:[],sales:[]};data.forEach(o=>OPTS[o.kind]&&OPTS[o.kind].push({id:o.id,value:o.value,team:o.team,pos:o.pos}));applyOpts();if(profile&&profile.role==='admin')renderSet()}
-const adsFor=t=>OPTS.ads.filter(o=>!o.team||!t||o.team===t).map(o=>o.value);
+const ADS_FIX=['ไม่ระบุ Ads','ลูกค้าเก่า','Spam'];
+const adsFor=t=>[...OPTS.ads.filter(o=>(!o.team||!t||o.team===t)&&!ADS_FIX.includes(o.value)).map(o=>o.value),...ADS_FIX];
 const brandFor=t=>OPTS.brand.filter(o=>!o.team||!t||o.team===t).map(o=>o.value),promoFor=t=>OPTS.promo.filter(o=>!o.team||!t||o.team===t).map(o=>o.value);
 const salesFor=t=>OPTS.sales.filter(o=>!t||o.team===t).map(o=>o.value);
 function applyOpts(){const f=$('fm_'),v=k=>['',...OPTS[k].map(o=>o.value)];fill(f.ads,['',...adsFor(team)]);fill(f.brand,['',...brandFor(team)]);fill(f.promo,['',...promoFor(team)]);fill(f.fu_status,['',...OPT.status]);fill(f.sales,['',...salesFor(team)])}
 function renderSet(){setTimeout(dndInit,0);
  const li=(o,k)=>`<div class="oi" data-id="${o.id}"><span class="dh2" draggable="true" title="ลากเพื่อเรียงลำดับ">⋮⋮</span><span class="ov" title="คลิกเพื่อแก้ไขชื่อ" onclick="editOpt(${o.id},'${k}',this)">${esc(o.value)}</span>${o.team?'':'<em class="tg">ทุกทีม</em>'}<button class="btn sm" onclick="delOpt(${o.id})">ลบ</button></div>`;
- const sec=(k,t,tm)=>{const L=OPTS[k].filter(o=>k==='sales'?o.team===tm:(!o.team||o.team===tm));return `<div class="osec"><h4>${t}</h4><div class="ol" data-k="${k}">${L.map(o=>li(o,k)).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><input id="n_${k}_${tm}" placeholder="เพิ่มรายการใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'${k}\',\'${tm}\')"><button class="btn p sm" onclick="addOpt('${k}','${tm}')">เพิ่ม</button></div></div>`};
- $('vSo').innerHTML='<div class="otp">'+Object.keys(TEAMS).map(tm=>`<div class="pn otm" data-t="${tm}"><h3>${esc(TEAMS[tm])}</h3><div class="tg2">${sec('ads','Ads',tm)}${sec('brand','แบรนด์',tm)}${sec('promo','โปรโมชัน',tm)}${sec('sales','ชื่อเซลล์',tm)}</div></div>`).join('')+'</div>'}
+ const sec=(k,t,tm)=>{const L=OPTS[k].filter(o=>(k==='sales'?o.team===tm:(!o.team||o.team===tm))&&!(k==='ads'&&ADS_FIX.includes(o.value)));return `<div class="osec${k==='ads'?' oads':''}"><h4>${t}</h4><div class="ol" data-k="${k}">${L.map(o=>li(o,k)).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><input id="n_${k}_${tm}" placeholder="เพิ่มรายการใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'${k}\',\'${tm}\')"><button class="btn p sm" onclick="addOpt('${k}','${tm}')">เพิ่ม</button></div></div>`};
+ $('vSo').innerHTML='<div class="otp">'+Object.keys(TEAMS).map(tm=>`<div class="pn otm" data-t="${tm}"><h3>${esc(TEAMS[tm])}</h3><div class="tg2">${sec('ads','Ads',tm)}<div class="orc">${sec('brand','แบรนด์',tm)}${sec('promo','โปรโมชัน',tm)}${sec('sales','ชื่อเซลล์',tm)}</div></div></div>`).join('')+'</div>'}
 
 let DR=null;
 function dndInit(){const el=$('vSo');if(el.dataset.dnd)return;el.dataset.dnd='1';
@@ -694,7 +695,7 @@ async function saveOrder(ol){
  const bad=rs.find(r=>r.error||!r.data||!r.data.length);
  if(bad){alert(TT('บันทึกลำดับไม่สำเร็จ'+(bad.error?': '+bad.error.message:'\nระบบยังไม่อนุญาตให้แก้ไขรายการ กรุณาแจ้งผู้ดูแลระบบ'),'Failed to save the order'+(bad.error?': '+bad.error.message:'\nEditing items is not allowed yet. Please contact the administrator')));loadOpts()}
 }
-async function addOpt(k,t){const v=$('n_'+k+(t?'_'+t:'')).value.trim();if(!v)return;const o={kind:k,value:v};if(t)o.team=t;const{error}=await sb.from('options').insert(o);if(error)alert(error.code==='23505'?'มีรายการนี้อยู่แล้ว':'เพิ่มไม่สำเร็จ: '+error.message);else loadOpts()}
+async function addOpt(k,t){const v=$('n_'+k+(t?'_'+t:'')).value.trim();if(!v)return;if(k==='ads'&&ADS_FIX.includes(v))return alert('มีรายการนี้อยู่แล้ว');const o={kind:k,value:v};if(t)o.team=t;const{error}=await sb.from('options').insert(o);if(error)alert(error.code==='23505'?'มีรายการนี้อยู่แล้ว':'เพิ่มไม่สำเร็จ: '+error.message);else loadOpts()}
 function editOpt(id,k,el){
  const o=OPTS[k].find(x=>x.id===id);if(!o||el.querySelector('input'))return;
  const inp=document.createElement('input');inp.className='ed';inp.value=o.value;el.textContent='';el.appendChild(inp);inp.focus();inp.select();
@@ -1843,6 +1844,11 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 #vSo .otm>h3{color:var(--tc)}#vSo .otm>h3::before{background:var(--tc)!important}
 #vSo .otm .osec h4{color:var(--tc)}#vSo .otm .btn.p{background:var(--tc);border-color:var(--tc)}
 #vSo .otm .oi{border-bottom-color:color-mix(in srgb,var(--tc) 18%,var(--bd))}
+
+#vSo .tg2{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)!important;align-items:start}#vSo .oads .ol{max-height:640px;min-height:320px}
+#vSo .orc{display:flex;flex-direction:column;gap:18px}#vSo .orc .osec .ol{max-height:170px}
+@media(max-width:700px){#vSo .tg2{grid-template-columns:1fr!important}}
+#vSo .otp{align-items:stretch!important}
 </style>
 <script>
 (function(){
