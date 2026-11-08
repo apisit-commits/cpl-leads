@@ -673,7 +673,7 @@ function applyOpts(){const f=$('fm_'),v=k=>['',...OPTS[k].map(o=>o.value)];fill(
 function renderSet(){setTimeout(dndInit,0);
  const li=(o,k)=>`<div class="oi" data-id="${o.id}"><span class="dh2" draggable="true" title="ลากเพื่อเรียงลำดับ">⋮⋮</span><span class="ov" title="คลิกเพื่อแก้ไขชื่อ" onclick="editOpt(${o.id},'${k}',this)">${esc(o.value)}</span>${o.team?'':'<em class="tg">ทุกทีม</em>'}<button class="btn sm" onclick="delOpt(${o.id})">ลบ</button></div>`;
  const sec=(k,t,tm)=>{const L=OPTS[k].filter(o=>k==='sales'?o.team===tm:(!o.team||o.team===tm));return `<div class="osec"><h4>${t}</h4><div class="ol" data-k="${k}">${L.map(o=>li(o,k)).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><input id="n_${k}_${tm}" placeholder="เพิ่มรายการใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'${k}\',\'${tm}\')"><button class="btn p sm" onclick="addOpt('${k}','${tm}')">เพิ่ม</button></div></div>`};
- $('vSo').innerHTML='<div class="otp">'+Object.keys(TEAMS).map(tm=>`<div class="pn"><h3>${esc(TEAMS[tm])}</h3><div class="tg2">${sec('ads','Ads',tm)}${sec('brand','แบรนด์',tm)}${sec('promo','โปรโมชัน',tm)}${sec('sales','ชื่อเซลล์',tm)}</div></div>`).join('')+'</div>'}
+ $('vSo').innerHTML='<div class="otp">'+Object.keys(TEAMS).map(tm=>`<div class="pn otm" data-t="${tm}"><h3>${esc(TEAMS[tm])}</h3><div class="tg2">${sec('ads','Ads',tm)}${sec('brand','แบรนด์',tm)}${sec('promo','โปรโมชัน',tm)}${sec('sales','ชื่อเซลล์',tm)}</div></div>`).join('')+'</div>'}
 
 let DR=null;
 function dndInit(){const el=$('vSo');if(el.dataset.dnd)return;el.dataset.dnd='1';
@@ -1837,6 +1837,12 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 .mktabs button{border:0!important;background:none!important;padding:8px 18px!important;border-radius:9px!important;cursor:pointer;color:var(--mu)!important;font-weight:500;font-size:inherit!important;display:flex;gap:8px;align-items:center;white-space:nowrap}
 .mktabs button.on{background:linear-gradient(135deg,var(--br),var(--pr))!important;color:#fff!important}
 .mktabs em{font-style:normal;font-size:12px;background:rgba(127,127,127,.18);padding:0 7px;border-radius:99px;opacity:1!important;margin:0!important}.mktabs button.on em{background:rgba(255,255,255,.25)}
+
+#vSo .otm{--tc:#0096d6;border:1px solid color-mix(in srgb,var(--tc) 35%,var(--bd));border-top:4px solid var(--tc);background:color-mix(in srgb,var(--tc) 6%,var(--card))}
+#vSo .otm[data-t=B]{--tc:#f08a24}
+#vSo .otm>h3{color:var(--tc)}#vSo .otm>h3::before{background:var(--tc)!important}
+#vSo .otm .osec h4{color:var(--tc)}#vSo .otm .btn.p{background:var(--tc);border-color:var(--tc)}
+#vSo .otm .oi{border-bottom-color:color-mix(in srgb,var(--tc) 18%,var(--bd))}
 </style>
 <script>
 (function(){
