@@ -1965,7 +1965,7 @@ async function plLoad(){
   POOL=out.map(norm).filter(x=>!(x.sales||'').trim()&&effS(x)===ST_S);plRender()}catch(e){}}
 const age=d=>{if(!d)return'—';const n=Math.max(0,Math.floor((new Date(today())-new Date(d))/DAY));return n?n+' วัน':'วันนี้'};
 const canAssign=()=>profile&&['admin','sales_lead','keyer'].includes(profile.role);
-const on=()=>isBeta()&&profile&&['admin','sales','sales_lead','keyer'].includes(profile.role);
+const on=()=>profile&&['admin','sales','sales_lead','keyer'].includes(profile.role);
 function plRender(){
  const L=pool().sort((a,b)=>(a.date||'').localeCompare(b.date||'')),sn=salesFor(team),t=today(),d=x=>Math.max(0,Math.floor((new Date(t)-new Date(x))/DAY));
  $('pl_n').textContent=L.length;
