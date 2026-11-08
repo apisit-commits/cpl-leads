@@ -59,6 +59,7 @@ body{padding-left:210px}
 .tabs button{border:0;background:none;padding:10px 12px;cursor:pointer;color:var(--mu);border-radius:8px;font-weight:500;text-align:left}
 .tabs button:hover{background:var(--bg)}
 .tabs button.on{color:var(--pr);background:var(--infb)}
+.st b small.stu{font-size:.55em;font-weight:500;color:var(--mu);margin-left:4px}
 .tabs .navsep{height:1px;background:var(--bd);margin:6px 10px;flex:none}
 @media (max-width:760px){body{padding-left:0}.tabs{position:static;width:auto;flex-direction:row;padding:6px 12px;border-right:0;border-bottom:1px solid var(--bd)}.tabs::before{display:none}}
 .dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
@@ -1969,5 +1970,18 @@ const _ar3=applyRoleUI;applyRoleUI=function(p){_ar3(p);apply()};apply();
 })();
 </script>
 
+<script>
+(function(){
+const RX=/\s*\((บาท|THB|กก\.|kg|วัน|days)\)\s*$/,MP={'บาท':'฿','THB':'฿'};
+function fix(st){
+ if(st.dataset.uf)return;st.dataset.uf='1';
+ const s=st.querySelector('span'),b=st.querySelector('b');if(!s||!b)return;
+ const m=RX.exec(s.textContent);if(!m)return;
+ s.textContent=s.textContent.replace(RX,'');
+ const u=document.createElement('small');u.className='stu';u.textContent=MP[m[1]]||m[1];b.appendChild(u)}
+function scan(n){if(n.nodeType!==1)return;if(n.matches&&n.matches('.st'))fix(n);n.querySelectorAll&&n.querySelectorAll('.st:not([data-uf])').forEach(fix)}
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(scan))).observe(document.body,{childList:true,subtree:true});
+scan(document.body)})();
+</script>
 </body>
 </html>
