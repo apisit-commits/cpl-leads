@@ -523,6 +523,7 @@ header .hd #who{display:none!important}
   <div class="acts"><button type="button" class="btn" id="cx">ยกเลิก</button><button class="btn p" id="sv_">บันทึก</button></div>
 </form><aside id="fq" class="hid"><h3>ใบเสนอราคา</h3><div id="fq_list"></div></aside></dialog>
 
+<dialog id="aed"><form id="aef" method="dialog"><h3 style="margin:0 0 4px">แก้ไขผู้ใช้</h3><div class="sub" id="ae_em" style="margin-bottom:12px"></div><div class="g"><label class="f">ชื่อที่แสดง<input name="name" maxlength="60"><select name="nameS" class="hid"></select></label><label class="f">บทบาท<b class="rq">*</b><select name="role"></select></label><label class="f hid" id="ae_tw">ทีม<b class="rq">*</b><select name="team"></select></label></div><div class="acts"><button type="button" class="btn" id="ae_x">ยกเลิก</button><button class="btn p" id="ae_sv">บันทึก</button></div></form></dialog>
 <dialog id="aud"><form id="auf" method="dialog"><h3 style="margin:0 0 12px">เพิ่มผู้ใช้</h3><div class="g"><label class="f">อีเมล<b class="rq">*</b><input type="email" name="email" required maxlength="120" autocomplete="off"></label><label class="f">รหัสผ่าน<b class="rq">*</b><input type="password" name="pw" required minlength="8" maxlength="72" autocomplete="new-password"></label><label class="f">ชื่อที่แสดง<b class="rq hid" id="au_nr">*</b><input name="name" maxlength="60"></label><label class="f">บทบาท<b class="rq">*</b><select name="role" required></select></label><label class="f hid" id="au_tw">ทีม<b class="rq">*</b><select name="team"></select></label></div><div class="acts"><button type="button" class="btn" id="au_x">ยกเลิก</button><button class="btn p" id="au_sv">เพิ่มผู้ใช้</button></div></form></dialog>
 <dialog id="cud"><form id="cuf" method="dialog"><h3 id="cud_t" style="margin:0 0 12px">ลูกค้า</h3><fieldset><legend>ข้อมูลลูกค้า</legend><div class="g"><label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required maxlength="160"></label><label class="f">เลขผู้เสียภาษี<input name="tax_id" maxlength="20"></label><label class="f">เจ้าของ<select name="owner"></select></label></div><label class="f" style="margin-top:12px">หมายเหตุ<textarea name="note" rows="2" maxlength="500"></textarea></label></fieldset><fieldset><legend>ผู้ติดต่อ</legend><div id="cu_ct"></div><button type="button" class="btn" id="cu_addc">เพิ่มผู้ติดต่อ</button></fieldset><div class="acts"><button type="button" class="btn p dgr hid" id="cu_del" style="margin-right:auto">ลบลูกค้า</button><button type="button" class="btn" id="cu_x">ยกเลิก</button><button class="btn p" id="cu_sv">บันทึก</button></div></form></dialog>
 <dialog id="xd" style="width:min(460px,94vw)"><form method="dialog" id="xf" style="padding:18px 20px"><h3 style="margin:0 0 6px">ส่งออก Excel</h3><div class="g"><label class="f">ตั้งแต่เดือน<input type="month" id="xfrom"></label><label class="f">ถึงเดือน<input type="month" id="xto"></label></div><div class="acts"><button type="button" class="btn" id="xcx">ยกเลิก</button><button type="button" class="btn p" id="xgo">ส่งออก</button></div></form></dialog>
@@ -988,32 +989,35 @@ async function loadUsers(){const box=$('vSu');if(!profile||profile.role!=='admin
  if(r.error){r=await sb.from('profiles').select('id,name,role,team').order('name');UEMAIL=false}
  if(r.error){box.innerHTML='<h3>จัดการผู้ใช้</h3><p class="sub">โหลดรายชื่อผู้ใช้ไม่ได้: '+esc(r.error.message||'')+'</p>';return}
  USERS=r.data||[];renderUsers()}
-const UTRP={admin:'#0096d6',zimp:'#8e5bd6',keyer:'#2aa7a0',ceo:'#e0b020',sales:'#2fb170',sales_lead:'#f08a24',marketing:'#e05a7a',ads:'#5a6b85'};
 const uSOpt=(t,cur)=>{const l=t?salesFor(t):[];if(cur&&!l.includes(cur))l.push(cur);return '<option value="">— เลือก —</option>'+l.map(v=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(v)}</option>`).join('')};
+const UTRP={admin:'#0096d6',zimp:'#8e5bd6',keyer:'#2aa7a0',ceo:'#e0b020',sales:'#2fb170',sales_lead:'#f08a24',marketing:'#e05a7a',ads:'#5a6b85'};
 function renderUsers(){const box=$('vSu'),pend=USERS.filter(u=>!u.role);
  const row=u=>{const me=profile&&u.id===profile.id,nm=u.name||(u.email||'?').split('@')[0],c=UTRP[u.role]||'#9aa7b8';
-  return `<div class="ur" data-u="${u.id}"><span class="uav" style="background:${c}">${esc((nm[0]||'?').toUpperCase())}</span><div class="unm"><input data-k="name" class="${u.role==='sales'?'hid':''}" value="${esc(u.name||'')}" placeholder="${esc(nm)}"><select data-k="nameS" class="${u.role==='sales'?'':'hid'}">${uSOpt(u.team,u.name)}</select><span class="uem">${esc(u.email||'')||'—'}</span></div><select data-k="role"${me?' disabled':''}><option value="">— เลือก —</option>${UROLES.map(r=>`<option value="${r[0]}"${u.role===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select><select data-k="team"${u.role==='sales'?'':' disabled'}><option value="">— เลือก —</option>${Object.entries(TEAMS).map(([k,v])=>`<option value="${k}"${u.team===k?' selected':''}>${esc(v)}</option>`).join('')}</select><span class="uac"><button type="button" class="btn sm p" data-save>บันทึก</button>${me?'':'<button type="button" class="btn sm dgr" data-del aria-label="ลบผู้ใช้" title="ลบผู้ใช้"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'}</span></div>`};
- const sec=(t,c,list,warn)=>list.length?`<section class="usec${warn?' warn':''}"><h4><i style="background:${c}"></i>${t}<em>${list.length}</em></h4>${list.map(row).join('')}</section>`:'';
- let h='';
- h+=sec('รอกำหนดสิทธิ์','#e05a5a',pend,1);
- UROLES.forEach(([k,l])=>{const L=USERS.filter(u=>u.role===k);if(k==='sales'){const t=Object.entries(TEAMS);const parts=t.map(([tk,tv])=>sec(l.split(' · ')[0]+' · '+esc(tv),UTRP.sales,L.filter(u=>u.team===tk)));const rest=L.filter(u=>!TEAMS[u.team]);h+=parts.join('')+sec(l.split(' · ')[0]+' · ไม่ระบุทีม',UTRP.sales,rest)}else h+=sec(l,UTRP[k],L)});
- box.innerHTML=`<div class="uhd"><h3>จัดการผู้ใช้</h3><span class="ucnt">${USERS.length} บัญชี</span><button type="button" class="btn p sm" id="au_add">${TT('เพิ่มผู้ใช้','Add user')}</button></div><div class="ulb"><span></span><span>ชื่อที่แสดง</span><span>บทบาท</span><span>ทีม</span><span></span></div>${h||'<div class="sub">ไม่มีผู้ใช้</div>'}`}
+  return `<div class="ur" data-u="${u.id}"><span class="uav" style="background:${c}">${esc((nm[0]||'?').toUpperCase())}</span><div class="unm"><b>${esc(nm)}</b><span class="uem">${esc(u.email||'')||'—'}</span></div><span class="uac"><button type="button" class="btn sm" data-edit aria-label="แก้ไขผู้ใช้" title="แก้ไข"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/></svg></button>${me?'':'<button type="button" class="btn sm dgr" data-del aria-label="ลบผู้ใช้" title="ลบผู้ใช้"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'}</span></div>`};
+ const blk=(t,c,list,warn)=>list.length?`<section class="ublk${warn?' warn':''}" style="--uc:${c}"><h4>${t}<em>${list.length}</em></h4>${list.map(row).join('')}</section>`:'';
+ let h=blk('รอกำหนดสิทธิ์','#e05a5a',pend,1);
+ UROLES.forEach(([k,l])=>{const L=USERS.filter(u=>u.role===k);if(k==='sales'){const sn=l.split(' · ')[0];h+=Object.entries(TEAMS).map(([tk,tv])=>blk(sn+' · '+esc(tv),UTRP.sales,L.filter(u=>u.team===tk))).join('')+blk(sn+' · ไม่ระบุทีม',UTRP.sales,L.filter(u=>!TEAMS[u.team]))}else h+=blk(l,UTRP[k],L)});
+ box.innerHTML=`<div class="uhd"><h3>จัดการผู้ใช้</h3><span class="ucnt">${USERS.length} บัญชี</span><button type="button" class="btn p sm" id="au_add">${TT('เพิ่มผู้ใช้','Add user')}</button></div><div class="ugrid">${h||'<div class="sub">ไม่มีผู้ใช้</div>'}</div>`}
 (function(){const set=k=>{$('vSu').style.display=k==='u'?'':'none';$('vSo').style.display=k==='o'?'':'none';$('sst').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.s===k))};$('sst').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b)set(b.dataset.s)});set('o')})();
-(function(){const box=$('vSu');
- box.addEventListener('change',e=>{const t=e.target,k=t.dataset.k;if(k!=='role'&&k!=='team')return;const tr=t.closest('[data-u]'),tm=tr.querySelector('[data-k=team]'),ni=tr.querySelector('[data-k=name]'),ns=tr.querySelector('[data-k=nameS]');
-  if(k==='role'){tm.disabled=t.value!=='sales';if(t.value!=='sales')tm.value='';ni.classList.toggle('hid',t.value==='sales');ns.classList.toggle('hid',t.value!=='sales')}
-  if(tr.querySelector('[data-k=role]').value==='sales'){const cur=ns.value;ns.innerHTML=uSOpt(tm.value,'');if([...ns.options].some(o=>o.value===cur))ns.value=cur}});
- box.addEventListener('click',async e=>{const d=e.target.closest('[data-del]');
-  if(d){const tr=d.closest('[data-u]'),u=USERS.find(x=>x.id===tr.dataset.u);if(!u)return;
+(function(){const box=$('vSu'),d=$('aed'),f=$('aef');let EU=null;
+ const sync=()=>{const sl=f.role.value==='sales';$('ae_tw').classList.toggle('hid',!sl);f.team.required=sl;if(!sl)f.team.value='';f.name.classList.toggle('hid',sl);f.nameS.classList.toggle('hid',!sl);if(sl){const cur=f.nameS.value;f.nameS.innerHTML=uSOpt(f.team.value,'');if([...f.nameS.options].some(o=>o.value===cur))f.nameS.value=cur}};
+ f.role.addEventListener('change',sync);f.team.addEventListener('change',sync);
+ $('ae_x').onclick=()=>d.close();
+ box.addEventListener('click',async e=>{const dl=e.target.closest('[data-del]'),ed=e.target.closest('[data-edit]');
+  if(ed){EU=USERS.find(x=>x.id===ed.closest('[data-u]').dataset.u);if(!EU)return;
+   f.role.innerHTML='<option value="">— เลือก —</option>'+UROLES.map(r=>`<option value="${r[0]}">${r[1]}</option>`).join('');f.team.innerHTML='<option value="">— เลือก —</option>'+Object.entries(TEAMS).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('');
+   $('ae_em').textContent=EU.email||'';f.role.value=EU.role||'';f.role.disabled=!!(profile&&EU.id===profile.id);f.team.value=EU.team||'';f.name.value=EU.name||'';f.nameS.innerHTML=uSOpt(EU.team,EU.name);sync();d.showModal();return}
+  if(dl){const u=USERS.find(x=>x.id===dl.closest('[data-u]').dataset.u);if(!u)return;
    if(!await ask(TT('ลบผู้ใช้ ','Delete user ')+(u.name||u.email||'')+(u.email&&u.name?' ('+u.email+')':'')+TT(' ?\nบัญชีนี้จะเข้าสู่ระบบไม่ได้อีก',' ?\nThis account will no longer be able to sign in'),{t:'ลบผู้ใช้',te:'Delete user',ok:'ลบ',oke:'Delete',danger:true}))return;
-   d.disabled=true;const{error}=await sb.rpc('admin_delete_user',{uid:u.id});d.disabled=false;
+   dl.disabled=true;const{error}=await sb.rpc('admin_delete_user',{uid:u.id});dl.disabled=false;
    if(error)return alert(TT('ลบผู้ใช้ไม่สำเร็จ: ','Delete failed: ')+(error.message||''));
-   loadUsers();return}
-  const b=e.target.closest('[data-save]');if(!b)return;const tr=b.closest('[data-u]'),id=tr.dataset.u,g=k=>tr.querySelector('[data-k='+k+']').value;
-  const role=g('role'),team=g('team'),name=(role==='sales'?g('nameS'):g('name')).trim();if(!role)return alert(TT('เลือกบทบาทก่อน','Choose a role first'));if(role==='sales'&&!team)return alert(TT('เซลล์ต้องเลือกทีม','A sales account needs a team'));if(role==='sales'&&!name)return alert(TT('เลือกชื่อเซลล์ก่อน','Choose a sales name first'));
-  b.disabled=true;const{error}=await sb.from('profiles').update({name:name||null,role,team:role==='sales'?team:null}).eq('id',id);b.disabled=false;
-  if(error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message+'');
-  b.textContent=TT('บันทึกแล้ว ✓','Saved ✓');setTimeout(()=>{b.textContent=TT('บันทึก','Save')},1500);loadUsers()})})();
+   loadUsers()}});
+ f.addEventListener('submit',async e=>{e.preventDefault();if(!EU)return;
+  const role=f.role.value,team=role==='sales'?f.team.value:null,name=(role==='sales'?f.nameS.value:f.name.value).trim();
+  if(!role)return alert(TT('เลือกบทบาทก่อน','Choose a role first'));if(role==='sales'&&!team)return alert(TT('เซลล์ต้องเลือกทีม','A sales account needs a team'));if(role==='sales'&&!name)return alert(TT('เลือกชื่อเซลล์ก่อน','Choose a sales name first'));
+  const b=$('ae_sv');b.disabled=true;const{error}=await sb.from('profiles').update({name:name||null,role,team}).eq('id',EU.id);b.disabled=false;
+  if(error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message);
+  d.close();loadUsers()},true)})();
 Object.assign(EN,{"จัดการผู้ใช้": "User management", "บัญชี": "Account", "ชื่อที่แสดง": "Display name", "บทบาท": "Role", "ทีม": "Team", "บันทึก": "Save", "รอกำหนดสิทธิ์": "Awaiting access"});
 
 /* ===== services / follow-up / copy helpers ===== */
@@ -1813,14 +1817,13 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 .st b:has(>.sti){display:flex;align-items:center;gap:10px}.st b>.sti{order:-1;margin:0!important}
 
 #vSu .uhd{display:flex;align-items:center;gap:12px;margin-bottom:12px}#vSu .uhd h3{margin:0}#vSu .ucnt{color:var(--mu);font-size:13px;margin-right:auto}
-#vSu .ulb,#vSu .ur{display:grid;grid-template-columns:40px minmax(180px,1.3fr) minmax(210px,1fr) 150px 116px;gap:12px;align-items:center}
-#vSu .ulb{padding:0 12px 6px;font-size:12px;color:var(--mu);font-weight:600;white-space:nowrap}
-#vSu .usec{margin-top:14px}#vSu .usec h4{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:14px;font-weight:700}#vSu .usec h4 i{width:10px;height:10px;border-radius:3px}#vSu .usec h4 em{font-style:normal;font-weight:600;font-size:12px;color:var(--mu);background:var(--fld);padding:1px 9px;border-radius:999px}
-#vSu .ur{padding:8px 12px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;background:var(--card)}#vSu .usec.warn .ur{border-color:#e05a5a}
-#vSu .uav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-#vSu .unm{display:flex;flex-direction:column;gap:3px;min-width:0}#vSu .unm input{width:100%}#vSu .uem{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-left:2px}
-#vSu .uac{display:flex;gap:6px;justify-content:flex-end}#vSu .uac .btn.dgr{display:inline-flex;align-items:center;padding:0 9px}
-@media(max-width:900px){#vSu .ulb{display:none}#vSu .ur{grid-template-columns:40px 1fr}#vSu .ur select,#vSu .ur .uac{grid-column:1/-1}}
+#vSu .ugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+#vSu .ublk{border:1px solid var(--bd);border-top:3px solid var(--uc);border-radius:14px;padding:12px;background:var(--card)}#vSu .ublk.warn{border-color:#e05a5a}
+#vSu .ublk h4{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:14px;font-weight:700}#vSu .ublk h4 em{font-style:normal;font-weight:600;font-size:12px;color:var(--mu);background:var(--fld);padding:1px 9px;border-radius:999px;margin-left:auto}
+#vSu .ur{display:flex;align-items:center;gap:10px;padding:8px 4px;border-top:1px solid var(--bd)}#vSu .ur:first-of-type{border-top:0}
+#vSu .uav{width:34px;height:34px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+#vSu .unm{flex:1;min-width:0;display:flex;flex-direction:column}#vSu .unm b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#vSu .uem{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#vSu .uac{display:flex;gap:6px}#vSu .uac .btn{display:inline-flex;align-items:center;padding:0 9px}
 </style>
 <script>
 (function(){
