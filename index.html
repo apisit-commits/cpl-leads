@@ -674,7 +674,7 @@ function applyOpts(){const f=$('fm_'),v=k=>['',...OPTS[k].map(o=>o.value)];fill(
 function renderSet(){setTimeout(dndInit,0);
  const li=(o,k)=>`<div class="oi" data-id="${o.id}"><span class="dh2" draggable="true" title="ลากเพื่อเรียงลำดับ">⋮⋮</span><span class="ov" title="คลิกเพื่อแก้ไขชื่อ" onclick="editOpt(${o.id},'${k}',this)">${esc(o.value)}</span>${o.team?'':'<em class="tg">ทุกทีม</em>'}<button class="btn sm" onclick="delOpt(${o.id})">ลบ</button></div>`;
  const sec=(k,t,tm)=>{const L=OPTS[k].filter(o=>(k==='sales'?o.team===tm:(!o.team||o.team===tm))&&!(k==='ads'&&ADS_FIX.includes(o.value)));return `<div class="osec${k==='ads'?' oads':''}"><h4><span>${t}</span><em>${L.length}</em></h4><div class="ol" data-k="${k}">${L.map(o=>li(o,k)).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><input id="n_${k}_${tm}" placeholder="เพิ่มรายการใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'${k}\',\'${tm}\')"><button class="btn p sm" onclick="addOpt('${k}','${tm}')">เพิ่ม</button></div></div>`};
- $('vSo').innerHTML='<div class="otp">'+Object.keys(TEAMS).map(tm=>`<div class="pn otm" data-t="${tm}"><h3>${esc(TEAMS[tm])}</h3><div class="tg2">${sec('ads','Ads',tm)}<div class="orc">${sec('brand','แบรนด์',tm)}${sec('promo','โปรโมชัน',tm)}${sec('sales','ชื่อเซลล์',tm)}</div></div></div>`).join('')+'</div>'}
+ $('vSo').innerHTML='<div class="otp">'+Object.keys(TEAMS).map(tm=>`<div class="pn otm" data-t="${tm}"><h3>${esc(TEAMS[tm])}</h3><div class="tg2">${sec('ads','Ads',tm)}<div class="orc">${sec('promo','โปรโมชัน',tm)}${sec('brand','แบรนด์',tm)}${sec('sales','ชื่อเซลล์',tm)}</div></div></div>`).join('')+'</div>'}
 
 let DR=null;
 function dndInit(){const el=$('vSo');if(el.dataset.dnd)return;el.dataset.dnd='1';
