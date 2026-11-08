@@ -2282,8 +2282,8 @@ $('sps').onclick=async()=>{
 const R=document.documentElement,b=document.createElement('button');b.type='button';b.id='fxm';b.textContent='🎄';b.classList.add('hid');
 let on=false;try{on=localStorage.getItem('fest')==='1'}catch(e){}
 const set=o=>{on=o;o?R.setAttribute('data-fest','1'):R.removeAttribute('data-fest');try{localStorage.setItem('fest',o?'1':'0')}catch(e){}b.title=b.ariaLabel=o?TT('ปิดธีมเทศกาล','Festive theme off'):TT('เปิดธีมคริสต์มาส / ปีใหม่','Festive theme on')};
-async function pull(){const r=await sb.from('options').select('id').eq('kind','festive').limit(1);if(!r.error)set(!!(r.data&&r.data.length))}
-b.onclick=async()=>{b.disabled=true;let e;if(on){e=(await sb.from('options').delete().eq('kind','festive')).error}else{e=(await sb.from('options').insert({kind:'festive',value:'1'})).error}b.disabled=false;if(e)return alert(e.message);set(!on)};
+async function pull(){const r=await sb.from('app_settings').select('value').eq('key','festive').maybeSingle();if(!r.error&&r.data)set(r.data.value==='1')}
+b.onclick=async()=>{b.disabled=true;const e=(await sb.from('app_settings').upsert({key:'festive',value:on?'0':'1'})).error;b.disabled=false;if(e)return alert(e.message);set(!on)};
 document.body.appendChild(b);set(on);
 const _af=applyRoleUI;applyRoleUI=function(p){_af(p);b.classList.toggle('hid',p.role!=='admin');pull()};
 if(typeof profile!=='undefined'&&profile){b.classList.toggle('hid',profile.role!=='admin');pull()}
