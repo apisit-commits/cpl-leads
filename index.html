@@ -443,7 +443,7 @@ header .hd #who{display:none!important}
 </div>
 <div id="vC" class="hid"><div class="seg csb hid"><button type="button" data-s="C" class="on">คำนวณ</button><button type="button" data-s="R">Rate</button></div><div class="cwrap"><div class="cform">
 <div class="pn"><h3>ลูกค้า<button type="button" class="btn sm" id="cl_clear">ล้างข้อมูล</button></h3>
- <label class="f">Lead<input id="cl_q" list="cl_dl" autocomplete="off" placeholder="ค้นหาชื่อลูกค้า / ประเทศ"><datalist id="cl_dl"></datalist></label></div>
+ <label class="f">Lead<input id="cl_q" list="cl_dl" autocomplete="off" placeholder="ค้นหาชื่อลูกค้า / ประเทศ"><datalist id="cl_dl"></datalist></label><label class="f" style="margin-top:12px">ชื่อลูกค้าในใบเสนอราคา<input id="cl_qn" maxlength="120" autocomplete="off"></label></div>
 <div class="pn"><h3>การขนส่ง</h3>
  <div class="g"><label class="f">บริการ<select id="cl_mode"><option value="ac">Air Courier</option><option value="ak">Air Cargo</option><option value="sea">เรือ</option><option value="tc">รถ · คิดตาม CBM</option><option value="tw">รถ · คิดตามน้ำหนัก</option></select></label></div>
  <div id="rb_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="rb_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศปลายทาง<input id="rb_c" list="rb_cl" autocomplete="off"><datalist id="rb_cl"></datalist></label><label class="f">รหัสไปรษณีย์ปลายทาง<input id="rb_p" autocomplete="off"></label></div><div id="rb_opts" class="rb-opts" style="margin-top:10px"></div><div id="rb_rem" class="rb-row" style="margin-top:8px"></div></div>
@@ -1298,7 +1298,7 @@ function calcLeads(){
  if(v&&!CLM[v])q.value='';
  if(!$('cgc').children.length)cgRender('cgc',[]);
  calc();renderQL()}
-function calcPick(){QB='';const r=rows.find(x=>String(x.id)===selId());if(r){cgRender('cgc',(r.cargo&&r.cargo.items)||[]);try{window.RB_LEAD&&window.RB_LEAD(r)}catch(e){}const sv=r.svc||[];$('cl_mode').value=svcCat(sv[0])==='Sea'?'sea':svcCat(sv[0])==='Truck'?'tc':sv[0]==='Air - Cargo'?'ak':'ac'}else if(!$('cgc').children.length)cgRender('cgc',[]);calc();renderQL()}
+function calcPick(){QB='';const r=rows.find(x=>String(x.id)===selId());$('cl_qn').value=r?((r.detail&&r.detail.qn)||r.name||''):'';if(r){cgRender('cgc',(r.cargo&&r.cargo.items)||[]);try{window.RB_LEAD&&window.RB_LEAD(r)}catch(e){}const sv=r.svc||[];$('cl_mode').value=svcCat(sv[0])==='Sea'?'sea':svcCat(sv[0])==='Truck'?'tc':sv[0]==='Air - Cargo'?'ak':'ac'}else if(!$('cgc').children.length)cgRender('cgc',[]);calc();renderQL()}
 const OSV=['แพ็คใหม่','แพ็คชั้นนอก','รมยาไม้','ส่งออกของเก่า/โบราณวัตถุ','ใบรับรองสุขอนามัยพืช','ใบอนุญาต อย. (เครื่องสำอาง)','ลงทะเบียนศุลกากร'];
 function svcRender(){$('cl_svc').innerHTML=OSV.map((n,i)=>`<div class="osr"><label><input type="checkbox" data-i="${i}"> ${n}</label><span class="nf" data-u="บาท"><input type="text" inputmode="decimal" data-num autocomplete="off" data-p="${i}"></span></div>`).join('')}
 let CQ={};
@@ -1351,7 +1351,7 @@ function drawQuote(){rmkInit();bsRender();
  const bk=curBrand(),lg=LIMG[bk],ld=LOGOS[bk];[...$('cl_bs').children].forEach(b=>b.classList.toggle('on',b.dataset.b===bk));if(lg&&lg.complete&&lg.naturalWidth){const sc=Math.min(280/ld.w,34/ld.h),lw=Math.round(ld.w*sc),lh=Math.round(ld.h*sc);x.drawImage(lg,40,55-Math.round(lh/2),lw,lh)}
  T(TT('ใบเสนอราคา','Quotation'),W-40,68,38,'700',QTH().d,'right');T(fmtD(today()),W-40,102,20,'400','#6b7280','right');
  x.fillStyle=QTH().a;x.fillRect(0,126,W,6);
- let y=178;if(r&&r.name){T(TT('เรียน คุณ ','Dear ')+r.name,40,y,28,'600','#111827');y+=40}
+ let y=178;const qn=($('cl_qn').value||'').trim()||(r&&r.name)||'';if(qn){T(TT('เรียน คุณ ','Dear ')+qn,40,y,28,'600','#111827');y+=40}
  T(TT('บริการ: ','Service: ')+Q.svc+(r&&(r.dir||r.country)?'  ·  '+[TR(r.dir),r.country].filter(Boolean).join(' · '):''),40,y,21,'400','#374151');
  if(sn)T(TT('เซลล์ผู้ดูแล: ','Sales: ')+sn,40,y+28,21,'400','#374151');
  it.forEach((a,i)=>{const yy=y0+i*46;x.fillStyle='#e5e7eb';x.fillRect(40,yy-30,W-80,1);T(a[0],40,yy,22,'400','#374151');T(a[1],W-40,yy,22,'600','#111827','right')});
@@ -1379,7 +1379,7 @@ function qlLoad(q){const fire=(id,t)=>$(id).dispatchEvent(new Event(t||'input',{
  if(cr||tr){const dd=document.querySelector((cr?'#rb_d':'#tk_d')+' [data-d="'+(q.dir||'ex')+'"]');if(dd)dd.click();$(cr?'rb_c':'tk_c').value=q.country||'';fire(cr?'rb_c':'tk_c');$(cr?'rb_p':'tk_z').value=q.postal||'';fire(cr?'rb_p':'tk_z');
   const b=document.querySelector((cr?'#rb_opts':'#tk_opts')+' [data-'+(cr?'k':'g')+']');const t=[...document.querySelectorAll((cr?'#rb_opts':'#tk_opts')+' button')].find(x=>q.sv&&x.textContent.includes(q.sv));if(t)t.click()}
  calc()}
-function clClear(){$('cl_q').value='';cgRender('cgc',[]);['rb_c','rb_p','tk_c','tk_z','cl_rate','cl_remark'].forEach(i=>{$(i).value=''});
+function clClear(){$('cl_q').value='';$('cl_qn').value='';cgRender('cgc',[]);['rb_c','rb_p','tk_c','tk_z','cl_rate','cl_remark'].forEach(i=>{$(i).value=''});
  [...$('cl_svc').querySelectorAll('input')].forEach(i=>{if(i.type==='checkbox')i.checked=false;else i.value=''});
  ['rb_c','rb_p','tk_c','tk_z','cl_q'].forEach(i=>$(i).dispatchEvent(new Event('input',{bubbles:true})));QB='';window.RB_MIN=0;window.RB_SEL='';calc();renderQL()}
 async function calcSave(q){const r=rows.find(x=>String(x.id)===selId());if(!r)return alert('เลือก Lead ก่อน');if(!can(r))return alert('ไม่มีสิทธิ์แก้ไข Lead นี้');const it=cgGet('cgc');const cargo=it.length?{items:it}:null;const{error}=await sb.from('leads').update({cargo}).eq('id',r.id);if(error)alert('บันทึกไม่สำเร็จ');else r.cargo=cargo}
@@ -2130,6 +2130,12 @@ f.addEventListener('submit',async e=>{e.preventDefault();
  b.disabled=false},true);
 Object.assign(EN,{"เพิ่มผู้ใช้":"Add user","อีเมล":"Email","รหัสผ่าน":"Password"});
 })();
+</script>
+<script>
+(function(){const i=$('cl_qn');i.addEventListener('input',()=>calc());
+i.addEventListener('change',async()=>{const r=rows.find(x=>String(x.id)===selId());if(!r||!can(r))return;const v=i.value.trim(),cur=(r.detail&&r.detail.qn)||'';if(v===cur||(!cur&&v===(r.name||'')))return;
+ const d={...(r.detail||{})};if(v&&v!==(r.name||''))d.qn=v;else delete d.qn;const{error}=await sb.from('leads').update({detail:d}).eq('id',r.id);if(error)return alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message);r.detail=d;if(!v)i.value=r.name||'';calc()});
+Object.assign(EN,{"ชื่อลูกค้าในใบเสนอราคา":"Customer name on quotation"})})();
 </script>
 </body>
 </html>
