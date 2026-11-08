@@ -1831,6 +1831,12 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 @media(max-width:1250px){#vSo .otp{grid-template-columns:1fr}}@media(max-width:700px){#vSo .tg2{grid-template-columns:1fr}}
 
 #vSo .osec{display:flex;flex-direction:column}#vSo .osec .oa{margin-top:auto;padding-top:12px}#vSo .osec .ol{margin-bottom:0}
+
+/* sub-tabs share the segmented look */
+.mktabs{display:inline-flex;flex-wrap:nowrap;gap:4px;padding:4px;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:var(--sh);max-width:100%;overflow-x:auto}
+.mktabs button{border:0!important;background:none!important;padding:8px 18px!important;border-radius:9px!important;cursor:pointer;color:var(--mu)!important;font-weight:500;font-size:inherit!important;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.mktabs button.on{background:linear-gradient(135deg,var(--br),var(--pr))!important;color:#fff!important}
+.mktabs em{font-style:normal;font-size:12px;background:rgba(127,127,127,.18);padding:0 7px;border-radius:99px;opacity:1!important;margin:0!important}.mktabs button.on em{background:rgba(255,255,255,.25)}
 </style>
 <script>
 (function(){
