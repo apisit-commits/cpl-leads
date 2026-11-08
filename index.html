@@ -995,8 +995,10 @@ function renderUsers(){const box=$('vSu'),pend=USERS.filter(u=>!u.role);
  const row=u=>{const me=profile&&u.id===profile.id,nm=u.name||(u.email||'?').split('@')[0],c=UTRP[u.role]||'#9aa7b8';
   return `<div class="ur" data-u="${u.id}"><span class="uav" style="background:${c}">${esc((nm[0]||'?').toUpperCase())}</span><div class="unm"><b>${esc(nm)}</b><span class="uem">${esc(u.email||'')||'—'}</span></div><span class="uac"><button type="button" class="btn sm" data-edit aria-label="แก้ไขผู้ใช้" title="แก้ไข"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/></svg></button>${me?'':'<button type="button" class="btn sm dgr" data-del aria-label="ลบผู้ใช้" title="ลบผู้ใช้"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'}</span></div>`};
  const blk=(t,c,list,warn)=>list.length?`<section class="ublk${warn?' warn':''}" style="--uc:${c}"><h4>${t}<em>${list.length}</em></h4>${list.map(row).join('')}</section>`:'';
+ const by=k=>USERS.filter(u=>u.role===k),sb2=(t,list)=>list.length?`<div class="usb"><h5>${t}<em>${list.length}</em></h5>${list.map(row).join('')}</div>`:'';
+ const sg=()=>{const sa=by('sales'),sh=by('sales_lead'),n=sa.length+sh.length;if(!n)return'';return `<section class="ublk ugrp" style="--uc:${UTRP.sales}"><h4>SALES · เซลล์<em>${n}</em></h4><div class="usubs">${sb2('SALES HEAD · หัวหน้าเซลล์ (ทุกทีม)',sh)}${Object.entries(TEAMS).map(([tk,tv])=>sb2(esc(tv),sa.filter(u=>u.team===tk))).join('')}${sb2('ไม่ระบุทีม',sa.filter(u=>!TEAMS[u.team]))}</div></section>`};
  let h=blk('รอกำหนดสิทธิ์','#e05a5a',pend,1);
- UROLES.forEach(([k,l])=>{const L=USERS.filter(u=>u.role===k);if(k==='sales'){const sn=l.split(' · ')[0];h+=Object.entries(TEAMS).map(([tk,tv])=>blk(sn+' · '+esc(tv),UTRP.sales,L.filter(u=>u.team===tk))).join('')+blk(sn+' · ไม่ระบุทีม',UTRP.sales,L.filter(u=>!TEAMS[u.team]))}else h+=blk(l,UTRP[k],L)});
+ UROLES.forEach(([k,l])=>{if(k==='sales_lead')return;if(k==='sales'){h+=sg();return}h+=blk(l,UTRP[k],by(k))});
  box.innerHTML=`<div class="uhd"><h3>จัดการผู้ใช้</h3><span class="ucnt">${USERS.length} บัญชี</span><button type="button" class="btn p sm" id="au_add">${TT('เพิ่มผู้ใช้','Add user')}</button></div><div class="ugrid">${h||'<div class="sub">ไม่มีผู้ใช้</div>'}</div>`}
 (function(){const set=k=>{$('vSu').style.display=k==='u'?'':'none';$('vSo').style.display=k==='o'?'':'none';$('sst').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.s===k))};$('sst').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b)set(b.dataset.s)});set('o')})();
 (function(){const box=$('vSu'),d=$('aed'),f=$('aef');let EU=null;
@@ -1824,6 +1826,10 @@ $('rs_pub').onclick=async()=>{if(!DR||!DR.data||!Object.keys(DR.data).length){$(
 #vSu .uav{width:34px;height:34px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
 #vSu .unm{flex:1;min-width:0;display:flex;flex-direction:column}#vSu .unm b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#vSu .uem{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #vSu .uac{display:flex;gap:6px}#vSu .uac .btn{display:inline-flex;align-items:center;padding:0 9px}
+#vSu .ugrp{grid-column:1/-1}#vSu .usubs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 22px}
+#vSu .usb h5{display:flex;align-items:center;gap:8px;margin:2px 0 4px;font-size:13px;font-weight:600;color:var(--mu)}#vSu .usb h5 em{font-style:normal;font-size:12px;background:var(--fld);padding:1px 9px;border-radius:999px;margin-left:auto}
+#vSu .usb:not(:first-child){border-left:1px solid var(--bd);padding-left:22px}#vSu .usb .ur:first-of-type{border-top:0}
+@media(max-width:900px){#vSu .usb:not(:first-child){border-left:0;padding-left:0}}
 </style>
 <script>
 (function(){
