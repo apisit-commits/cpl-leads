@@ -487,7 +487,6 @@ header .hd #who{display:none!important}
     <label class="f">วันที่<b class="rq">*</b><input type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" name="date" required></label>
     <label class="f">Ads ที่ลูกค้าทักเข้ามา<b class="rq">*</b><select name="ads"></select></label>
     <label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required></label>
-    <label class="f" id="cu_lw">ลูกค้าในระบบ<span style="display:flex;gap:6px"><input name="cu_name" list="cu_dl" autocomplete="off" style="flex:1;min-width:0"><button type="button" class="btn sm" id="cu_mk">สร้างจากชื่อนี้</button></span><datalist id="cu_dl"></datalist></label>
     <label class="f">เบอร์โทรศัพท์<input name="d_p0" type="tel" autocomplete="off"></label>
   </div>
   <div style="margin-top:12px"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div><div style="margin-top:10px"><div class="sub" style="margin-bottom:4px">ช่องทางอื่นที่ลูกค้าทักมาด้วย</div><div class="chips pico" id="ch2"></div></div></fieldset>
@@ -2155,11 +2154,7 @@ function bind(){
   $('cud').close();await cuLoad(true);cuRender();if(CU.det)cuDet(CU.det)};
  $('cu_del').onclick=async()=>{if(!CU.sel)return;if(!await ask('ลบลูกค้านี้?\nLead ที่ผูกอยู่จะยังอยู่ แต่จะไม่ผูกกับลูกค้าแล้ว',{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบลูกค้า',oke:'Delete customer',danger:true}))return;
   const{error}=await sb.from('customers').delete().eq('id',CU.sel);if(error)return alert('ลบไม่สำเร็จ');$('cud').close();await cuLoad(true);cuBack()};
-
- $('cu_mk').onclick=async()=>{const f=$('fm_'),nm=(f.cu_name.value||f.name.value||'').trim();if(!nm)return;
-  const ex=CU.list.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());if(ex){f.cu_name.value=ex.name;return}
-  const r=await sb.from('customers').insert({name:nm,owner:f.sales.value||null}).select('id').single();if(r.error||!r.data)return alert('สร้างลูกค้าไม่สำเร็จ');
-  await cuLoad(true);cuFormList();f.cu_name.value=nm}}
+}
 const keyOf=n=>{const k=dupKey(n);return k.length>=3?k:''},leadPh=d=>[d.ph,d.cpt,d.ctt].filter(Boolean);
 function cuCts(ls,cid,have){const seen=new Set(have||[]),out=[];let n=0;ls.forEach(l=>{const d=l.detail||{},nm=(d.ctn||d.fn||'').trim(),ph=d.ctt||d.ph||d.cpt||'',em=d.cpe||d.em||'',k=dupPh(ph)||em.toLowerCase();if(!nm||n>=3||(k&&seen.has(k)))return;if(k)seen.add(k);out.push({customer_id:cid,name:nm,phone:ph||null,email:em||null,is_primary:!have&&n===0});n++});return out}
 function cuIdx(){const nm={},ph={};CU.list.forEach(c=>{const k=keyOf(c.name);if(k)nm[k]=c.id;(CU.cts[c.id]||[]).forEach(x=>{const p=dupPh(x.phone);if(p)ph[p]=c.id})});return{nm,ph}}
@@ -2195,14 +2190,7 @@ function cuGroups(ls){
  const top=a=>{const m={};a.forEach(x=>{if(x)m[x]=(m[x]||0)+1});return Object.entries(m).sort((x,y)=>y[1]-x[1])[0]?.[0]||''};
 return Object.values(g).map(a=>({ls:a,name:top(a.map(x=>(x.name||'').trim())),owner:top(a.map(x=>x.sales))}))}
 /* ---- lead form link ---- */
-function cuFormList(){$('cu_dl').innerHTML=CU.list.map(c=>`<option value="${H(c.name)}"></option>`).join('')}
-function cuForm(id){
- const w=$('cu_lw');w.classList.toggle('hid',!isBeta());if(!isBeta())return;
- cuLoad().then(async ok=>{if(!ok){w.classList.add('hid');return}cuFormList();const f=$('fm_');f.cu_name.value='';
-  if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();const c=data&&CU.list.find(x=>x.id===data.customer_id);if(c){f.cu_name.value=c.name;CU.cur=c.id}}CU.fr=true})}
-const _of=openForm;openForm=function(id){CU.fp=null;CU.fr=false;CU.cur=null;_of(id);cuForm(id)};
-$('fm_').addEventListener('submit',()=>{if(!CU.ok||!isBeta()||!CU.fr)return;const v=$('fm_').cu_name.value.trim().toLowerCase(),c=CU.list.find(x=>x.name.trim().toLowerCase()===v);CU.fp={id:c?c.id:null}},true);
-const _sl=saveLead;saveLead=async function(id,o){if(CU.fp){const f=CU.fp;CU.fp=null;let cid=f.id;if(!cid&&!CU.cur&&o.name){try{cid=await cuLink(o)}catch(e){cid=null}}if(cid||CU.cur)o={...o,customer_id:cid||null}}return _sl(id,o)};
+const _sl=saveLead;saveLead=async function(id,o){if(CU.ok&&isBeta()&&o.name){let keep=false;if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();keep=!!(data&&data.customer_id)}if(!keep){try{const cid=await cuLink(o);if(cid)o={...o,customer_id:cid}}catch(e){}}}return _sl(id,o)};
 /* ---- tab ---- */
 const _t=tab,gate=()=>$('tCU').classList.toggle('hid',!isBeta());
 tab=function(k){const mine=k==='CU';if(mine&&!isBeta())return;
