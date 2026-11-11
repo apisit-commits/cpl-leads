@@ -1395,7 +1395,7 @@ function qlLoad(q){const fire=(id,t)=>$(id).dispatchEvent(new Event(t||'input',{
  if(cr||tr){const dd=document.querySelector((cr?'#rb_d':'#tk_d')+' [data-d="'+(q.dir||'ex')+'"]');if(dd)dd.click();$(cr?'rb_c':'tk_c').value=q.country||'';fire(cr?'rb_c':'tk_c');$(cr?'rb_p':'tk_z').value=q.postal||'';fire(cr?'rb_p':'tk_z');
   const b=document.querySelector((cr?'#rb_opts':'#tk_opts')+' [data-'+(cr?'k':'g')+']');const t=[...document.querySelectorAll((cr?'#rb_opts':'#tk_opts')+' button')].find(x=>q.sv&&x.textContent.includes(q.sv));if(t)t.click()}
  calc()}
-function clClear(){$('cl_q').value='';$('cl_qn').value='';cgRender('cgc',[]);['rb_c','rb_p','tk_c','tk_z','cl_rate','cl_remark'].forEach(i=>{$(i).value=''});
+function clClear(){window.RATE_MAN=false;$('cl_q').value='';$('cl_qn').value='';cgRender('cgc',[]);['rb_c','rb_p','tk_c','tk_z','cl_rate','cl_remark'].forEach(i=>{$(i).value=''});
  [...$('cl_svc').querySelectorAll('input')].forEach(i=>{if(i.type==='checkbox')i.checked=false;else i.value=''});
  ['rb_c','rb_p','tk_c','tk_z','cl_q'].forEach(i=>$(i).dispatchEvent(new Event('input',{bubbles:true})));QB='';window.RB_MIN=0;window.RB_SEL='';calc();renderQL()}
 async function calcSave(q){const r=rows.find(x=>String(x.id)===selId());if(!r)return alert('เลือก Lead ก่อน');if(!can(r))return alert('ไม่มีสิทธิ์แก้ไข Lead นี้');const it=cgGet('cgc');const cargo=it.length?{items:it}:null;const{error}=await sb.from('leads').update({cargo}).eq('id',r.id);if(error)alert('บันทึกไม่สำเร็จ');else r.cargo=cargo}
@@ -1699,7 +1699,7 @@ function rbRun(ap){const blk=$('rb_blk');window.RB_VER=RS&&RS.ver||'';window.RB_
  if(cur&&cur.r.appr)t+='<span class="rb-tg wn">ต้องขออนุมัติจากค่ายก่อนส่ง</span>';
  $('rb_rem').innerHTML=t;
  if(ap&&cur){const act=it.reduce((a,x)=>a+x.n*x.W,0),vq=Math.ceil(it.reduce((a,x)=>a+x.n*x.L0*x.W0*x.H0,0)/5000-1e-9),qq=Math.max(act,vq,0.5),rate=Math.round(cur.r.freight/qq*100)/100;
-  $('cl_rate').value=fmtIn(rate);
+  if(!window.RATE_MAN)$('cl_rate').value=fmtIn(rate);
   const set=(name,amt)=>{const i=OSV.indexOf(name);if(i<0)return;const c=$('cl_svc').querySelector(`input[type=checkbox][data-i="${i}"]`),p=$('cl_svc').querySelector(`[data-p="${i}"]`);if(!c||!p)return;c.checked=amt>0;p.value=amt>0?fmtIn(Math.round(amt)):''};
   set(OSV_OV,cur.r.ovAmt);set(OSV_RM,cur.r.rmAmt);window.calc()}}
 window.RB_LEAD=r=>{if(!r)return;const dr=String(r.dir||'');const d=/ส่งออก/.test(dr)?'ex':/นำเข้า/.test(dr)?'im':'';
@@ -1734,8 +1734,10 @@ function tkRun(ap){const blk=$('tk_blk'),m=$('cl_mode').value;window.RB_VER=RS&&
  if(!TK_P||!res.find(o=>o.g===TK_P&&o.tot!=null))TK_P=best&&best.g;
  $('tk_opts').innerHTML=res.map(o=>`<button type="button" class="rb-o${o.g===TK_P&&o.tot!=null?' on':''}" data-g="${esc(o.g)}"${o.tot==null?' disabled':''}><span>${esc(o.g)}${best&&o.g===best.g&&ok.length>1?' · ถูกสุด':''}</span><b>${o.tot==null?'-':'฿'+N(o.tot)}</b></button>`).join('');
  const cur=res.find(o=>o.g===TK_P&&o.tot!=null);window.RB_SEL=cur?cur.g:'';
- if(ap){window.RB_MIN=cur?cur.mn:0;if(cur){$('cl_rate').value=fmtIn(cur.rate);TK_SET=true;window.calc()}else if(TK_SET){$('cl_rate').value='';TK_SET=false;window.calc()}}}
+ if(ap){window.RB_MIN=cur?cur.mn:0;if(window.RATE_MAN){window.calc()}else if(cur){$('cl_rate').value=fmtIn(cur.rate);TK_SET=true;window.calc()}else if(TK_SET){$('cl_rate').value='';TK_SET=false;window.calc()}}}
 $('tk_d').onclick=e=>{const b=e.target.closest('button');if(!b)return;TK_D=b.dataset.d;[...$('tk_d').children].forEach(x=>x.classList.toggle('on',x===b));TK_P=null;tkRun(true)};
+$('cl_rate').addEventListener('input',e=>{if(e.isTrusted)window.RATE_MAN=$('cl_rate').value.trim()!==''});
+{const rs=()=>{window.RATE_MAN=false};['cl_mode','rb_c','rb_p','tk_c','tk_z'].forEach(i=>$(i).addEventListener('input',rs,true));['rb_opts','tk_opts','rb_d','tk_d'].forEach(i=>$(i).addEventListener('click',rs,true))}
 $('tk_opts').onclick=e=>{const b=e.target.closest('[data-g]');if(!b||b.disabled)return;TK_P=b.dataset.g;tkRun(true)};
 ['tk_c','tk_z'].forEach(i=>$(i).addEventListener('input',()=>{TK_P=null;tkRun(true)}));
 $('cgc').addEventListener('input',()=>tkRun(true));$('cgc').addEventListener('click',e=>{if(e.target.closest('button'))tkRun(true)});
@@ -2041,6 +2043,7 @@ table tbody tr:nth-child(even){background:rgba(120,140,170,.11)}table tbody tr:h
 #mkfl.mk2{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}#mkfl.mk2 .mkw{grid-column:1/-1}#mkfl.mk2 .f{margin:0}@media(max-width:560px){#mkfl.mk2{grid-template-columns:1fr}}
 #spd,#nd,#mkd,#aed,#aud,#cud,#xd{overflow:visible}#spd>form,#nd>form,#mkd>form,#aed>form,#aud>form,#cud>form,#xd>form{max-height:92vh;overflow:auto;overscroll-behavior:contain;border-radius:inherit}
 #mkfl textarea{width:100%;min-height:76px;resize:vertical;font:inherit;line-height:1.5;box-sizing:border-box}.cpgr .cpd{white-space:pre-line}
+#vL .wrap{overflow-x:auto}#vL table{min-width:940px}#vL th{overflow-wrap:normal;word-break:keep-all}
 </style>
 <script>
 (function(){
