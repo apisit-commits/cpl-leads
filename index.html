@@ -487,11 +487,11 @@ header .hd #who{display:none!important}
   <h2 id="dt">เพิ่ม Lead</h2>
   <fieldset><legend>ข้อมูลเริ่มต้น</legend><div class="g">
     <label class="f">วันที่<b class="rq">*</b><input type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" name="date" required></label>
-    <label class="f">Ads ที่ลูกค้าทักเข้ามา<b class="rq">*</b><select name="ads"></select></label>
+    <label class="f" id="ads_wrap">Ads ที่ลูกค้าทักเข้ามา<b class="rq">*</b><select name="ads"></select></label>
     <label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required></label>
     <label class="f">เบอร์โทรศัพท์<input name="d_p0" type="tel" autocomplete="off"></label>
   </div>
-  <div style="margin-top:12px"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div><div style="margin-top:10px"><div class="sub" style="margin-bottom:4px">ช่องทางอื่นที่ลูกค้าทักมาด้วย</div><div class="chips pico" id="ch2"></div></div></fieldset>
+  <div style="margin-top:12px" id="ch_wrap"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div><div style="margin-top:10px" id="ch2_wrap"><div class="sub" style="margin-bottom:4px">ช่องทางอื่นที่ลูกค้าทักมาด้วย</div><div class="chips pico" id="ch2"></div></div></fieldset>
   <fieldset><legend>รายละเอียดงาน (แทนการพิมพ์ยาว)</legend><div id="ints"></div><button type="button" class="btn sm" id="intadd">+ เพิ่มบริการที่สนใจ</button>
   <label class="f" style="margin-top:12px">หมายเหตุเพิ่มเติม (ถ้ามี)<input name="note"></label></fieldset>
   <fieldset id="cgb"><legend>สินค้า</legend><div class="sub" style="margin:0 0 6px">ประเภทสินค้า · ขนาด/น้ำหนัก</div><div id="cgf"></div></fieldset>
@@ -544,7 +544,7 @@ function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '
 const ST_Y='ปิดการขาย',ST_H='มีโอกาสเปลี่ยนใจ',ST_S='รอการตัดสินใจ',ST_N='ยังไม่สนใจบริการ';
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
 const OPT={
- channel:['Messenger','Messenger Private','LINE','LINE Private','IG','TikTok','WhatsApp','Call in','Website','Email'],
+ channel:['Messenger','Messenger Private','LINE','LINE Private','IG','TikTok','WhatsApp','Call in','Website','Email','เยี่ยมลูกค้าโดยตรง'],
  dir:['นำเข้า','ส่งออก'],
  svc:['Air','Sea','Truck'],
  status:[ST_S,ST_Y,ST_N],
@@ -855,6 +855,7 @@ function openForm(id){
  {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'&&k!=='p0'&&k!=='ch2'&&k!=='deals'));['d_ph','d_ctt'].forEach(n=>{delete f[n].dataset.t;delete f[n].dataset.sy});f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d);dlRender(d.deals)}
  f.querySelectorAll('input[name=channel]').forEach(i=>i.checked=i.value===r.channel);{const x=(r.detail&&r.detail.ch2)||[];f.querySelectorAll('input[name=ch2]').forEach(i=>i.checked=x.includes(i.value));ch2Sync()}
  {const bl=f.brand.closest('label.f');if(team==='B'){if(![...f.brand.options].some(o=>o.value==='CPLEx'))f.brand.add(new Option('CPLEx','CPLEx'));f.brand.value='CPLEx';bl.classList.add('hid')}else bl.classList.remove('hid')}
+ {const off=team==='C';$('ads_wrap').classList.toggle('hid',off);$('ch_wrap').classList.toggle('hid',off);$('ch2_wrap').classList.toggle('hid',off)}
  if(!id&&!f.sales.value)f.sales.value=profile.role==='keyer'?'':(profile.name||'');toggleReason();$('dlg').showModal();renderQL();markEmpty();
 }
 function dlRow(x){x=x||{};const po=['',...promoFor(team)];if(x.p&&!po.includes(x.p))po.push(x.p);return `<div class="dlr"><label class="f">วันที่ปิดได้<input data-k="d" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" value="${esc(fmtD(x.d||''))}"></label><label class="f">ยอดที่ปิดได้<span class="nf" data-u="บาท"><input data-k="a" inputmode="decimal" data-num autocomplete="off" placeholder="เช่น 50,000" value="${x.a!=null&&x.a!==''?esc(fmtIn(x.a)):''}"></span></label><label class="f">โปรโมชัน<select data-k="p">${po.map(o=>`<option value="${esc(o)}"${o===(x.p||'')?' selected':''}>${esc(o||'—')}</option>`).join('')}</select></label><button type="button" class="btn sm dlx" data-x title="ลบ" aria-label="ลบ">✕</button></div>`}
@@ -896,7 +897,7 @@ function onSave(e){
  const ints=intsGet();
  const o={date:iso('date'),ads:v('ads'),name:v('name'),dir:OPT.dir.filter(x=>ints.some(b=>(b.dir||'').split(' / ').includes(x))).join(' / '),country:[...new Set(ints.flatMap(b=>(b.country||'').split(/\s*,\s*/)).filter(Boolean))].join(', '),
   svc:svGet(),note:v('note'),
-  channel:(f.querySelector('input[name=channel]:checked')||{}).value||'',status:v('status'),fu:iso('fu'),fu_status:v('fu_status'),
+  channel:(f.querySelector('input[name=channel]:checked')||{}).value||(team==='C'?'เยี่ยมลูกค้าโดยตรง':''),status:v('status'),fu:iso('fu'),fu_status:v('fu_status'),
   reason:formEff(f)===ST_N?v('reason'):'',sales:v('sales'),brand:v('brand'),promo:v('promo')};
  if(DEAL_OK){o.deal_amt=v('deal_amt')?pn(v('deal_amt')):null;o.deal_date=iso('deal_date')||(o.deal_amt?today():null)}
  if(!editId&&!o.fu&&![ST_Y,ST_N].includes(o.status)&&o.fu_status!==ST_Y)o.fu=addDays(o.date||today(),fuDays());
@@ -2335,7 +2336,7 @@ $('soMain').addEventListener('input',e=>{if(e.target.id==='so_lq'){soRender();co
 $('sof').addEventListener('submit',soSubmit);
 const _arSO=applyRoleUI;applyRoleUI=function(p){_arSO(p);$('tSO').classList.toggle('hid',!isBeta())};
 const _renderSO=render;render=function(){_renderSO();if(SO.page==='L'&&!$('vSO').classList.contains('hid'))soRender()};
-if(typeof EN==='object')Object.assign(EN,{"ภาพรวม (Dashboard)":"Overview (Dashboard)","Pipeline ดีล":"Deal Pipeline","แผนเยี่ยมลูกค้า":"Customer Visit Plan","เยี่ยมแล้ววันนี้":"Visited today","ดีลที่เปิดอยู่":"Open deals","ปิดดีลเดือนนี้":"Closed deals this month","กิจกรรมทีม":"Team activity","ยังไม่มีกิจกรรม":"No activity yet","สถานะ Shipment ของลูกค้า":"Customer shipment status","ตัวอย่าง":"Example","ระหว่างขนส่ง":"In transit","รอเอกสาร":"Pending documents","ส่งมอบแล้ว":"Delivered","+ บันทึกการเยี่ยมลูกค้า":"+ Log customer visit","Lead ใหม่":"New lead","นัดพบ / เยี่ยม":"Visit / meeting","ส่ง Quotation":"Quotation sent","เจรจา":"Negotiating","ปิดดีล":"Closed deals","ถัดไป →":"Next →","แผนเยี่ยมลูกค้าวันนี้":"Today's visit plan","ยังไม่มีแผนเยี่ยมวันนี้":"No visits planned today","เปิดเส้นทางใน Maps":"Open route in Maps","เช็กอิน":"Check in","บันทึกการเยี่ยมลูกค้า":"Log customer visit","ประเภทบริการ":"Service type","เช่น ทางเรือ FCL":"e.g. FCL by sea","เวลา":"Time","วัตถุประสงค์":"Purpose","กำลังโหลด…":"Loading…","ภาพรวมทีมขายภาคสนาม":"Field sales team overview"});
+if(typeof EN==='object')Object.assign(EN,{"ภาพรวม (Dashboard)":"Overview (Dashboard)","Pipeline ดีล":"Deal Pipeline","แผนเยี่ยมลูกค้า":"Customer Visit Plan","เยี่ยมแล้ววันนี้":"Visited today","ดีลที่เปิดอยู่":"Open deals","ปิดดีลเดือนนี้":"Closed deals this month","กิจกรรมทีม":"Team activity","ยังไม่มีกิจกรรม":"No activity yet","สถานะ Shipment ของลูกค้า":"Customer shipment status","ตัวอย่าง":"Example","ระหว่างขนส่ง":"In transit","รอเอกสาร":"Pending documents","ส่งมอบแล้ว":"Delivered","+ บันทึกการเยี่ยมลูกค้า":"+ Log customer visit","Lead ใหม่":"New lead","นัดพบ / เยี่ยม":"Visit / meeting","ส่ง Quotation":"Quotation sent","เจรจา":"Negotiating","ปิดดีล":"Closed deals","ถัดไป →":"Next →","แผนเยี่ยมลูกค้าวันนี้":"Today's visit plan","ยังไม่มีแผนเยี่ยมวันนี้":"No visits planned today","เปิดเส้นทางใน Maps":"Open route in Maps","เช็กอิน":"Check in","บันทึกการเยี่ยมลูกค้า":"Log customer visit","ประเภทบริการ":"Service type","เช่น ทางเรือ FCL":"e.g. FCL by sea","เวลา":"Time","วัตถุประสงค์":"Purpose","กำลังโหลด…":"Loading…","ภาพรวมทีมขายภาคสนาม":"Field sales team overview","เยี่ยมลูกค้าโดยตรง":"Direct customer visit"});
 </script>
 
 <script>
