@@ -400,7 +400,7 @@ header .hd #who{display:none!important}
     <div class="hd"><span class="sub" id="who"></span><div class="nbar hid" id="fnb"><span id="fsw" class="hid"><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">ดูของเซลล์:<select id="fsel"></select></label></span><label class="sub" style="display:flex;gap:6px;align-items:center;margin:0">แจ้งเตือน Follow-up อัตโนมัติหลังรับ Lead<input id="fdays" type="number" min="1" max="30" style="width:64px"> วัน</label></div><select id="pvs" class="hid" title="ดูตัวอย่างตามบทบาท" aria-label="ดูตัวอย่างตามบทบาท"><option value="admin">มุมมอง: ADMIN</option><option value="sales:A">SALES · CPL-Inter</option><option value="sales:B">SALES · CPLEx</option><option value="sales_lead">หัวหน้าเซลล์</option><option value="marketing">MARKETING</option><option value="ceo">CEO</option><option value="keyer">KEYER</option><option value="zimp">ZIMP</option></select><button class="btn hid" id="bell" type="button" aria-label="แจ้งเตือน" title="แจ้งเตือน"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b id="bn" class="bn hid">0</b></button><button class="btn ico-b" id="lo" type="button" aria-label="ออกจากระบบ" title="ออกจากระบบ"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg></button></div>
 </header>
 <button type="button" id="sbt"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-<nav class="tabs"><div class="logo" role="img" aria-label="CPL Group"></div><button id="tN"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v2a1 1 0 0 0 1 1h2l5 4V6L7 10H5a1 1 0 0 0-1 1z"/><path d="M16 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>ประกาศ<i id="ndot" class="hid"></i></button><div class="navsep" role="separator"></div><button id="tDB" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด</button><button id="tF" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span id="tFt">งานของฉัน</span><i id="fdot" class="hid"></i></button><button id="tCU" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="M15.500 15.500L21 21"/><path d="M8 13v-2.500M10.500 13V8M13 13v-3.500"/></svg>ลูกค้า</button><button id="tL" class="on"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Lead</button><button id="tW" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="M7 14h4M7 17h8"/></svg>Marketing</button><button class="hid" id="tA"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด Ads</button><button id="tE" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 16l4-5 3 3 5-7"/><circle cx="18" cy="7" r="1.2"/></svg>แดชบอร์ด CEO</button><button class="hid" id="tM"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ดการตลาด</button><button class="hid" id="tK"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Sales</button><button id="tC"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>คำนวณ</button><button id="tRS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--card)"/><circle cx="15" cy="12" r="2" fill="var(--card)"/><circle cx="8" cy="18" r="2" fill="var(--card)"/></svg>Rate</button><button id="tS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>ตั้งค่า</button><div id="acct"><span class="av" id="av"></span><span class="ai"><b id="wn"></b><em id="wr"></em></span></div></nav>
+<nav class="tabs"><div class="logo" role="img" aria-label="CPL Group"></div><button id="tN"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v2a1 1 0 0 0 1 1h2l5 4V6L7 10H5a1 1 0 0 0-1 1z"/><path d="M16 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>ประกาศ<i id="ndot" class="hid"></i></button><div class="navsep" role="separator"></div><button id="tDB" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด</button><button id="tF" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span id="tFt">งานของฉัน</span><i id="fdot" class="hid"></i></button><button id="tCU" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="M15.500 15.500L21 21"/><path d="M8 13v-2.500M10.500 13V8M13 13v-3.500"/></svg>ลูกค้า</button><button id="tL" class="on"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Lead</button><button id="tW" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="M7 14h4M7 17h8"/></svg>Marketing</button><button class="hid" id="tA"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ด Ads</button><button id="tE" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 16l4-5 3 3 5-7"/><circle cx="18" cy="7" r="1.2"/></svg>แดชบอร์ด CEO</button><button class="hid" id="tM"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>แดชบอร์ดการตลาด</button><button class="hid" id="tK"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Sales</button><button id="tC"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>คำนวณ</button><button id="tSO" class="hid" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2"/></svg>Sales Offline<em class="sob">Beta</em></button><button id="tRS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--card)"/><circle cx="15" cy="12" r="2" fill="var(--card)"/><circle cx="8" cy="18" r="2" fill="var(--card)"/></svg>Rate</button><button id="tS" class="hid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>ตั้งค่า</button><div id="acct"><span class="av" id="av"></span><span class="ai"><b id="wn"></b><em id="wr"></em></span></div></nav>
 <main>
 <div id="vN" class="hid"><div class="nh"><h3 style="margin:0">ประกาศ</h3><div class="nbar"><label class="sub" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="n_old"> แสดงที่หมดอายุแล้ว</label><button class="btn p hid" id="n_add">+ เพิ่มประกาศ</button></div></div><div id="n_msg" class="sub hid" style="margin:0 0 10px"></div><div id="n_list" class="ng"></div><div class="empty hid" id="n_em">ยังไม่มีประกาศ</div></div>
 <dialog id="spd" style="width:min(520px,94vw)"><form id="spf" style="padding:18px 20px;display:block"><h3 style="margin:0 0 14px">ค่าโฆษณา</h3><div id="spl"></div><div class="acts" style="display:flex;justify-content:flex-end;gap:8px"><button type="button" class="btn" id="spx">ยกเลิก</button><button type="button" class="btn p" id="sps">บันทึก</button></div></form></dialog>
@@ -462,6 +462,8 @@ header .hd #who{display:none!important}
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
 <div id="vCU" class="hid"><div id="cu_lv"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div><div id="cu_dv" class="hid"></div></div>
+<div id="vSO" class="hid"><div class="soWrap"><aside class="soSide"><div class="soBrand">CPL-Inter<small>Sales Hub</small></div><nav class="soNav"><button type="button" data-so="D" class="on">ภาพรวม (Dashboard)</button><button type="button" data-so="P">Pipeline ดีล</button><button type="button" data-so="V">แผนเยี่ยมลูกค้า</button></nav></aside><section class="soMain" id="soMain"></section></div>
+<dialog id="sod"><form id="sof" method="dialog"><h3 style="margin:0 0 12px">บันทึกการเยี่ยมลูกค้า</h3><div class="g"><label class="f">ลูกค้า<b class="rq">*</b><input name="so_n" list="so_dl" required autocomplete="off"></label><label class="f">ประเภทบริการ<input name="so_m" maxlength="60" placeholder="เช่น ทางเรือ FCL"></label><label class="f">วันที่<b class="rq">*</b><input type="date" name="so_d" required></label><label class="f">เวลา<b class="rq">*</b><input type="time" name="so_t" required></label><label class="f">วัตถุประสงค์<input name="so_p" maxlength="120"></label></div><datalist id="so_dl"></datalist><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button type="button" class="btn" onclick="$('sod').close()">ยกเลิก</button><button type="submit" class="btn p">บันทึก</button></div></form></dialog></div>
 <div id="vRS" class="hid"><div class="seg csb hid"><button type="button" data-s="C">คำนวณ</button><button type="button" data-s="R" class="on">Rate</button></div><div class="rbw rsw">
  <div class="rs-hd"><div class="rs-cur" id="rs_cur"></div><div class="rb-seg" id="rs_svc"><button type="button" data-v="a" class="on">Air Courier</button><button type="button" data-v="t">Trucking</button></div></div>
  <div id="rsAir" class="rsv"><div class="mktabs" id="rs_tabs"><button type="button" data-r="f" class="on">ไฟล์เรท</button><button type="button" data-r="p">ราคาขาย</button><button type="button" data-r="m">Remote Area</button><button type="button" data-r="x">ค่าธรรมเนียมเสริม</button></div>
@@ -624,7 +626,7 @@ async function enter(){
 }
 
 function applyRoleUI(p){tFlabel();const r=p.role,H=(id,h)=>$(id).classList.toggle('hid',!!h),has=a=>a.includes(r);
- H('add',!has(['admin','sales','sales_lead','keyer']));H('n_add',!has(['admin','marketing']));H('tS',r!=='admin');H('tC',has(['ads','keyer','zimp','ceo']));
+ H('add',!has(['admin','sales','sales_lead','keyer']));H('n_add',!has(['admin','marketing']));H('tS',r!=='admin');H('tC',has(['ads','keyer','zimp','ceo']));H('tSO',!isBeta());
  const DR={admin:'AMKE',marketing:'AMK',ads:'A',sales:'',sales_lead:'K',keyer:'',zimp:'AM',ceo:'AMKE'}[r]||'';window.DRok=DR;H('tDB',!DR);
  H('tF',!has(['sales','sales_lead','admin','keyer']));H('tW',!has(['admin','marketing','zimp']));H('tL',r==='zimp');H('tN',0);
  ['A','M','K','E'].forEach(k=>H('t'+k,1));H('rg',1);H('exp',r==='zimp')}
@@ -2073,6 +2075,67 @@ body.out #sbt{display:none}
 #vL td:last-child{text-align:right;padding-right:6px!important}
 #vL td:last-child .rb:first-child{margin-left:0}
 @media(max-width:1280px){.fud .fdl{display:none}}
+#tSO .sob{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:9px;background:#ffb020;color:#3a2600;margin-left:6px;vertical-align:middle}
+#vSO{margin-top:6px}
+.soWrap{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:calc(100vh - 80px);background:#f3f6fb;border-radius:16px;overflow:hidden;border:1px solid var(--bd)}
+html[data-theme=dark] .soWrap{background:var(--bg)}
+.soSide{background:#0f2140;color:#fff;padding:26px 16px;display:flex;flex-direction:column;gap:6px}
+.soBrand{font-weight:800;font-size:20px;padding:0 10px 22px;line-height:1.25}
+.soBrand small{display:block;font-size:14px;font-weight:600;opacity:.75}
+.soNav{display:flex;flex-direction:column;gap:4px}
+.soNav button{display:block;width:100%;text-align:left;background:none;border:0;color:#fff;padding:12px 14px;border-radius:10px;font:600 15px/1.2 inherit;cursor:pointer}
+.soNav button:hover{background:rgba(255,255,255,.1)}
+.soNav button.on{background:#0b5ed7}
+.soMain{padding:26px 30px;min-width:0}
+.soHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.soHead h2{margin:0;font-size:26px}
+.soKpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:16px}
+.soCard{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px;min-width:0}
+html[data-theme=dark] .soCard{background:var(--card)}
+.soCard>span{display:block;color:var(--mu);font-size:14px}
+.soCard>b{display:block;font-size:34px;margin-top:6px}
+.soGrid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.soPanel h3{margin:0 0 14px;font-size:18px}
+.soKan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.soCol{background:#e7edf6;border-radius:14px;padding:14px;min-height:120px;min-width:0}
+html[data-theme=dark] .soCol{background:var(--fld)}
+.soCol h4{margin:0 0 12px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.soCol h4 em{font-style:normal;color:var(--mu);font-size:14px}
+.soClosed{margin-top:14px}
+.soKanRow{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.soDeal{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px}
+html[data-theme=dark] .soDeal{background:var(--card)}
+.soClosed .soDeal{margin-bottom:0}
+.soDeal>b{display:block;font-size:16px}
+.soDeal>span{display:block;color:var(--mu);font-size:14px;margin:4px 0 12px}
+.soAct{display:flex;gap:8px}
+.soAct button{flex:1;height:36px;border-radius:9px;border:1px solid var(--bd);background:#fff;color:var(--tx);font:600 14px inherit;cursor:pointer}
+html[data-theme=dark] .soAct button{background:var(--fld)}
+.soAct button.p{background:#0b5ed7;color:#fff;border-color:#0b5ed7}
+.soAct button:disabled{opacity:.35;cursor:default}
+.soRow{display:flex;align-items:center;gap:16px;padding:14px 0;border-top:1px solid var(--bd)}
+.soRow:first-of-type{border-top:0}
+.soT{width:64px;font-size:17px}
+.soTx{flex:1;min-width:0}
+.soTx b{display:block}
+.soTx span,.soEmpty{color:var(--mu);font-size:14px}
+.soTm{color:var(--mu);font-size:14px;white-space:nowrap}
+.soFoot{margin-top:18px}
+.soChips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.soChips button{height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--bd);background:#fff;color:var(--tx);font:600 13px inherit;cursor:pointer}
+html[data-theme=dark] .soChips button{background:var(--fld)}
+.soChips button.on{background:#0f2140;border-color:#0f2140;color:#fff}
+.soLine{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
+.soLine:first-of-type{border-top:0}
+.soLn{min-width:0;display:flex;flex-direction:column;gap:2px}
+.soLn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.soLink{background:none;border:0;padding:0;color:var(--pr);font:inherit;font-size:13px;cursor:pointer;text-align:left}
+.soLine select{height:34px;border-radius:9px;border:1px solid var(--bd);background:#fff;color:var(--tx);padding:0 8px;font:inherit;font-size:13px}
+html[data-theme=dark] .soLine select{background:var(--fld)}
+@media(max-width:1100px){.soKan{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.soWrap{grid-template-columns:1fr}.soSide{flex-direction:row;overflow-x:auto;padding:12px}.soBrand{display:none}.soNav{flex-direction:row}.soNav button{width:auto;white-space:nowrap}.soGrid2{grid-template-columns:1fr}.soMain{padding:18px}}
+.soDemo{font-style:normal;font-size:11px;font-weight:600;color:var(--mu);margin-left:8px;background:var(--fld);padding:2px 8px;border-radius:8px;vertical-align:middle}
+.soShipB{font-size:13px;font-weight:600;color:var(--pr);white-space:nowrap}
 </style>
 <script>
 (function(){
@@ -2202,6 +2265,76 @@ const _ar2=applyRoleUI;applyRoleUI=function(p){_ar2(p);gate()};gate();
 bind();
 if(typeof EN==='object')Object.assign(EN,{'ลูกค้า':'Customers','เพิ่มลูกค้า':'Add customer','ตรวจรายชื่อซ้ำ':'Find duplicates','ผู้ติดต่อ':'Contacts','ลูกค้าในระบบ':'Customer record','เจ้าของ':'Owner','ลูกค้าประจำ':'Repeat customer','เคยปิดการขาย':'Has closed','ยังไม่ปิดการขาย':'Not closed yet','ยังไม่มี Lead':'No leads yet'});
 })();
+/* ---- Sales Offline (beta) ---- */
+const H=s=>esc(s==null?'':String(s));
+const SO={page:'D',deals:[],visits:[],acts:[],ship:'all',loaded:false};
+const SO_ST=[['lead','Lead ใหม่'],['visit','นัดพบ / เยี่ยม'],['quote','ส่ง Quotation'],['nego','เจรจา']];
+const SO_ORD=['lead','visit','quote','nego','closed'];
+const SO_SHIP=['ระหว่างขนส่ง','รอเอกสาร','ส่งมอบแล้ว'];
+const SO_SAMPLE=[{company:'บริษัท ไทยซัมมิท จำกัด',bl:'MSKU-2241190',ship:'ระหว่างขนส่ง'},{company:'หจก. พรเจริญ อิมปอร์ต',bl:'TWS-88214',ship:'รอเอกสาร'},{company:'บจก. โกลเด้นฟู้ดส์',bl:'OOCL-77310',ship:'ส่งมอบแล้ว'},{company:'บจก. เอเชีย แพ็คเกจจิ้ง',bl:'COSU-41209',ship:'ระหว่างขนส่ง'}];
+const soHM=iso=>{if(!iso)return'';const d=new Date(iso),p=n=>String(n).padStart(2,'0');return p(d.getHours())+':'+p(d.getMinutes())};
+const soDeal=id=>SO.deals.find(x=>String(x.id)===String(id));
+const soActor=()=>(profile&&profile.name)||'';
+async function soLog(action_text){try{await sb.from('so_activity').insert({team,actor_name:soActor(),action_text})}catch(e){}}
+async function soLoad(){
+ const[d,v,a]=await Promise.all([
+  sb.from('so_deals').select('*').eq('team',team).order('created_at',{ascending:false}).limit(1000),
+  sb.from('so_visits').select('*').eq('team',team).order('visit_date',{ascending:false}).order('visit_time',{ascending:false}).limit(1000),
+  sb.from('so_activity').select('*').eq('team',team).order('created_at',{ascending:false}).limit(30)
+ ]);
+ SO.deals=d.error?[]:(d.data||[]);SO.visits=v.error?[]:(v.data||[]);SO.acts=a.error?[]:(a.data||[]);SO.loaded=true}
+function soDlg(){const f=$('sof');f.reset();f.so_d.value=today();f.so_t.value=soHM(new Date().toISOString());
+ $('so_dl').innerHTML=SO.deals.map(r=>`<option value="${H(r.company)}"></option>`).join('');$('sod').showModal()}
+async function soSubmit(e){e.preventDefault();const f=$('sof'),nm=f.so_n.value.trim();if(!nm)return;
+ const key=nm.toLowerCase();let d=SO.deals.find(x=>(x.company||'').trim().toLowerCase()===key);
+ if(!d){const r=await sb.from('so_deals').insert({team,company:nm,mode:f.so_m.value.trim()||null,stage:'lead',sales:soActor()}).select().single();
+  if(r.error||!r.data)return alert('บันทึกไม่สำเร็จ');d=r.data;SO.deals.unshift(d);await soLog(`สร้างดีลใหม่: ${nm}`)}
+ const vr=await sb.from('so_visits').insert({team,deal_id:d.id,company:d.company,sales:soActor(),visit_date:f.so_d.value,visit_time:f.so_t.value,purpose:f.so_p.value.trim()||null,checked_in:false}).select().single();
+ if(vr.error||!vr.data)return alert('บันทึกไม่สำเร็จ');SO.visits.unshift(vr.data);await soLog(`บันทึกแผนเยี่ยม: ${d.company}`);
+ $('sod').close();await soLoad();soRender()}
+async function soMove(id,to){const d=soDeal(id);if(!d||!to)return;const patch={stage:to};if(to==='closed')patch.closed_at=new Date().toISOString();
+ const{error}=await sb.from('so_deals').update(patch).eq('id',id);if(error)return alert('บันทึกไม่สำเร็จ');
+ Object.assign(d,patch);if(to==='closed')await soLog(`ปิดดีล: ${d.company}`);soRender()}
+async function soCheck(vid){const v=SO.visits.find(x=>String(x.id)===String(vid));if(!v)return;const now=new Date().toISOString();
+ const{error}=await sb.from('so_visits').update({checked_in:true,checkin_at:now}).eq('id',vid);if(error)return alert('บันทึกไม่สำเร็จ');
+ v.checked_in=true;v.checkin_at=now;await soLog(`เยี่ยมลูกค้า: ${v.company}`);soRender()}
+function soMaps(){const td=today(),pend=SO.visits.filter(v=>v.visit_date===td&&!v.checked_in).sort((a,b)=>(a.visit_time||'').localeCompare(b.visit_time||'')).map(v=>v.company);
+ if(!pend.length)return;const dest=pend.pop(),wp=pend.slice(0,8);
+ window.open('https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(dest)+(wp.length?'&waypoints='+encodeURIComponent(wp.join('|')):'')+'&travelmode=driving','_blank','noopener')}
+function soDash(){const td=today(),mo=td.slice(0,7);
+ const pt=SO.visits.filter(v=>v.visit_date===td),dn=pt.filter(v=>v.checked_in).length;
+ const open=SO.deals.filter(d=>d.stage!=='closed').length,cm=SO.deals.filter(d=>d.stage==='closed'&&(d.closed_at||'').slice(0,7)===mo).length;
+ const acts=SO.acts.slice(0,6);
+ const sf=SO.ship==='all'?SO_SAMPLE:SO_SAMPLE.filter(s=>s.ship===SO.ship);
+ return `<div class="soHead"><h2>ภาพรวมทีมขายภาคสนาม</h2><button class="btn p" id="so_add" type="button">+ บันทึกการเยี่ยมลูกค้า</button></div>
+<div class="soKpi"><div class="soCard"><span>เยี่ยมแล้ววันนี้</span><b>${dn} / ${pt.length}</b></div><div class="soCard"><span>ดีลที่เปิดอยู่</span><b>${open}</b></div><div class="soCard"><span>ปิดดีลเดือนนี้</span><b>${cm}</b></div></div>
+<div class="soGrid2"><div class="soCard soPanel"><h3>กิจกรรมทีม</h3>${acts.length?acts.map(p=>`<div class="soLine"><span>${H(p.action_text)} · <b>${H(p.actor_name||'-')}</b></span><em class="soTm">${soHM(p.created_at)}</em></div>`).join(''):'<div class="soEmpty">ยังไม่มีกิจกรรม</div>'}</div>
+<div class="soCard soPanel"><h3>สถานะ Shipment ของลูกค้า<em class="soDemo">ตัวอย่าง</em></h3><div class="soChips"><button type="button" data-act="filter" data-ship="all" class="${SO.ship==='all'?'on':''}">ทั้งหมด</button>${SO_SHIP.map(s=>`<button type="button" data-act="filter" data-ship="${H(s)}" class="${SO.ship===s?'on':''}">${H(s)}</button>`).join('')}</div>${sf.length?sf.map(s=>`<div class="soLine"><div class="soLn"><b>${H(s.company)}</b><span>เลขที่ B/L: ${H(s.bl)}</span></div><span class="soShipB">${H(s.ship)}</span></div>`).join(''):'<div class="soEmpty">ยังไม่มีรายการ</div>'}</div></div>`}
+function soPipe(){const op=SO.deals.filter(d=>d.stage!=='closed'),mo=today().slice(0,7),cl=SO.deals.filter(d=>d.stage==='closed'&&(d.closed_at||'').slice(0,7)===mo);
+ const card=(d,st)=>{const i=SO_ORD.indexOf(st);let pv,nx;if(st==='closed'){pv='nego';nx=''}else{pv=i>0?SO_ORD[i-1]:'';nx=SO_ORD[i+1]}
+  return `<div class="soDeal"><b>${H(d.company)}</b><span>${H(d.mode||'-')}</span><div class="soAct"><button type="button" data-act="move" data-id="${H(d.id)}" data-to="${pv}"${pv?'':' disabled'}>←</button><button type="button" class="p" data-act="move" data-id="${H(d.id)}" data-to="${nx}"${nx?'':' disabled'}>ถัดไป →</button></div></div>`};
+ const col=(k,l,list)=>`<div class="soCol"><h4><span>${l}</span><em>${list.length}</em></h4>${list.map(d=>card(d,k)).join('')}</div>`;
+ return `<div class="soHead"><h2>Pipeline ดีล</h2><button class="btn p" id="so_add" type="button">+ บันทึกการเยี่ยมลูกค้า</button></div><div class="soKan">${SO_ST.map(([k,l])=>col(k,l,op.filter(d=>d.stage===k))).join('')}</div><div class="soCol soClosed"><h4><span>ปิดดีล</span><em>${cl.length}</em></h4><div class="soKanRow">${cl.map(d=>card(d,'closed')).join('')}</div></div>`}
+function soVisit(){const td=today(),L=SO.visits.filter(v=>v.visit_date===td).sort((a,b)=>(a.visit_time||'').localeCompare(b.visit_time||''));
+ return `<div class="soHead"><h2>แผนเยี่ยมลูกค้า</h2><button class="btn p" id="so_add" type="button">+ บันทึกการเยี่ยมลูกค้า</button></div><div class="soCard soPanel"><h3>แผนเยี่ยมลูกค้าวันนี้</h3>${L.length?L.map(v=>`<div class="soRow"><b class="soT">${H((v.visit_time||'').slice(0,5))}</b><div class="soTx"><b>${H(v.company)}</b><span>${H(v.purpose?'วาระ: '+v.purpose:'')}</span></div>${v.checked_in?`<span class="soTm">เช็กอิน ${soHM(v.checkin_at)}</span>`:`<button type="button" class="btn" data-act="check" data-id="${H(v.id)}">เช็กอิน</button>`}</div>`).join(''):'<div class="soEmpty">ยังไม่มีแผนเยี่ยมวันนี้</div>'}<div class="soFoot"><button type="button" class="btn" id="so_maps"${L.some(v=>!v.checked_in)?'':' disabled'}>เปิดเส้นทางใน Maps</button></div></div>`}
+function soRender(){const m=$('soMain');if(!m)return;document.querySelectorAll('#vSO [data-so]').forEach(b=>b.classList.toggle('on',b.dataset.so===SO.page));m.innerHTML=({D:soDash,P:soPipe,V:soVisit})[SO.page]()}
+function soOpenView(){SO.page=SO.page||'D';if(SO.loaded)soRender();else m_loading();soLoad().then(soRender)}
+function m_loading(){const m=$('soMain');if(m)m.innerHTML='<div class="soEmpty">กำลังโหลด…</div>'}
+const _tSO=tab;
+tab=function(k){
+ if(k==='SO'){if(!isBeta())return;
+  ['L','D','S','C','N','F','W','RS','CU'].forEach(x=>$('v'+x).classList.add('hid'));
+  ['L','A','M','K','E','C','S','N','F','W','RS','CU'].forEach(x=>{const b=$('t'+x);if(b)b.classList.remove('on')});
+  $('tDB').classList.remove('on');$('fnb').classList.add('hid');
+  $('tSO').classList.add('on');$('vSO').classList.remove('hid');soOpenView();return}
+ $('vSO').classList.add('hid');$('tSO').classList.remove('on');$('tSO').classList.toggle('hid',!isBeta());
+ return _tSO(k)};
+$('tSO').onclick=()=>tab('SO');
+document.querySelectorAll('#vSO [data-so]').forEach(b=>b.addEventListener('click',()=>{SO.page=b.dataset.so;soRender()}));
+$('soMain').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='so_add')return soDlg();if(b.id==='so_maps')return soMaps();const a=b.dataset.act;
+ if(a==='move')soMove(b.dataset.id,b.dataset.to);else if(a==='check')soCheck(b.dataset.id);else if(a==='filter'){SO.ship=b.dataset.ship;soRender()}});
+$('sof').addEventListener('submit',soSubmit);
+const _arSO=applyRoleUI;applyRoleUI=function(p){_arSO(p);$('tSO').classList.toggle('hid',!isBeta())};
 </script>
 
 <script>
