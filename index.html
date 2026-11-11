@@ -462,7 +462,7 @@ header .hd #who{display:none!important}
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
 <div id="vCU" class="hid"><div id="cu_lv"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn p" id="cu_new">เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div><div id="cu_dv" class="hid"></div></div>
-<div id="vSO" class="hid"><div class="soWrap"><aside class="soSide"><div class="soBrand">CPL-Inter<small>Sales Hub</small></div><nav class="soNav"><button type="button" data-so="D" class="on">ภาพรวม (Dashboard)</button><button type="button" data-so="P">Pipeline ดีล</button><button type="button" data-so="V">แผนเยี่ยมลูกค้า</button></nav></aside><section class="soMain" id="soMain"></section></div>
+<div id="vSO" class="hid"><div class="mktabs soNav"><button type="button" data-so="D" class="on">ภาพรวม (Dashboard)</button><button type="button" data-so="P">Pipeline ดีล</button><button type="button" data-so="V">แผนเยี่ยมลูกค้า</button></div><section class="soMain" id="soMain"></section>
 <dialog id="sod"><form id="sof" method="dialog"><h3 style="margin:0 0 12px">บันทึกการเยี่ยมลูกค้า</h3><div class="g"><label class="f">ลูกค้า<b class="rq">*</b><input name="so_n" list="so_dl" required autocomplete="off"></label><label class="f">ประเภทบริการ<input name="so_m" maxlength="60" placeholder="เช่น ทางเรือ FCL"></label><label class="f">วันที่<b class="rq">*</b><input type="date" name="so_d" required></label><label class="f">เวลา<b class="rq">*</b><input type="time" name="so_t" required></label><label class="f">วัตถุประสงค์<input name="so_p" maxlength="120"></label></div><datalist id="so_dl"></datalist><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button type="button" class="btn" onclick="$('sod').close()">ยกเลิก</button><button type="submit" class="btn p">บันทึก</button></div></form></dialog></div>
 <div id="vRS" class="hid"><div class="seg csb hid"><button type="button" data-s="C">คำนวณ</button><button type="button" data-s="R" class="on">Rate</button></div><div class="rbw rsw">
  <div class="rs-hd"><div class="rs-cur" id="rs_cur"></div><div class="rb-seg" id="rs_svc"><button type="button" data-v="a" class="on">Air Courier</button><button type="button" data-v="t">Trucking</button></div></div>
@@ -2075,67 +2075,52 @@ body.out #sbt{display:none}
 #vL td:last-child{text-align:right;padding-right:6px!important}
 #vL td:last-child .rb:first-child{margin-left:0}
 @media(max-width:1280px){.fud .fdl{display:none}}
-#tSO .sob{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:9px;background:#ffb020;color:#3a2600;margin-left:6px;vertical-align:middle}
-#vSO{margin-top:6px}
-.soWrap{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:calc(100vh - 80px);background:#f3f6fb;border-radius:16px;overflow:hidden;border:1px solid var(--bd)}
-html[data-theme=dark] .soWrap{background:var(--bg)}
-.soSide{background:#0f2140;color:#fff;padding:26px 16px;display:flex;flex-direction:column;gap:6px}
-.soBrand{font-weight:800;font-size:20px;padding:0 10px 22px;line-height:1.25}
-.soBrand small{display:block;font-size:14px;font-weight:600;opacity:.75}
-.soNav{display:flex;flex-direction:column;gap:4px}
-.soNav button{display:block;width:100%;text-align:left;background:none;border:0;color:#fff;padding:12px 14px;border-radius:10px;font:600 15px/1.2 inherit;cursor:pointer}
-.soNav button:hover{background:rgba(255,255,255,.1)}
-.soNav button.on{background:#0b5ed7}
-.soMain{padding:26px 30px;min-width:0}
-.soHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
-.soHead h2{margin:0;font-size:26px}
+#tSO .sob{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.3px;padding:1px 6px;border-radius:9px;background:rgba(127,127,127,.18);color:var(--mu);margin-left:6px;vertical-align:middle}
+.tabs button.on .sob{background:rgba(255,255,255,.25);color:inherit}
+#vSO{margin-top:0}
+.soMain{min-width:0}
+.soHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.soHead h2{margin:0;font-size:20px}
 .soKpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:16px}
-.soCard{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px;min-width:0}
-html[data-theme=dark] .soCard{background:var(--card)}
-.soCard>span{display:block;color:var(--mu);font-size:14px}
-.soCard>b{display:block;font-size:34px;margin-top:6px}
+.soCard{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px 18px;min-width:0}
+.soCard>span{display:block;color:var(--mu);font-size:13px}
+.soCard>b{display:block;font-size:30px;margin-top:6px}
 .soGrid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.soPanel h3{margin:0 0 14px;font-size:18px}
+.soPanel h3{margin:0 0 12px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.soPanel h3::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ac)}
 .soKan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.soCol{background:#e7edf6;border-radius:14px;padding:14px;min-height:120px;min-width:0}
-html[data-theme=dark] .soCol{background:var(--fld)}
-.soCol h4{margin:0 0 12px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
-.soCol h4 em{font-style:normal;color:var(--mu);font-size:14px}
+.soCol{background:var(--fld,var(--bg));border:1px solid var(--bd);border-radius:10px;padding:14px;min-height:120px;min-width:0}
+.soCol h4{margin:0 0 12px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;color:var(--mu)}
+.soCol h4 em{font-style:normal;color:var(--mu);font-size:13px}
 .soClosed{margin-top:14px}
 .soKanRow{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-.soDeal{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px}
-html[data-theme=dark] .soDeal{background:var(--card)}
+.soDeal{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:10px}
 .soClosed .soDeal{margin-bottom:0}
-.soDeal>b{display:block;font-size:16px}
-.soDeal>span{display:block;color:var(--mu);font-size:14px;margin:4px 0 12px}
+.soDeal>b{display:block;font-size:15px}
+.soDeal>span{display:block;color:var(--mu);font-size:13px;margin:4px 0 12px}
 .soAct{display:flex;gap:8px}
-.soAct button{flex:1;height:36px;border-radius:9px;border:1px solid var(--bd);background:#fff;color:var(--tx);font:600 14px inherit;cursor:pointer}
-html[data-theme=dark] .soAct button{background:var(--fld)}
-.soAct button.p{background:#0b5ed7;color:#fff;border-color:#0b5ed7}
+.soAct button{flex:1;height:34px;border-radius:9px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:600 13px inherit;cursor:pointer}
+.soAct button.p{background:var(--pr);color:#fff;border-color:var(--pr)}
 .soAct button:disabled{opacity:.35;cursor:default}
-.soRow{display:flex;align-items:center;gap:16px;padding:14px 0;border-top:1px solid var(--bd)}
+.soRow{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--bd)}
 .soRow:first-of-type{border-top:0}
-.soT{width:64px;font-size:17px}
+.soT{width:56px;font-size:15px;font-weight:600}
 .soTx{flex:1;min-width:0}
 .soTx b{display:block}
-.soTx span,.soEmpty{color:var(--mu);font-size:14px}
-.soTm{color:var(--mu);font-size:14px;white-space:nowrap}
-.soFoot{margin-top:18px}
+.soTx span,.soEmpty{color:var(--mu);font-size:13px}
+.soTm{color:var(--mu);font-size:13px;white-space:nowrap}
+.soFoot{margin-top:16px}
+.soDemo{font-style:normal;font-size:11px;font-weight:600;color:var(--mu);margin-left:8px;background:var(--fld,var(--bg));padding:2px 8px;border-radius:8px;vertical-align:middle}
+.soShipB{font-size:13px;font-weight:600;color:var(--pr);white-space:nowrap}
 .soChips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.soChips button{height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--bd);background:#fff;color:var(--tx);font:600 13px inherit;cursor:pointer}
-html[data-theme=dark] .soChips button{background:var(--fld)}
-.soChips button.on{background:#0f2140;border-color:#0f2140;color:#fff}
+.soChips button{height:32px;padding:0 14px;border-radius:17px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:600 13px inherit;cursor:pointer}
+.soChips button.on{background:var(--pr);border-color:var(--pr);color:#fff}
 .soLine{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
 .soLine:first-of-type{border-top:0}
 .soLn{min-width:0;display:flex;flex-direction:column;gap:2px}
 .soLn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.soLink{background:none;border:0;padding:0;color:var(--pr);font:inherit;font-size:13px;cursor:pointer;text-align:left}
-.soLine select{height:34px;border-radius:9px;border:1px solid var(--bd);background:#fff;color:var(--tx);padding:0 8px;font:inherit;font-size:13px}
-html[data-theme=dark] .soLine select{background:var(--fld)}
 @media(max-width:1100px){.soKan{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:900px){.soWrap{grid-template-columns:1fr}.soSide{flex-direction:row;overflow-x:auto;padding:12px}.soBrand{display:none}.soNav{flex-direction:row}.soNav button{width:auto;white-space:nowrap}.soGrid2{grid-template-columns:1fr}.soMain{padding:18px}}
-.soDemo{font-style:normal;font-size:11px;font-weight:600;color:var(--mu);margin-left:8px;background:var(--fld);padding:2px 8px;border-radius:8px;vertical-align:middle}
-.soShipB{font-size:13px;font-weight:600;color:var(--pr);white-space:nowrap}
+@media(max-width:700px){.soGrid2{grid-template-columns:1fr}}
 </style>
 <script>
 (function(){
