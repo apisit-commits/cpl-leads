@@ -882,8 +882,10 @@ function markEmpty(){
  $('ch').classList.toggle('em-f',!f.querySelector('input[name=channel]:checked'));$('ints').querySelectorAll('.ib').forEach(e=>{e.querySelector('.chips').classList.toggle('em-f',!e.querySelector('.chips input:checked'));const c=e.querySelector('[data-k=country]'),v=e.querySelector('[data-k=svc]');c.classList.toggle('em-f',!c.value.trim());v.classList.toggle('em-f',!v.value)});
 }
 function onSave(e){
+ if(Date.now()-(window.LEAD_SUB_T||0)<2000){e.preventDefault();return}
  const f=$('fm_'),v=k=>f[k].value.trim(),iso=k=>d2i(v(k));
  if((v('date')&&!iso('date'))||(v('fu')&&!iso('fu'))||(v('d_sd')&&!iso('d_sd'))||(v('deal_date')&&!iso('deal_date'))){e.preventDefault();alert('รูปแบบวันที่ต้องเป็น dd/mm/yyyy');return}
+ window.LEAD_SUB_T=Date.now();
  const ints=intsGet();
  const o={date:iso('date'),ads:v('ads'),name:v('name'),dir:OPT.dir.filter(x=>ints.some(b=>(b.dir||'').split(' / ').includes(x))).join(' / '),country:[...new Set(ints.flatMap(b=>(b.country||'').split(/\s*,\s*/)).filter(Boolean))].join(', '),
   svc:svGet(),note:v('note'),
