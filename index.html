@@ -544,6 +544,10 @@ function TR2(m){m=String(m);if(LANG!=='en')return m;return m.split('\n').map(l=>
 let WHO=null;
 function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '+(TEAMS[WHO.t]||''),sales_lead:'SALES HEAD',marketing:'MARKETING',ads:'ADS'};{const rl=(R[WHO.r]||String(WHO.r).toUpperCase());$('who').textContent=WHO.n+' · '+rl;$('wn').textContent=WHO.n||'';$('wr').textContent=rl;$('av').textContent=String(WHO.n||'?').trim().charAt(0).toUpperCase()}}
 const ST_Y='ปิดการขาย',ST_H='มีโอกาสเปลี่ยนใจ',ST_S='รอการตัดสินใจ',ST_N='ยังไม่สนใจบริการ';
+const SO_LAB={lead:'Lead ใหม่',visit:'นัดพบ / เยี่ยม',quote:'ส่ง Quotation',nego:'เจรจา',closed:'ปิดดีล',lost:'ปิดไม่สำเร็จ'};
+const SO_STAT={lead:ST_S,visit:ST_S,quote:ST_S,nego:ST_S,closed:ST_Y,lost:ST_N};
+const SO_KEY=Object.fromEntries(Object.entries(SO_LAB).map(([k,v])=>[v,k]));
+const stv=s=>SO_KEY[s]?SO_STAT[SO_KEY[s]]:s;
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
 const OPT={
  channel:['Messenger','Messenger Private','LINE','LINE Private','IG','TikTok','WhatsApp','Call in','Website','Email','เยี่ยมลูกค้าโดยตรง'],
@@ -564,7 +568,7 @@ Object.assign(EN,{"ลากที่ปุ่ม ⋮⋮ หน้าราย�
 Object.assign(EN,{"ดูเดือน:":"View month:","ดูเฉพาะเดือนที่เลือก (ล้างช่อง = ทุกเดือนที่โหลด)":"Show only the selected month (clear = all loaded months)","ตั้งแต่เดือน":"From month","ถึงเดือน":"To month","เว้นว่าง \"ตั้งแต่เดือน\" = ตั้งแต่ต้น · เว้นว่าง \"ถึงเดือน\" = ถึงล่าสุด":"Leave \"From month\" empty = from the beginning · leave \"To month\" empty = up to the latest","เดือนเริ่มต้นต้องไม่เกินเดือนสิ้นสุด":"The start month must not be after the end month","ไม่มีข้อมูลในช่วงที่เลือก":"No data in the selected range"});
 const TEAMS={A:'CPL-Inter',B:'CPLEx',C:'Offline Team'};
 const SALES={A:['','Sales A1','Sales A2'],B:['','Sales B1','Sales B2']};
-const SC={[ST_Y]:'s-won',[ST_H]:'s-new',[ST_S]:'s-fu',[ST_N]:'s-lost'};
+const SC={[ST_Y]:'s-won',[ST_H]:'s-new',[ST_S]:'s-fu',[ST_N]:'s-lost',[SO_LAB.lead]:'s-fu',[SO_LAB.visit]:'s-fu',[SO_LAB.quote]:'s-fu',[SO_LAB.nego]:'s-fu',[SO_LAB.closed]:'s-won',[SO_LAB.lost]:'s-lost'};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const today=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())};
@@ -588,7 +592,7 @@ async function dupCheck(o){const d=o.detail||{},ph=[d.ph,d.cpt,d.ctt].filter(Boo
  return(data||[]).filter(r=>{const dd=r.detail||{};return(key&&dupKey(r.name)===key)||[dd.ph,dd.cpt,dd.ctt].map(dupPh).some(x=>x&&mine.has(x))})}
 const teamsVisible=()=>profile&&profile.role==='sales'?[profile.team]:Object.keys(TEAMS);
 async function fetchRows(from,to){let out=[],i=0;for(;;){let q=sb.from('leads').select(cols()).order('date',{ascending:false}).order('id',{ascending:false}).range(i,i+999);if(from)q=q.gte('date',from);if(to)q=q.lte('date',to);const{data,error}=await q;if(error){if(DEAL_OK&&/deal_/.test(error.message||'')){DEAL_OK=false;return fetchRows(from,to)}throw error}out=out.concat(data);if(data.length<1000)return out;i+=1000}}
-const norm=r=>{const o={...r,svc:r.svc||[]};['ads','country','note','dir','channel','reason','quo','sales','brand','promo','fu','fu_status'].forEach(k=>o[k]=o[k]||'');o.status=o.status||ST_S;if(o.status===ST_H)o.status=ST_S;if(o.fu_status===ST_H)o.fu_status=ST_S;o.deal_amt=(r.deal_amt==null||r.deal_amt==='')?null:+r.deal_amt;o.deal_date=r.deal_date||'';return o};
+const norm=r=>{const o={...r,svc:r.svc||[]};['ads','country','note','dir','channel','reason','quo','sales','brand','promo','fu','fu_status'].forEach(k=>o[k]=o[k]||'');o.status=o.status||ST_S;if(o.status===ST_H)o.status=ST_S;if(o.fu_status===ST_H)o.fu_status=ST_S;o.deal_amt=(r.deal_amt==null||r.deal_amt==='')?null:+r.deal_amt;o.deal_date=r.deal_date||'';if(r.team==='C'){if(SO_KEY[o.status])o.stage=o.status;else o.stage=({[ST_Y]:SO_LAB.closed,[ST_N]:SO_LAB.lost})[o.status]||SO_LAB.lead;o.status=stv(o.status)}return o};
 
 const MTH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],MTE=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function fLabels(){const d=new Date(),y=d.getFullYear(),M=LANG==='en'?MTE:MTH,mo=k=>{const x=new Date(y,d.getMonth()-k,1);return M[x.getMonth()]+' '+x.getFullYear()},rg=a=>{const x=new Date(y,d.getMonth()-a,1);return M[x.getMonth()]+(x.getFullYear()!==y?' '+x.getFullYear():'')+'–'+mo(0)},dm=x=>x.getDate()+' '+M[x.getMonth()],ago=n=>new Date(Date.now()-n*864e5);
@@ -678,7 +682,7 @@ const ADS_FIX=['ไม่ระบุ Ads','ลูกค้าเก่า','Spa
 const adsFor=t=>[...OPTS.ads.filter(o=>(!o.team||!t||o.team===t)&&!ADS_FIX.includes(o.value)).map(o=>o.value),...ADS_FIX];
 const brandFor=t=>OPTS.brand.filter(o=>!o.team||!t||o.team===t).map(o=>o.value),promoFor=t=>OPTS.promo.filter(o=>!o.team||!t||o.team===t).map(o=>o.value);
 const salesFor=t=>OPTS.sales.filter(o=>!t||o.team===t).map(o=>o.value);
-function applyOpts(){const f=$('fm_'),v=k=>['',...OPTS[k].map(o=>o.value)];fill(f.ads,['',...adsFor(team)]);fill(f.brand,['',...brandFor(team)]);fill(f.promo,['',...promoFor(team)]);fill(f.fu_status,['',...OPT.status]);fill(f.sales,['',...salesFor(team)])}
+function applyOpts(){const f=$('fm_'),v=k=>['',...OPTS[k].map(o=>o.value)];fill(f.status,team==='C'?Object.values(SO_LAB):OPT.status);fill(f.ads,['',...adsFor(team)]);fill(f.brand,['',...brandFor(team)]);fill(f.promo,['',...promoFor(team)]);fill(f.fu_status,['',...OPT.status]);fill(f.sales,['',...salesFor(team)])}
 function renderSet(){setTimeout(dndInit,0);
  const li=(o,k)=>`<div class="oi" data-id="${o.id}"><span class="dh2" draggable="true" title="ลากเพื่อเรียงลำดับ">⋮⋮</span><span class="ov" title="คลิกเพื่อแก้ไขชื่อ" onclick="editOpt(${o.id},'${k}',this)">${esc(o.value)}</span>${o.team?'':'<em class="tg">ทุกทีม</em>'}<button class="btn sm" onclick="delOpt(${o.id})">ลบ</button></div>`;
  const sec=(k,t,tm)=>{const L=OPTS[k].filter(o=>(k==='sales'?o.team===tm:(!o.team||o.team===tm))&&!(k==='ads'&&ADS_FIX.includes(o.value)));return `<div class="osec${k==='ads'?' oads':''}"><h4><span>${t}</span><em>${L.length}</em></h4><div class="ol" data-k="${k}">${L.map(o=>li(o,k)).join('')||'<div class="sub">ยังไม่มีรายการ</div>'}</div><div class="oa"><input id="n_${k}_${tm}" placeholder="เพิ่มรายการใหม่…" onkeydown="if(event.key===\'Enter\')addOpt(\'${k}\',\'${tm}\')"><button class="btn p sm" onclick="addOpt('${k}','${tm}')">เพิ่ม</button></div></div>`};
@@ -842,14 +846,14 @@ const osg=(()=>{const m={};l.forEach(r=>{const q=r.detail&&r.detail.qt;if(q&&q.f
  else h=fuS+trend+(sl?'':vcol('Lead และการปิดการขายรายเซลล์',grp(r=>r.sales,'(ไม่ระบุ)').map(([k,v])=>[k,v.length,cnt(v,ST_Y)]),'Lead','ปิดการขาย')+stb('KPI รายเซลล์',grp(r=>r.sales,'(ยังไม่ระบุเซลล์)'),30,0,r=>r.sales,'(ยังไม่ระบุเซลล์)'))+sec('ลูกค้าที่ปิดได้ (Yes) ของ <b>'+esc(sl||'เซลล์ทุกคน')+'</b> <small>แท่ง = จำนวนที่ปิดได้ · % = ปิดได้กี่ % ของ Lead กลุ่มนั้น</small>')+wr('นำเข้า / ส่งออก',grp(r=>r.dir?r.dir.split(' / '):'',U))+wr('ประเทศ',cty,8,lbc)+wr('บริการ',grp(r=>r.svc,''))+wr('ช่องทาง',ch)+wr('แบรนด์',grp(r=>r.brand,U))+wr('Ads',grp(r=>r.ads,'(ไม่ระบุ Ads)'),8)+wr('โปรโมชัน',grp(r=>r.promo,U))+qd+DET('สถานะและตารางสรุป',sdn+sum);
  $('dg').innerHTML=(dashMode==='A'?'':sstrip)+h;
 }
-function formEff(f){f=f||$('fm_');return closedR({status:f.status.value,fu_status:f.fu_status.value})?ST_Y:(okS(f.fu_status.value)||f.status.value)}
+function formEff(f){f=f||$('fm_');const s=stv(f.status.value);return closedR({status:s,fu_status:f.fu_status.value})?ST_Y:(okS(f.fu_status.value)||s)}
 function toggleReason(){$('rsn').classList.toggle('hid',formEff()!==ST_N)}
 function openForm(id){
  {const x=id&&rows.find(y=>y.id===id);if(x&&x.team&&x.team!==team){team=x.team;buildSeg();setSales()}}
  const f=$('fm_');editId=id||null;f.reset();applyOpts();
  const r=id?rows.find(x=>x.id===id):{date:today(),status:ST_S,svc:[]};
  $('dt').textContent=TT(id?'แก้ไข Lead':'เพิ่ม Lead',id?'Edit Lead':'Add Lead')+' · '+TEAMS[team];
- ['date','name','note','status','fu','reason','sales'].forEach(k=>f[k].value=r[k]||'');
+ ['date','name','note','status','fu','reason','sales'].forEach(k=>f[k].value=r[k]||'');if(team==='C')f.status.value=r.stage||SO_LAB.lead;
  ['ads','brand','promo','fu_status','sales','reason'].forEach(k=>{const v=r[k];if(v&&![...f[k].options].some(o=>o.value===v))f[k].add(new Option(v,v));f[k].value=v||''});
  if(r.channel)f.channel.value=r.channel;
  intsRender(intsFrom(r));
@@ -857,7 +861,7 @@ function openForm(id){
  {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'&&k!=='p0'&&k!=='tax'&&k!=='ch2'&&k!=='deals'));['d_ph','d_ctt'].forEach(n=>{delete f[n].dataset.t;delete f[n].dataset.sy});f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d);dlRender(d.deals)}
  f.querySelectorAll('input[name=channel]').forEach(i=>i.checked=i.value===r.channel);{const x=(r.detail&&r.detail.ch2)||[];f.querySelectorAll('input[name=ch2]').forEach(i=>i.checked=x.includes(i.value));ch2Sync()}
  {const bl=f.brand.closest('label.f');if(team==='B'){if(![...f.brand.options].some(o=>o.value==='CPLEx'))f.brand.add(new Option('CPLEx','CPLEx'));f.brand.value='CPLEx';bl.classList.add('hid')}else bl.classList.remove('hid')}
- {const off=team==='C';$('ads_wrap').classList.toggle('hid',off);$('ch_wrap').classList.toggle('hid',off);$('ch2_wrap').classList.toggle('hid',off)}
+ {const off=team==='C';$('ads_wrap').classList.toggle('hid',off);$('ch_wrap').classList.toggle('hid',off);$('ch2_wrap').classList.toggle('hid',off);f.fu_status.closest('label.f').classList.toggle('hid',off)}
  if(!id&&!f.sales.value)f.sales.value=profile.role==='keyer'?'':(profile.name||'');toggleReason();$('dlg').showModal();renderQL();markEmpty();
 }
 function dlRow(x){x=x||{};const po=['',...promoFor(team)];if(x.p&&!po.includes(x.p))po.push(x.p);return `<div class="dlr"><label class="f">วันที่ปิดได้<input data-k="d" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" value="${esc(fmtD(x.d||''))}"></label><label class="f">ยอดที่ปิดได้<span class="nf" data-u="บาท"><input data-k="a" inputmode="decimal" data-num autocomplete="off" placeholder="เช่น 50,000" value="${x.a!=null&&x.a!==''?esc(fmtIn(x.a)):''}"></span></label><label class="f">โปรโมชัน<select data-k="p">${po.map(o=>`<option value="${esc(o)}"${o===(x.p||'')?' selected':''}>${esc(o||'—')}</option>`).join('')}</select></label><button type="button" class="btn sm dlx" data-x title="ลบ" aria-label="ลบ">✕</button></div>`}
@@ -887,7 +891,7 @@ addEventListener('resize',close);document.addEventListener('scroll',()=>{if(pop)
 function ch2Sync(){const f=$('fm_'),c=(f.querySelector('input[name=channel]:checked')||{}).value;f.querySelectorAll('input[name=ch2]').forEach(i=>{const l=i.closest('label'),same=i.value===c;if(same)i.checked=false;l.classList.toggle('hid',same)})}
 document.addEventListener('change',e=>{if(e.target&&e.target.name==='channel')ch2Sync()});
 function markEmpty(){
- const f=$('fm_'),st=f.status.value,closed=[ST_Y,ST_N].includes(st);
+ const f=$('fm_'),st=stv(f.status.value),closed=[ST_Y,ST_N].includes(st);
  ['date','ads','name','fu','fu_status','reason','quo','sales','brand','promo'].forEach(k=>{const e=f[k];if(!e)return;const need=!((k==='fu'||k==='fu_status')&&closed)&&!(k==='reason'&&formEff(f)!==ST_N);const lb=e.closest('label.f');if(lb)lb.classList.toggle('norq',!need);e.classList.toggle('em-f',need&&!e.value.trim())});
  $('ch').classList.toggle('em-f',!f.querySelector('input[name=channel]:checked'));$('ints').querySelectorAll('.ib').forEach(e=>{e.querySelector('.chips').classList.toggle('em-f',!e.querySelector('.chips input:checked'));const c=e.querySelector('[data-k=country]'),v=e.querySelector('[data-k=svc]');c.classList.toggle('em-f',!c.value.trim());v.classList.toggle('em-f',!v.value)});
 }
@@ -899,10 +903,10 @@ function onSave(e){
  const ints=intsGet();
  const o={date:iso('date'),ads:v('ads'),name:v('name'),dir:OPT.dir.filter(x=>ints.some(b=>(b.dir||'').split(' / ').includes(x))).join(' / '),country:[...new Set(ints.flatMap(b=>(b.country||'').split(/\s*,\s*/)).filter(Boolean))].join(', '),
   svc:svGet(),note:v('note'),
-  channel:(f.querySelector('input[name=channel]:checked')||{}).value||(team==='C'?'เยี่ยมลูกค้าโดยตรง':''),status:v('status'),fu:iso('fu'),fu_status:v('fu_status'),
+  channel:(f.querySelector('input[name=channel]:checked')||{}).value||(team==='C'?'เยี่ยมลูกค้าโดยตรง':''),status:v('status'),fu:iso('fu'),fu_status:team==='C'?'':v('fu_status'),
   reason:formEff(f)===ST_N?v('reason'):'',sales:v('sales'),brand:v('brand'),promo:v('promo')};
  if(DEAL_OK){o.deal_amt=v('deal_amt')?pn(v('deal_amt')):null;o.deal_date=iso('deal_date')||(o.deal_amt?today():null)}
- if(!editId&&!o.fu&&![ST_Y,ST_N].includes(o.status)&&o.fu_status!==ST_Y)o.fu=addDays(o.date||today(),fuDays());
+ if(!editId&&!o.fu&&![ST_Y,ST_N].includes(stv(o.status))&&o.fu_status!==ST_Y)o.fu=addDays(o.date||today(),fuDays());
  {const it=cgGet('cgf'),d={};o.cargo=it.length?{items:it}:null;DK.forEach(k=>{const x=k==='sd'?iso('d_sd'):(k==='cpd'||k==='ctd')?dialCode(v('d_'+k)):v('d_'+k);if(x)d[k]=x});if((f.querySelector('input[name=d_cm]:checked')||{}).value==='Y'){const cj=cnRaw().filter(x=>x.t);if(cj.length){d.cj=cj;d.cn=cj.map(x=>x.t+(x.q>1?' x'+x.q:'')+(x.kg?' ('+x.kg.toLocaleString('en-US')+' kg)':'')).join(', ')}}{const ox=editId&&rows.find(y=>y.id===editId);if(ox&&ox.detail&&ox.detail.qt)d.qt=ox.detail.qt}if(ints.length>1)d.ints=ints;{const dl=dlRaw();if(dl.length)d.deals=dl}{const c2=[...f.querySelectorAll('input[name=ch2]:checked')].map(i=>i.value).filter(x=>x!==o.channel);if(c2.length)d.ch2=c2}o.detail=Object.keys(d).length?d:null}
  if(!editId&&isBeta()){e.preventDefault();dupCheck(o).then(async d=>{if(d.length&&!await ask('พบลูกค้าที่อาจซ้ำกับ Lead เดิม\n'+d.slice(0,3).map(r=>'• '+r.name+' · '+(r.sales||'ยังไม่ระบุเซลล์')+' · '+(r.status||'')+' · '+(r.date||'')).join('\n'),{t:'พบลูกค้าที่อาจซ้ำ',te:'Possible duplicate customer',ok:'บันทึกเป็น Lead ใหม่',oke:'Save as new lead'}))return;$('dlg').close();saveLead(editId,o)}).catch(()=>{$('dlg').close();saveLead(editId,o)});return}
  saveLead(editId,o);
@@ -920,7 +924,7 @@ function filtered(){
 }
 
 /* ===== ข้อมูลสินค้า + คำนวณราคา ===== */
-const dispSt=r=>r.fu_status&&!['-','—'].includes(r.fu_status.trim())?r.fu_status:r.status;
+const dispSt=r=>r.team==='C'&&r.stage?r.stage:(r.fu_status&&!['-','—'].includes(r.fu_status.trim())?r.fu_status:r.status);
 const E=(v,c=true)=>!v&&c?' class="em"':'';
 const CHI={Messenger:['#0084ff','<path d="M5 18l1.3-3.8A6.5 6.5 0 1 1 9.5 17.3L5 18z" fill="#fff"/><path d="M8 13l2.500-3 2 1.600L15.500 9" stroke="#0084ff" stroke-width="1.600" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'],
 LINE:['#06c755','<ellipse cx="12" cy="11" rx="7.500" ry="6" fill="#fff"/><text x="12" y="13" font-size="5.500" font-weight="700" text-anchor="middle" fill="#06c755">LINE</text>'],
@@ -2090,7 +2094,8 @@ body.out #sbt{display:none}
 .soGrid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .soPanel h3{margin:0 0 12px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
 .soPanel h3::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ac)}
-.soKan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.soKan{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.soNav{display:flex;width:100%}.soNav>button{flex:1;justify-content:center}
 .soCol{background:var(--fld,var(--bg));border:1px solid var(--bd);border-radius:10px;padding:14px;min-height:120px;min-width:0}
 .soCol h4{margin:0 0 12px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;color:var(--mu)}
 .soCol h4 em{font-style:normal;color:var(--mu);font-size:13px}
@@ -2125,7 +2130,7 @@ body.out #sbt{display:none}
 .soLine:first-of-type{border-top:0}
 .soLn{min-width:0;display:flex;flex-direction:column;gap:2px}
 .soLn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-@media(max-width:1100px){.soKan{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1280px){.soKan{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:700px){.soKan{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.soGrid2{grid-template-columns:1fr}}
 </style>
 <script>
@@ -2283,31 +2288,28 @@ async function soSubmit(e){e.preventDefault();const f=$('sof'),nm=f.so_n.value.t
  const vr=await sb.from('so_visits').insert({team,deal_id:d.id,company:d.company,sales:soActor(),visit_date:f.so_d.value,visit_time:f.so_t.value,purpose:f.so_p.value.trim()||null,checked_in:false}).select().single();
  if(vr.error||!vr.data)return alert('บันทึกไม่สำเร็จ');SO.visits.unshift(vr.data);await soLog(`บันทึกแผนเยี่ยม: ${d.company}`);
  $('sod').close();await soLoad();soRender()}
-async function soMove(id,to){const d=soDeal(id);if(!d||!to)return;const patch={stage:to};if(to==='closed')patch.closed_at=new Date().toISOString();
+async function soMove(id,to){const d=soDeal(id);if(!d||!to)return;const patch={stage:to};if(to==='closed'||to==='lost')patch.closed_at=new Date().toISOString();else patch.closed_at=null;
  const{error}=await sb.from('so_deals').update(patch).eq('id',id);if(error)return alert('บันทึกไม่สำเร็จ');
  Object.assign(d,patch);if(to==='closed')await soLog(`ปิดดีล: ${d.company}`);try{await soSyncDealToLead(d,to)}catch(e){}soRender()}
 async function soSyncDealToLead(d,to){
- const key=(d.company||'').trim().toLowerCase();
- const lead=rows.find(r=>r.team==='C'&&(r.name||'').trim().toLowerCase()===key);
- if(!lead)return;
- const want=to==='closed'?ST_Y:(lead.status===ST_Y?ST_S:null);
- if(want===null||lead.status===want)return;
- const{error}=await sb.from('leads').update({status:want}).eq('id',lead.id);
- if(!error){lead.status=want;try{refresh()}catch(e){}}}
+ const label=SO_LAB[to];if(!label||!d.company)return;
+ const{error}=await sb.from('leads').update({status:label}).eq('team','C').eq('name',d.company);
+ if(error)return;
+ rows.forEach(r=>{if(r.team==='C'&&(r.name||'')===d.company){r.stage=label;r.status=SO_STAT[to]}});
+ try{refresh()}catch(e){}}
 async function soSyncLeadToDeal(o){
  if(team!=='C'||!o.name)return;
  if(!SO.loaded)await soLoad();
  const key=o.name.trim().toLowerCase();
  let d=SO.deals.find(x=>(x.company||'').trim().toLowerCase()===key);
- const wantClosed=o.status===ST_Y;
+ const st=SO_KEY[o.status]||'lead',done=st==='closed'||st==='lost';
  if(!d){
-  const ins={team,company:o.name,mode:null,stage:wantClosed?'closed':'lead',sales:o.sales||soActor()};
-  if(wantClosed)ins.closed_at=new Date().toISOString();
+  const ins={team,company:o.name,mode:null,stage:st,sales:o.sales||soActor()};
+  if(done)ins.closed_at=new Date().toISOString();
   const r=await sb.from('so_deals').insert(ins).select().single();
   if(!r.error&&r.data)SO.deals.unshift(r.data);
   return}
- if(wantClosed&&d.stage!=='closed'){const patch={stage:'closed',closed_at:new Date().toISOString()};const{error}=await sb.from('so_deals').update(patch).eq('id',d.id);if(!error)Object.assign(d,patch)}
- else if(!wantClosed&&d.stage==='closed'){const patch={stage:'nego',closed_at:null};const{error}=await sb.from('so_deals').update(patch).eq('id',d.id);if(!error)Object.assign(d,patch)}
+ if(d.stage!==st){const patch={stage:st,closed_at:done?new Date().toISOString():null};const{error}=await sb.from('so_deals').update(patch).eq('id',d.id);if(!error)Object.assign(d,patch)}
  if(o.sales&&!d.sales){const{error}=await sb.from('so_deals').update({sales:o.sales}).eq('id',d.id);if(!error)d.sales=o.sales}}
 const _slLink=saveLead;saveLead=async function(id,o){const r=await _slLink(id,o);try{await soSyncLeadToDeal(o)}catch(e){}if(!$('vSO').classList.contains('hid')&&(SO.page==='P'||SO.page==='L'))soRender();return r};
 function soDealOpen(id){const d=soDeal(id);if(!d)return;const f=$('sodf');f.reset();f.dataset.id=id;f.sd_n.value=d.company||'';f.sd_m.value=d.mode||'';
@@ -2331,18 +2333,19 @@ function soMaps(){const td=today(),pend=SO.visits.filter(v=>v.visit_date===td&&!
  window.open('https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(dest)+(wp.length?'&waypoints='+encodeURIComponent(wp.join('|')):'')+'&travelmode=driving','_blank','noopener')}
 function soDash(){const td=today(),mo=td.slice(0,7);
  const pt=SO.visits.filter(v=>v.visit_date===td),dn=pt.filter(v=>v.checked_in).length;
- const open=SO.deals.filter(d=>d.stage!=='closed').length,cm=SO.deals.filter(d=>d.stage==='closed'&&(d.closed_at||'').slice(0,7)===mo).length;
+ const open=SO.deals.filter(d=>d.stage!=='closed'&&d.stage!=='lost').length,cm=SO.deals.filter(d=>d.stage==='closed'&&(d.closed_at||'').slice(0,7)===mo).length;
  const acts=SO.acts.slice(0,6);
  const sf=SO.ship==='all'?SO_SAMPLE:SO_SAMPLE.filter(s=>s.ship===SO.ship);
  return `<div class="soHead"><button class="btn p" id="so_add" type="button">+ บันทึกการเยี่ยมลูกค้า</button></div>
 <div class="soKpi"><div class="soCard"><span>เยี่ยมแล้ววันนี้</span><b>${dn} / ${pt.length}</b></div><div class="soCard"><span>ดีลที่เปิดอยู่</span><b>${open}</b></div><div class="soCard"><span>ปิดดีลเดือนนี้</span><b>${cm}</b></div></div>
 <div class="soGrid2"><div class="soCard soPanel"><h3>กิจกรรมทีม</h3>${acts.length?acts.map(p=>`<div class="soLine"><span>${H(p.action_text)} · <b>${H(p.actor_name||'-')}</b></span><em class="soTm">${soHM(p.created_at)}</em></div>`).join(''):'<div class="soEmpty">ยังไม่มีกิจกรรม</div>'}</div>
 <div class="soCard soPanel"><h3>สถานะ Shipment ของลูกค้า<em class="soDemo">ตัวอย่าง</em></h3><div class="soChips"><button type="button" data-act="filter" data-ship="all" class="${SO.ship==='all'?'on':''}">ทั้งหมด</button>${SO_SHIP.map(s=>`<button type="button" data-act="filter" data-ship="${H(s)}" class="${SO.ship===s?'on':''}">${H(s)}</button>`).join('')}</div>${sf.length?sf.map(s=>`<div class="soLine"><div class="soLn"><b>${H(s.company)}</b><span>เลขที่ B/L: ${H(s.bl)}</span></div><span class="soShipB">${H(s.ship)}</span></div>`).join(''):'<div class="soEmpty">ยังไม่มีรายการ</div>'}</div></div>`}
-function soPipe(){const op=SO.deals.filter(d=>d.stage!=='closed'),mo=today().slice(0,7),cl=SO.deals.filter(d=>d.stage==='closed'&&(d.closed_at||'').slice(0,7)===mo);
- const card=(d,st)=>{const i=SO_ORD.indexOf(st);let pv,nx;if(st==='closed'){pv='nego';nx=''}else{pv=i>0?SO_ORD[i-1]:'';nx=SO_ORD[i+1]}
+function soPipe(){const mo=today().slice(0,7),inM=d=>(d.closed_at||'').slice(0,7)===mo;
+ const list=k=>k==='closed'||k==='lost'?SO.deals.filter(d=>d.stage===k&&inM(d)):SO.deals.filter(d=>d.stage===k);
+ const card=(d,st)=>{const i=SO_ORD.indexOf(st);let pv,nx;if(st==='closed'||st==='lost'){pv='nego';nx=''}else{pv=i>0?SO_ORD[i-1]:'';nx=SO_ORD[i+1]}
   return `<div class="soDeal" draggable="true" data-drag-id="${H(d.id)}"><b data-act="edit" data-id="${H(d.id)}" title="${H(TT('คลิกเพื่อแก้ไข','Click to edit'))}">${H(d.company)}</b><span>${H(d.mode||'-')}${d.sales?' · '+H(d.sales):''}</span><div class="soAct"><button type="button" data-act="move" data-id="${H(d.id)}" data-to="${pv}"${pv?'':' disabled'}>←</button><button type="button" class="p" data-act="move" data-id="${H(d.id)}" data-to="${nx}"${nx?'':' disabled'}>ถัดไป →</button></div></div>`};
- const col=(k,l,list)=>`<div class="soCol" data-stage="${k}"><h4><span>${l}</span><em>${list.length}</em></h4>${list.map(d=>card(d,k)).join('')}</div>`;
- return `<div class="soHead"><button class="btn p" id="so_add" type="button">+ บันทึกการเยี่ยมลูกค้า</button></div><div class="soKan">${SO_ST.map(([k,l])=>col(k,l,op.filter(d=>d.stage===k))).join('')}</div><div class="soCol soClosed" data-stage="closed"><h4><span>ปิดดีล</span><em>${cl.length}</em></h4><div class="soKanRow">${cl.map(d=>card(d,'closed')).join('')}</div></div>`}
+ const col=k=>{const l=list(k);return `<div class="soCol" data-stage="${k}"><h4><span>${SO_LAB[k]}</span><em>${l.length}</em></h4>${l.map(d=>card(d,k)).join('')}</div>`};
+ return `<div class="soHead"><button class="btn p" id="so_add" type="button">+ บันทึกการเยี่ยมลูกค้า</button></div><div class="soKan">${['lead','visit','quote','nego','closed','lost'].map(col).join('')}</div>`}
 function soVisit(){const td=today(),L=SO.visits.filter(v=>v.visit_date===td).sort((a,b)=>(a.visit_time||'').localeCompare(b.visit_time||''));
  return `<div class="soHead"><button class="btn p" id="so_add" type="button">+ บันทึกการเยี่ยมลูกค้า</button></div><div class="soCard soPanel"><h3>แผนเยี่ยมลูกค้าวันนี้</h3>${L.length?L.map(v=>`<div class="soRow"><b class="soT">${H((v.visit_time||'').slice(0,5))}</b><div class="soTx"><b>${H(v.company)}</b><span>${H(v.purpose?'วาระ: '+v.purpose:'')}</span></div>${v.checked_in?`<span class="soTm">เช็กอิน ${soHM(v.checkin_at)}</span>`:`<button type="button" class="btn" data-act="check" data-id="${H(v.id)}">เช็กอิน</button>`}</div>`).join(''):'<div class="soEmpty">ยังไม่มีแผนเยี่ยมวันนี้</div>'}<div class="soFoot"><button type="button" class="btn" id="so_maps"${L.some(v=>!v.checked_in)?'':' disabled'}>เปิดเส้นทางใน Maps</button></div></div>`}
 const soLeadRows=()=>rows.filter(r=>r.team==='C').sort((a,b)=>b.date.localeCompare(a.date));
@@ -2385,7 +2388,7 @@ $('soMain').addEventListener('input',e=>{if(e.target.id==='so_lq'){soRender();co
 $('sof').addEventListener('submit',soSubmit);
 const _arSO=applyRoleUI;applyRoleUI=function(p){_arSO(p);$('tSO').classList.toggle('hid',!isBeta())};
 const _renderSO=render;render=function(){_renderSO();if(SO.page==='L'&&!$('vSO').classList.contains('hid'))soRender()};
-if(typeof EN==='object')Object.assign(EN,{"Pipeline":"Pipeline","แผนเยี่ยมลูกค้า":"Customer Visit Plan","เยี่ยมแล้ววันนี้":"Visited today","ดีลที่เปิดอยู่":"Open deals","ปิดดีลเดือนนี้":"Closed deals this month","กิจกรรมทีม":"Team activity","ยังไม่มีกิจกรรม":"No activity yet","สถานะ Shipment ของลูกค้า":"Customer shipment status","ตัวอย่าง":"Example","ระหว่างขนส่ง":"In transit","รอเอกสาร":"Pending documents","ส่งมอบแล้ว":"Delivered","+ บันทึกการเยี่ยมลูกค้า":"+ Log customer visit","Lead ใหม่":"New lead","นัดพบ / เยี่ยม":"Visit / meeting","ส่ง Quotation":"Quotation sent","เจรจา":"Negotiating","ปิดดีล":"Closed deals","ถัดไป →":"Next →","แผนเยี่ยมลูกค้าวันนี้":"Today's visit plan","ยังไม่มีแผนเยี่ยมวันนี้":"No visits planned today","เปิดเส้นทางใน Maps":"Open route in Maps","เช็กอิน":"Check in","บันทึกการเยี่ยมลูกค้า":"Log customer visit","ประเภทบริการ":"Service type","เช่น ทางเรือ FCL":"e.g. FCL by sea","เวลา":"Time","วัตถุประสงค์":"Purpose","กำลังโหลด…":"Loading…","ภาพรวมทีมขายภาคสนาม":"Field sales team overview","เยี่ยมลูกค้าโดยตรง":"Direct customer visit","แก้ไขลูกค้า":"Edit customer","ลบดีล":"Delete deal","ลบดีลนี้?":"Delete this deal?","เซลล์เจ้าของ":"Sales owner"});
+if(typeof EN==='object')Object.assign(EN,{"Pipeline":"Pipeline","แผนเยี่ยมลูกค้า":"Customer Visit Plan","เยี่ยมแล้ววันนี้":"Visited today","ดีลที่เปิดอยู่":"Open deals","ปิดดีลเดือนนี้":"Closed deals this month","กิจกรรมทีม":"Team activity","ยังไม่มีกิจกรรม":"No activity yet","สถานะ Shipment ของลูกค้า":"Customer shipment status","ตัวอย่าง":"Example","ระหว่างขนส่ง":"In transit","รอเอกสาร":"Pending documents","ส่งมอบแล้ว":"Delivered","+ บันทึกการเยี่ยมลูกค้า":"+ Log customer visit","Lead ใหม่":"New lead","นัดพบ / เยี่ยม":"Visit / meeting","ส่ง Quotation":"Quotation sent","เจรจา":"Negotiating","ปิดดีล":"Closed deals","ถัดไป →":"Next →","แผนเยี่ยมลูกค้าวันนี้":"Today's visit plan","ยังไม่มีแผนเยี่ยมวันนี้":"No visits planned today","เปิดเส้นทางใน Maps":"Open route in Maps","เช็กอิน":"Check in","บันทึกการเยี่ยมลูกค้า":"Log customer visit","ประเภทบริการ":"Service type","เช่น ทางเรือ FCL":"e.g. FCL by sea","เวลา":"Time","วัตถุประสงค์":"Purpose","กำลังโหลด…":"Loading…","ภาพรวมทีมขายภาคสนาม":"Field sales team overview","เยี่ยมลูกค้าโดยตรง":"Direct customer visit","แก้ไขลูกค้า":"Edit customer","ลบดีล":"Delete deal","ลบดีลนี้?":"Delete this deal?","เซลล์เจ้าของ":"Sales owner","ปิดไม่สำเร็จ":"Closed lost"});
 </script>
 
 <script>
