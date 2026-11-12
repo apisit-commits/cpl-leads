@@ -484,10 +484,29 @@ header .hd #who{display:none!important}
 <div id="vS" class="hid"><div class="mktabs" id="sst"><button type="button" data-s="o" class="on">ตัวเลือกในฟอร์ม</button><button type="button" data-s="u">จัดการผู้ใช้</button></div><div class="pn" id="vSu"></div><div id="vSo"></div>
  </div>
 <div id="vFO" class="hid">
- <div class="hd fo-hd"><span style="flex:1"></span><button type="button" class="btn p" id="fo_new">+ สร้างฟอร์ม</button></div>
- <div class="stats" id="fo_st"></div>
- <div class="bar"><input id="fo_q" type="search" placeholder="ค้นหาลูกค้า / ผู้ติดต่อ" aria-label="ค้นหา"><select id="fo_fb" aria-label="แบรนด์"></select><select id="fo_fk" aria-label="ฟอร์ม"></select><select id="fo_fs" aria-label="สถานะ"></select><select id="fo_fsl" aria-label="เซลล์"></select><span class="pgrp"><label>ช่วงเวลา <select id="fop"></select></label><label>ตั้งแต่ <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="fo1"></label><label>ถึง <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="fo2"></label></span></div>
- <div class="pn fo-pn"><table><thead><tr><th>ลูกค้า</th><th>ฟอร์ม</th><th>แบรนด์</th><th class="fo-slc">เซลล์</th><th>สถานะ</th><th>ส่งเมื่อ</th><th>กรอกเมื่อ</th><th></th></tr></thead><tbody id="fo_b"></tbody></table><div class="empty hid" id="fo_em">ไม่พบฟอร์ม</div></div>
+ <div id="fo_home">
+  <div class="fo-top"><div><h2 class="fo-h1">ฟอร์มลูกค้า</h2><div class="sub" id="fo_cnt"></div></div><button type="button" class="btn p" id="fo_new">+ สร้างฟอร์ม</button></div>
+  <div class="stats" id="fo_st"></div>
+  <div class="bar fo-bar"><input id="fo_fq" type="search" placeholder="ค้นหาฟอร์ม" aria-label="ค้นหาฟอร์ม"><div class="mkseg" id="fo_bseg"></div></div>
+  <div id="fo_grp"></div>
+  <div class="pn fo-rec"><div class="fo-rh"><h3>คำตอบล่าสุด</h3></div><table><thead><tr><th>ลูกค้า</th><th>ฟอร์ม</th><th class="fo-slc">เซลล์</th><th class="r">กรอกเมื่อ</th></tr></thead><tbody id="fo_rb"></tbody></table><div class="empty hid" id="fo_rem">ยังไม่มีคำตอบ</div></div>
+ </div>
+ <div id="fo_inb" class="hid">
+  <div class="fo-top"><div><button type="button" class="fo-back" id="fo_back"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>ฟอร์มลูกค้า</button><h2 class="fo-h1" id="fo_it"></h2></div><div class="fo-acts"><button type="button" class="btn" id="fo_xl">ส่งออก Excel</button><button type="button" class="btn p" id="fo_nl">+ สร้างลิงก์</button></div></div>
+  <div class="bar fo-bar"><div class="mkseg" id="fo_tabs"></div><select id="fo_fsl" aria-label="เซลล์"></select><span class="pgrp"><label>ช่วงเวลา <select id="fop"></select></label><label>ตั้งแต่ <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="fo1"></label><label>ถึง <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="fo2"></label></span></div>
+  <div class="fo-split">
+   <section class="fo-lst" aria-label="รายการคำตอบ"><div class="fo-lq"><input id="fo_q" type="search" placeholder="ค้นหาลูกค้า / ผู้ติดต่อ / เซลล์" aria-label="ค้นหา"></div><div id="fo_items"></div><div class="empty hid" id="fo_em">ไม่พบคำตอบ</div><button type="button" class="btn fo-more hid" id="fo_more">แสดงเพิ่ม</button></section>
+   <article class="fo-pv" id="fo_pv">
+    <div class="fo-pe" id="fo_pe">เลือกคำตอบจากรายการ</div>
+    <div id="fo_pc" class="hid">
+     <div class="fo-ph"><div><h3 id="foa_t"></h3><div class="sub" id="foa_s"></div></div>
+      <div class="fo-pa"><button type="button" class="btn sm ic" id="fo_prv" aria-label="ก่อนหน้า" title="ก่อนหน้า"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="btn sm ic" id="fo_nxt" aria-label="ถัดไป" title="ถัดไป"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button type="button" class="btn sm" id="foa_pr">พิมพ์</button><button type="button" class="btn sm" id="foa_pdf">ดาวน์โหลด PDF</button><a class="btn sm" id="foa_sh" target="_blank" rel="noopener">เปิดใน Google Sheets</a><button type="button" class="btn sm" id="fo_pcp">คัดลอกลิงก์</button><button type="button" class="btn sm rb" id="fo_pdl" title="ลบ" aria-label="ลบ"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></div></div>
+     <div id="fo_pw" class="fo-pw hid"></div>
+     <div id="foa_b"></div><div id="foa_f"></div>
+    </div>
+   </article>
+  </div>
+ </div>
 </div>
 </main>
 
@@ -541,7 +560,7 @@ header .hd #who{display:none!important}
 <div class="g"><label class="f fo-wide">แบรนด์<b class="rq">*</b><select name="brand"><option>CPL-Inter</option><option>CPLEx</option><option>CLMV</option><option>IMTH</option></select></label></div>
 <div id="fo_lw" class="hid" style="margin-top:12px"><label class="f">ลิงก์สำหรับลูกค้า<span class="fo-lk"><input id="fo_url" readonly><button type="button" class="btn p" id="fo_cp">คัดลอก</button></span></label></div>
 <div class="acts"><button type="button" class="btn" id="fo_x">ยกเลิก</button><button class="btn p" id="fo_mk">สร้างลิงก์</button></div></form></dialog>
-<dialog id="foa"><div class="fo-ad"><h3 id="foa_t" style="margin:0 0 4px"></h3><div class="sub" id="foa_s" style="margin-bottom:14px"></div><div id="foa_b"></div><div id="foa_f"></div><div class="acts"><button type="button" class="btn" id="foa_pr">พิมพ์</button><button type="button" class="btn" id="foa_pdf">ดาวน์โหลด PDF</button><a class="btn" id="foa_sh" target="_blank" rel="noopener">เปิดใน Google Sheets</a><button type="button" class="btn p" id="foa_x">ปิด</button></div></div></dialog>
+
 <dialog id="aed"><form id="aef" method="dialog"><h3 style="margin:0 0 4px">แก้ไขผู้ใช้</h3><div class="sub" id="ae_em" style="margin-bottom:12px"></div><div class="g"><label class="f">ชื่อที่แสดง<input name="name" maxlength="60"><select name="nameS" class="hid"></select></label><label class="f">บทบาท<b class="rq">*</b><select name="role"></select></label><label class="f hid" id="ae_tw">ทีม<b class="rq">*</b><select name="team"></select></label></div><div class="acts"><button type="button" class="btn" id="ae_x">ยกเลิก</button><button class="btn p" id="ae_sv">บันทึก</button></div></form></dialog>
 <dialog id="aud"><form id="auf" method="dialog"><h3 style="margin:0 0 12px">เพิ่มผู้ใช้</h3><div class="g"><label class="f">อีเมล<b class="rq">*</b><input type="email" name="email" required maxlength="120" autocomplete="off"></label><label class="f">รหัสผ่าน<b class="rq">*</b><input type="password" name="pw" required minlength="8" maxlength="72" autocomplete="new-password"></label><label class="f">ชื่อที่แสดง<b class="rq hid" id="au_nr">*</b><input name="name" maxlength="60"></label><label class="f">บทบาท<b class="rq">*</b><select name="role" required></select></label><label class="f hid" id="au_tw">ทีม<b class="rq">*</b><select name="team"></select></label></div><div class="acts"><button type="button" class="btn" id="au_x">ยกเลิก</button><button class="btn p" id="au_sv">เพิ่มผู้ใช้</button></div></form></dialog>
 <dialog id="cud"><form id="cuf" method="dialog"><h3 id="cud_t" style="margin:0 0 12px">ลูกค้า</h3><fieldset><legend>ข้อมูลลูกค้า</legend><div class="g"><label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="name" required maxlength="160"></label><label class="f">เลขผู้เสียภาษี<input name="tax_id" maxlength="20"></label><label class="f">เจ้าของ<select name="owner"></select></label></div><label class="f" style="margin-top:12px">หมายเหตุ<textarea name="note" rows="2" maxlength="500"></textarea></label></fieldset><fieldset><legend>ผู้ติดต่อ</legend><div id="cu_ct"></div><button type="button" class="btn" id="cu_addc">เพิ่มผู้ติดต่อ</button></fieldset><div class="acts"><button type="button" class="btn p dgr hid" id="cu_del" style="margin-right:auto">ลบลูกค้า</button><button type="button" class="btn" id="cu_x">ยกเลิก</button><button class="btn p" id="cu_sv">บันทึก</button></div></form></dialog>
@@ -2547,6 +2566,7 @@ function pick(t,u,v){
  if(/บาท|THB/.test(u||''))return'baht';if(/กก|kg/.test(u||''))return'weight';if(/วัน|days/.test(u||''))return'cal';
  if(/วันข้างหน้า|next 7/i.test(t))return'cal';
  if(/กรอกแล้ว|submitted/i.test(t))return'check';
+ if(/ยังไม่เปิด|not opened/i.test(t))return'doc';
  if(/ฟอร์ม|forms?\b/i.test(t))return'doc';
  if(/^\s*(CPL-Inter|CPLEx|Offline Team)\s*$/i.test(t))return'bld';
  if(/เยี่ยม|visit/i.test(t))return'cal';
@@ -2682,6 +2702,61 @@ const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&
 })();
 </script>
 <style>
+#vFO .fo-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+#vFO .fo-h1{margin:0;font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#vFO .fo-top .sub{margin-top:2px}
+#vFO .fo-acts{display:flex;gap:8px;flex-wrap:wrap}
+#vFO .fo-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:16px 0}
+#vFO .fo-bar input[type=search]{flex:1 1 240px;min-width:180px}
+#vFO .fo-bd{width:8px;height:8px;border-radius:99px;display:inline-block}
+#vFO .fo-g{margin-top:22px}
+#vFO .fo-gh{margin:0 0 12px;font-size:var(--fs-lg,15px);font-weight:700;display:flex;align-items:center;gap:8px}
+#vFO .fo-gh::before{content:'';width:8px;height:8px;border-radius:2px;background:var(--ac,#f07d22)}
+#vFO .fo-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+#vFO .fo-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg,14px);box-shadow:var(--sh-1);padding:16px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s}
+#vFO .fo-card:hover{border-color:var(--lt,#52bdec)}
+#vFO .fo-ct{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+#vFO .fo-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 40px}
+#vFO .fo-bdg{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#vFO .fo-new,#vFO .fo-wt{font-style:normal;height:22px;padding:0 9px;border-radius:999px;font-size:12px;display:inline-flex;align-items:center;white-space:nowrap}
+#vFO .fo-new{background:var(--dgr);color:#fff;font-weight:600}
+#vFO .fo-wt{background:var(--wnb);color:var(--wn);font-weight:500}
+#vFO .fo-cn{font-size:var(--fs-lg,15px);font-weight:700;margin-bottom:-8px}
+#vFO .fo-cb{font-size:13px;font-weight:600}
+#vFO .fo-cc{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+#vFO .fo-cc b{font-size:22px}#vFO .fo-cc span,#vFO .fo-cx{font-size:13px;color:var(--mu)}#vFO .fo-cx{margin-top:-6px;font-size:12px}
+#vFO .fo-ca{display:flex;gap:8px;margin-top:auto}#vFO .fo-ca .btn.p{flex:1}
+#vFO .fo-rec{margin-top:24px;padding:0;overflow-x:auto}
+#vFO .fo-rh{padding:14px 16px}#vFO .fo-rh h3{margin:0;font-size:var(--fs-lg,15px);display:flex;align-items:center;gap:8px}#vFO .fo-rh h3::before{content:'';width:8px;height:8px;border-radius:2px;background:var(--ac,#f07d22)}
+#vFO .fo-rec table{min-width:0!important;width:100%}#vFO .fo-rec th,#vFO .fo-rec td{padding:10px 16px;white-space:nowrap}#vFO .fo-rec .r{text-align:right}
+#vFO .fo-rec tr[data-fr]{cursor:pointer}
+#vFO .fo-rn{display:inline-flex;align-items:center;gap:10px}#vFO .fo-rn i{width:8px;height:8px;border-radius:99px;flex:0 0 8px}#vFO .fo-rn.nw i{background:var(--dgr)}#vFO .fo-rn.nw{font-weight:700}
+#vFO .fo-rf{display:inline-flex;align-items:center;gap:8px}#vFO .fo-rf i{width:8px;height:8px;border-radius:99px}
+#vFO .fo-back{border:0;background:none;color:var(--pr);font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:4px;padding:0;margin-bottom:4px;cursor:pointer}
+#vFO .fo-btag{font-size:13px;font-weight:600;border-radius:999px;padding:2px 10px}
+#vFO .mkseg em.fo-emr{background:var(--dgr)!important;color:#fff!important}
+#vFO .fo-split{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+#vFO .fo-lst{flex:1 1 320px;max-width:400px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg,14px);box-shadow:var(--sh-1);overflow:hidden;position:sticky;top:12px}
+#vFO .fo-lq{padding:12px}#vFO .fo-lq input{width:100%;box-sizing:border-box}
+#vFO #fo_items{max-height:calc(100vh - 260px);min-height:240px;overflow-y:auto}
+#vFO .fo-it{display:flex;gap:10px;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--bd);background:var(--card);font:inherit;color:var(--tx);cursor:pointer;text-align:left;transition:background .15s}
+#vFO .fo-it:hover{background:var(--gyb)}#vFO .fo-it.on{background:var(--infb);box-shadow:inset 3px 0 0 var(--pr)}
+#vFO .fo-dot{width:8px;height:8px;flex:0 0 8px;margin-top:7px;border-radius:99px}#vFO .fo-it.nw .fo-dot{background:var(--dgr)}
+#vFO .fo-ib{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+#vFO .fo-i1,#vFO .fo-i2{display:flex;justify-content:space-between;gap:8px;min-width:0}
+#vFO .fo-i1 b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#vFO .fo-it.nw .fo-i1 b{font-weight:700}
+#vFO .fo-i1 small,#vFO .fo-i2{font-size:12.5px;color:var(--mu);white-space:nowrap}#vFO .fo-i2 span:first-child{overflow:hidden;text-overflow:ellipsis}
+#vFO .fo-ib .fo-wt{align-self:flex-start;margin-top:2px;height:20px}
+#vFO .fo-more:not(.hid){margin:10px auto 14px;display:block}
+#vFO .fo-pv{flex:999 1 520px;min-width:0;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg,14px);box-shadow:var(--sh-1);padding:20px}
+#vFO .fo-pe{color:var(--mu);text-align:center;padding:80px 0}
+#vFO .fo-ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
+#vFO .fo-ph h3{margin:0 0 2px;font-size:18px}
+#vFO .fo-pa{display:flex;gap:8px;flex-wrap:wrap}#vFO .fo-pa .ic{width:32px;padding:0;justify-content:center}
+#vFO .fo-pa a.btn{text-decoration:none;color:var(--tx);display:inline-flex;align-items:center}
+#vFO .fo-pw{margin-top:14px;padding:16px;border-radius:12px;background:var(--wnb);color:var(--wn)}
+#vFO .fo-ldg{height:180px;border-radius:12px;margin-top:12px;background:linear-gradient(90deg,var(--gyb) 25%,var(--bd) 50%,var(--gyb) 75%);background-size:200% 100%;animation:foSh 1.2s infinite}
+@media(max-width:900px){#vFO .fo-lst{max-width:none;position:static}#vFO #fo_items{max-height:420px}}
 #vFO .fo-hd{margin-bottom:12px}
 #vFO .bar input[type=search]{flex:1 1 220px;min-width:180px}
 .fo-pn{padding:6px 8px!important;overflow-x:auto}
@@ -2734,23 +2809,65 @@ const ld=t=>{if(!t)return'';const d=new Date(t);return d.getFullYear()+'-'+p2(d.
 const dt=t=>{if(!t)return'-';const d=new Date(t);return p2(d.getDate())+'/'+p2(d.getMonth()+1)+'/'+d.getFullYear()+' '+p2(d.getHours())+':'+p2(d.getMinutes())};
 const link=t=>new URL('form.html?k='+t,location.href).href;
 const mine=()=>FO.list.filter(f=>!profile||profile.role!=='sales'||f.team===profile.team);
-async function load(){const C='id,token,lead_id,kind,brand,team,sales,company,prefill,status,sheet_url,created_by,created_at,submitted_at,source';let all=[],err=null;for(let o=0;o<20000;o+=1000){const{data,error}=await sb.from('cust_forms').select(C).order('created_at',{ascending:false}).range(o,o+999);if(error){err=error;break}all=all.concat(data||[]);if(!data||data.length<1000)break}FO.ok=!err;FO.list=err?[]:all;FO.loaded=true;render()}
-function fillF(){const f=(id,o,all)=>{const e=$(id),v=e.value;e.innerHTML=`<option value="">${all}</option>`+o.map(([a,b])=>`<option value="${H(a)}">${H(b)}</option>`).join('');if([...e.options].some(x=>x.value===v))e.value=v};
- f('fo_fb',BR.map(b=>[b,b]),TT('ทุกแบรนด์','All brands'));f('fo_fk',Object.entries(KN).map(([k,v])=>[k,TT(v[0],v[1])]),TT('ทุกฟอร์ม','All forms'));f('fo_fs',Object.entries(STL).map(([k,v])=>[k,TT(v[0],v[1])]),TT('ทุกสถานะ','All statuses'));
- const sl=[...new Set(mine().map(x=>x.sales).filter(Boolean))].sort();f('fo_fsl',sl.map(x=>[x,x]),TT('ทุก Sales','All Sales'));
- const hs=!!profile&&profile.role==='sales';$('fo_fsl').classList.toggle('hid',hs);document.querySelectorAll('#vFO .fo-slc').forEach(e=>e.classList.toggle('hid',hs))}
-function render(){if($('vFO').classList.contains('hid'))return;fillF();
- const q=$('fo_q').value.trim().toLowerCase(),b=$('fo_fb').value,k=$('fo_fk').value,s=$('fo_fs').value,sl=$('fo_fsl').value,a=$('fo1').value,z=$('fo2').value,hs=!!profile&&profile.role==='sales';
- const P=mine().filter(f=>{const d=ld(f.created_at);return(!a||d>=a)&&(!z||d<=z)}),n=x=>P.filter(f=>f.status===x&&!isTpl(f)).length;
- const L=P.filter(f=>(!b||f.brand===b)&&(!k||f.kind===k)&&(!s||f.status===s)&&(!sl||f.sales===sl)&&(!q||[f.company,(f.prefill||{}).contact,(f.prefill||{}).email].join(' ').toLowerCase().includes(q)));
- $('fo_st').innerHTML=[[TT('ฟอร์มทั้งหมด','Total forms'),N(P.length)],[TT('รอลูกค้ากรอก','Awaiting customer'),N(n('sent'))],[TT('กรอกแล้ว','Submitted'),N(n('done'))],[TT('อัตราการกรอก','Completion rate'),(P.length?Math.round(n('done')/P.length*100):0)+'%']].map(([x,v])=>`<div class="st"><b>${v}</b><span>${x}</span></div>`).join('');
- const me=profile&&profile.id,adm=profile&&profile.role==='admin';
- $('fo_b').innerHTML=L.map(f=>{const st=isTpl(f)?STL.open:STL[f.status]||STL.sent,c=BRC[f.brand]||'#0082c0',del=adm||(f.created_by&&f.created_by===me);
-  return `<tr data-id="${f.id}"${f.status==='done'?' class="fo-rc"':''}><td class="fo-co"><b>${H(isTpl(f)?TT('ลิงก์รับสมัครงาน','Job application link'):(f.company||TT('รอลูกค้ากรอก','Awaiting customer')))}</b><span class="sub">${H((f.prefill||{}).contact||'')}</span></td><td>${H(TT(KN[f.kind][0],KN[f.kind][1]))}</td><td><span class="fo-br" style="background:${c}1a;color:${c}">${H(f.brand)}</span></td>${hs?'':`<td>${H(f.sales||'-')}</td>`}<td><span class="tag ${st[2]}">${H(TT(st[0],st[1]))}</span></td><td>${dt(f.created_at)}</td><td>${f.submitted_at?dt(f.submitted_at):'-'}</td><td class="fo-act">${f.status==='sent'&&f.source!=='jotform'?`<button type="button" class="btn sm" data-fcp>${TT('คัดลอกลิงก์','Copy link')}</button>`:''}${f.status==='done'?`<button type="button" class="btn sm p" data-fan>${TT('ดูคำตอบ','View answers')}</button>`:''}${del?`<button type="button" class="btn sm rb" data-fdl title="${TT('ลบ','Delete')}" aria-label="${TT('ลบ','Delete')}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>`:''}</td></tr>`}).join('');
- $('fo_em').textContent=FO.ok?TT('ไม่พบฟอร์ม','No forms found'):TT('โหลดข้อมูลไม่สำเร็จ','Failed to load data');$('fo_em').classList.toggle('hid',!!L.length)}
+async function load(){const C0='id,token,lead_id,kind,brand,team,sales,company,prefill,status,sheet_url,created_by,created_at,submitted_at,source';
+ const get=async C=>{let all=[];for(let o=0;o<20000;o+=1000){const{data,error}=await sb.from('cust_forms').select(C).order('created_at',{ascending:false}).range(o,o+999);if(error)return{error};all=all.concat(data||[]);if(!data||data.length<1000)break}return{all}};
+ let r=await get(C0+',seen_at');FO.hasSeen=!r.error;if(r.error)r=await get(C0);FO.ok=!r.error;FO.list=r.error?[]:r.all;FO.loaded=true;render()}
+const KIC={book:'<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',acc:'<path d="M4 21V5a2 2 0 0 1 2-2h8l6 6v12z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',claim:'<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M12 8v5M12 16h.01"/>',tc:'<path d="M9 11l2 2 4-4"/><path d="M5 3h14v18H5z"/>',job:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
+const BRT={'CPL-Inter':'rgba(0,130,192,.12)','CPLEx':'rgba(224,90,26,.12)','CLMV':'rgba(17,121,74,.12)','IMTH':'rgba(107,63,181,.12)'};
+FO.view=null;FO.brand='';FO.tab='all';FO.sel=null;FO.lim=150;
+const isNew=f=>f.status==='done'&&!f.seen_at&&FO.hasSeen;
+const subOf=f=>f.status==='done'&&!isTpl(f);
+const dd=t=>{if(!t)return'-';const d=new Date(t);return p2(d.getDate())+'/'+p2(d.getMonth()+1)+'/'+d.getFullYear()};
+const kn=k=>TT(KN[k][0],KN[k][1]);
+function render(){if($('vFO').classList.contains('hid'))return;const inb=!!FO.view;$('fo_home').classList.toggle('hid',inb);$('fo_inb').classList.toggle('hid',!inb);inb?renderInbox():renderHome()}
+function renderHome(){const all=mine(),hs=!!profile&&profile.role==='sales',q=$('fo_fq').value.trim().toLowerCase(),bf=FO.brand;
+ const done=all.filter(subOf),sent=all.filter(f=>f.status==='sent'&&!isTpl(f)),m0=new Date();m0.setDate(1);m0.setHours(0,0,0,0);
+ const mon=done.filter(f=>new Date(f.submitted_at||f.created_at)>=m0).length,lnk=all.filter(f=>!isTpl(f)&&f.source!=='jotform'&&f.source!=='apply'),rate=lnk.length?Math.round(lnk.filter(f=>f.status==='done').length/lnk.length*100):0;
+ $('fo_cnt').textContent=N(done.length)+' '+TT('คำตอบ','submissions');
+ $('fo_st').innerHTML=[[TT('คำตอบใหม่ที่ยังไม่เปิด','New, not opened'),N(done.filter(isNew).length)],[TT('รอลูกค้ากรอก','Awaiting customer'),N(sent.length)],[TT('กรอกแล้วเดือนนี้','Submitted this month'),N(mon)],[TT('อัตราการกรอก','Completion rate'),rate+'%']].map(([x,v])=>`<div class="st"><b>${v}</b><span>${x}</span></div>`).join('');
+ $('fo_bseg').innerHTML=[['',TT('ทั้งหมด','All')]].concat(BR.map(b=>[b,b])).map(([k,v])=>`<button type="button" class="${bf===k?'on':''}" data-fob="${H(k)}">${k?`<i class="fo-bd" style="background:${BRC[k]}"></i>`:''}${H(v)}</button>`).join('');
+ const card=(k,b)=>{const L=all.filter(f=>f.kind===k&&f.brand===b),D=L.filter(subOf),n=D.filter(isNew).length,w=L.filter(f=>f.status==='sent'&&!isTpl(f)).length,last=D.reduce((m,f)=>{const t=f.submitted_at||f.created_at;return t>m?t:m},'');
+  return `<div class="fo-card"><div class="fo-ct"><span class="fo-ic" style="background:${BRT[b]};color:${BRC[b]}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${KIC[k]}</svg></span><span class="fo-bdg">${n?`<em class="fo-new">${N(n)} ${TT('ใหม่','new')}</em>`:''}${w?`<em class="fo-wt">${TT('รอกรอก','Waiting')} ${N(w)}</em>`:''}</span></div>
+  <div class="fo-cn">${H(kn(k))}</div><div class="fo-cb" style="color:${BRC[b]}">${H(b)}</div>
+  <div class="fo-cc"><b>${N(D.length)}</b><span>${TT('คำตอบ','submissions')}${last?' · '+TT('ล่าสุด ','last ')+dd(last):''}</span></div>${k==='job'?`<div class="fo-cx">${TT('ลิงก์ถาวร · เห็นเฉพาะ Admin','Permanent link · Admin only')}</div>`:''}
+  <div class="fo-ca"><button type="button" class="btn p sm" data-fov="${k}|${b}">${TT('ดูคำตอบ','View answers')}</button><button type="button" class="btn sm" data-fonl="${k}|${b}">${TT('+ สร้างลิงก์','+ New link')}</button></div></div>`};
+ const has=(k,b)=>all.some(f=>f.kind===k&&f.brand===b),okB=b=>!bf||b===bf,okQ=(k,b)=>!q||(kn(k)+' '+b).toLowerCase().includes(q);
+ const g1=BR.filter(b=>okB(b)&&okQ('book',b)).map(b=>card('book',b));
+ const g2=[];['acc','claim','tc','job'].forEach(k=>{if(k==='job'&&!(profile&&profile.role==='admin'))return;BR.forEach(b=>{if(okB(b)&&okQ(k,b)&&(has(k,b)||(b==='CPL-Inter'&&!BR.some(x=>has(k,x)))))g2.push(card(k,b))})});
+ const sec=(t,c)=>c.length?`<section class="fo-g"><h3 class="fo-gh">${t}</h3><div class="fo-cards">${c.join('')}</div></section>`:'';
+ $('fo_grp').innerHTML=sec(TT('ใบจองงานขนส่ง','Shipment booking'),g1)+sec(TT('เอกสารอื่น','Other documents'),g2)||`<div class="empty">${TT('ไม่พบฟอร์ม','No forms found')}</div>`;
+ const R=done.filter(f=>okB(f.brand)).sort((a,b)=>String(b.submitted_at||b.created_at).localeCompare(String(a.submitted_at||a.created_at))).slice(0,8);
+ document.querySelectorAll('#fo_home .fo-slc').forEach(e=>e.classList.toggle('hid',hs));
+ $('fo_rb').innerHTML=R.map(f=>`<tr data-fr="${f.id}"><td><span class="fo-rn${isNew(f)?' nw':''}"><i></i>${H(f.company||'-')}</span></td><td><span class="fo-rf"><i style="background:${BRC[f.brand]}"></i>${H(kn(f.kind))} · ${H(f.brand)}</span></td>${hs?'':`<td class="sub">${H(f.sales||'-')}</td>`}<td class="r sub">${dt(f.submitted_at||f.created_at)}</td></tr>`).join('');
+ $('fo_rem').textContent=FO.ok?TT('ยังไม่มีคำตอบ','No submissions yet'):TT('โหลดข้อมูลไม่สำเร็จ','Failed to load data');$('fo_rem').classList.toggle('hid',!!R.length)}
+function inbList(){const[k,b]=FO.view,a=$('fo1').value,z=$('fo2').value,q=$('fo_q').value.trim().toLowerCase(),sl=$('fo_fsl').value;
+ const base=mine().filter(f=>f.kind===k&&f.brand===b&&!isTpl(f)).filter(f=>{const d=ld(f.submitted_at||f.created_at);return(!a||d>=a)&&(!z||d<=z)}).filter(f=>(!sl||f.sales===sl)&&(!q||[f.company,(f.prefill||{}).contact,f.sales].join(' ').toLowerCase().includes(q)));
+ return{base,L:base.filter(f=>FO.tab==='all'?true:FO.tab==='new'?isNew(f):f.status==='sent').sort((x,y)=>String(y.submitted_at||y.created_at).localeCompare(String(x.submitted_at||x.created_at)))}}
+function renderInbox(){const[k,b]=FO.view,hs=!!profile&&profile.role==='sales';
+ $('fo_it').innerHTML=`${H(kn(k))} <span class="fo-btag" style="background:${BRT[b]};color:${BRC[b]}">${H(b)}</span>`;
+ const sl=[...new Set(mine().filter(f=>f.kind===k&&f.brand===b).map(x=>x.sales).filter(Boolean))].sort(),e=$('fo_fsl'),v=e.value;e.innerHTML=`<option value="">${TT('ทุก Sales','All Sales')}</option>`+sl.map(x=>`<option value="${H(x)}">${H(x)}</option>`).join('');if(sl.includes(v))e.value=v;e.classList.toggle('hid',hs);
+ const{base,L}=inbList();
+ $('fo_tabs').innerHTML=[['all',TT('ทั้งหมด','All'),base.length],['new',TT('ยังไม่เปิด','Not opened'),base.filter(isNew).length],['sent',TT('รอลูกค้ากรอก','Awaiting customer'),base.filter(f=>f.status==='sent').length]].map(([t,l,n])=>`<button type="button" class="${FO.tab===t?'on':''}" data-fot="${t}">${l}<em${t==='new'&&n?' class="fo-emr"':''}>${N(n)}</em></button>`).join('');
+ const S=L.slice(0,FO.lim);
+ $('fo_items').innerHTML=S.map(f=>{const nw=isNew(f),c=(f.prefill||{}).contact;return `<button type="button" class="fo-it${FO.sel===f.id?' on':''}${nw?' nw':''}" data-foi="${f.id}"><i class="fo-dot"></i><span class="fo-ib"><span class="fo-i1"><b>${H(f.company||TT('รอลูกค้ากรอก','Awaiting customer'))}</b><small>${dd(f.submitted_at||f.created_at)}</small></span><span class="fo-i2"><span>${H(c&&c!==f.company?c:'')}</span><span>${H(f.sales||'')}</span></span>${f.status==='sent'?`<em class="fo-wt">${TT('รอลูกค้ากรอก','Awaiting customer')}</em>`:''}</span></button>`}).join('');
+ $('fo_more').classList.toggle('hid',L.length<=FO.lim);
+ $('fo_em').textContent=FO.ok?TT('ไม่พบคำตอบ','No submissions found'):TT('โหลดข้อมูลไม่สำเร็จ','Failed to load data');$('fo_em').classList.toggle('hid',!!L.length);
+ if(FO.sel==null||!L.some(f=>f.id===FO.sel)){const f=L[0];if(f&&window.innerWidth>900)pick(f);else if(!f)clearPv()}}
+function clearPv(){FO.sel=null;FO.cur=null;$('fo_pc').classList.add('hid');$('fo_pe').classList.remove('hid')}
+function openInbox(k,b){FO.view=[k,b];FO.tab='all';FO.sel=null;FO.lim=150;$('fo_q').value='';$('fo_fsl').value='';clearPv();render();window.scrollTo(0,0)}
+async function markSeen(f){if(f.status!=='done'||f.seen_at||!FO.hasSeen)return;f.seen_at=new Date().toISOString();try{await sb.from('cust_forms').update({seen_at:f.seen_at}).eq('id',f.id).is('seen_at',null)}catch(e){}}
+async function pick(f){FO.sel=f.id;document.querySelectorAll('#fo_items .fo-it').forEach(x=>x.classList.toggle('on',x.dataset.foi===String(f.id)));
+ const nw=isNew(f);await showAns(f);if(nw){markSeen(f);const el=document.querySelector(`#fo_items [data-foi="${f.id}"]`);if(el)el.classList.remove('nw');const t=$('fo_tabs').querySelector('.fo-emr');if(t)t.textContent=N(Math.max(0,(+t.textContent.replace(/,/g,''))-1))}
+ if(window.innerWidth<=900)$('fo_pv').scrollIntoView({behavior:'smooth',block:'start'})}
+async function exportXl(){if(!FO.view||typeof XLSX==='undefined')return;const b=$('fo_xl');b.disabled=true;
+ try{const L=inbList().L.filter(f=>f.status==='done');const miss=L.filter(f=>f.answers===undefined).map(f=>f.id);
+  for(let i=0;i<miss.length;i+=200){const{data}=await sb.from('cust_forms').select('id,answers,files').in('id',miss.slice(i,i+200));(data||[]).forEach(r=>{const f=L.find(x=>x.id===r.id);if(f){f.answers=r.answers||[];f.files=r.files||[]}})}
+  const cols=[],rows=L.map(f=>{const o={[TT('กรอกเมื่อ','Submitted')]:dt(f.submitted_at||f.created_at),[TT('ลูกค้า','Customer')]:f.company||'',[TT('เซลล์','Sales')]:f.sales||''};(f.answers||[]).forEach(a=>{const l=lab(a.l||'');if(!l)return;if(!cols.includes(l))cols.push(l);o[l]=String(a.v==null?'':a.v)});(f.files||[]).forEach(x=>{const l=lab(x.label||'')||TT('ไฟล์แนบ','Attachment');if(!cols.includes(l))cols.push(l);o[l]=(o[l]?o[l]+'\n':'')+x.url});return o});
+  const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Forms');XLSX.writeFile(wb,(kn(FO.view[0])+' '+FO.view[1]).replace(/[\\/:*?"<>|]+/g,' ')+'.xlsx')}
+ catch(e){alert(TT('ส่งออกไม่สำเร็จ','Export failed'))}b.disabled=false}
 async function copy(t,btn){try{await navigator.clipboard.writeText(t)}catch(e){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(_){}x.remove()}
  if(btn){const o=btn.textContent;btn.textContent=TT('คัดลอกแล้ว','Copied');setTimeout(()=>{btn.textContent=o},1500)}}
-function openNew(){const f=$('fof');f.reset();$('fo_kj').classList.toggle('hid',!(profile&&profile.role==='admin'));[...f.elements].forEach(e=>{if(e.id!=='fo_url')e.disabled=false});
+function openNew(k,b){const f=$('fof');f.reset();if(k){const r=f.querySelector(`input[name=kind][value="${k}"]`);if(r)r.checked=true}if(b)f.brand.value=b;$('fo_kj').classList.toggle('hid',!(profile&&profile.role==='admin'));[...f.elements].forEach(e=>{if(e.id!=='fo_url')e.disabled=false});
  $('fo_lw').classList.add('hid');$('fo_mk').classList.remove('hid');$('fo_x').textContent=TT('ยกเลิก','Cancel');$('fod').showModal()}
 async function make(){if(FO.busy)return;const f=$('fof'),me=(profile&&profile.name)||(WHO&&WHO.n)||'';
  FO.busy=true;$('fo_mk').disabled=true;
@@ -2795,7 +2912,7 @@ function secs(f,ans){ans=ans.filter(a=>String(a.v==null?'':a.v).trim()!=='');if(
  const ord=['per','app','clm','cd','cus','trn','shp','rcv','gds','co','ct','tm','ans','oth'];
  return ord.filter(k=>B.has(k)).map(k=>`<section class="fo-sec"><h4>${H(TT(SECN[k][0],SECN[k][1]))}</h4><dl class="fo-dl">${B.get(k).map(a=>{const w=/^[\[{]/.test(String(a.v).trim());return `<div${w?' class="fo-w"':''}><dt>${H(f.source==='jotform'?lab(a.l):TT(a.l,a.e||a.l))}</dt><dd>${val(a.v)}</dd></div>`}).join('')}</dl></section>`).join('')}
 const FO_GAS='https://script.google.com/macros/s/AKfycbzdkXD-47WaWAQxOZUmz4Vdo6-fBPz1Lm5OA-ZJVgd2R6FtAGjN3AK-Gb1D6QqUQlOH/exec',IMC={};
-async function loadImgs(f){const els=[...document.querySelectorAll('#foa img[data-u]')];if(!els.length)return;
+async function loadImgs(f){const els=[...document.querySelectorAll('#fo_pv img[data-u]')];if(!els.length)return;
  const put=()=>els.forEach(i=>{const d=IMC[i.dataset.u];if(d===false){const a=i.closest('a');if(a&&a.classList.contains('fo-sg'))i.replaceWith(document.createTextNode(TT('เปิดไฟล์','Open file')));else if(a)a.classList.add('fo-ie')}else if(d){i.src=d;i.closest('a').classList.add('fo-ok')}});
  const fl=[...new Set(els.map(i=>i.dataset.u))].filter(u=>FO.pf&&FO.pf[u]&&IMC[u]===undefined&&(u in IMC));if(fl.length){els.forEach(i=>{if(fl.includes(i.dataset.u))i.closest('a').classList.add('fo-ld')});await Promise.all(fl.map(u=>FO.pf[u]));els.forEach(i=>i.closest('a')&&i.closest('a').classList.remove('fo-ld'))}
  const need=[...new Set(els.map(i=>i.dataset.u))].filter(u=>!(u in IMC));put();if(!need.length)return;
@@ -2804,17 +2921,21 @@ async function loadImgs(f){const els=[...document.querySelectorAll('#foa img[dat
   const r=await fetch(FO_GAS,{method:'POST',body:JSON.stringify({act:'img',id:f.id,jwt,urls:need})}),j=await r.json();
   need.forEach(u=>{IMC[u]=(j&&j.imgs&&j.imgs[u])||false})}catch(e){need.forEach(u=>{IMC[u]=false})}
  els.forEach(i=>i.closest('a')&&i.closest('a').classList.remove('fo-ld'));put()}
-async function showAns(f){if(f.answers===undefined){const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}const ans=Array.isArray(f.answers)?f.answers:[];
- $('foa_t').textContent=TT(KN[f.kind][0],KN[f.kind][1])+' · '+(f.company||'');
- $('foa_s').textContent=[f.brand,f.sales,TT('กรอกเมื่อ ','Submitted ')+dt(f.submitted_at)].filter(Boolean).join(' · ');
+async function showAns(f){const done=f.status==='done',me=profile&&profile.id;
+ $('fo_pe').classList.add('hid');$('fo_pc').classList.remove('hid');
+ $('foa_t').textContent=f.company||TT('รอลูกค้ากรอก','Awaiting customer');
+ $('foa_s').textContent=(done?[TT('กรอกเมื่อ ','Submitted ')+dt(f.submitted_at||f.created_at)]:[TT('ส่งลิงก์เมื่อ ','Link created ')+dt(f.created_at)]).concat(f.sales?[TT('เซลล์ ','Sales ')+f.sales]:[]).join(' · ');
+ ['foa_pr','foa_pdf'].forEach(id=>$(id).classList.toggle('hid',!done));$('fo_pcp').classList.toggle('hid',done||f.source==='jotform');$('fo_pdl').classList.toggle('hid',!(profile&&profile.role==='admin')&&!(f.created_by&&f.created_by===me));
+ $('fo_pw').classList.toggle('hid',done);$('fo_pw').textContent=done?'':TT('ลูกค้ายังไม่ได้กรอกฟอร์มนี้','The customer has not filled in this form yet');
+ if(!done){FO.cur=f;$('foa_b').innerHTML='';$('foa_f').innerHTML='';$('foa_sh').classList.add('hid');return}
+ if(f.answers===undefined){$('foa_b').innerHTML='<div class="fo-ldg"></div>';$('foa_f').innerHTML='';const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}
+ if(FO.sel!=null&&FO.sel!==f.id)return;const ans=Array.isArray(f.answers)?f.answers:[];
  $('foa_b').innerHTML=secs(f,ans);
  const fl=Array.isArray(f.files)?f.files:[],im=fl.filter(isImg),ot=fl.filter(x=>!isImg(x));
  $('foa_f').innerHTML=fl.length?`<section class="fo-sec"><h4>${TT('ไฟล์แนบ','Attachments')}</h4>${im.length?`<div class="fo-im">${im.map(x=>`<a href="${H(x.url)}" target="_blank" rel="noopener" title="${H(x.name)}"><img data-u="${H(x.url)}" alt="" onerror="this.closest('a').classList.add('fo-ie')"><i class="fo-fn">${CLIP}${H(x.name||'')}</i><span>${H(lab(x.label||x.name))}</span></a>`).join('')}</div>`:''}${ot.length?`<div class="fo-fl">${ot.map(chip).join('')}</div>`:''}</section>`:'';
- const sh=$('foa_sh');sh.classList.toggle('hid',!f.sheet_url);sh.textContent=f.source==='jotform'?TT('เปิดโฟลเดอร์ใน Drive','Open Drive folder'):TT('เปิดใน Google Sheets','Open in Google Sheets');if(f.sheet_url)sh.href=f.sheet_url;$('foa').showModal();FO.cur=f;FO.imgP=loadImgs(f)}
+ const sh=$('foa_sh');sh.classList.toggle('hid',!f.sheet_url);sh.textContent=f.source==='jotform'?TT('เปิดโฟลเดอร์ใน Drive','Open Drive folder'):TT('เปิดใน Google Sheets','Open in Google Sheets');if(f.sheet_url)sh.href=f.sheet_url;FO.cur=f;FO.imgP=loadImgs(f)}
 async function del(f){if(!await ask(TT('ลบฟอร์มนี้?','Delete this form?'),{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ',oke:'Delete',danger:true}))return;
- const{data,error}=await sb.from('cust_forms').delete().eq('id',f.id).select('id');if(error||!data||!data.length)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));FO.list=FO.list.filter(x=>x.id!==f.id);render()}
-$('fo_b').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(!tr)return;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(!f)return;
- const cp=e.target.closest('[data-fcp]');if(cp)return copy(link(f.token),cp);if(e.target.closest('[data-fdl]'))return del(f);if(e.target.closest('[data-fan]'))return showAns(f);if(e.target.closest('button,a'))return;if(f.status==='done')return showAns(f)});
+ const{data,error}=await sb.from('cust_forms').delete().eq('id',f.id).select('id');if(error||!data||!data.length)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));FO.list=FO.list.filter(x=>x.id!==f.id);if(FO.sel===f.id)clearPv();render()}
 const DOC_CSS=`*{box-sizing:border-box}html,body{margin:0;background:#fff}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .dc{width:794px;padding:30px 34px;font-family:'Noto Sans Thai',Tahoma,'Leelawadee UI','Sukhumvit Set',sans-serif;color:#0e2238;font-size:10.5px;line-height:1.4;background:#fff}.dh{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--bc);padding-bottom:8px;margin-bottom:8px}
 .dh .br{font-size:17px;font-weight:600;color:var(--bc)}.dh h1{margin:2px 0 0;font-size:14px}.dh .mt{text-align:right;color:#62768c;font-size:10px;line-height:1.5}
@@ -2870,14 +2991,26 @@ async function foPdf(){const f=FO.cur;if(!f)return;const b=$('foa_pdf'),t=b.text
  catch(e){console.error(e);if(fr){fr.remove();fr=null}b.disabled=false;b.textContent=t;return foPrint()}
  if(fr)fr.remove();b.disabled=false;b.textContent=t}
 $('foa_pr').onclick=foPrint;$('foa_pdf').onclick=foPdf;
-$('fo_b').addEventListener('mouseover',e=>{const tr=e.target.closest('tr.fo-rc');if(!tr||tr.dataset.pf)return;tr.dataset.pf=1;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(f)prefetch(f)});
+$('fo_items').addEventListener('mouseover',e=>{const it=e.target.closest('.fo-it');if(!it||it.dataset.pf)return;it.dataset.pf=1;const f=FO.list.find(x=>String(x.id)===it.dataset.foi);if(f&&f.status==='done')prefetch(f)});
 async function prefetch(f){try{if(f.answers===undefined){const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();if(f.answers!==undefined)return;f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}
  const us=[...(f.files||[]).filter(isImg).map(x=>x.url),...(f.answers||[]).map(a=>String(a.v||'').trim()).filter(v=>/^https?:\/\/\S+$/.test(v)&&isImgU(v))].filter(u=>!(u in IMC));if(!us.length)return;
  us.forEach(u=>{IMC[u]=undefined});const{data}=await sb.auth.getSession(),jwt=data&&data.session&&data.session.access_token;
  const P=fetch(FO_GAS,{method:'POST',body:JSON.stringify({act:'img',id:f.id,jwt,urls:us})}).then(r=>r.json()).then(j=>{us.forEach(u=>{IMC[u]=(j&&j.imgs&&j.imgs[u])||false})}).catch(()=>{us.forEach(u=>{IMC[u]=false})});FO.pf=FO.pf||{};us.forEach(u=>{FO.pf[u]=P});await P}catch(e){}}
-$('fo_new').onclick=openNew;$('fo_x').onclick=()=>$('fod').close();$('foa_x').onclick=()=>$('foa').close();
+$('fo_new').onclick=()=>openNew();$('fo_x').onclick=()=>$('fod').close();
+$('fo_bseg').addEventListener('click',e=>{const x=e.target.closest('[data-fob]');if(!x)return;FO.brand=x.dataset.fob;render()});
+$('fo_fq').addEventListener('input',render);
+$('fo_grp').addEventListener('click',e=>{const v=e.target.closest('[data-fov]'),n=e.target.closest('[data-fonl]');if(v){const[k,b]=v.dataset.fov.split('|');openInbox(k,b)}else if(n){const[k,b]=n.dataset.fonl.split('|');openNew(k,b)}});
+$('fo_rb').addEventListener('click',e=>{const tr=e.target.closest('[data-fr]');if(!tr)return;const f=FO.list.find(x=>String(x.id)===tr.dataset.fr);if(!f)return;openInbox(f.kind,f.brand);FO.sel=null;pick(f);render()});
+$('fo_back').onclick=()=>{FO.view=null;clearPv();render();window.scrollTo(0,0)};
+$('fo_nl').onclick=()=>FO.view&&openNew(FO.view[0],FO.view[1]);$('fo_xl').onclick=exportXl;
+$('fo_tabs').addEventListener('click',e=>{const x=e.target.closest('[data-fot]');if(!x)return;FO.tab=x.dataset.fot;FO.lim=150;render()});
+$('fo_items').addEventListener('click',e=>{const x=e.target.closest('[data-foi]');if(!x)return;const f=FO.list.find(y=>String(y.id)===x.dataset.foi);if(f)pick(f)});
+$('fo_more').onclick=()=>{FO.lim+=150;render()};
+const step=d=>{const L=inbList().L,i=L.findIndex(f=>f.id===FO.sel),f=L[i+d];if(f){pick(f);const el=document.querySelector(`#fo_items [data-foi="${f.id}"]`);if(el)el.scrollIntoView({block:'nearest'})}};
+$('fo_prv').onclick=()=>step(-1);$('fo_nxt').onclick=()=>step(1);
+$('fo_pcp').onclick=e=>FO.cur&&copy(link(FO.cur.token),e.currentTarget);$('fo_pdl').onclick=()=>FO.cur&&del(FO.cur);
 $('fof').addEventListener('submit',e=>{e.preventDefault();make()});$('fo_cp').onclick=e=>copy($('fo_url').value,e.currentTarget);
-['fo_q'].forEach(id=>$(id).addEventListener('input',render));['fo_fb','fo_fk','fo_fs','fo_fsl'].forEach(id=>$(id).addEventListener('change',render));
+$('fo_q').addEventListener('input',()=>{FO.lim=150;render()});$('fo_fsl').addEventListener('change',render);
 $('fop').value='30';perSet('30',$('fo1'),$('fo2'));$('fop').addEventListener('change',()=>{perSet($('fop').value,$('fo1'),$('fo2'));render()});['fo1','fo2'].forEach(id=>$(id).addEventListener('input',()=>{$('fop').value='c';render()}));
 const _t=tab;tab=function(k){if(k==='FO'){if(!canFO())return;document.querySelectorAll('main>[id^="v"]').forEach(v=>v.classList.toggle('hid',v.id!=='vFO'));document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.id==='tFO'));const fnb=$('fnb');if(fnb)fnb.classList.add('hid');render();load();return}
  $('vFO').classList.add('hid');$('tFO').classList.remove('on');return _t(k)};
@@ -2885,7 +3018,7 @@ $('tFO').onclick=()=>tab('FO');
 const _a=applyRoleUI;applyRoleUI=function(p){_a(p);$('tFO').classList.toggle('hid',!canFO());FO.loaded=false;FO.list=[];if(!canFO()&&!$('vFO').classList.contains('hid'))tab('N')};
 if(profile)$('tFO').classList.toggle('hid',!canFO());
 const _rl=typeof relang==='function'?relang:null;if(_rl)relang=function(){_rl.apply(this,arguments);try{render()}catch(e){}};
-if(typeof EN==='object')Object.assign(EN,{'เปิดโฟลเดอร์ใน Drive':'Open Drive folder','พิมพ์':'Print','ดาวน์โหลด PDF':'Download PDF','เคลมสินค้า':'Claim','เงื่อนไขการใช้บริการ':'Terms & Conditions','ใบสมัครงาน':'Job application','ใบสมัครงาน':'Job application','เคลมสินค้า':'Claim','เงื่อนไขการใช้บริการ':'Terms & Conditions','ฟอร์ม':'Form','+ สร้างฟอร์ม':'+ Create form','สร้างฟอร์มลูกค้า':'Create customer form','ประเภทฟอร์ม':'Form type','ใบจองงานขนส่ง':'Shipment booking','ใบสมัครบัญชีลูกค้า':'Account application','สร้างลิงก์':'Create link','ลิงก์สำหรับลูกค้า':'Customer link','คัดลอก':'Copy','ส่งเมื่อ':'Sent','กรอกเมื่อ':'Submitted','ค้นหาลูกค้า / ผู้ติดต่อ':'Search customer / contact','ค้นหา Lead':'Search Lead','ชื่อบริษัท':'Company name','โทรศัพท์':'Phone','เปิดใน Google Sheets':'Open in Google Sheets','ไม่พบฟอร์ม':'No forms found'});
+if(typeof EN==='object')Object.assign(EN,{'เปิดโฟลเดอร์ใน Drive':'Open Drive folder','ฟอร์มลูกค้า':'Customer forms','คำตอบล่าสุด':'Latest submissions','ค้นหาฟอร์ม':'Search forms','+ สร้างลิงก์':'+ New link','แสดงเพิ่ม':'Show more','เลือกคำตอบจากรายการ':'Select a submission','ไม่พบคำตอบ':'No submissions found','ยังไม่มีคำตอบ':'No submissions yet','ค้นหาลูกค้า / ผู้ติดต่อ / เซลล์':'Search customer / contact / sales','คัดลอกลิงก์':'Copy link','ก่อนหน้า':'Previous','ถัดไป':'Next','พิมพ์':'Print','ดาวน์โหลด PDF':'Download PDF','เคลมสินค้า':'Claim','เงื่อนไขการใช้บริการ':'Terms & Conditions','ใบสมัครงาน':'Job application','ใบสมัครงาน':'Job application','เคลมสินค้า':'Claim','เงื่อนไขการใช้บริการ':'Terms & Conditions','ฟอร์ม':'Form','+ สร้างฟอร์ม':'+ Create form','สร้างฟอร์มลูกค้า':'Create customer form','ประเภทฟอร์ม':'Form type','ใบจองงานขนส่ง':'Shipment booking','ใบสมัครบัญชีลูกค้า':'Account application','สร้างลิงก์':'Create link','ลิงก์สำหรับลูกค้า':'Customer link','คัดลอก':'Copy','ส่งเมื่อ':'Sent','กรอกเมื่อ':'Submitted','ค้นหาลูกค้า / ผู้ติดต่อ':'Search customer / contact','ค้นหา Lead':'Search Lead','ชื่อบริษัท':'Company name','โทรศัพท์':'Phone','เปิดใน Google Sheets':'Open in Google Sheets','ไม่พบฟอร์ม':'No forms found'});
 })();
 </script>
 </body>
