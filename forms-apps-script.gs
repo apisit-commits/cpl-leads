@@ -15,6 +15,7 @@ const MAX_FILE = 10 * 1024 * 1024;
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
+    if (body.act === 'img') return out_(imgs_(body));
     const form = getForm_(body.token);
     if (!form) return out_({ ok: false, error: 'not_found' });
     if (form.synced) return out_({ ok: false, error: 'already_sent' });
@@ -154,4 +155,39 @@ function setup() {
   BRANDS.forEach(function (b) { spreadsheet_(folder_(root, b), b); });
   UrlFetchApp.fetch(SUPABASE_URL + '/rest/v1/', { muteHttpExceptions: true, headers: { apikey: SUPABASE_KEY } });
   Logger.log('พร้อมใช้งาน: ' + root.getUrl());
+}
+
+
+/** รูปในหน้าดูคำตอบ (เว็บ Lead Tracker): ตรวจสิทธิ์ผู้ใช้ผ่าน Supabase แล้วส่งรูปกลับเป็น data URL */
+function imgs_(body) {
+  const r = UrlFetchApp.fetch(SUPABASE_URL + '/rest/v1/cust_forms?select=files,answers&id=eq.' + Number(body.id), {
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + String(body.jwt || '') }, muteHttpExceptions: true
+  });
+  if (r.getResponseCode() !== 200) return { ok: false, error: 'denied' };
+  const rows = JSON.parse(r.getContentText() || '[]');
+  if (!rows.length) return { ok: false, error: 'denied' };
+  const allowed = {};
+  (rows[0].files || []).forEach(function (f) { if (f && f.url) allowed[f.url] = 1; });
+  (rows[0].answers || []).forEach(function (a) { const v = String(a && a.v || '').trim(); if (/^https?:\/\/\S+$/.test(v)) allowed[v] = 1; });
+  const key = PropertiesService.getScriptProperties().getProperty('JOTFORM_KEY');
+  const out = {};
+  (body.urls || []).slice(0, 30).forEach(function (u) {
+    if (!allowed[u]) return;
+    try {
+      let blob;
+      const m = /drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/.exec(u);
+      if (m) {
+        const file = DriveApp.getFileById(m[1]);
+        blob = file.getSize() > 3 * 1024 * 1024 ? file.getThumbnail() : file.getBlob();
+      } else if (/jotform\.com/.test(u)) {
+        const res = UrlFetchApp.fetch(u + (key ? (u.indexOf('?') < 0 ? '?' : '&') + 'apiKey=' + encodeURIComponent(key) : ''), { muteHttpExceptions: true });
+        if (res.getResponseCode() !== 200) return;
+        blob = res.getBlob();
+      } else return;
+      const type = blob.getContentType() || '';
+      if (!/^image\//.test(type)) return;
+      out[u] = 'data:' + type + ';base64,' + Utilities.base64Encode(blob.getBytes());
+    } catch (err) {}
+  });
+  return { ok: true, imgs: out };
 }

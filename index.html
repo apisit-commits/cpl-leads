@@ -2715,7 +2715,7 @@ const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&
 .fo-im{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:10px}
 .fo-im a{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--tx);font-size:var(--fs-sm,12px)}
 .fo-im img{width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--bd);border-radius:var(--r-sm,8px);background:var(--gyb)}
-.fo-im a.fo-ie img{display:none}.fo-im a.fo-ie::before{content:'';display:block;aspect-ratio:4/3;border:1px dashed var(--bd);border-radius:var(--r-sm,8px);background:var(--gyb)}
+.fo-im img:not([src]){visibility:hidden}.fo-im a.fo-ld img{visibility:visible;background:linear-gradient(90deg,var(--gyb) 25%,var(--bd) 50%,var(--gyb) 75%);background-size:200% 100%;animation:foSh 1.2s infinite}@keyframes foSh{to{background-position:-200% 0}}.fo-sg img:not([src]){width:160px;height:70px;background:var(--gyb)}.fo-im a.fo-ie img{display:none}.fo-im a.fo-ie::before{content:'';display:block;aspect-ratio:4/3;border:1px dashed var(--bd);border-radius:var(--r-sm,8px);background:var(--gyb)}
 .fo-fl{display:flex;flex-wrap:wrap;gap:8px}
 .fo-fl a,.fo-dl dd>a:not(.fo-sg){display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);border-radius:var(--r-sm,8px);padding:6px 10px;font-size:var(--fs-md,13px);color:var(--tx);text-decoration:none;background:var(--card);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #fo_b tr.fo-rc{cursor:pointer}#fo_b tr.fo-rc:hover td{background:var(--gyb)}
@@ -2768,7 +2768,7 @@ const CLIP='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="
 const chip=x=>`<a href="${H(x.url)}" target="_blank" rel="noopener" title="${H(lab(x.label||''))}">${CLIP}${H(x.name||lab(x.label))}</a>`;
 function val(v){v=String(v==null?'':v).trim();
  if(/^[\[{]/.test(v)){try{let j=JSON.parse(v);if(!Array.isArray(j))j=[j];j=j.filter(r=>r&&typeof r==='object'&&Object.values(r).some(x=>String(x).trim()));if(j.length){const ks=[...new Set(j.flatMap(Object.keys))];return `<div class="fo-tw"><table class="fo-tb"><thead><tr>${ks.map(k=>`<th>${H(lab(k))}</th>`).join('')}</tr></thead><tbody>${j.map(r=>`<tr>${ks.map(k=>`<td>${H(r[k]==null?'':r[k])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}}catch(e){}}
- if(/^https?:\/\/\S+$/.test(v)){if(isImgU(v))return `<a class="fo-sg" href="${H(v)}" target="_blank" rel="noopener"><img src="${H(thumb(v))}" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('${TT('เปิดไฟล์','Open file')}'))"></a>`;return chip({url:v,name:v.split('/').pop().split('?')[0]})}
+ if(/^https?:\/\/\S+$/.test(v)){if(isImgU(v))return `<a class="fo-sg" href="${H(v)}" target="_blank" rel="noopener"><img data-u="${H(v)}" alt=""></a>`;return chip({url:v,name:v.split('/').pop().split('?')[0]})}
  return `<span class="fo-v">${H(v)}</span>`}
 const SECN={per:['ข้อมูลส่วนบุคคล','Personal information'],app:['การสมัครงาน','Application'],clm:['ผู้ขอเคลม','Claimant'],cd:['รายละเอียดการเคลม','Claim details'],cus:['ข้อมูลลูกค้า','Customer'],trn:['การขนส่ง','Shipment'],shp:['ผู้ส่ง','Shipper'],rcv:['ผู้รับ','Consignee'],gds:['สินค้า','Goods'],co:['ข้อมูลบริษัท','Company'],ct:['ผู้ติดต่อ','Contacts'],tm:['เงื่อนไขการชำระเงิน','Payment terms'],oth:['ยืนยันและอื่นๆ','Confirmation & other'],ans:['คำตอบ','Answers']};
 const KEYSEC={j_pos:'app',j_:'per',c_type:'cd',c_ref:'cd',c_origin:'cd',c_dest:'cd',c_collect:'cd',c_notify:'cd',c_ins:'cd',c_value:'cd',c_detail:'cd',c_:'clm',t_sales:'oth',t_:'cus',s_:'shp',r_:'rcv',service:'gds',goods:'gds',qty:'gds',weight:'gds',dims:'gds',value:'gds',ready:'gds',note:'oth',consent:'oth',signer:'oth',co_name:'co',tax_id:'co',branch:'co',reg_address:'co',doc_address:'co',ct_:'ct',acc_contact:'ct',credit:'tm',pay:'tm'};
@@ -2789,13 +2789,22 @@ function secs(f,ans){ans=ans.filter(a=>String(a.v==null?'':a.v).trim()!=='');if(
   else k='ans';add(k,x)});
  const ord=['per','app','clm','cd','cus','trn','shp','rcv','gds','co','ct','tm','ans','oth'];
  return ord.filter(k=>B.has(k)).map(k=>`<section class="fo-sec"><h4>${H(TT(SECN[k][0],SECN[k][1]))}</h4><dl class="fo-dl">${B.get(k).map(a=>{const w=/^[\[{]/.test(String(a.v).trim());return `<div${w?' class="fo-w"':''}><dt>${H(f.source==='jotform'?lab(a.l):TT(a.l,a.e||a.l))}</dt><dd>${val(a.v)}</dd></div>`}).join('')}</dl></section>`).join('')}
+const FO_GAS='https://script.google.com/macros/s/AKfycbzdkXD-47WaWAQxOZUmz4Vdo6-fBPz1Lm5OA-ZJVgd2R6FtAGjN3AK-Gb1D6QqUQlOH/exec',IMC={};
+async function loadImgs(f){const els=[...document.querySelectorAll('#foa img[data-u]')];if(!els.length)return;
+ const put=()=>els.forEach(i=>{const d=IMC[i.dataset.u];if(d===false){const a=i.closest('a');if(a&&a.classList.contains('fo-sg'))i.replaceWith(document.createTextNode(TT('เปิดไฟล์','Open file')));else if(a)a.classList.add('fo-ie')}else if(d){i.src=d;i.closest('a').classList.add('fo-ok')}});
+ const need=[...new Set(els.map(i=>i.dataset.u))].filter(u=>!(u in IMC));put();if(!need.length)return;
+ els.forEach(i=>{if(need.includes(i.dataset.u))i.closest('a').classList.add('fo-ld')});
+ try{const{data}=await sb.auth.getSession(),jwt=data&&data.session&&data.session.access_token;
+  const r=await fetch(FO_GAS,{method:'POST',body:JSON.stringify({act:'img',id:f.id,jwt,urls:need})}),j=await r.json();
+  need.forEach(u=>{IMC[u]=(j&&j.imgs&&j.imgs[u])||false})}catch(e){need.forEach(u=>{IMC[u]=false})}
+ els.forEach(i=>i.closest('a')&&i.closest('a').classList.remove('fo-ld'));put()}
 async function showAns(f){if(f.answers===undefined){const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}const ans=Array.isArray(f.answers)?f.answers:[];
  $('foa_t').textContent=TT(KN[f.kind][0],KN[f.kind][1])+' · '+(f.company||'');
  $('foa_s').textContent=[f.brand,f.sales,TT('กรอกเมื่อ ','Submitted ')+dt(f.submitted_at)].filter(Boolean).join(' · ');
  $('foa_b').innerHTML=secs(f,ans);
  const fl=Array.isArray(f.files)?f.files:[],im=fl.filter(isImg),ot=fl.filter(x=>!isImg(x));
- $('foa_f').innerHTML=fl.length?`<section class="fo-sec"><h4>${TT('ไฟล์แนบ','Attachments')}</h4>${im.length?`<div class="fo-im">${im.map(x=>`<a href="${H(x.url)}" target="_blank" rel="noopener" title="${H(x.name)}"><img src="${H(thumb(x.url))}" alt="${H(x.name)}" loading="lazy" onerror="this.closest('a').classList.add('fo-ie')"><span>${H(lab(x.label||x.name))}</span></a>`).join('')}</div>`:''}${ot.length?`<div class="fo-fl">${ot.map(chip).join('')}</div>`:''}</section>`:'';
- const sh=$('foa_sh');sh.classList.toggle('hid',!f.sheet_url);sh.textContent=f.source==='jotform'?TT('เปิดโฟลเดอร์ใน Drive','Open Drive folder'):TT('เปิดใน Google Sheets','Open in Google Sheets');if(f.sheet_url)sh.href=f.sheet_url;$('foa').showModal()}
+ $('foa_f').innerHTML=fl.length?`<section class="fo-sec"><h4>${TT('ไฟล์แนบ','Attachments')}</h4>${im.length?`<div class="fo-im">${im.map(x=>`<a href="${H(x.url)}" target="_blank" rel="noopener" title="${H(x.name)}"><img data-u="${H(x.url)}" alt="${H(x.name)}"><span>${H(lab(x.label||x.name))}</span></a>`).join('')}</div>`:''}${ot.length?`<div class="fo-fl">${ot.map(chip).join('')}</div>`:''}</section>`:'';
+ const sh=$('foa_sh');sh.classList.toggle('hid',!f.sheet_url);sh.textContent=f.source==='jotform'?TT('เปิดโฟลเดอร์ใน Drive','Open Drive folder'):TT('เปิดใน Google Sheets','Open in Google Sheets');if(f.sheet_url)sh.href=f.sheet_url;$('foa').showModal();loadImgs(f)}
 async function del(f){if(!await ask(TT('ลบฟอร์มนี้?','Delete this form?'),{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ',oke:'Delete',danger:true}))return;
  const{error}=await sb.from('cust_forms').delete().eq('id',f.id);if(error)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));FO.list=FO.list.filter(x=>x.id!==f.id);render()}
 $('fo_b').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(!tr)return;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(!f)return;
