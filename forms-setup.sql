@@ -66,3 +66,44 @@ revoke all on function public.form_get(uuid) from public;
 revoke all on function public.form_submit(uuid, jsonb, jsonb, text, text, text) from public;
 grant execute on function public.form_get(uuid) to anon, authenticated;
 grant execute on function public.form_submit(uuid, jsonb, jsonb, text, text, text) to anon, authenticated;
+
+-- ===== นำเข้าข้อมูลเก่าจาก Jotform =====
+alter table public.cust_forms add column if not exists source text;
+alter table public.cust_forms add column if not exists jf_id text;
+create unique index if not exists cust_forms_jf_uq on public.cust_forms(jf_id) where jf_id is not null;
+alter table public.cust_forms drop constraint if exists cust_forms_kind_check;
+alter table public.cust_forms add constraint cust_forms_kind_check check (kind in ('book','acc','job','claim','tc'));
+
+-- ใบสมัครงาน: Admin เท่านั้น
+create or replace function public.cust_forms_can2(p_team text, p_kind text)
+returns boolean language sql stable security definer set search_path = public as $$
+  select case when p_kind = 'job'
+    then exists(select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    else public.cust_forms_can(p_team) end;
+$$;
+drop policy if exists cust_forms_staff on public.cust_forms;
+create policy cust_forms_staff on public.cust_forms for all to authenticated
+  using (public.cust_forms_can2(team, kind))
+  with check (public.cust_forms_can2(team, kind));
+
+-- รหัสลับสำหรับสคริปต์นำเข้า (ตั้งรหัสของคุณเองแทนข้อความด้านล่าง แล้วใส่รหัสเดียวกันใน Script Properties: IMPORT_SECRET)
+create table if not exists public.form_admin(secret text not null);
+alter table public.form_admin enable row level security;
+-- insert into public.form_admin(secret) values ('ตั้งรหัสของคุณ');
+
+create or replace function public.form_import(p_secret text, p_rows jsonb)
+returns integer language plpgsql security definer set search_path = public as $$
+declare n int;
+begin
+  if not exists(select 1 from public.form_admin where secret = p_secret) then raise exception 'denied'; end if;
+  insert into public.cust_forms(kind, brand, company, prefill, status, answers, files, sheet_url, created_by, created_at, submitted_at, source, jf_id)
+  select r->>'kind', r->>'brand', coalesce(r->>'company',''), jsonb_build_object('contact', coalesce(r->>'contact','')), 'done',
+         r->'answers', r->'files', r->>'folder', null, (r->>'at')::timestamptz, (r->>'at')::timestamptz, 'jotform', r->>'jf_id'
+  from jsonb_array_elements(p_rows) r
+  on conflict (jf_id) where jf_id is not null do nothing;
+  get diagnostics n = row_count;
+  return n;
+end;
+$$;
+revoke all on function public.form_import(text, jsonb) from public;
+grant execute on function public.form_import(text, jsonb) to anon, authenticated;

@@ -2709,7 +2709,7 @@ const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&
 (function(){
 const FO={list:[],loaded:false,ok:true,busy:false,cur:null};
 const BRC={'CPL-Inter':'#0082c0','CPLEx':'#e05a1a','CLMV':'#11794a','IMTH':'#6b3fb5'},BR=Object.keys(BRC);
-const KN={book:['ใบจองงานขนส่ง','Shipment booking'],acc:['ใบสมัครบัญชีลูกค้า','Account application']};
+const KN={book:['ใบจองงานขนส่ง','Shipment booking'],acc:['ใบสมัครบัญชีลูกค้า','Account application'],job:['ใบสมัครงาน','Job application'],claim:['เคลมสินค้า','Claim'],tc:['เงื่อนไขการใช้บริการ','Terms & Conditions']};
 const STL={sent:['ส่งแล้ว','Sent','s-new'],done:['กรอกแล้ว','Submitted','s-won']};
 const canFO=()=>!!profile&&['admin','sales_lead','sales'].includes(profile.role);
 const H=s=>esc(s==null?'':String(s)),p2=n=>String(n).padStart(2,'0');
@@ -2717,7 +2717,7 @@ const ld=t=>{if(!t)return'';const d=new Date(t);return d.getFullYear()+'-'+p2(d.
 const dt=t=>{if(!t)return'-';const d=new Date(t);return p2(d.getDate())+'/'+p2(d.getMonth()+1)+'/'+d.getFullYear()+' '+p2(d.getHours())+':'+p2(d.getMinutes())};
 const link=t=>new URL('form.html?k='+t,location.href).href;
 const mine=()=>FO.list.filter(f=>!profile||profile.role!=='sales'||f.team===profile.team);
-async function load(){const{data,error}=await sb.from('cust_forms').select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at').order('created_at',{ascending:false}).limit(3000);FO.ok=!error;FO.list=error?[]:(data||[]);FO.loaded=true;render()}
+async function load(){const C='id,token,lead_id,kind,brand,team,sales,company,prefill,status,sheet_url,created_by,created_at,submitted_at,source';let all=[],err=null;for(let o=0;o<20000;o+=1000){const{data,error}=await sb.from('cust_forms').select(C).order('created_at',{ascending:false}).range(o,o+999);if(error){err=error;break}all=all.concat(data||[]);if(!data||data.length<1000)break}FO.ok=!err;FO.list=err?[]:all;FO.loaded=true;render()}
 function fillF(){const f=(id,o,all)=>{const e=$(id),v=e.value;e.innerHTML=`<option value="">${all}</option>`+o.map(([a,b])=>`<option value="${H(a)}">${H(b)}</option>`).join('');if([...e.options].some(x=>x.value===v))e.value=v};
  f('fo_fb',BR.map(b=>[b,b]),TT('ทุกแบรนด์','All brands'));f('fo_fk',Object.entries(KN).map(([k,v])=>[k,TT(v[0],v[1])]),TT('ทุกฟอร์ม','All forms'));f('fo_fs',Object.entries(STL).map(([k,v])=>[k,TT(v[0],v[1])]),TT('ทุกสถานะ','All statuses'));
  const sl=[...new Set(mine().map(x=>x.sales).filter(Boolean))].sort();f('fo_fsl',sl.map(x=>[x,x]),TT('ทุก Sales','All Sales'));
@@ -2737,17 +2737,17 @@ function openNew(){const f=$('fof');f.reset();[...f.elements].forEach(e=>{if(e.i
  $('fo_lw').classList.add('hid');$('fo_mk').classList.remove('hid');$('fo_x').textContent=TT('ยกเลิก','Cancel');$('fod').showModal()}
 async function make(){if(FO.busy)return;const f=$('fof'),me=(profile&&profile.name)||(WHO&&WHO.n)||'';
  FO.busy=true;$('fo_mk').disabled=true;
- const{data,error}=await sb.from('cust_forms').insert({kind:f.kind.value,brand:f.brand.value,team:profile&&profile.role==='sales'?profile.team:null,sales:me||null,company:'',prefill:{sales:me}}).select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at').single();
+ const{data,error}=await sb.from('cust_forms').insert({kind:f.kind.value,brand:f.brand.value,team:profile&&profile.role==='sales'?profile.team:null,sales:me||null,company:'',prefill:{sales:me}}).select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at,source').single();
  FO.busy=false;$('fo_mk').disabled=false;
  if(error||!data)return alert(TT('สร้างฟอร์มไม่สำเร็จ','Failed to create form'));
  FO.list.unshift(data);$('fo_url').value=link(data.token);$('fo_lw').classList.remove('hid');$('fo_mk').classList.add('hid');$('fo_x').textContent=TT('ปิด','Close');
  [...f.elements].forEach(e=>{if(!['fo_url','fo_cp','fo_x'].includes(e.id))e.disabled=true});render()}
-function showAns(f){const ans=Array.isArray(f.answers)?f.answers:[];
+async function showAns(f){if(f.answers===undefined){const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}const ans=Array.isArray(f.answers)?f.answers:[];
  $('foa_t').textContent=TT(KN[f.kind][0],KN[f.kind][1])+' · '+(f.company||'');
  $('foa_s').textContent=[f.brand,f.sales,TT('กรอกเมื่อ ','Submitted ')+dt(f.submitted_at)].filter(Boolean).join(' · ');
  $('foa_b').innerHTML=ans.filter(a=>a.v!=='').map(a=>`<div><em>${H(TT(a.l,a.e||a.l))}</em>${H(a.v)}</div>`).join('');
  const fl=Array.isArray(f.files)?f.files:[];$('foa_f').innerHTML=fl.length?`<h4>${TT('ไฟล์แนบ','Attachments')}</h4><div class="fo-fl">${fl.map(x=>`<a href="${H(x.url)}" target="_blank" rel="noopener" title="${H(TT(x.label,x.le||x.label))}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.5l-8.5 8.5a6 6 0 0 1-8.5-8.5l9-9a4 4 0 0 1 5.7 5.7l-9 9a2 2 0 0 1-2.9-2.9L15 7.5"/></svg>${H(x.name)}</a>`).join('')}</div>`:'';
- const sh=$('foa_sh');sh.classList.toggle('hid',!f.sheet_url);if(f.sheet_url)sh.href=f.sheet_url;$('foa').showModal()}
+ const sh=$('foa_sh');sh.classList.toggle('hid',!f.sheet_url);sh.textContent=f.source==='jotform'?TT('เปิดโฟลเดอร์ใน Drive','Open Drive folder'):TT('เปิดใน Google Sheets','Open in Google Sheets');if(f.sheet_url)sh.href=f.sheet_url;$('foa').showModal()}
 async function del(f){if(!await ask(TT('ลบฟอร์มนี้?','Delete this form?'),{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ',oke:'Delete',danger:true}))return;
  const{error}=await sb.from('cust_forms').delete().eq('id',f.id);if(error)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));FO.list=FO.list.filter(x=>x.id!==f.id);render()}
 $('fo_b').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(!tr)return;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(!f)return;
@@ -2762,7 +2762,7 @@ $('tFO').onclick=()=>tab('FO');
 const _a=applyRoleUI;applyRoleUI=function(p){_a(p);$('tFO').classList.toggle('hid',!canFO());FO.loaded=false;FO.list=[];if(!canFO()&&!$('vFO').classList.contains('hid'))tab('N')};
 if(profile)$('tFO').classList.toggle('hid',!canFO());
 const _rl=typeof relang==='function'?relang:null;if(_rl)relang=function(){_rl.apply(this,arguments);try{render()}catch(e){}};
-if(typeof EN==='object')Object.assign(EN,{'ฟอร์ม':'Form','+ สร้างฟอร์ม':'+ Create form','สร้างฟอร์มลูกค้า':'Create customer form','ประเภทฟอร์ม':'Form type','ใบจองงานขนส่ง':'Shipment booking','ใบสมัครบัญชีลูกค้า':'Account application','สร้างลิงก์':'Create link','ลิงก์สำหรับลูกค้า':'Customer link','คัดลอก':'Copy','ส่งเมื่อ':'Sent','กรอกเมื่อ':'Submitted','ค้นหาลูกค้า / ผู้ติดต่อ':'Search customer / contact','ค้นหา Lead':'Search Lead','ชื่อบริษัท':'Company name','โทรศัพท์':'Phone','เปิดใน Google Sheets':'Open in Google Sheets','ไม่พบฟอร์ม':'No forms found'});
+if(typeof EN==='object')Object.assign(EN,{'เปิดโฟลเดอร์ใน Drive':'Open Drive folder','ใบสมัครงาน':'Job application','เคลมสินค้า':'Claim','เงื่อนไขการใช้บริการ':'Terms & Conditions','ฟอร์ม':'Form','+ สร้างฟอร์ม':'+ Create form','สร้างฟอร์มลูกค้า':'Create customer form','ประเภทฟอร์ม':'Form type','ใบจองงานขนส่ง':'Shipment booking','ใบสมัครบัญชีลูกค้า':'Account application','สร้างลิงก์':'Create link','ลิงก์สำหรับลูกค้า':'Customer link','คัดลอก':'Copy','ส่งเมื่อ':'Sent','กรอกเมื่อ':'Submitted','ค้นหาลูกค้า / ผู้ติดต่อ':'Search customer / contact','ค้นหา Lead':'Search Lead','ชื่อบริษัท':'Company name','โทรศัพท์':'Phone','เปิดใน Google Sheets':'Open in Google Sheets','ไม่พบฟอร์ม':'No forms found'});
 })();
 </script>
 </body>
