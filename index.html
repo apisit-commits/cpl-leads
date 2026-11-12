@@ -2772,26 +2772,32 @@ function val(v){v=String(v==null?'':v).trim();
  return `<span class="fo-v">${H(v)}</span>`}
 const SECN={per:['ข้อมูลส่วนบุคคล','Personal information'],app:['การสมัครงาน','Application'],clm:['ผู้ขอเคลม','Claimant'],cd:['รายละเอียดการเคลม','Claim details'],cus:['ข้อมูลลูกค้า','Customer'],trn:['การขนส่ง','Shipment'],shp:['ผู้ส่ง','Shipper'],rcv:['ผู้รับ','Consignee'],gds:['สินค้า','Goods'],co:['ข้อมูลบริษัท','Company'],ct:['ผู้ติดต่อ','Contacts'],tm:['เงื่อนไขการชำระเงิน','Payment terms'],oth:['ยืนยันและอื่นๆ','Confirmation & other'],ans:['คำตอบ','Answers']};
 const KEYSEC={j_pos:'app',j_:'per',c_type:'cd',c_ref:'cd',c_origin:'cd',c_dest:'cd',c_collect:'cd',c_notify:'cd',c_ins:'cd',c_value:'cd',c_detail:'cd',c_:'clm',t_sales:'oth',t_:'cus',s_:'shp',r_:'rcv',service:'gds',goods:'gds',qty:'gds',weight:'gds',dims:'gds',value:'gds',ready:'gds',note:'oth',consent:'oth',signer:'oth',co_name:'co',tax_id:'co',branch:'co',reg_address:'co',doc_address:'co',ct_:'ct',acc_contact:'ct',credit:'tm',pay:'tm'};
-function jfSec(l,cur){l=l.toLowerCase();
- if(/freight|service|บริการ|ขนส่ง|incoterm/.test(l))return'trn';
- if(/signature|ลายมือ|sales|พนักงานขาย|accept|ยอมรับ|ยินยอม|consent|condition|เงื่อนไข/.test(l))return'oth';
- if(/ผู้รับ|receiver|consignee|recipient/.test(l))return'rcv';
- if(/ผู้ส่ง|shipper|sender/.test(l))return'shp';
- if(/value|มูลค่า|currency|สกุลเงิน|goods|สินค้า|description|รายละเอียด|reason|เหตุผล|weight|น้ำหนัก|dimension|ขนาด|commodity|hs ?code/.test(l))return'gds';
+const JFS0={book:'trn',acc:'co',claim:'clm',tc:'cus',job:'per'};
+function jfSec(l,cur,kind){l=l.toLowerCase();
+ if(/signature|ลายมือ|sales|พนักงานขาย|accept|ยอมรับ|ยินยอม|consent|condition|เงื่อนไข|declaration|รับรอง/.test(l))return'oth';
+ if(kind==='book'){
+  if(/freight|service|บริการ|ขนส่ง|incoterm/.test(l))return'trn';
+  if(/ผู้รับ|receiver|consignee|recipient/.test(l))return'rcv';
+  if(/ผู้ส่ง|shipper|sender/.test(l))return'shp';
+  if(/value|มูลค่า|currency|สกุลเงิน|goods|สินค้า|description|รายละเอียด|reason|เหตุผล|weight|น้ำหนัก|dimension|ขนาด|commodity|hs ?code/.test(l))return'gds'}
+ if(kind==='claim'&&/type of claim|ประเภท|consignment|reference|origin|ต้นทาง|destination|ปลายทาง|collection|รับสินค้า|notification|แจ้ง|insurance|ประกัน|damage|เสียหาย|amount|มูลค่า/.test(l))return'cd';
+ if(kind==='job'&&/position|ตำแหน่ง|สมัคร/.test(l))return'app';
+ if(kind==='acc'&&/contact|ผู้ติดต่อ|position|ตำแหน่ง|phone|โทร|mail|อีเมล/.test(l))return'ct';
+ if(kind==='acc'&&/credit|เครดิต|payment|ชำระ/.test(l))return'tm';
  return cur}
 function secs(f,ans){ans=ans.filter(a=>String(a.v==null?'':a.v).trim()!=='');if(!ans.length)return'';
- const B=new Map(),add=(k,a)=>{if(!B.has(k))B.set(k,[]);B.get(k).push(a)};let cur='trn';
+ const B=new Map(),add=(k,a)=>{if(!B.has(k))B.set(k,[]);B.get(k).push(a)};let cur=JFS0[f.kind]||'ans';
  ans.forEach(a=>{let l=a.l||'',v=String(a.v).trim();
   if(/^type[A-Z]?\d+$/i.test(l)||/^q\d+$/.test(l)){if(/^[\[{]/.test(v))l='รายการสินค้า';else if(/^(accepted|ยอมรับ)$/i.test(v))l='ยอมรับเงื่อนไข';else l='ข้อมูลเพิ่มเติม'}
   const x={...a,l};let k;
   if(f.source!=='jotform'){k=Object.keys(KEYSEC).find(p=>a.k===p||(p.endsWith('_')&&String(a.k).startsWith(p)));k=k?KEYSEC[k]:'oth'}
-  else if(f.kind==='book'){k=l==='รายการสินค้า'?'gds':l==='ยอมรับเงื่อนไข'?'oth':jfSec(a.l||'',cur);cur=k==='oth'?cur:k}
-  else k='ans';add(k,x)});
+  else{k=l==='รายการสินค้า'?'gds':l==='ยอมรับเงื่อนไข'?'oth':jfSec(a.l||'',cur,f.kind);cur=k==='oth'?cur:k}add(k,x)});
  const ord=['per','app','clm','cd','cus','trn','shp','rcv','gds','co','ct','tm','ans','oth'];
  return ord.filter(k=>B.has(k)).map(k=>`<section class="fo-sec"><h4>${H(TT(SECN[k][0],SECN[k][1]))}</h4><dl class="fo-dl">${B.get(k).map(a=>{const w=/^[\[{]/.test(String(a.v).trim());return `<div${w?' class="fo-w"':''}><dt>${H(f.source==='jotform'?lab(a.l):TT(a.l,a.e||a.l))}</dt><dd>${val(a.v)}</dd></div>`}).join('')}</dl></section>`).join('')}
 const FO_GAS='https://script.google.com/macros/s/AKfycbzdkXD-47WaWAQxOZUmz4Vdo6-fBPz1Lm5OA-ZJVgd2R6FtAGjN3AK-Gb1D6QqUQlOH/exec',IMC={};
 async function loadImgs(f){const els=[...document.querySelectorAll('#foa img[data-u]')];if(!els.length)return;
  const put=()=>els.forEach(i=>{const d=IMC[i.dataset.u];if(d===false){const a=i.closest('a');if(a&&a.classList.contains('fo-sg'))i.replaceWith(document.createTextNode(TT('เปิดไฟล์','Open file')));else if(a)a.classList.add('fo-ie')}else if(d){i.src=d;i.closest('a').classList.add('fo-ok')}});
+ const fl=[...new Set(els.map(i=>i.dataset.u))].filter(u=>FO.pf&&FO.pf[u]&&IMC[u]===undefined&&(u in IMC));if(fl.length){els.forEach(i=>{if(fl.includes(i.dataset.u))i.closest('a').classList.add('fo-ld')});await Promise.all(fl.map(u=>FO.pf[u]));els.forEach(i=>i.closest('a')&&i.closest('a').classList.remove('fo-ld'))}
  const need=[...new Set(els.map(i=>i.dataset.u))].filter(u=>!(u in IMC));put();if(!need.length)return;
  els.forEach(i=>{if(need.includes(i.dataset.u))i.closest('a').classList.add('fo-ld')});
  try{const{data}=await sb.auth.getSession(),jwt=data&&data.session&&data.session.access_token;
@@ -2809,8 +2815,8 @@ async function del(f){if(!await ask(TT('ลบฟอร์มนี้?','Delete
  const{data,error}=await sb.from('cust_forms').delete().eq('id',f.id).select('id');if(error||!data||!data.length)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));FO.list=FO.list.filter(x=>x.id!==f.id);render()}
 $('fo_b').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(!tr)return;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(!f)return;
  const cp=e.target.closest('[data-fcp]');if(cp)return copy(link(f.token),cp);if(e.target.closest('[data-fdl]'))return del(f);if(e.target.closest('[data-fan]'))return showAns(f);if(e.target.closest('button,a'))return;if(f.status==='done')return showAns(f)});
-const DOC_CSS=`*{box-sizing:border-box}html,body{margin:0;background:#fff}body{font-family:'Noto Sans Thai',system-ui,sans-serif;color:#0e2238;font-size:10.5px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.dc{width:794px;padding:30px 34px;}.dh{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--bc);padding-bottom:8px;margin-bottom:8px}
+const DOC_CSS=`*{box-sizing:border-box}html,body{margin:0;background:#fff}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.dc{width:794px;padding:30px 34px;font-family:'Noto Sans Thai',Tahoma,'Leelawadee UI','Sukhumvit Set',sans-serif;color:#0e2238;font-size:10.5px;line-height:1.4;background:#fff}.dh{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--bc);padding-bottom:8px;margin-bottom:8px}
 .dh .br{font-size:17px;font-weight:600;color:var(--bc)}.dh h1{margin:2px 0 0;font-size:14px}.dh .mt{text-align:right;color:#62768c;font-size:10px;line-height:1.5}
 .fo-sec{border:1px solid #e0e8f0;border-radius:6px;padding:6px 10px;margin-top:6px;break-inside:avoid}.fo-sec h4{margin:0 0 2px;font-size:11.5px;color:var(--bc)}
 .fo-dl{display:grid;grid-template-columns:1fr 1fr;column-gap:16px;margin:0}.fo-dl>div{display:grid;grid-template-columns:36% 1fr;gap:6px;padding:3px 0;border-top:1px solid #eef2f6}
@@ -2833,16 +2839,42 @@ async function docFrame(f,libs){try{await FO.imgP}catch(e){}
 function fit(fr){const dc=fr.contentDocument.querySelector('.dc'),h=dc.getBoundingClientRect().height;if(h>A4H&&h<A4H*1.7){let k=A4H/h;for(let i=0;i<4;i++){dc.style.width=794/k+'px';dc.style.zoom=k;const z=dc.getBoundingClientRect().height;if(z<=A4H)break;k*=A4H/z*0.99}}}
 async function foPrint(){const f=FO.cur;if(!f)return;const b=$('foa_pr');b.disabled=true;
  try{const fr=await docFrame(f,false);fit(fr);fr.contentWindow.focus();fr.contentWindow.print();setTimeout(()=>fr.remove(),60000)}catch(e){}b.disabled=false}
+let FONT_CSS=null;
+async function fontCss(){if(FONT_CSS!=null)return FONT_CSS;FONT_CSS='';
+ try{let c=await (await fetch('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600&display=swap')).text();
+  const us=[...new Set([...c.matchAll(/url\((https:[^)]+)\)/g)].map(m=>m[1]))];
+  const ds=await Promise.all(us.map(async u=>{const b=await (await fetch(u)).blob();return await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b)})}));
+  us.forEach((u,i)=>{c=c.split(u).join(ds[i])});FONT_CSS=c}catch(e){FONT_CSS=''}return FONT_CSS}
+function pdfBytes(pages){const enc=new TextEncoder(),parts=[],offs=[];let len=0;const add=x=>{const b=typeof x==='string'?enc.encode(x):x;parts.push(b);len+=b.length};
+ const obj=(n,body)=>{offs[n]=len;add(n+' 0 obj\n');body.forEach(add);add('\nendobj\n')};
+ const N=pages.length,W=595.28,Hh=841.89;add('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+ obj(1,['<< /Type /Catalog /Pages 2 0 R >>']);
+ obj(2,['<< /Type /Pages /Count '+N+' /Kids ['+pages.map((_,i)=>(3+i*3)+' 0 R').join(' ')+'] >>']);
+ pages.forEach((p,i)=>{const o=3+i*3,c=`q ${p.w.toFixed(2)} 0 0 ${p.h.toFixed(2)} ${p.x.toFixed(2)} ${(Hh-p.h).toFixed(2)} cm /Im0 Do Q`;
+  obj(o,[`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${Hh}] /Resources << /XObject << /Im0 ${o+2} 0 R >> >> /Contents ${o+1} 0 R >>`]);
+  obj(o+1,[`<< /Length ${c.length} >>\nstream\n${c}\nendstream`]);
+  obj(o+2,[`<< /Type /XObject /Subtype /Image /Width ${p.pw} /Height ${p.ph} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpg.length} >>\nstream\n`,p.jpg,'\nendstream'])});
+ const xo=len,n=3+N*3;add('xref\n0 '+n+'\n0000000000 65535 f \n');for(let i=1;i<n;i++)add(String(offs[i]).padStart(10,'0')+' 00000 n \n');
+ add('trailer\n<< /Size '+n+' /Root 1 0 R >>\nstartxref\n'+xo+'\n%%EOF');return new Blob(parts,{type:'application/pdf'})}
+const jpgOf=c=>{const d=atob(c.toDataURL('image/jpeg',0.9).split(',')[1]),u=new Uint8Array(d.length);for(let i=0;i<d.length;i++)u[i]=d.charCodeAt(i);return u};
 async function foPdf(){const f=FO.cur;if(!f)return;const b=$('foa_pdf'),t=b.textContent;b.disabled=true;b.textContent=TT('กำลังสร้าง…','Preparing…');let fr;
- try{fr=await docFrame(f,true);const w=fr.contentWindow;for(let i=0;i<40&&!(w.html2canvas&&w.jspdf);i++)await new Promise(r=>setTimeout(r,250));if(!w.html2canvas||!w.jspdf)throw new Error('lib');
-  const dc=fr.contentDocument.querySelector('.dc'),cv=await w.html2canvas(dc,{scale:2,backgroundColor:'#ffffff',useCORS:true,windowWidth:794}),pdf=new w.jspdf.jsPDF({unit:'mm',format:'a4'});
-  const PW=210,PH=297,ih=cv.height*PW/cv.width;
-  if(ih<=PH*1.7){const k=Math.min(1,PH/ih),ww=PW*k;pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',(PW-ww)/2,0,ww,ih*k)}
-  else{const ph=Math.floor(cv.width*PH/PW);for(let y=0,n=0;y<cv.height;y+=ph,n++){const c=document.createElement('canvas');c.width=cv.width;c.height=Math.min(ph,cv.height-y);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(cv,0,-y);if(n)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',0,0,PW,c.height*PW/c.width)}}
-  pdf.save(docName(f)+'.pdf')}
- catch(e){alert(TT('ดาวน์โหลด PDF ไม่สำเร็จ','Could not create the PDF'))}
+ try{const fc=await fontCss();fr=await docFrame(f,false);const d=fr.contentDocument,dc=d.querySelector('.dc'),h=Math.ceil(dc.getBoundingClientRect().height)+40;
+  const wrap=d.createElement('div'),st=d.createElement('style');st.textContent=fc+DOC_CSS.replace(/@page[^}]*\}/,'');wrap.append(st,dc.cloneNode(true));
+  const xml=new XMLSerializer().serializeToString(wrap),svg=`<svg xmlns="http://www.w3.org/2000/svg" width="794" height="${h}"><foreignObject x="0" y="0" width="794" height="${h}">${xml}</foreignObject></svg>`;
+  const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);await im.decode();
+  const S=2,cv=document.createElement('canvas');cv.width=794*S;cv.height=h*S;const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.drawImage(im,0,0,cv.width,cv.height);
+  const W=595.28,PH=841.89,pages=[];
+  if(h<=A4H*1.7){const k=Math.min(1,A4H/h),w=W*k;pages.push({jpg:jpgOf(cv),pw:cv.width,ph:cv.height,w,h:h*W/794*k,x:(W-w)/2})}
+  else for(let y=0;y<cv.height;y+=A4H*S){const c=document.createElement('canvas');c.width=cv.width;c.height=Math.min(A4H*S,cv.height-y);const cx=c.getContext('2d');cx.drawImage(cv,0,-y);pages.push({jpg:jpgOf(c),pw:c.width,ph:c.height,w:W,h:c.height/S*W/794,x:0})}
+  const url=URL.createObjectURL(pdfBytes(pages)),a=document.createElement('a');a.href=url;a.download=docName(f)+'.pdf';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
+ catch(e){console.error(e);if(fr){fr.remove();fr=null}b.disabled=false;b.textContent=t;return foPrint()}
  if(fr)fr.remove();b.disabled=false;b.textContent=t}
 $('foa_pr').onclick=foPrint;$('foa_pdf').onclick=foPdf;
+$('fo_b').addEventListener('mouseover',e=>{const tr=e.target.closest('tr.fo-rc');if(!tr||tr.dataset.pf)return;tr.dataset.pf=1;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(f)prefetch(f)});
+async function prefetch(f){try{if(f.answers===undefined){const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();if(f.answers!==undefined)return;f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}
+ const us=[...(f.files||[]).filter(isImg).map(x=>x.url),...(f.answers||[]).map(a=>String(a.v||'').trim()).filter(v=>/^https?:\/\/\S+$/.test(v)&&isImgU(v))].filter(u=>!(u in IMC));if(!us.length)return;
+ us.forEach(u=>{IMC[u]=undefined});const{data}=await sb.auth.getSession(),jwt=data&&data.session&&data.session.access_token;
+ const P=fetch(FO_GAS,{method:'POST',body:JSON.stringify({act:'img',id:f.id,jwt,urls:us})}).then(r=>r.json()).then(j=>{us.forEach(u=>{IMC[u]=(j&&j.imgs&&j.imgs[u])||false})}).catch(()=>{us.forEach(u=>{IMC[u]=false})});FO.pf=FO.pf||{};us.forEach(u=>{FO.pf[u]=P});await P}catch(e){}}
 $('fo_new').onclick=openNew;$('fo_x').onclick=()=>$('fod').close();$('foa_x').onclick=()=>$('foa').close();
 $('fof').addEventListener('submit',e=>{e.preventDefault();make()});$('fo_cp').onclick=e=>copy($('fo_url').value,e.currentTarget);
 ['fo_q'].forEach(id=>$(id).addEventListener('input',render));['fo_fb','fo_fk','fo_fs','fo_fsl'].forEach(id=>$(id).addEventListener('change',render));

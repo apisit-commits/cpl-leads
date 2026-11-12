@@ -158,7 +158,7 @@ function setup() {
 }
 
 
-/** รูปในหน้าดูคำตอบ (เว็บ Lead Tracker): ตรวจสิทธิ์ผู้ใช้ผ่าน Supabase แล้วส่งรูปกลับเป็น data URL */
+/** รูปในหน้าดูคำตอบ (เว็บ Lead Tracker): ตรวจสิทธิ์ผู้ใช้ผ่าน Supabase แล้วส่งรูปขนาดย่อกลับเป็น data URL (มีแคช 6 ชั่วโมง) */
 function imgs_(body) {
   const r = UrlFetchApp.fetch(SUPABASE_URL + '/rest/v1/cust_forms?select=files,answers&id=eq.' + Number(body.id), {
     headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + String(body.jwt || '') }, muteHttpExceptions: true
@@ -169,25 +169,46 @@ function imgs_(body) {
   const allowed = {};
   (rows[0].files || []).forEach(function (f) { if (f && f.url) allowed[f.url] = 1; });
   (rows[0].answers || []).forEach(function (a) { const v = String(a && a.v || '').trim(); if (/^https?:\/\/\S+$/.test(v)) allowed[v] = 1; });
-  const key = PropertiesService.getScriptProperties().getProperty('JOTFORM_KEY');
-  const out = {};
-  (body.urls || []).slice(0, 30).forEach(function (u) {
-    if (!allowed[u]) return;
+  const want = (body.urls || []).filter(function (u) { return allowed[u]; }).slice(0, 30);
+  const cache = CacheService.getScriptCache(), keyOf = function (u) { return 'img' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, u)); };
+  const hit = cache.getAll(want.map(keyOf)), out = {}, miss = [];
+  want.forEach(function (u) { const v = hit[keyOf(u)]; if (v) out[u] = v; else miss.push(u); });
+  if (!miss.length) return { ok: true, imgs: out };
+  const tok = ScriptApp.getOAuthToken(), auth = { Authorization: 'Bearer ' + tok };
+  const jkey = PropertiesService.getScriptProperties().getProperty('JOTFORM_KEY');
+  const did = function (u) { const m = /drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/.exec(u); return m ? m[1] : null; };
+  // 1) ขอลิงก์รูปย่อของไฟล์ใน Drive พร้อมกันทีเดียว
+  const dr = miss.filter(did);
+  const meta = dr.length ? UrlFetchApp.fetchAll(dr.map(function (u) {
+    return { url: 'https://www.googleapis.com/drive/v3/files/' + did(u) + '?fields=thumbnailLink,mimeType,size&supportsAllDrives=true', headers: auth, muteHttpExceptions: true };
+  })) : [];
+  const reqs = [], owner = [];
+  dr.forEach(function (u, i) {
     try {
-      let blob;
-      const m = /drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/.exec(u);
-      if (m) {
-        const file = DriveApp.getFileById(m[1]);
-        blob = file.getSize() > 3 * 1024 * 1024 ? file.getThumbnail() : file.getBlob();
-      } else if (/jotform\.com/.test(u)) {
-        const res = UrlFetchApp.fetch(u + (key ? (u.indexOf('?') < 0 ? '?' : '&') + 'apiKey=' + encodeURIComponent(key) : ''), { muteHttpExceptions: true });
-        if (res.getResponseCode() !== 200) return;
-        blob = res.getBlob();
-      } else return;
-      const type = blob.getContentType() || '';
-      if (!/^image\//.test(type)) return;
-      out[u] = 'data:' + type + ';base64,' + Utilities.base64Encode(blob.getBytes());
-    } catch (err) {}
+      const m = JSON.parse(meta[i].getContentText());
+      if (m.thumbnailLink) { reqs.push({ url: m.thumbnailLink.replace(/=s\d+$/, '') + '=s800', headers: auth, muteHttpExceptions: true }); owner.push(u); }
+    } catch (e) {}
   });
+  miss.filter(function (u) { return !did(u) && /jotform\.com/.test(u); }).forEach(function (u) {
+    reqs.push({ url: u + (jkey ? (u.indexOf('?') < 0 ? '?' : '&') + 'apiKey=' + encodeURIComponent(jkey) : ''), muteHttpExceptions: true }); owner.push(u);
+  });
+  // 2) โหลดรูปทั้งหมดพร้อมกัน
+  const res = reqs.length ? UrlFetchApp.fetchAll(reqs) : [];
+  const put = {};
+  res.forEach(function (x, i) {
+    const u = owner[i];
+    try {
+      let blob = x.getResponseCode() === 200 ? x.getBlob() : null;
+      if ((!blob || !/^image\//.test(blob.getContentType() || '')) && did(u)) {
+        const f = DriveApp.getFileById(did(u));
+        blob = f.getSize() < 3 * 1024 * 1024 ? f.getBlob() : null;
+      }
+      if (!blob || !/^image\//.test(blob.getContentType() || '')) return;
+      const d = 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
+      out[u] = d;
+      if (d.length < 95000) put[keyOf(u)] = d;
+    } catch (e) {}
+  });
+  try { if (Object.keys(put).length) cache.putAll(put, 21600); } catch (e) {}
   return { ok: true, imgs: out };
 }
