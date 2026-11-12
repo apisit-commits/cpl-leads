@@ -47,12 +47,15 @@ returns json language sql stable security definer set search_path = public as $$
   from public.cust_forms where token = p_token;
 $$;
 
-create or replace function public.form_submit(p_token uuid, p_answers jsonb, p_files jsonb, p_sheet text)
+drop function if exists public.form_submit(uuid, jsonb, jsonb, text);
+create or replace function public.form_submit(p_token uuid, p_answers jsonb, p_files jsonb, p_sheet text, p_company text default null, p_contact text default null)
 returns boolean language plpgsql security definer set search_path = public as $$
 declare n int;
 begin
   update public.cust_forms
-     set status = 'done', answers = p_answers, files = p_files, sheet_url = p_sheet, submitted_at = now()
+     set status = 'done', answers = p_answers, files = p_files, sheet_url = p_sheet, submitted_at = now(),
+         company = coalesce(nullif(p_company, ''), company),
+         prefill = prefill || jsonb_build_object('contact', coalesce(p_contact, ''))
    where token = p_token and status = 'sent';
   get diagnostics n = row_count;
   return n > 0;
@@ -60,6 +63,6 @@ end;
 $$;
 
 revoke all on function public.form_get(uuid) from public;
-revoke all on function public.form_submit(uuid, jsonb, jsonb, text) from public;
+revoke all on function public.form_submit(uuid, jsonb, jsonb, text, text, text) from public;
 grant execute on function public.form_get(uuid) to anon, authenticated;
-grant execute on function public.form_submit(uuid, jsonb, jsonb, text) to anon, authenticated;
+grant execute on function public.form_submit(uuid, jsonb, jsonb, text, text, text) to anon, authenticated;

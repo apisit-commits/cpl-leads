@@ -162,7 +162,7 @@ async function submit(btn){btn.disabled=true;btn.textContent=T('กำลัง�
    const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({token:S.k,company:co,sales:(S.form.prefill||{}).sales||'',answers,files:up})});
    const j=await r.json();if(!j.ok){if(j.error==='already_sent'){S.form.status='done';render();return}throw new Error(j.error||'upload')}
    files=j.files||[];sheet=j.sheet||null}
-  const{data,error}=await sb.rpc('form_submit',{p_token:S.k,p_answers:answers,p_files:files,p_sheet:sheet});
+  const{data,error}=await sb.rpc('form_submit',{p_token:S.k,p_answers:answers,p_files:files,p_sheet:sheet,p_company:S.v.s_company||S.v.co_name||'',p_contact:S.v.s_contact||S.v.ct_name||''});
   if(error)throw error;S.form.status='done';render();window.scrollTo(0,0)}
  catch(e){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง','Could not submit. Please try again.'))}}
 document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;

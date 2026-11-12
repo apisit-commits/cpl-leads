@@ -537,9 +537,8 @@ header .hd #who{display:none!important}
 </form><aside id="fq" class="hid"><h3>ใบเสนอราคา</h3><div id="fq_list"></div></aside></dialog>
 
 <dialog id="fod"><form id="fof" method="dialog" novalidate><h3 style="margin:0 0 12px">สร้างฟอร์มลูกค้า</h3>
-<div class="g"><label class="f fo-wide">Lead<b class="rq">*</b><input id="fo_ld" list="fo_dl" autocomplete="off" placeholder="ค้นหา Lead"></label></div><datalist id="fo_dl"></datalist>
-<div class="f" style="margin:12px 0">ประเภทฟอร์ม<b class="rq">*</b><div class="chips" style="margin-top:6px"><label><input type="radio" name="kind" value="book" checked><span>ใบจองงานขนส่ง</span></label><label><input type="radio" name="kind" value="acc"><span>ใบสมัครบัญชีลูกค้า</span></label></div></div>
-<div class="g"><label class="f">แบรนด์<b class="rq">*</b><select name="brand"><option>CPL-Inter</option><option>CPLEx</option><option>CLMV</option><option>IMTH</option></select></label><label class="f">เซลล์<input name="sales" readonly></label><label class="f">ชื่อบริษัท<b class="rq">*</b><input name="company" maxlength="160"></label><label class="f">ผู้ติดต่อ<input name="contact" maxlength="120"></label><label class="f">โทรศัพท์<input name="phone" type="tel" maxlength="40"></label><label class="f">อีเมล<input name="email" type="email" maxlength="120"></label></div>
+<div class="f" style="margin:0 0 12px">ประเภทฟอร์ม<b class="rq">*</b><div class="chips" style="margin-top:6px"><label><input type="radio" name="kind" value="book" checked><span>ใบจองงานขนส่ง</span></label><label><input type="radio" name="kind" value="acc"><span>ใบสมัครบัญชีลูกค้า</span></label></div></div>
+<div class="g"><label class="f fo-wide">แบรนด์<b class="rq">*</b><select name="brand"><option>CPL-Inter</option><option>CPLEx</option><option>CLMV</option><option>IMTH</option></select></label></div>
 <div id="fo_lw" class="hid" style="margin-top:12px"><label class="f">ลิงก์สำหรับลูกค้า<span class="fo-lk"><input id="fo_url" readonly><button type="button" class="btn p" id="fo_cp">คัดลอก</button></span></label></div>
 <div class="acts"><button type="button" class="btn" id="fo_x">ยกเลิก</button><button class="btn p" id="fo_mk">สร้างลิงก์</button></div></form></dialog>
 <dialog id="foa"><div class="fo-ad"><h3 id="foa_t" style="margin:0 0 4px"></h3><div class="sub" id="foa_s" style="margin-bottom:14px"></div><div class="fo-kv" id="foa_b"></div><div id="foa_f"></div><div class="acts"><a class="btn" id="foa_sh" target="_blank" rel="noopener">เปิดใน Google Sheets</a><button type="button" class="btn p" id="foa_x">ปิด</button></div></div></dialog>
@@ -2716,10 +2715,6 @@ const canFO=()=>!!profile&&['admin','sales_lead','sales'].includes(profile.role)
 const H=s=>esc(s==null?'':String(s)),p2=n=>String(n).padStart(2,'0');
 const ld=t=>{if(!t)return'';const d=new Date(t);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
 const dt=t=>{if(!t)return'-';const d=new Date(t);return p2(d.getDate())+'/'+p2(d.getMonth()+1)+'/'+d.getFullYear()+' '+p2(d.getHours())+':'+p2(d.getMinutes())};
-const brandOf=r=>{const b=String(r.brand||'').toLowerCase();if(b.includes('clmv'))return'CLMV';if(b.includes('imth'))return'IMTH';if(b.includes('cplex'))return'CPLEx';if(b.includes('cpl'))return'CPL-Inter';return r.team==='B'?'CPLEx':'CPL-Inter'};
-const svcOf=r=>{const s=(r.svc||[]).join(' ').toLowerCase();return/air/.test(s)?'Air Freight':/sea/.test(s)?'Sea Freight':/truck/.test(s)?'Truck':/rail|train/.test(s)?'Rail':/express|courier/.test(s)?'Express':''};
-const telOf=(c,n)=>n?((c||'').replace(/\s.*$/,'')+' '+n).trim():'';
-function pre(r){const d=r.detail||{};return{company:d.cpn||r.name||'',branch:d.cpb||'',contact:d.ctn||d.fn||'',phone:telOf(d.ctd,d.ctt)||telOf(d.cpd,d.cpt)||d.ph||'',email:d.cpe||d.em||'',country:r.country||'',service:svcOf(r),goods:d.gd||'',value:d.gv||'',origin:d.og||'',dest:d.ds||'',receiver:d.rn||'',sales:r.sales||''}}
 const link=t=>new URL('form.html?k='+t,location.href).href;
 const mine=()=>FO.list.filter(f=>!profile||profile.role!=='sales'||f.team===profile.team);
 async function load(){const{data,error}=await sb.from('cust_forms').select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at').order('created_at',{ascending:false}).limit(3000);FO.ok=!error;FO.list=error?[]:(data||[]);FO.loaded=true;render()}
@@ -2738,18 +2733,11 @@ function render(){if($('vFO').classList.contains('hid'))return;fillF();
  $('fo_em').textContent=FO.ok?TT('ไม่พบฟอร์ม','No forms found'):TT('โหลดข้อมูลไม่สำเร็จ','Failed to load data');$('fo_em').classList.toggle('hid',!!L.length)}
 async function copy(t,btn){try{await navigator.clipboard.writeText(t)}catch(e){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(_){}x.remove()}
  if(btn){const o=btn.textContent;btn.textContent=TT('คัดลอกแล้ว','Copied');setTimeout(()=>{btn.textContent=o},1500)}}
-const leadPool=()=>{const m=new Map();rows.concat(typeof SRX!=='undefined'?SRX:[]).forEach(r=>{if(r&&can(r)&&r.name)m.set(r.id,r)});return[...m.values()].sort((a,b)=>(b.date||'').localeCompare(a.date||''))};
-const lbl=r=>`${r.name} · ${fmtD(r.date)} · #${r.id}`;
-function openNew(){const f=$('fof');f.reset();FO.cur=null;$('fo_dl').innerHTML=leadPool().slice(0,1500).map(r=>`<option value="${H(lbl(r))}">`).join('');
- $('fo_lw').classList.add('hid');$('fo_mk').classList.remove('hid');$('fo_x').textContent=TT('ยกเลิก','Cancel');[...f.elements].forEach(e=>{if(e.name!=='sales'&&e.id!=='fo_url')e.disabled=false});$('fod').showModal();setTimeout(()=>$('fo_ld').focus(),50)}
-function pickLead(){const v=$('fo_ld').value,m=/#(\d+)\s*$/.exec(v),r=m&&leadPool().find(x=>String(x.id)===m[1]);FO.cur=r||null;if(!r)return;const f=$('fof'),p=pre(r);
- f.brand.value=brandOf(r);f.sales.value=r.sales||'';['company','contact','phone','email'].forEach(k=>f[k].value=p[k]||'')}
-async function make(){if(FO.busy)return;const f=$('fof');pickLead();
- if(!FO.cur){$('fo_ld').focus();return alert(TT('เลือก Lead ก่อน','Select a Lead first'))}
- if(!f.company.value.trim()){f.company.focus();return}
- const r=FO.cur,p={...pre(r),company:f.company.value.trim(),contact:f.contact.value.trim(),phone:f.phone.value.trim(),email:f.email.value.trim()};
+function openNew(){const f=$('fof');f.reset();[...f.elements].forEach(e=>{if(e.id!=='fo_url')e.disabled=false});
+ $('fo_lw').classList.add('hid');$('fo_mk').classList.remove('hid');$('fo_x').textContent=TT('ยกเลิก','Cancel');$('fod').showModal()}
+async function make(){if(FO.busy)return;const f=$('fof'),me=(profile&&profile.name)||(WHO&&WHO.n)||'';
  FO.busy=true;$('fo_mk').disabled=true;
- const{data,error}=await sb.from('cust_forms').insert({lead_id:r.id,kind:f.kind.value,brand:f.brand.value,team:r.team,sales:r.sales||null,company:p.company,prefill:p}).select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at').single();
+ const{data,error}=await sb.from('cust_forms').insert({kind:f.kind.value,brand:f.brand.value,team:profile&&profile.role==='sales'?profile.team:null,sales:me||null,company:'',prefill:{sales:me}}).select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at').single();
  FO.busy=false;$('fo_mk').disabled=false;
  if(error||!data)return alert(TT('สร้างฟอร์มไม่สำเร็จ','Failed to create form'));
  FO.list.unshift(data);$('fo_url').value=link(data.token);$('fo_lw').classList.remove('hid');$('fo_mk').classList.add('hid');$('fo_x').textContent=TT('ปิด','Close');
@@ -2765,7 +2753,6 @@ async function del(f){if(!await ask(TT('ลบฟอร์มนี้?','Delete
 $('fo_b').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(!tr)return;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(!f)return;
  const cp=e.target.closest('[data-fcp]');if(cp)return copy(link(f.token),cp);if(e.target.closest('[data-fan]'))return showAns(f);if(e.target.closest('[data-fdl]'))return del(f)});
 $('fo_new').onclick=openNew;$('fo_x').onclick=()=>$('fod').close();$('foa_x').onclick=()=>$('foa').close();
-$('fo_ld').addEventListener('change',pickLead);$('fo_ld').addEventListener('input',()=>{if(/#\d+\s*$/.test($('fo_ld').value))pickLead()});
 $('fof').addEventListener('submit',e=>{e.preventDefault();make()});$('fo_cp').onclick=e=>copy($('fo_url').value,e.currentTarget);
 ['fo_q'].forEach(id=>$(id).addEventListener('input',render));['fo_fb','fo_fk','fo_fs','fo_fsl'].forEach(id=>$(id).addEventListener('change',render));
 $('fop').value='30';perSet('30',$('fo1'),$('fo2'));$('fop').addEventListener('change',()=>{perSet($('fop').value,$('fo1'),$('fo2'));render()});['fo1','fo2'].forEach(id=>$(id).addEventListener('input',()=>{$('fop').value='c';render()}));
