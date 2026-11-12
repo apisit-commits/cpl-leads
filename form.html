@@ -35,6 +35,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--c);background:#fff}
 .em{color:var(--dgr);font-size:12px;font-weight:500}
 .nf{position:relative;display:block}.nf input{padding-right:58px}.nf::after{content:attr(data-u);position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:14px;pointer-events:none}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sg{position:relative;border:1.5px dashed var(--bd);border-radius:var(--r);background:#fff;height:170px}
+.sg canvas{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair;border-radius:var(--r)}
+.sgh{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;color:var(--mu);font-size:13px;pointer-events:none}
+.sg.has .sgh{display:none}
+.sgc{position:absolute;top:8px;right:8px;border:1px solid var(--bd);background:#fff;border-radius:8px;padding:4px 10px;font:inherit;font-size:12px;color:var(--mu);cursor:pointer}
+.upn{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--mu)}
+.upn.bad{color:var(--dgr)}
+.spn{width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--c);border-radius:50%;animation:sp .8s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
 .up{border:1.5px dashed var(--bd);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--fill)}
 .up input{display:none}
 .up span{flex:1;font-size:14px;color:var(--mu);word-break:break-all}
@@ -117,15 +126,70 @@ const FORMS={
    ['f_id','สำเนาบัตรผู้มีอำนาจลงนาม','ID of authorized signatory','file',1]]],
   [['ยืนยัน','Confirm'],[
    ['signer','ชื่อผู้มีอำนาจลงนาม','Authorized signatory','text',1],
-   ['consent','ยินยอมตามเงื่อนไขการเปิดบัญชีและการเก็บข้อมูลส่วนบุคคล','I agree to the account terms and the collection of personal data','check',1]]]]}};
+   ['consent','ยินยอมตามเงื่อนไขการเปิดบัญชีและการเก็บข้อมูลส่วนบุคคล','I agree to the account terms and the collection of personal data','check',1]]]]},
+ claim:{th:'แบบฟอร์มเคลมสินค้า',en:'Claim Form',steps:[
+  [['ผู้ขอเคลม','Claimant'],[
+   ['c_name','ชื่อผู้ขอเคลม / บริษัท','Claimant / company name','text',1,'company'],
+   ['c_contact','ผู้ติดต่อ','Contact person','text',1,'contact'],
+   ['c_phone','โทรศัพท์','Phone','tel',1,'phone'],
+   ['c_email','อีเมล','Email','email',1,'email'],
+   ['c_social','ช่องทางติดต่อออนไลน์ (LINE / Facebook)','Online contact (LINE / Facebook)','text',0],
+   ['c_address','ที่อยู่ผู้ส่ง','Shipper address','textarea',1]]],
+  [['รายละเอียดการเคลม','Claim details'],[
+   ['c_type','ประเภทการเคลม','Type of claim','select',1,null,[['สินค้าเสียหาย','Damage'],['สินค้าสูญหาย','Loss'],['สูญหายบางส่วน','Partial loss'],['จัดส่งล่าช้า','Delay'],['อื่นๆ','Other']]],
+   ['c_ref','เลขอ้างอิงการจัดส่ง (Tracking / AWB)','Shipment reference (Tracking / AWB)','text',1],
+   ['c_origin','ประเทศต้นทาง','Origin country','text',1],
+   ['c_dest','ประเทศปลายทาง','Destination country','text',1,'country'],
+   ['c_collect','วันที่รับสินค้า','Date of collection','date',1],
+   ['c_notify','วันที่แจ้งบริษัท','Date of notification','date',1],
+   ['c_ins','ทำประกันสินค้าสำหรับการขนส่งนี้หรือไม่','Was the shipment insured?','select',1,null,[['ทำประกัน','Yes'],['ไม่ได้ทำประกัน','No']]],
+   ['c_value','มูลค่าที่ขอเคลม','Claim amount','num',0,null,{u:['บาท','THB'],d:1}],
+   ['c_detail','รายละเอียดความเสียหาย','Description of damage / loss','textarea',1]]],
+  [['เอกสารแนบ','Documents'],[
+   ['f_inv','Invoice / Packing list','Invoice / Packing list','file',0],
+   ['f_photo','รูปถ่ายสินค้า / ความเสียหาย','Photos of goods / damage','file',0],
+   ['f_other','เอกสารอื่นๆ','Other documents','file',0]]],
+  [['ยืนยัน','Declaration'],[
+   ['signer','ชื่อผู้ยื่นเคลม','Name of claimant','text',1],
+   ['sign','ลายมือชื่อ','Signature','sign',1],
+   ['consent','ขอรับรองว่าข้อมูลข้างต้นเป็นความจริง และยินยอมให้บริษัทใช้ข้อมูลเพื่อพิจารณาการเคลม','I declare the information above is true and consent to its use for processing this claim','check',1]]]]},
+ tc:{th:'ยอมรับข้อตกลงและเงื่อนไข',en:'Terms & Conditions',steps:[
+  [['ข้อมูลลูกค้า','Customer'],[
+   ['t_name','ชื่อลูกค้า / บริษัท','Customer / company name','text',1,'company'],
+   ['t_code','รหัสลูกค้า','Customer code','text',0],
+   ['t_contact','ผู้ติดต่อ','Contact person','text',1,'contact'],
+   ['t_phone','โทรศัพท์','Phone','tel',1,'phone'],
+   ['f_idc','สำเนาบัตรประชาชนหรือหนังสือเดินทาง','Copy of ID card or passport','file',1]]],
+  [['ยืนยัน','Confirm'],[
+   ['t_sales','พนักงานขาย','Sales consultant','text',0,'sales'],
+   ['sign','ลายมือชื่อ','Signature','sign',1],
+   ['consent','ข้าพเจ้าได้อ่านและยอมรับข้อตกลงและเงื่อนไขการใช้บริการของบริษัท','I have read and accept the company\'s terms and conditions of service','check',1]]]]},
+ job:{th:'ใบสมัครงาน',en:'Job Application',steps:[
+  [['ข้อมูลส่วนบุคคล','Personal information'],[
+   ['j_name','ชื่อ-นามสกุล','Full name','text',1],
+   ['j_sex','เพศ','Sex','select',1,null,[['ชาย','Male'],['หญิง','Female'],['ไม่ระบุ','Prefer not to say']]],
+   ['j_age','อายุ','Age','num',1,null,{u:['ปี','yrs']}],
+   ['j_phone','โทรศัพท์','Phone','tel',1],
+   ['j_email','อีเมล','Email','email',1],
+   ['j_address','ที่อยู่ปัจจุบัน','Current address','textarea',1],
+   ['j_edu','วุฒิการศึกษาสูงสุด','Highest education','select',1,null,[['ต่ำกว่า ม.6','Below high school'],['ม.6 / ปวช.','High school / Vocational'],['ปวส.','Diploma'],['ปริญญาตรี','Bachelor\'s degree'],['ปริญญาโทขึ้นไป','Master\'s or higher']]]]],
+  [['ข้อมูลการสมัครงาน','Application'],[
+   ['j_pos','ตำแหน่งที่ต้องการสมัคร','Position applied for','text',1],
+   ['f_resume','ประวัติส่วนตัว (Resume)','Resume','file',1],
+   ['f_trans','สำเนาหลักฐานการศึกษา','Transcript / certificates','file',0],
+   ['f_idc','สำเนาบัตรประชาชนหรือหนังสือเดินทาง','Copy of ID card or passport','file',1]]],
+  [['ยืนยัน','Confirm'],[
+   ['consent','ยินยอมให้บริษัทเก็บและใช้ข้อมูลส่วนบุคคลเพื่อการพิจารณารับสมัครงาน','I consent to the company collecting and using my personal data for recruitment','check',1]]]]}
+};
 const S={k:new URLSearchParams(location.search).get('k')||'',form:null,step:0,v:{},files:{},err:{}};
 const sb=window.supabase?supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false}}):null;
 const fmtN=(x,d)=>{const s=String(x).replace(/[^\d.]/g,'');if(!s)return'';const[a,b]=s.split('.');return Number(a||0).toLocaleString('en-US')+(d&&b!=null?'.'+b.slice(0,2):'')};
-const steps=()=>FORMS[S.form.kind].steps.map(([h,fs])=>[h,fs.filter(f=>f[3]!=='file'||GAS_URL)]);
+const steps=()=>FORMS[S.form.kind].steps.map(([h,fs])=>[h,fs.filter(f=>(f[3]!=='file'&&f[3]!=='sign')||GAS_URL)]);
 function opts(f){return (f[6]||[]).map(o=>Array.isArray(o)?o:[o,o])}
 function fieldHtml(f){const[k,th,en,ty,rq,,x]=f,lb=`<span class="lb">${esc(T(th,en))}${rq?'<span class="rq">*</span>':''}</span>`,v=S.v[k]==null?'':S.v[k],e=S.err[k];
  const em=e?`<span class="em">${esc(e)}</span>`:'';
  if(ty==='check')return `<label class="ck${e?' err':''}"><input type="checkbox" data-k="${k}"${v?' checked':''}><span>${esc(T(th,en))}${rq?'&nbsp;<span class="rq" style="color:var(--dgr)">*</span>':''}</span></label>${em}`;
+ if(ty==='sign')return `<div class="f${e?' err':''}" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500">${lb}<div class="sg"><canvas data-sig="${k}"></canvas><span class="sgh">${T('เซ็นชื่อในกรอบนี้','Sign inside this box')}</span><button type="button" class="sgc" data-sgc="${k}">${T('ล้าง','Clear')}</button></div>${em}</div>`;
  if(ty==='file'){const fl=S.files[k];return `<div class="f${e?' err':''}" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500">${lb}<label class="up${fl?' has':''}"><input type="file" data-k="${k}" accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx,.xls,.xlsx"><span>${fl?esc(fl.name):T('แนบไฟล์ (PDF / รูปภาพ ไม่เกิน 10 MB)','Attach file (PDF / image, up to 10 MB)')}</span><b>${fl?T('เปลี่ยน','Change'):T('เลือกไฟล์','Choose')}</b></label>${em}</div>`}
  let inp;
  if(ty==='textarea')inp=`<textarea data-k="${k}" rows="3">${esc(v)}</textarea>`;
@@ -139,32 +203,47 @@ function render(){const app=$('app');document.documentElement.lang=LANG;
  if(!S.form){app.innerHTML=`<div class="msg"><b>${T('ไม่พบฟอร์ม','Form not found')}</b><span>${T('ลิงก์ไม่ถูกต้องหรือถูกยกเลิกแล้ว กรุณาติดต่อเจ้าหน้าที่ที่ส่งลิงก์ให้','This link is invalid or has been cancelled. Please contact the person who sent it.')}</span></div>`;return}
  document.documentElement.style.setProperty('--c',BRAND_C[S.form.brand]||'#0082c0');
  document.title=S.form.brand+' · '+T(FORMS[S.form.kind].th,FORMS[S.form.kind].en);
- if(S.form.status!=='sent'){app.innerHTML=head()+`<div class="msg"><div class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></div><b>${T('ส่งข้อมูลเรียบร้อย','Submitted')}</b><span>${T('ทีมงาน '+S.form.brand+' ได้รับข้อมูลแล้ว และจะติดต่อกลับ','The '+S.form.brand+' team has received your details and will be in touch.')}</span></div>`;return}
+ if(S.form.status!=='sent'){app.innerHTML=head()+`<div class="msg"><div class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></div><b>${T('ส่งข้อมูลเรียบร้อย','Submitted')}</b><span>${T('ทีมงาน '+S.form.brand+' ได้รับข้อมูลแล้ว และจะติดต่อกลับ','The '+S.form.brand+' team has received your details and will be in touch.')}</span>${S.up==='busy'?`<span class="upn"><i class="spn"></i>${T('กำลังอัปโหลดไฟล์แนบ กรุณาอย่าปิดหน้านี้','Uploading attachments, please keep this page open')}</span>`:S.up==='fail'?`<span class="upn bad">${T('อัปโหลดไฟล์แนบไม่สำเร็จ','Attachments could not be uploaded')}</span><button type="button" class="btn p" id="reup">${T('ลองอีกครั้ง','Try again')}</button>`:''}</div>`;return}
  const st=steps(),last=S.step===st.length-1,[h,fs]=st[S.step];
  app.innerHTML=head(st)+`<main><h2>${esc(T(h[0],h[1]))}</h2>${fs.map(fieldHtml).join('')}${last?summary():''}</main><footer><button type="button" class="btn" id="back"${S.step?'':' disabled'}>${T('ย้อนกลับ','Back')}</button><button type="button" class="btn p" id="next">${last?T('ส่งข้อมูล','Submit'):T('ถัดไป','Next')}</button></footer>`}
-function summary(){const st=steps(),rows=[];st.slice(0,-1).forEach(([,fs])=>fs.forEach(f=>{if(f[3]==='file'){if(S.files[f[0]])rows.push([T(f[1],f[2]),S.files[f[0]].name])}else if(S.v[f[0]])rows.push([T(f[1],f[2]),dispV(f)])}));
+function summary(){const st=steps(),rows=[];st.slice(0,-1).forEach(([,fs])=>fs.forEach(f=>{if(f[3]==='sign')return;if(f[3]==='file'){if(S.files[f[0]])rows.push([T(f[1],f[2]),S.files[f[0]].name])}else if(S.v[f[0]])rows.push([T(f[1],f[2]),dispV(f)])}));
  return rows.length?`<div class="sum">${rows.map(([a,b])=>`<div><em>${esc(a)}</em><span>${esc(b)}</span></div>`).join('')}</div>`:''}
 function dispV(f){const v=S.v[f[0]];if(f[3]==='select'){const o=opts(f).find(x=>x[0]===v);return o?T(o[0],o[1]):v}if(f[3]==='num'&&f[6]&&f[6].u)return v+' '+T(f[6].u[0],f[6].u[1]);return v}
 function validDate(s){const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s||'');if(!m)return false;const d=new Date(+m[3],+m[2]-1,+m[1]);return d.getDate()==+m[1]&&d.getMonth()==+m[2]-1}
 function check(){const[,fs]=steps()[S.step];S.err={};
- fs.forEach(f=>{const[k,,,ty,rq,,x]=f,v=ty==='file'?S.files[k]:S.v[k];
-  if(rq&&(!v||(typeof v==='string'&&!v.trim())))S.err[k]=ty==='check'?T('กรุณายืนยัน','Please confirm'):T('กรุณากรอกช่องนี้','This field is required');
+ fs.forEach(f=>{const[k,,,ty,rq,,x]=f,v=ty==='file'||ty==='sign'?S.files[k]:S.v[k];
+  if(rq&&(!v||(typeof v==='string'&&!v.trim())))S.err[k]=ty==='check'?T('กรุณายืนยัน','Please confirm'):ty==='sign'?T('กรุณาลงลายมือชื่อ','Please sign'):T('กรุณากรอกช่องนี้','This field is required');
   else if(v&&ty==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))S.err[k]=T('รูปแบบอีเมลไม่ถูกต้อง','Invalid email');
   else if(v&&ty==='date'&&!validDate(v))S.err[k]=T('รูปแบบวันที่ต้องเป็น dd/mm/yyyy','Use dd/mm/yyyy');
   else if(v&&x&&x.tax&&!/^\d{13}$/.test(v))S.err[k]=T('ต้องเป็นตัวเลข 13 หลัก','Must be 13 digits')});
  return !Object.keys(S.err).length}
+S.sig={};
+function initSig(){document.querySelectorAll('canvas[data-sig]').forEach(c=>{const k=c.dataset.sig,r=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*r;c.height=h*r;const x=c.getContext('2d');x.scale(r,r);x.lineWidth=2.2;x.lineCap=x.lineJoin='round';x.strokeStyle=x.fillStyle='#0e2238';
+ if(S.sig[k]){const im=new Image();im.onload=()=>x.drawImage(im,0,0,w,h);im.src=S.sig[k];c.parentNode.classList.add('has')}
+ let on=false,lx=0,ly=0;const pt=e=>{const b=c.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
+ c.onpointerdown=e=>{on=true;try{c.setPointerCapture(e.pointerId)}catch(_){}[lx,ly]=pt(e);x.beginPath();x.arc(lx,ly,1.1,0,7);x.fill();c.parentNode.classList.add('has')};
+ c.onpointermove=e=>{if(!on)return;const[nx,ny]=pt(e);x.beginPath();x.moveTo(lx,ly);x.lineTo(nx,ny);x.stroke();lx=nx;ly=ny};
+ c.onpointerup=c.onpointercancel=()=>{if(!on)return;on=false;S.sig[k]=c.toDataURL('image/png');c.toBlob(b=>{S.files[k]=new File([b],'signature.png',{type:'image/png'})},'image/png');
+  if(S.err[k]){delete S.err[k];const w=c.closest('.err');if(w){w.classList.remove('err');const m=w.querySelector('.em');if(m)m.remove()}}}})}
+const _render=render;render=function(){_render();initSig()};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-sgc]');if(!b)return;const k=b.dataset.sgc;delete S.sig[k];delete S.files[k];const c=document.querySelector(`canvas[data-sig="${k}"]`);if(c){c.getContext('2d').clearRect(0,0,c.width,c.height);c.parentNode.classList.remove('has')}});
 const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
 async function submit(btn){btn.disabled=true;btn.textContent=T('กำลังส่ง…','Sending…');
- try{const all=FORMS[S.form.kind].steps.flatMap(s=>s[1]),answers=all.filter(f=>f[3]!=='file').map(f=>({k:f[0],l:f[1],e:f[2],v:f[3]==='check'?(S.v[f[0]]?'ยินยอม':''):(S.v[f[0]]==null?'':String(S.v[f[0]]))+(f[3]==='num'&&f[6]&&f[6].u&&S.v[f[0]]?' '+f[6].u[0]:'')}));
-  let files=[],sheet=null;
-  if(GAS_URL){const up=[];for(const f of all.filter(f=>f[3]==='file'&&S.files[f[0]])){const x=S.files[f[0]];up.push({label:f[1],le:f[2],name:x.name,mime:x.type,data:await b64(x)})}
-   const co=S.v.s_company||S.v.co_name||'';
-   const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({token:S.k,company:co,sales:(S.form.prefill||{}).sales||'',answers,files:up})});
-   const j=await r.json();if(!j.ok){if(j.error==='already_sent'){S.form.status='done';render();return}throw new Error(j.error||'upload')}
-   files=j.files||[];sheet=j.sheet||null}
-  const{data,error}=await sb.rpc('form_submit',{p_token:S.k,p_answers:answers,p_files:files,p_sheet:sheet,p_company:S.v.s_company||S.v.co_name||'',p_contact:S.v.s_contact||S.v.ct_name||''});
-  if(error)throw error;S.form.status='done';render();window.scrollTo(0,0)}
- catch(e){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง','Could not submit. Please try again.'))}}
+ const all=FORMS[S.form.kind].steps.flatMap(s=>s[1]),answers=all.filter(f=>f[3]!=='file'&&f[3]!=='sign').map(f=>({k:f[0],l:f[1],e:f[2],v:f[3]==='check'?(S.v[f[0]]?'ยินยอม':''):(S.v[f[0]]==null?'':String(S.v[f[0]]))+(f[3]==='num'&&f[6]&&f[6].u&&S.v[f[0]]?' '+f[6].u[0]:'')}));
+ const co=S.v.s_company||S.v.co_name||S.v.c_name||S.v.t_name||S.v.j_name||'',ct=S.v.s_contact||S.v.ct_name||S.v.c_contact||S.v.t_contact||S.v.j_pos||'';
+ try{const{data,error}=await sb.rpc('form_submit',{p_token:S.k,p_answers:answers,p_files:[],p_sheet:null,p_company:co,p_contact:ct});if(error)throw error}
+ catch(e){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง','Could not submit. Please try again.'));return}
+ S.form.status='done';
+ if(GAS_URL){const fl=all.filter(f=>(f[3]==='file'||f[3]==='sign')&&S.files[f[0]]);
+  S.payload={token:S.k,company:co,sales:(S.form.prefill||{}).sales||'',answers,files:[]};
+  if(!fl.length){try{fetch(GAS_URL,{method:'POST',body:JSON.stringify(S.payload),keepalive:true}).catch(()=>{})}catch(_){fetch(GAS_URL,{method:'POST',body:JSON.stringify(S.payload)}).catch(()=>{})}}
+  else{S.up='busy';render();window.scrollTo(0,0);
+   try{for(const f of fl){const x=S.files[f[0]];S.payload.files.push({label:f[1],le:f[2],name:x.name,mime:x.type,data:await b64(x)})}}catch(_){}
+   await sendFiles();return}}
+ render();window.scrollTo(0,0)}
+async function sendFiles(){S.up='busy';render();
+ try{const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify(S.payload)}),j=await r.json();if(!j.ok&&j.error!=='already_sent')throw 0;S.up=null}catch(_){S.up='fail'}
+ render()}
 document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;
  if(t.matches('[data-num]')){const d=t.dataset.num==='1',c=t.value.length-t.selectionStart;t.value=fmtN(t.value,d);const p=Math.max(0,t.value.length-c);try{t.setSelectionRange(p,p)}catch(_){}}
  if(t.matches('[data-date]')){const v=t.value.replace(/\D/g,'').slice(0,8);t.value=v.length>4?v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4):v.length>2?v.slice(0,2)+'/'+v.slice(2):v}
@@ -174,6 +253,7 @@ document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.k
  if(t.type==='file'){const f=t.files&&t.files[0];if(!f)return;if(f.size>MAX_FILE){alert(T('ไฟล์ใหญ่เกิน 10 MB','File is larger than 10 MB'));t.value='';return}S.files[k]=f;delete S.err[k];render();return}
  S.v[k]=t.type==='checkbox'?t.checked:t.value;if(S.err[k]){delete S.err[k];render()}});
 document.addEventListener('click',e=>{const l=e.target.closest('[data-lang]');if(l){LANG=l.dataset.lang;try{localStorage.setItem('cplf_lang',LANG)}catch(_){}render();return}
+ if(e.target.id==='reup'){sendFiles();return}
  if(e.target.id==='back'){S.step=Math.max(0,S.step-1);S.err={};render();window.scrollTo(0,0);return}
  if(e.target.id==='next'){if(!check()){render();const x=document.querySelector('.err');if(x)x.scrollIntoView({block:'center',behavior:'smooth'});return}
   if(S.step<steps().length-1){S.step++;render();window.scrollTo(0,0)}else submit(e.target)}});
