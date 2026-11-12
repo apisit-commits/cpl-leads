@@ -1,0 +1,65 @@
+-- แท็บ "ฟอร์ม" (ฟอร์มลูกค้า Booking / Account Application) — รันครั้งเดียวใน Supabase SQL Editor
+-- เก็บเฉพาะข้อมูลฟอร์ม สถานะ คำตอบ (ข้อความ) และลิงก์ไปยัง Google Sheets / Drive
+-- ไฟล์แนบเก็บใน Google Drive ไม่เก็บในฐานข้อมูล
+
+create table if not exists public.cust_forms (
+  id bigint generated always as identity primary key,
+  token uuid not null default gen_random_uuid() unique,
+  lead_id bigint,
+  kind text not null check (kind in ('book','acc')),
+  brand text not null,
+  team text,
+  sales text,
+  company text,
+  prefill jsonb not null default '{}'::jsonb,
+  status text not null default 'sent' check (status in ('sent','done')),
+  answers jsonb,
+  files jsonb,
+  sheet_url text,
+  created_by uuid default auth.uid(),
+  created_at timestamptz not null default now(),
+  submitted_at timestamptz
+);
+create index if not exists cust_forms_lead_idx on public.cust_forms(lead_id);
+create index if not exists cust_forms_created_idx on public.cust_forms(created_at desc);
+
+alter table public.cust_forms enable row level security;
+
+-- ใครเห็น/แก้ได้: Admin และหัวหน้าเซลล์ทุกทีม, เซลล์เฉพาะทีมตัวเอง
+create or replace function public.cust_forms_can(p_team text)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists(
+    select 1 from public.profiles p
+    where p.id = auth.uid()
+      and (p.role in ('admin','sales_lead') or (p.role = 'sales' and p.team = p_team))
+  );
+$$;
+
+drop policy if exists cust_forms_staff on public.cust_forms;
+create policy cust_forms_staff on public.cust_forms for all to authenticated
+  using (public.cust_forms_can(team))
+  with check (public.cust_forms_can(team));
+
+-- ลูกค้า (ไม่ล็อกอิน) เข้าถึงได้ผ่าน 2 ฟังก์ชันนี้เท่านั้น ด้วยรหัสในลิงก์
+create or replace function public.form_get(p_token uuid)
+returns json language sql stable security definer set search_path = public as $$
+  select json_build_object('kind', kind, 'brand', brand, 'prefill', prefill, 'status', status)
+  from public.cust_forms where token = p_token;
+$$;
+
+create or replace function public.form_submit(p_token uuid, p_answers jsonb, p_files jsonb, p_sheet text)
+returns boolean language plpgsql security definer set search_path = public as $$
+declare n int;
+begin
+  update public.cust_forms
+     set status = 'done', answers = p_answers, files = p_files, sheet_url = p_sheet, submitted_at = now()
+   where token = p_token and status = 'sent';
+  get diagnostics n = row_count;
+  return n > 0;
+end;
+$$;
+
+revoke all on function public.form_get(uuid) from public;
+revoke all on function public.form_submit(uuid, jsonb, jsonb, text) from public;
+grant execute on function public.form_get(uuid) to anon, authenticated;
+grant execute on function public.form_submit(uuid, jsonb, jsonb, text) to anon, authenticated;

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>CPL Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#f5f8fb;--card:#fff;--tx:#0e2238;--mu:#62768c;--bd:#e0e8f0;--br:#0096d6;--pr:#0082c0;--fill:#f2f6fa;--dgr:#e03131;--ok:#11794a;--okb:#dff4ea;--c:#0082c0;--r:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 'Noto Sans Thai',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:560px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--card);display:flex;flex-direction:column;box-shadow:0 0 0 1px var(--bd)}
+header{padding:20px 20px 14px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--card);z-index:5;padding-top:calc(20px + env(safe-area-inset-top,0px))}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brand{font-weight:700;font-size:16px;color:var(--c)}
+.lang{display:inline-flex;border:1px solid var(--bd);border-radius:999px;overflow:hidden}
+.lang button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:600;padding:4px 10px;color:var(--mu);cursor:pointer}
+.lang button.on{background:var(--c);color:#fff}
+h1{font-size:19px;margin:6px 0 0}
+.stp{font-size:13px;color:var(--mu)}
+.bars{display:flex;gap:6px;margin-top:12px}.bars i{flex:1;height:4px;border-radius:4px;background:var(--bd)}.bars i.on{background:var(--c)}
+main{flex:1;padding:20px;display:flex;flex-direction:column;gap:14px}
+h2{font-size:16px;margin:0}
+label.f{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500}
+label.f .rq{color:var(--dgr);font-weight:700}
+.lb{display:flex;gap:3px}
+input,select,textarea{font:inherit;font-size:16px;color:var(--tx);background:var(--fill);border:1px solid transparent;border-radius:var(--r);min-height:46px;padding:10px 14px;width:100%;outline:none;-webkit-appearance:none;appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2362768c' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--c);background:#fff}
+.err input,.err select,.err textarea,.err .up{border-color:var(--dgr)!important}
+.em{color:var(--dgr);font-size:12px;font-weight:500}
+.nf{position:relative;display:block}.nf input{padding-right:58px}.nf::after{content:attr(data-u);position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:14px;pointer-events:none}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.up{border:1.5px dashed var(--bd);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--fill)}
+.up input{display:none}
+.up span{flex:1;font-size:14px;color:var(--mu);word-break:break-all}
+.up.has span{color:var(--tx)}
+.up b{font-size:13px;color:var(--c);white-space:nowrap}
+.ck{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+.ck input{width:22px;height:22px;min-height:0;flex:none;padding:0;border-radius:6px;border:1.5px solid var(--bd);background:#fff;margin-top:1px;cursor:pointer}
+.ck input:checked{background:var(--c) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12l5 5 9-10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat;border-color:var(--c)}
+footer{padding:12px 20px calc(18px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--bd);display:flex;gap:10px;position:sticky;bottom:0;background:var(--card)}
+.btn{min-height:48px;border-radius:var(--r);border:1px solid var(--bd);background:var(--card);font:inherit;font-weight:600;color:var(--tx);cursor:pointer;padding:0 18px}
+.btn.p{flex:1;background:var(--c);border-color:var(--c);color:#fff}
+.btn:disabled{opacity:.5;cursor:default}
+.msg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:40px 24px;color:var(--mu)}
+.msg .ic{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--okb);color:var(--ok)}
+.msg b{color:var(--tx);font-size:18px}
+.sum{background:var(--fill);border-radius:var(--r);padding:12px 14px;font-size:14px}
+.sum div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px dashed var(--bd)}
+.sum div:last-child{border:0}.sum em{font-style:normal;color:var(--mu)}.sum span{text-align:right;word-break:break-word}
+@media(max-width:420px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="msg" id="ld">…</div></div>
+<script>
+const SUPABASE_URL='https://mdhtrioxacscstaqmlvy.supabase.co';
+const SUPABASE_KEY='sb_publishable_00Ly9BUyenzeyyn9cWiCxQ_0HzrxeSF';
+const GAS_URL='';
+const BRAND_C={'CPL-Inter':'#0082c0','CPLEx':'#e05a1a','CLMV':'#11794a','IMTH':'#6b3fb5'};
+const MAX_FILE=10*1024*1024;
+let LANG='th';
+const T=(th,en)=>LANG==='en'?en:th;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* field: [key, th, en, type, required, prefillKey, extra] */
+const SERVICES=['Air Freight','Sea Freight','Truck','Express','Rail'];
+const FORMS={
+ book:{th:'ใบจองงานขนส่ง',en:'Shipment Booking',steps:[
+  [['ข้อมูลผู้ส่ง','Shipper'],[
+   ['s_company','ชื่อบริษัท / ผู้ส่ง','Company / shipper','text',1,'company'],
+   ['s_contact','ผู้ติดต่อ','Contact person','text',1,'contact'],
+   ['s_phone','โทรศัพท์','Phone','tel',1,'phone'],
+   ['s_email','อีเมล','Email','email',0,'email'],
+   ['s_address','ที่อยู่รับสินค้า','Pickup address','textarea',1,'origin']]],
+  [['ข้อมูลผู้รับ','Consignee'],[
+   ['r_name','ชื่อผู้รับ','Consignee name','text',1,'receiver'],
+   ['r_contact','ผู้ติดต่อปลายทาง','Consignee contact','text',1],
+   ['r_phone','โทรศัพท์ปลายทาง','Consignee phone','tel',1],
+   ['r_country','ประเทศปลายทาง','Destination country','text',1,'country'],
+   ['r_address','ที่อยู่ปลายทาง','Delivery address','textarea',1,'dest']]],
+  [['สินค้าและบริการ','Cargo & service'],[
+   ['service','บริการ','Service','select',1,'service',SERVICES],
+   ['goods','รายละเอียดสินค้า','Description of goods','text',1,'goods'],
+   ['qty','จำนวนกล่อง / ชิ้น','Number of boxes / pieces','num',1,null,{u:['ชิ้น','pcs']}],
+   ['weight','น้ำหนักรวม','Total weight','num',1,null,{u:['กก.','kg'],d:1}],
+   ['dims','ขนาดกล่อง (ยาว × กว้าง × สูง ซม.)','Box size (L × W × H cm)','text',0],
+   ['value','มูลค่าสินค้า','Value of goods','num',0,'value',{u:['บาท','THB'],d:1}],
+   ['ready','วันที่พร้อมส่ง','Ready date','date',1]]],
+  [['เอกสารและยืนยัน','Documents & confirm'],[
+   ['f_invoice','Invoice / Packing list','Invoice / Packing list','file',0],
+   ['note','หมายเหตุ','Notes','textarea',0],
+   ['consent','ยินยอมให้บริษัทเก็บและใช้ข้อมูลส่วนบุคคลเพื่อการให้บริการขนส่ง','I consent to the company collecting and using my personal data to provide shipping services','check',1]]]]},
+ acc:{th:'ใบสมัครบัญชีลูกค้า',en:'Customer Account Application',steps:[
+  [['ข้อมูลบริษัท','Company'],[
+   ['co_name','ชื่อนิติบุคคล','Registered company name','text',1,'company'],
+   ['tax_id','เลขประจำตัวผู้เสียภาษี','Tax ID','text',1,null,{tax:1}],
+   ['branch','สาขา','Branch','text',1,'branch'],
+   ['reg_address','ที่อยู่ตามทะเบียน','Registered address','textarea',1],
+   ['doc_address','ที่อยู่ส่งเอกสาร (ถ้าต่างจากทะเบียน)','Mailing address (if different)','textarea',0]]],
+  [['ผู้ติดต่อ','Contacts'],[
+   ['ct_name','ชื่อผู้ติดต่อ','Contact name','text',1,'contact'],
+   ['ct_position','ตำแหน่ง','Position','text',0],
+   ['ct_phone','โทรศัพท์','Phone','tel',1,'phone'],
+   ['ct_email','อีเมล','Email','email',1,'email'],
+   ['acc_contact','ผู้ติดต่อฝ่ายบัญชี (ชื่อ / โทร / อีเมล)','Accounting contact (name / phone / email)','text',0]]],
+  [['เงื่อนไขและเอกสาร','Terms & documents'],[
+   ['credit','เครดิตที่ขอ','Requested credit term','select',1,null,[['เงินสด','Cash'],['15 วัน','15 days'],['30 วัน','30 days'],['45 วัน','45 days']]],
+   ['pay','วิธีชำระเงิน','Payment method','select',1,null,[['โอนเงิน','Bank transfer'],['เช็ค','Cheque'],['เงินสด','Cash']]],
+   ['f_cert','หนังสือรับรองบริษัท','Company certificate','file',1],
+   ['f_pp20','ภ.พ.20','VAT registration (P.P.20)','file',1],
+   ['f_id','สำเนาบัตรผู้มีอำนาจลงนาม','ID of authorized signatory','file',1]]],
+  [['ยืนยัน','Confirm'],[
+   ['signer','ชื่อผู้มีอำนาจลงนาม','Authorized signatory','text',1],
+   ['consent','ยินยอมตามเงื่อนไขการเปิดบัญชีและการเก็บข้อมูลส่วนบุคคล','I agree to the account terms and the collection of personal data','check',1]]]]}};
+const S={k:new URLSearchParams(location.search).get('k')||'',form:null,step:0,v:{},files:{},err:{}};
+const sb=window.supabase?supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false}}):null;
+const fmtN=(x,d)=>{const s=String(x).replace(/[^\d.]/g,'');if(!s)return'';const[a,b]=s.split('.');return Number(a||0).toLocaleString('en-US')+(d&&b!=null?'.'+b.slice(0,2):'')};
+const steps=()=>FORMS[S.form.kind].steps.map(([h,fs])=>[h,fs.filter(f=>f[3]!=='file'||GAS_URL)]);
+function opts(f){return (f[6]||[]).map(o=>Array.isArray(o)?o:[o,o])}
+function fieldHtml(f){const[k,th,en,ty,rq,,x]=f,lb=`<span class="lb">${esc(T(th,en))}${rq?'<span class="rq">*</span>':''}</span>`,v=S.v[k]==null?'':S.v[k],e=S.err[k];
+ const em=e?`<span class="em">${esc(e)}</span>`:'';
+ if(ty==='check')return `<label class="ck${e?' err':''}"><input type="checkbox" data-k="${k}"${v?' checked':''}><span>${esc(T(th,en))}${rq?'&nbsp;<span class="rq" style="color:var(--dgr)">*</span>':''}</span></label>${em}`;
+ if(ty==='file'){const fl=S.files[k];return `<div class="f${e?' err':''}" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500">${lb}<label class="up${fl?' has':''}"><input type="file" data-k="${k}" accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx,.xls,.xlsx"><span>${fl?esc(fl.name):T('แนบไฟล์ (PDF / รูปภาพ ไม่เกิน 10 MB)','Attach file (PDF / image, up to 10 MB)')}</span><b>${fl?T('เปลี่ยน','Change'):T('เลือกไฟล์','Choose')}</b></label>${em}</div>`}
+ let inp;
+ if(ty==='textarea')inp=`<textarea data-k="${k}" rows="3">${esc(v)}</textarea>`;
+ else if(ty==='select'){const o=opts(f);inp=`<select data-k="${k}"><option value="">${T('— เลือก —','— Select —')}</option>${o.map(([a,b])=>`<option value="${esc(a)}"${v===a?' selected':''}>${esc(T(a,b))}</option>`).join('')}</select>`}
+ else if(ty==='num'){const u=x&&x.u?T(x.u[0],x.u[1]):'';inp=`<span class="nf" data-u="${esc(u)}"><input data-k="${k}" data-num="${x&&x.d?1:0}" inputmode="decimal" autocomplete="off" value="${esc(v)}"></span>`}
+ else if(ty==='date')inp=`<input data-k="${k}" data-date inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy" value="${esc(v)}">`;
+ else inp=`<input data-k="${k}" type="${ty==='email'?'email':ty==='tel'?'tel':'text'}"${x&&x.tax?' inputmode="numeric" maxlength="13"':''} value="${esc(v)}" autocomplete="off">`;
+ return `<label class="f${e?' err':''}">${lb}${inp}${em}</label>`}
+function head(st){const F=FORMS[S.form.kind],n=st?st.length:0;return `<header><div class="row"><span class="brand">${esc(S.form.brand)}</span><span class="row" style="gap:10px">${st?`<span class="stp">${T('ขั้นที่','Step')} ${S.step+1} ${T('จาก','of')} ${n}</span>`:''}<span class="lang"><button type="button" data-lang="th" class="${LANG==='th'?'on':''}">TH</button><button type="button" data-lang="en" class="${LANG==='en'?'on':''}">EN</button></span></span></div><h1>${esc(T(F.th,F.en))}</h1>${st?`<div class="bars">${st.map((_,i)=>`<i class="${i<=S.step?'on':''}"></i>`).join('')}</div>`:''}</header>`}
+function render(){const app=$('app');document.documentElement.lang=LANG;
+ if(!S.form){app.innerHTML=`<div class="msg"><b>${T('ไม่พบฟอร์ม','Form not found')}</b><span>${T('ลิงก์ไม่ถูกต้องหรือถูกยกเลิกแล้ว กรุณาติดต่อเจ้าหน้าที่ที่ส่งลิงก์ให้','This link is invalid or has been cancelled. Please contact the person who sent it.')}</span></div>`;return}
+ document.documentElement.style.setProperty('--c',BRAND_C[S.form.brand]||'#0082c0');
+ document.title=S.form.brand+' · '+T(FORMS[S.form.kind].th,FORMS[S.form.kind].en);
+ if(S.form.status!=='sent'){app.innerHTML=head()+`<div class="msg"><div class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></div><b>${T('ส่งข้อมูลเรียบร้อย','Submitted')}</b><span>${T('ทีมงาน '+S.form.brand+' ได้รับข้อมูลแล้ว และจะติดต่อกลับ','The '+S.form.brand+' team has received your details and will be in touch.')}</span></div>`;return}
+ const st=steps(),last=S.step===st.length-1,[h,fs]=st[S.step];
+ app.innerHTML=head(st)+`<main><h2>${esc(T(h[0],h[1]))}</h2>${fs.map(fieldHtml).join('')}${last?summary():''}</main><footer><button type="button" class="btn" id="back"${S.step?'':' disabled'}>${T('ย้อนกลับ','Back')}</button><button type="button" class="btn p" id="next">${last?T('ส่งข้อมูล','Submit'):T('ถัดไป','Next')}</button></footer>`}
+function summary(){const st=steps(),rows=[];st.slice(0,-1).forEach(([,fs])=>fs.forEach(f=>{if(f[3]==='file'){if(S.files[f[0]])rows.push([T(f[1],f[2]),S.files[f[0]].name])}else if(S.v[f[0]])rows.push([T(f[1],f[2]),dispV(f)])}));
+ return rows.length?`<div class="sum">${rows.map(([a,b])=>`<div><em>${esc(a)}</em><span>${esc(b)}</span></div>`).join('')}</div>`:''}
+function dispV(f){const v=S.v[f[0]];if(f[3]==='select'){const o=opts(f).find(x=>x[0]===v);return o?T(o[0],o[1]):v}if(f[3]==='num'&&f[6]&&f[6].u)return v+' '+T(f[6].u[0],f[6].u[1]);return v}
+function validDate(s){const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s||'');if(!m)return false;const d=new Date(+m[3],+m[2]-1,+m[1]);return d.getDate()==+m[1]&&d.getMonth()==+m[2]-1}
+function check(){const[,fs]=steps()[S.step];S.err={};
+ fs.forEach(f=>{const[k,,,ty,rq,,x]=f,v=ty==='file'?S.files[k]:S.v[k];
+  if(rq&&(!v||(typeof v==='string'&&!v.trim())))S.err[k]=ty==='check'?T('กรุณายืนยัน','Please confirm'):T('กรุณากรอกช่องนี้','This field is required');
+  else if(v&&ty==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))S.err[k]=T('รูปแบบอีเมลไม่ถูกต้อง','Invalid email');
+  else if(v&&ty==='date'&&!validDate(v))S.err[k]=T('รูปแบบวันที่ต้องเป็น dd/mm/yyyy','Use dd/mm/yyyy');
+  else if(v&&x&&x.tax&&!/^\d{13}$/.test(v))S.err[k]=T('ต้องเป็นตัวเลข 13 หลัก','Must be 13 digits')});
+ return !Object.keys(S.err).length}
+const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
+async function submit(btn){btn.disabled=true;btn.textContent=T('กำลังส่ง…','Sending…');
+ try{const all=FORMS[S.form.kind].steps.flatMap(s=>s[1]),answers=all.filter(f=>f[3]!=='file').map(f=>({k:f[0],l:f[1],e:f[2],v:f[3]==='check'?(S.v[f[0]]?'ยินยอม':''):(S.v[f[0]]==null?'':String(S.v[f[0]]))+(f[3]==='num'&&f[6]&&f[6].u&&S.v[f[0]]?' '+f[6].u[0]:'')}));
+  let files=[],sheet=null;
+  if(GAS_URL){const up=[];for(const f of all.filter(f=>f[3]==='file'&&S.files[f[0]])){const x=S.files[f[0]];up.push({label:f[1],le:f[2],name:x.name,mime:x.type,data:await b64(x)})}
+   const co=S.v.s_company||S.v.co_name||'';
+   const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({token:S.k,company:co,sales:(S.form.prefill||{}).sales||'',answers,files:up})});
+   const j=await r.json();if(!j.ok){if(j.error==='already_sent'){S.form.status='done';render();return}throw new Error(j.error||'upload')}
+   files=j.files||[];sheet=j.sheet||null}
+  const{data,error}=await sb.rpc('form_submit',{p_token:S.k,p_answers:answers,p_files:files,p_sheet:sheet});
+  if(error)throw error;S.form.status='done';render();window.scrollTo(0,0)}
+ catch(e){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง','Could not submit. Please try again.'))}}
+document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;
+ if(t.matches('[data-num]')){const d=t.dataset.num==='1',c=t.value.length-t.selectionStart;t.value=fmtN(t.value,d);const p=Math.max(0,t.value.length-c);try{t.setSelectionRange(p,p)}catch(_){}}
+ if(t.matches('[data-date]')){const v=t.value.replace(/\D/g,'').slice(0,8);t.value=v.length>4?v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4):v.length>2?v.slice(0,2)+'/'+v.slice(2):v}
+ if(t.dataset.k==='tax_id')t.value=t.value.replace(/\D/g,'').slice(0,13);
+ S.v[k]=t.type==='checkbox'?t.checked:t.value;if(S.err[k]){delete S.err[k];const w=t.closest('.err');if(w){w.classList.remove('err');const m=w.querySelector('.em')||w.nextElementSibling;if(m&&m.classList&&m.classList.contains('em'))m.remove()}}});
+document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;
+ if(t.type==='file'){const f=t.files&&t.files[0];if(!f)return;if(f.size>MAX_FILE){alert(T('ไฟล์ใหญ่เกิน 10 MB','File is larger than 10 MB'));t.value='';return}S.files[k]=f;delete S.err[k];render();return}
+ S.v[k]=t.type==='checkbox'?t.checked:t.value;if(S.err[k]){delete S.err[k];render()}});
+document.addEventListener('click',e=>{const l=e.target.closest('[data-lang]');if(l){LANG=l.dataset.lang;try{localStorage.setItem('cplf_lang',LANG)}catch(_){}render();return}
+ if(e.target.id==='back'){S.step=Math.max(0,S.step-1);S.err={};render();window.scrollTo(0,0);return}
+ if(e.target.id==='next'){if(!check()){render();const x=document.querySelector('.err');if(x)x.scrollIntoView({block:'center',behavior:'smooth'});return}
+  if(S.step<steps().length-1){S.step++;render();window.scrollTo(0,0)}else submit(e.target)}});
+(async function(){let sv=null;try{sv=localStorage.getItem('cplf_lang')}catch(_){}if(sv)LANG=sv;
+ if(!sb||!/^[0-9a-f-]{36}$/i.test(S.k)){render();return}
+ const{data,error}=await sb.rpc('form_get',{p_token:S.k});
+ if(!error&&data&&FORMS[data.kind]){S.form=data;if(!sv&&data.brand==='CLMV')LANG='en';const p=data.prefill||{};FORMS[data.kind].steps.forEach(([,fs])=>fs.forEach(f=>{if(f[5]&&p[f[5]]!=null&&p[f[5]]!==''){let v=String(p[f[5]]);if(f[3]==='select'&&!opts(f).some(o=>o[0]===v))return;if(f[3]==='num')v=fmtN(v,f[6]&&f[6].d);S.v[f[0]]=v}}))}
+ render()})();
+</script>
+</body>
+</html>
