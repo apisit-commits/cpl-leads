@@ -3061,15 +3061,16 @@ function secs(f,ans){ans=ans.filter(a=>String(a.v==null?'':a.v).trim()!=='');if(
  const ord=['per','app','clm','cd','cus','trn','shp','rcv','gds','co','ct','tm','ans','oth'];
  return ord.filter(k=>B.has(k)).map(k=>`<section class="fo-sec"><h4>${H(TT(SECN[k][0],SECN[k][1]))}</h4><dl class="fo-dl">${B.get(k).map(a=>{const w=/^[\[{]/.test(String(a.v).trim());return `<div${w?' class="fo-w"':''}><dt>${H(f.source==='jotform'?lab(a.l):TT(a.l,a.e||a.l))}</dt><dd>${val(a.v)}</dd></div>`}).join('')}</dl></section>`).join('')}
 const FO_GAS='https://script.google.com/macros/s/AKfycbzdkXD-47WaWAQxOZUmz4Vdo6-fBPz1Lm5OA-ZJVgd2R6FtAGjN3AK-Gb1D6QqUQlOH/exec',IMC={};
-async function loadImgs(f){const els=[...document.querySelectorAll('#fo_pv img[data-u]')];if(!els.length)return;
- const put=()=>els.forEach(i=>{const d=IMC[i.dataset.u];if(d===false){const a=i.closest('a');if(a&&a.classList.contains('fo-sg'))i.replaceWith(document.createTextNode(TT('เปิดไฟล์','Open file')));else if(a)a.classList.add('fo-ie')}else if(d){i.src=d;i.closest('a').classList.add('fo-ok')}});
- const fl=[...new Set(els.map(i=>i.dataset.u))].filter(u=>FO.pf&&FO.pf[u]&&IMC[u]===undefined&&(u in IMC));if(fl.length){els.forEach(i=>{if(fl.includes(i.dataset.u))i.closest('a').classList.add('fo-ld')});await Promise.all(fl.map(u=>FO.pf[u]));els.forEach(i=>i.closest('a')&&i.closest('a').classList.remove('fo-ld'))}
- const need=[...new Set(els.map(i=>i.dataset.u))].filter(u=>!(u in IMC));put();if(!need.length)return;
- els.forEach(i=>{if(need.includes(i.dataset.u))i.closest('a').classList.add('fo-ld')});
- try{const{data}=await sb.auth.getSession(),jwt=data&&data.session&&data.session.access_token;
-  const r=await fetch(FO_GAS,{method:'POST',body:JSON.stringify({act:'img',id:f.id,jwt,urls:need})}),j=await r.json();
-  need.forEach(u=>{IMC[u]=(j&&j.imgs&&j.imgs[u])||false})}catch(e){need.forEach(u=>{IMC[u]=false})}
- els.forEach(i=>i.closest('a')&&i.closest('a').classList.remove('fo-ld'));put()}
+const IMP={},IMD={},GQ={};
+const fdid=u=>{const m=/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=|thumbnail\?id=)([\w-]{20,})/.exec(String(u||''));return m?m[1]:null};
+const tryImg=src=>new Promise(r=>{const i=new Image();const t=setTimeout(()=>{i.onload=i.onerror=null;r(false)},7000);i.onload=()=>{clearTimeout(t);r(i.naturalWidth>1?src:false)};i.onerror=()=>{clearTimeout(t);r(false)};i.src=src});
+function gasImg(u,id){if(IMD[u]!==undefined)return Promise.resolve(IMD[u]);return new Promise(res=>{const q=GQ[id]||(GQ[id]={us:[],cb:[]});q.us.push(u);q.cb.push(res);if(q.us.length===1)setTimeout(async()=>{delete GQ[id];let j=null;try{const{data}=await sb.auth.getSession(),jwt=data&&data.session&&data.session.access_token;j=await(await fetch(FO_GAS,{method:'POST',body:JSON.stringify({act:'img',id,jwt,urls:q.us})})).json()}catch(e){}q.us.forEach((x,i)=>{const v=(j&&j.imgs&&j.imgs[x])||false;if(j)IMD[x]=v;q.cb[i](v)})},40)})}
+function getImg(u,id){if(u in IMC)return Promise.resolve(IMC[u]);return IMP[u]||(IMP[u]=(async()=>{const d=fdid(u);let v=d?await tryImg('https://drive.google.com/thumbnail?id='+d+'&sz=w800'):false;if(!v)v=await gasImg(u,id);IMC[u]=v;delete IMP[u];return v})())}
+function loadImgs(f){const els=[...document.querySelectorAll('#fo_pv img[data-u]')];
+ return Promise.all(els.map(i=>{const u=i.dataset.u,a=i.closest('a');if(!(u in IMC)&&a)a.classList.add('fo-ld');
+  return getImg(u,f.id).then(d=>{if(!i.isConnected)return;if(a)a.classList.remove('fo-ld');
+   if(d===false){if(a&&a.classList.contains('fo-sg'))i.replaceWith(document.createTextNode(TT('เปิดไฟล์','Open file')));else if(a)a.classList.add('fo-ie')}
+   else{i.src=d;if(a)a.classList.add('fo-ok')}})}))}
 async function showAns(f){const done=f.status==='done',me=profile&&profile.id;
  $('fo_pe').classList.add('hid');$('fo_pc').classList.remove('hid');
  $('foa_t').textContent=f.company||TT('รอลูกค้ากรอก','Awaiting customer');
@@ -3130,6 +3131,7 @@ const jpgOf=c=>{const d=atob(c.toDataURL('image/jpeg',0.9).split(',')[1]),u=new 
 async function foPdf(){const f=FO.cur;if(!f)return;const b=$('foa_pdf'),t=b.textContent;b.disabled=true;b.textContent=TT('กำลังสร้าง…','Preparing…');let fr;
  try{const fc=await fontCss();fr=await docFrame(f,false);const d=fr.contentDocument,dc=d.querySelector('.dc'),h=Math.ceil(dc.getBoundingClientRect().height)+40;
   const wrap=d.createElement('div'),st=d.createElement('style');st.textContent=fc+DOC_CSS.replace(/@page[^}]*\}/,'');wrap.append(st,dc.cloneNode(true));
+  await Promise.all([...wrap.querySelectorAll('img')].filter(i=>!/^data:/.test(i.getAttribute('src')||'')).map(async i=>{const u=i.dataset.u;const v=u?await gasImg(u,f.id):false;if(v)i.setAttribute('src',v);else i.remove()}));
   const xml=new XMLSerializer().serializeToString(wrap),svg=`<svg xmlns="http://www.w3.org/2000/svg" width="794" height="${h}"><foreignObject x="0" y="0" width="794" height="${h}">${xml}</foreignObject></svg>`;
   const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);await im.decode();
   const S=2,cv=document.createElement('canvas');cv.width=794*S;cv.height=h*S;const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.drawImage(im,0,0,cv.width,cv.height);
@@ -3142,9 +3144,7 @@ async function foPdf(){const f=FO.cur;if(!f)return;const b=$('foa_pdf'),t=b.text
 $('foa_pr').onclick=foPrint;$('foa_pdf').onclick=foPdf;
 $('fo_items').addEventListener('mouseover',e=>{const it=e.target.closest('.fo-it');if(!it||it.dataset.pf)return;it.dataset.pf=1;const f=FO.list.find(x=>String(x.id)===it.dataset.foi);if(f&&f.status==='done')prefetch(f)});
 async function prefetch(f){try{if(f.answers===undefined){const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();if(f.answers!==undefined)return;f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}
- const us=[...(f.files||[]).filter(isImg).map(x=>x.url),...(f.answers||[]).map(a=>String(a.v||'').trim()).filter(v=>/^https?:\/\/\S+$/.test(v)&&isImgU(v))].filter(u=>!(u in IMC));if(!us.length)return;
- us.forEach(u=>{IMC[u]=undefined});const{data}=await sb.auth.getSession(),jwt=data&&data.session&&data.session.access_token;
- const P=fetch(FO_GAS,{method:'POST',body:JSON.stringify({act:'img',id:f.id,jwt,urls:us})}).then(r=>r.json()).then(j=>{us.forEach(u=>{IMC[u]=(j&&j.imgs&&j.imgs[u])||false})}).catch(()=>{us.forEach(u=>{IMC[u]=false})});FO.pf=FO.pf||{};us.forEach(u=>{FO.pf[u]=P});await P}catch(e){}}
+ [...(f.files||[]).filter(isImg).map(x=>x.url),...(f.answers||[]).map(a=>String(a.v||'').trim()).filter(v=>/^https?:\/\/\S+$/.test(v)&&isImgU(v))].forEach(u=>getImg(u,f.id))}catch(e){}}
 $('fo_new').onclick=()=>openNew();$('fo_x').onclick=()=>$('fod').close();
 $('fo_bseg').addEventListener('click',e=>{const x=e.target.closest('[data-fob]');if(!x)return;FO.brand=x.dataset.fob;render()});
 $('fo_fq').addEventListener('input',render);
