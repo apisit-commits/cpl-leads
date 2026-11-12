@@ -2809,30 +2809,39 @@ async function del(f){if(!await ask(TT('ลบฟอร์มนี้?','Delete
  const{error}=await sb.from('cust_forms').delete().eq('id',f.id);if(error)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));FO.list=FO.list.filter(x=>x.id!==f.id);render()}
 $('fo_b').addEventListener('click',e=>{const tr=e.target.closest('tr[data-id]');if(!tr)return;const f=FO.list.find(x=>String(x.id)===tr.dataset.id);if(!f)return;
  const cp=e.target.closest('[data-fcp]');if(cp)return copy(link(f.token),cp);if(e.target.closest('[data-fan]'))return showAns(f);if(e.target.closest('button,a'))return;if(f.status==='done')return showAns(f);if(e.target.closest('[data-fdl]'))return del(f)});
-const DOC_CSS=`*{box-sizing:border-box}body{margin:0;font-family:'Noto Sans Thai',system-ui,sans-serif;color:#0e2238;font-size:12px;background:#fff}
-.dc{padding:28px 32px}.dh{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--bc);padding-bottom:12px;margin-bottom:14px}
-.dh .br{font-size:20px;font-weight:600;color:var(--bc)}.dh h1{margin:4px 0 0;font-size:16px}.dh .mt{text-align:right;color:#62768c;font-size:11px;line-height:1.6}
-.fo-sec{border:1px solid #e0e8f0;border-radius:8px;padding:10px 14px;margin-top:10px;break-inside:avoid}.fo-sec h4{margin:0 0 6px;font-size:13px;color:var(--bc)}
-.fo-dl{display:grid;grid-template-columns:1fr 1fr;column-gap:20px;margin:0}.fo-dl>div{display:grid;grid-template-columns:40% 1fr;gap:8px;padding:5px 0;border-top:1px solid #eef2f6}
-.fo-dl>div:nth-child(-n+2){border-top:0}.fo-dl>div.fo-w{grid-column:1/-1;grid-template-columns:1fr}.fo-dl dt{color:#62768c;font-size:11px}.fo-dl dd{margin:0;word-break:break-word}
-.fo-v{white-space:pre-wrap}.fo-tw{border:1px solid #e0e8f0;border-radius:6px;overflow:hidden}.fo-tb{width:100%;border-collapse:collapse}.fo-tb th{background:#f2f6fa;text-align:left;padding:5px 8px;font-size:11px}.fo-tb td{padding:5px 8px;border-top:1px solid #eef2f6}
-.fo-sg img{max-width:220px;max-height:100px;display:block}.fo-im{display:flex;flex-wrap:wrap;gap:10px}.fo-im a{width:200px;text-decoration:none;color:#0e2238;font-size:11px;break-inside:avoid}.fo-im img{width:100%;border:1px solid #e0e8f0;border-radius:6px;display:block;margin-bottom:4px}
-.fo-im a.fo-ie,.fo-im img:not([src]){display:none}.fo-fl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.fo-fl a{border:1px solid #e0e8f0;border-radius:6px;padding:4px 8px;color:#0e2238;text-decoration:none;font-size:11px}.fo-fl svg{display:none}
-@page{size:A4;margin:10mm}@media print{.dc{padding:0}}`;
+const DOC_CSS=`*{box-sizing:border-box}html,body{margin:0;background:#fff}body{font-family:'Noto Sans Thai',system-ui,sans-serif;color:#0e2238;font-size:10.5px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.dc{width:794px;padding:30px 34px;}.dh{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--bc);padding-bottom:8px;margin-bottom:8px}
+.dh .br{font-size:17px;font-weight:600;color:var(--bc)}.dh h1{margin:2px 0 0;font-size:14px}.dh .mt{text-align:right;color:#62768c;font-size:10px;line-height:1.5}
+.fo-sec{border:1px solid #e0e8f0;border-radius:6px;padding:6px 10px;margin-top:6px;break-inside:avoid}.fo-sec h4{margin:0 0 2px;font-size:11.5px;color:var(--bc)}
+.fo-dl{display:grid;grid-template-columns:1fr 1fr;column-gap:16px;margin:0}.fo-dl>div{display:grid;grid-template-columns:36% 1fr;gap:6px;padding:3px 0;border-top:1px solid #eef2f6}
+.fo-dl>div:nth-child(-n+2){border-top:0}.fo-dl>div.fo-w{grid-column:1/-1;grid-template-columns:1fr}.fo-dl dt{color:#62768c;font-size:9.5px}.fo-dl dd{margin:0;word-break:break-word}
+.fo-v{white-space:pre-wrap}.fo-tw{border:1px solid #e0e8f0;border-radius:5px;overflow:hidden}.fo-tb{width:100%;border-collapse:collapse}.fo-tb th{background:#f2f6fa;text-align:left;padding:3px 6px;font-size:9.5px}.fo-tb td{padding:3px 6px;border-top:1px solid #eef2f6}
+.fo-sg img{max-width:180px;max-height:60px;display:block}.fo-im{display:flex;flex-wrap:wrap;gap:8px}.fo-im a{width:150px;text-decoration:none;color:#0e2238;font-size:9.5px;break-inside:avoid}.fo-im img{width:100%;max-height:110px;object-fit:contain;border:1px solid #e0e8f0;border-radius:5px;display:block;margin-bottom:2px;background:#f7f9fb}
+.fo-im a.fo-ie,.fo-im img:not([src]){display:none}.fo-fl{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.fo-fl a{border:1px solid #e0e8f0;border-radius:5px;padding:2px 7px;color:#0e2238;text-decoration:none;font-size:9.5px}.fo-fl svg{display:none}
+@page{size:A4;margin:0}`;
+const A4H=1123;
 function docBody(f){const c=BRC[f.brand]||'#0082c0',sub=[f.sales&&TT('เซลล์: ','Sales: ')+f.sales,f.submitted_at&&TT('กรอกเมื่อ ','Submitted ')+dt(f.submitted_at)].filter(Boolean).join('<br>');
  return `<div class="dc" style="--bc:${c}"><div class="dh"><div><div class="br">${H(f.brand)}</div><h1>${H(TT(KN[f.kind][0],KN[f.kind][1]))}${f.company?' · '+H(f.company):''}</h1></div><div class="mt">${sub}</div></div>${$('foa_b').innerHTML}${$('foa_f').innerHTML}</div>`}
 const docName=f=>(TT(KN[f.kind][0],KN[f.kind][1])+' '+(f.company||f.id)).replace(/[\\/:*?"<>|]+/g,' ').trim();
-async function foPrint(){const f=FO.cur;if(!f)return;const b=$('foa_pr');b.disabled=true;try{await FO.imgP}catch(e){}b.disabled=false;
- const fr=document.createElement('iframe');fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';document.body.append(fr);
- const d=fr.contentDocument;d.open();d.write(`<!doctype html><html lang="${LANG}"><head><meta charset="utf-8"><title>${H(docName(f))}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet"><style>${DOC_CSS}</style></head><body>${docBody(f)}</body></html>`);d.close();
- const go=()=>{try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){}setTimeout(()=>fr.remove(),60000)};
- try{await Promise.race([d.fonts?d.fonts.ready:Promise.resolve(),new Promise(r=>setTimeout(r,1500))])}catch(e){}setTimeout(go,300)}
-function h2p(){return window.html2pdf?Promise.resolve():new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';sc.onload=ok;sc.onerror=no;document.head.append(sc)})}
-async function foPdf(){const f=FO.cur;if(!f)return;const b=$('foa_pdf'),t=b.textContent;b.disabled=true;b.textContent=TT('กำลังสร้าง…','Preparing…');
- try{await FO.imgP;await h2p();const w=document.createElement('div');w.style.cssText='position:fixed;left:-10000px;top:0;width:794px;background:#fff';w.innerHTML=`<style>${DOC_CSS.replace(/body\{/,'.dcw{')}</style><div class="dcw">${docBody(f)}</div>`;document.body.append(w);
-  await html2pdf().set({margin:[8,8,8,8],filename:docName(f)+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true,backgroundColor:'#fff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','avoid-all']}}).from(w.querySelector('.dcw')).save();w.remove()}
- catch(e){alert(TT('ดาวน์โหลดไม่สำเร็จ กรุณาใช้ปุ่มพิมพ์แล้วเลือกบันทึกเป็น PDF','Download failed. Use Print and choose Save as PDF.'))}
- b.disabled=false;b.textContent=t}
+async function docFrame(f,libs){try{await FO.imgP}catch(e){}
+ const fr=document.createElement('iframe');fr.style.cssText='position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0';document.body.append(fr);
+ const sc=libs?'<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>':'';
+ const d=fr.contentDocument;d.open();d.write(`<!doctype html><html lang="${LANG}"><head><meta charset="utf-8"><title>${H(docName(f))}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet"><style>${DOC_CSS}</style>${sc}</head><body>${docBody(f)}</body></html>`);d.close();
+ await new Promise(r=>{if(d.readyState==='complete')r();else fr.addEventListener('load',r,{once:true});setTimeout(r,8000)});
+ try{await Promise.race([d.fonts.ready,new Promise(r=>setTimeout(r,2000))])}catch(e){}
+ await Promise.all([...d.images].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r;setTimeout(r,3000)})));return fr}
+function fit(fr){const dc=fr.contentDocument.querySelector('.dc'),h=dc.getBoundingClientRect().height;if(h>A4H&&h<A4H*1.7){let k=A4H/h;for(let i=0;i<4;i++){dc.style.width=794/k+'px';dc.style.zoom=k;const z=dc.getBoundingClientRect().height;if(z<=A4H)break;k*=A4H/z*0.99}}}
+async function foPrint(){const f=FO.cur;if(!f)return;const b=$('foa_pr');b.disabled=true;
+ try{const fr=await docFrame(f,false);fit(fr);fr.contentWindow.focus();fr.contentWindow.print();setTimeout(()=>fr.remove(),60000)}catch(e){}b.disabled=false}
+async function foPdf(){const f=FO.cur;if(!f)return;const b=$('foa_pdf'),t=b.textContent;b.disabled=true;b.textContent=TT('กำลังสร้าง…','Preparing…');let fr;
+ try{fr=await docFrame(f,true);const w=fr.contentWindow;for(let i=0;i<40&&!(w.html2canvas&&w.jspdf);i++)await new Promise(r=>setTimeout(r,250));if(!w.html2canvas||!w.jspdf)throw new Error('lib');
+  const dc=fr.contentDocument.querySelector('.dc'),cv=await w.html2canvas(dc,{scale:2,backgroundColor:'#ffffff',useCORS:true,windowWidth:794}),pdf=new w.jspdf.jsPDF({unit:'mm',format:'a4'});
+  const PW=210,PH=297,ih=cv.height*PW/cv.width;
+  if(ih<=PH*1.7){const k=Math.min(1,PH/ih),ww=PW*k;pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',(PW-ww)/2,0,ww,ih*k)}
+  else{const ph=Math.floor(cv.width*PH/PW);for(let y=0,n=0;y<cv.height;y+=ph,n++){const c=document.createElement('canvas');c.width=cv.width;c.height=Math.min(ph,cv.height-y);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(cv,0,-y);if(n)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',0,0,PW,c.height*PW/c.width)}}
+  pdf.save(docName(f)+'.pdf')}
+ catch(e){alert(TT('ดาวน์โหลด PDF ไม่สำเร็จ','Could not create the PDF'))}
+ if(fr)fr.remove();b.disabled=false;b.textContent=t}
 $('foa_pr').onclick=foPrint;$('foa_pdf').onclick=foPdf;
 $('fo_new').onclick=openNew;$('fo_x').onclick=()=>$('fod').close();$('foa_x').onclick=()=>$('foa').close();
 $('fof').addEventListener('submit',e=>{e.preventDefault();make()});$('fo_cp').onclick=e=>copy($('fo_url').value,e.currentTarget);
