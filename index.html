@@ -2733,7 +2733,7 @@ const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&
 #vFO .fo-rn{display:inline-flex;align-items:center;gap:10px}#vFO .fo-rn i{width:8px;height:8px;border-radius:99px;flex:0 0 8px}#vFO .fo-rn.nw i{background:var(--dgr)}#vFO .fo-rn.nw{font-weight:700}
 #vFO .fo-rf{display:inline-flex;align-items:center;gap:8px}#vFO .fo-rf i{width:8px;height:8px;border-radius:99px}
 #vFO .fo-back{border:0;background:none;color:var(--pr);font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:4px;padding:0;margin-bottom:4px;cursor:pointer}
-#vFO .fo-btag{font-size:13px;font-weight:600;border-radius:999px;padding:2px 10px}
+#vFO .fo-btag{display:inline-flex;align-items:center}#vFO .fo-cb{display:flex;align-items:center;height:20px}#vFO .fo-lg{display:block;max-width:140px;object-fit:contain}
 #vFO .mkseg em.fo-emr{background:var(--dgr)!important;color:#fff!important}
 #vFO .fo-split{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
 #vFO .fo-lst{flex:1 1 320px;max-width:400px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg,14px);box-shadow:var(--sh-1);overflow:hidden;position:sticky;top:12px}
@@ -2813,6 +2813,8 @@ async function load(){const C0='id,token,lead_id,kind,brand,team,sales,company,p
  const get=async C=>{let all=[];for(let o=0;o<20000;o+=1000){const{data,error}=await sb.from('cust_forms').select(C).order('created_at',{ascending:false}).range(o,o+999);if(error)return{error};all=all.concat(data||[]);if(!data||data.length<1000)break}return{all}};
  let r=await get(C0+',seen_at');FO.hasSeen=!r.error;if(r.error)r=await get(C0);FO.ok=!r.error;FO.list=r.error?[]:r.all;FO.loaded=true;render()}
 const KIC={book:'<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',acc:'<path d="M4 21V5a2 2 0 0 1 2-2h8l6 6v12z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',claim:'<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M12 8v5M12 16h.01"/>',tc:'<path d="M9 11l2 2 4-4"/><path d="M5 3h14v18H5z"/>',job:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
+const BLK={'CPL-Inter':'cplinter','CPLEx':'cplex','CLMV':'clmv','IMTH':'imthai'};
+const blogo=(b,h)=>{const L=typeof LOGOS!=='undefined'&&LOGOS[BLK[b]];return L?`<img class="fo-lg" src="${L.u}" alt="${H(b)}" title="${H(b)}" style="height:${h}px;width:auto">`:`<span style="color:${BRC[b]};font-weight:600">${H(b)}</span>`};
 const BRT={'CPL-Inter':'rgba(0,130,192,.12)','CPLEx':'rgba(224,90,26,.12)','CLMV':'rgba(17,121,74,.12)','IMTH':'rgba(107,63,181,.12)'};
 FO.view=null;FO.brand='';FO.tab='all';FO.sel=null;FO.lim=150;
 const isNew=f=>f.status==='done'&&!f.seen_at&&FO.hasSeen;
@@ -2828,7 +2830,7 @@ function renderHome(){const all=mine(),hs=!!profile&&profile.role==='sales',q=$(
  $('fo_bseg').innerHTML=[['',TT('ทั้งหมด','All')]].concat(BR.map(b=>[b,b])).map(([k,v])=>`<button type="button" class="${bf===k?'on':''}" data-fob="${H(k)}">${k?`<i class="fo-bd" style="background:${BRC[k]}"></i>`:''}${H(v)}</button>`).join('');
  const card=(k,b)=>{const L=all.filter(f=>f.kind===k&&f.brand===b),D=L.filter(subOf),n=D.filter(isNew).length,w=L.filter(f=>f.status==='sent'&&!isTpl(f)).length,last=D.reduce((m,f)=>{const t=f.submitted_at||f.created_at;return t>m?t:m},'');
   return `<div class="fo-card"><div class="fo-ct"><span class="fo-ic" style="background:${BRT[b]};color:${BRC[b]}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${KIC[k]}</svg></span><span class="fo-bdg">${n?`<em class="fo-new">${N(n)} ${TT('ใหม่','new')}</em>`:''}${w?`<em class="fo-wt">${TT('รอกรอก','Waiting')} ${N(w)}</em>`:''}</span></div>
-  <div class="fo-cn">${H(kn(k))}</div><div class="fo-cb" style="color:${BRC[b]}">${H(b)}</div>
+  <div class="fo-cn">${H(kn(k))}</div><div class="fo-cb">${blogo(b,18)}</div>
   <div class="fo-cc"><b>${N(D.length)}</b><span>${TT('คำตอบ','submissions')}${last?' · '+TT('ล่าสุด ','last ')+dd(last):''}</span></div>${k==='job'?`<div class="fo-cx">${TT('ลิงก์ถาวร · เห็นเฉพาะ Admin','Permanent link · Admin only')}</div>`:''}
   <div class="fo-ca"><button type="button" class="btn p sm" data-fov="${k}|${b}">${TT('ดูคำตอบ','View answers')}</button><button type="button" class="btn sm" data-fonl="${k}|${b}">${TT('+ สร้างลิงก์','+ New link')}</button></div></div>`};
  const has=(k,b)=>all.some(f=>f.kind===k&&f.brand===b),okB=b=>!bf||b===bf,okQ=(k,b)=>!q||(kn(k)+' '+b).toLowerCase().includes(q);
@@ -2844,7 +2846,7 @@ function inbList(){const[k,b]=FO.view,a=$('fo1').value,z=$('fo2').value,q=$('fo_
  const base=mine().filter(f=>f.kind===k&&f.brand===b&&!isTpl(f)).filter(f=>{const d=ld(f.submitted_at||f.created_at);return(!a||d>=a)&&(!z||d<=z)}).filter(f=>(!sl||f.sales===sl)&&(!q||[f.company,(f.prefill||{}).contact,f.sales].join(' ').toLowerCase().includes(q)));
  return{base,L:base.filter(f=>FO.tab==='all'?true:FO.tab==='new'?isNew(f):f.status==='sent').sort((x,y)=>String(y.submitted_at||y.created_at).localeCompare(String(x.submitted_at||x.created_at)))}}
 function renderInbox(){const[k,b]=FO.view,hs=!!profile&&profile.role==='sales';
- $('fo_it').innerHTML=`${H(kn(k))} <span class="fo-btag" style="background:${BRT[b]};color:${BRC[b]}">${H(b)}</span>`;
+ $('fo_it').innerHTML=`${H(kn(k))} <span class="fo-btag">${blogo(b,22)}</span>`;
  const sl=[...new Set(mine().filter(f=>f.kind===k&&f.brand===b).map(x=>x.sales).filter(Boolean))].sort(),e=$('fo_fsl'),v=e.value;e.innerHTML=`<option value="">${TT('ทุก Sales','All Sales')}</option>`+sl.map(x=>`<option value="${H(x)}">${H(x)}</option>`).join('');if(sl.includes(v))e.value=v;e.classList.toggle('hid',hs);
  const{base,L}=inbList();
  $('fo_tabs').innerHTML=[['all',TT('ทั้งหมด','All'),base.length],['new',TT('ยังไม่เปิด','Not opened'),base.filter(isNew).length],['sent',TT('รอลูกค้ากรอก','Awaiting customer'),base.filter(f=>f.status==='sent').length]].map(([t,l,n])=>`<button type="button" class="${FO.tab===t?'on':''}" data-fot="${t}">${l}<em${t==='new'&&n?' class="fo-emr"':''}>${N(n)}</em></button>`).join('');
