@@ -463,7 +463,7 @@ header .hd #who{display:none!important}
  <div class="csub csub2">ใบเสนอราคา</div><div class="sub" style="margin:0 0 6px">แบรนด์ในใบเสนอราคา</div><div class="bsel" id="cl_bs"></div><canvas id="qc" style="width:100%;height:auto;border:1px solid var(--bd);border-radius:8px;background:#fff"></canvas>
  <div class="cact"><button type="button" class="btn p" id="qsv">บันทึกใบเสนอราคา</button><button type="button" class="btn" id="qdl">ดาวน์โหลด</button><button type="button" class="btn" id="qcp">คัดลอกรูป</button><button type="button" class="btn" id="qtx">คัดลอกข้อความ</button></div></div></div></div>
 <div id="vCU" class="hid"><div id="cu_lv"><div class="bar"><input id="cu_q" type="search" placeholder="ค้นหาชื่อ / เบอร์ / อีเมล" aria-label="ค้นหา"><select id="cu_o" aria-label="เจ้าของ"></select><span style="flex:1"></span><button type="button" class="btn p" id="cu_new">+ เพิ่มลูกค้า</button></div><div class="pn"><table><thead><tr><th>ลูกค้า</th><th>เจ้าของ</th><th>ผู้ติดต่อ</th><th>แอดที่ทักเข้ามา</th><th class="num">Lead</th><th class="num">ปิดการขาย</th><th>Lead ล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="cu_b"></tbody></table></div></div><div id="cu_dv" class="hid"></div></div>
-<div id="vSO" class="hid"><div class="mktabs soNav"><button type="button" data-so="D" class="on">ภาพรวม</button><button type="button" data-so="P">Pipeline</button><button type="button" data-so="V">แผนเยี่ยมลูกค้า</button><button type="button" data-so="L">Lead</button></div><section class="soMain" id="soMain"></section>
+<div id="vSO" class="hid"><div class="mktabs soNav"><button type="button" data-so="D" class="on">ภาพรวม</button><button type="button" data-so="P">Pipeline</button><button type="button" data-so="V">แผนเยี่ยมลูกค้า</button></div><section class="soMain" id="soMain"></section>
 <dialog id="sod"><form id="sof" method="dialog"><h3 style="margin:0 0 12px">บันทึกการเยี่ยมลูกค้า</h3><div class="g"><label class="f">ลูกค้า<b class="rq">*</b><input name="so_n" list="so_dl" required autocomplete="off"></label><label class="f">ประเภทบริการ<input name="so_m" maxlength="60" placeholder="เช่น ทางเรือ FCL"></label><label class="f">วันที่<b class="rq">*</b><input type="text" name="so_d" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" autocomplete="off" required></label><label class="f">เวลา<b class="rq">*</b><input type="time" name="so_t" required></label><label class="f">วัตถุประสงค์<input name="so_p" maxlength="120"></label></div><datalist id="so_dl"></datalist><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button type="button" class="btn" onclick="$('sod').close()">ยกเลิก</button><button type="submit" class="btn p">บันทึก</button></div></form></dialog>
 <dialog id="sodd"><form id="sodf" method="dialog"><h3 style="margin:0 0 12px">แก้ไขลูกค้า</h3><div class="g"><label class="f">ลูกค้า<b class="rq">*</b><input name="sd_n" required maxlength="160"></label><label class="f">ประเภทบริการ<input name="sd_m" maxlength="60" placeholder="เช่น ทางเรือ FCL"></label><label class="f">เซลล์เจ้าของ<select name="sd_s"></select></label></div><div class="acts"><button type="button" class="btn p dgr" id="sodd_del" style="margin-right:auto">ลบดีล</button><button type="button" class="btn" onclick="$('sodd').close()">ยกเลิก</button><button type="submit" class="btn p">บันทึก</button></div></form></dialog></div>
 <div id="vRS" class="hid"><div class="seg csb hid"><button type="button" data-s="C">คำนวณ</button><button type="button" data-s="R" class="on">Rate</button></div><div class="rbw rsw">
@@ -668,7 +668,7 @@ document.addEventListener('input',e=>{const t=e.target;if(t.matches&&t.matches('
 $('dp').onchange=preset;$('dtm').innerHTML='<option value="">ทุกทีม</option>'+Object.keys(TEAMS).map(k=>`<option value="${k}">${TEAMS[k]}</option>`).join('');$('dtm').onchange=renderDash;['d1','d2'].forEach(i=>$(i).addEventListener('input',()=>{$('dp').value='c';dashLoad()}));PER_OPTS.length&&['dp','lp','kp'].forEach(id=>{$(id).innerHTML=PER_OPTS.map(v=>'<option value="'+v+'"></option>').join('');$(id).value='30'});presetSet();perSet('30',$('lf'),$('lt'));perSet('30',$('k1'),$('k2'));fLabels();$('lp').onchange=()=>{perSet($('lp').value,$('lf'),$('lt'));covLoad($('lf').value,render)};['lf','lt'].forEach(i=>$(i).addEventListener('input',()=>{$('lp').value='c'}));$('kp').onchange=()=>{perSet($('kp').value,$('k1'),$('k2'));covLoad($('k1').value,renderFu)};['k1','k2'].forEach(i=>$(i).addEventListener('input',()=>{$('kp').value='c';covLoad($('k1').value,renderFu)}));
  start();
 }
-function buildSeg(){$('seg').innerHTML=teamsVisible().filter(k=>k!=='C').map(k=>`<button class="${k===team?'on':''}" onclick="setTeam('${k}')">${TEAMS[k]}<em>${rows.filter(r=>r.team===k).length}</em></button>`).join('')}
+function buildSeg(){$('seg').innerHTML=teamsVisible().filter(k=>k!=='C'||canSO()).map(k=>`<button class="${k===team?'on':''}" onclick="setTeam('${k}')">${k==='C'?'Offline':TEAMS[k]}<em>${rows.filter(r=>r.team===k).length}</em></button>`).join('')}
 function setTeam(k){team=k;setSales();$('fa').value='';render()}
 let SALL=[];
 async function loadSalesAll(){try{let o=[],i=0;for(;;){const{data,error}=await sb.from('leads').select('sales,team').range(i,i+999);if(error||!data)return;o=o.concat(data);if(data.length<1000)break;i+=1000}SALL=[...new Set(o.filter(x=>x.sales).map(x=>x.team+'\u0001'+x.sales))].map(x=>x.split('\u0001'));const v=$('fa').value;setSales();$('fa').value=v}catch(e){}}
@@ -2222,9 +2222,10 @@ async function cuLoad0(){
  const a=await sb.from('customers').select('*').order('name');
  if(a.error){CU.ok=false;CU.loaded=true;return false}
  const b=await sb.from('customer_contacts').select('*').order('created_at');
- const l=await pg(()=>sb.from('leads').select('id,customer_id,name,ads,sales,status,fu,fu_status,date,deal_date,deal_amt,detail').not('customer_id','is',null));
- CU.list=a.data||[];CU.cts={};(b.data||[]).forEach(c=>(CU.cts[c.customer_id]=CU.cts[c.customer_id]||[]).push(c));
- CU.ls={};(l||[]).forEach(r=>(CU.ls[r.customer_id]=CU.ls[r.customer_id]||[]).push(r));
+ const l=await pg(()=>sb.from('leads').select('id,customer_id,team,name,ads,sales,status,fu,fu_status,date,deal_date,deal_amt,detail').not('customer_id','is',null));
+ const off=!!profile&&profile.role==='sales'&&profile.team==='C',adm=!!profile&&profile.role==='admin',vis=r=>adm||(off?r.team==='C':r.team!=='C'),any=new Set((l||[]).map(r=>r.customer_id));
+ CU.ls={};(l||[]).filter(vis).forEach(r=>(CU.ls[r.customer_id]=CU.ls[r.customer_id]||[]).push(r));
+ CU.list=(a.data||[]).filter(c=>!any.has(c.id)||CU.ls[c.id]);CU.cts={};(b.data||[]).forEach(c=>(CU.cts[c.customer_id]=CU.cts[c.customer_id]||[]).push(c));
  CU.ok=true;CU.loaded=true;return true}
 function stats(id){const ls=CU.ls[id]||[],w=ls.filter(r=>effS(r)===ST_Y);return{n:ls.length,ds:[...new Set(ls.map(r=>r.date).filter(Boolean))].sort(),w:w.length,last:ls.map(r=>r.date||'').sort().pop()||'',lw:w.map(r=>r.deal_date||r.date||'').sort().pop()||'',amt:w.reduce((t,r)=>t+(+r.deal_amt||0),0),ads:[...new Set(ls.map(r=>r.ads).filter(Boolean))],fa:(ls.filter(r=>r.ads).sort((a,b)=>(a.date||'').localeCompare(b.date||''))[0]||{}).ads||''}}
 function badge(s){const d=s.lw?Math.floor((Date.now()-new Date(s.lw))/DAY):0,old=d>CHURN;
@@ -2439,7 +2440,7 @@ function soLead(){
 <tbody>${l.length?l.slice(0,300).map(r=>leadRow(r)).join(''):`<tr><td colspan="10" class="sub" style="text-align:center;padding:24px">${TT('ยังไม่มีข้อมูล','No data yet')}</td></tr>`}</tbody></table></div></div>`;
 }
 function soRender(){const m=$('soMain');if(!m)return;document.querySelectorAll('#vSO [data-so]').forEach(b=>b.classList.toggle('on',b.dataset.so===SO.page));m.innerHTML=({L:soLead,D:soDash,P:soPipe,V:soVisit})[SO.page]()}
-function soOpenView(){SO.page=SO.page||'D';if(SO.loaded)soRender();else m_loading();soLoad().then(soRender)}
+function soOpenView(){SO.page=SO.page&&SO.page!=='L'?SO.page:'D';if(SO.loaded)soRender();else m_loading();soLoad().then(soRender)}
 function m_loading(){const m=$('soMain');if(m)m.innerHTML='<div class="soEmpty">กำลังโหลด…</div>'}
 const _tSO=tab;
 tab=function(k){
@@ -2575,12 +2576,13 @@ scan(document.body)})();
 const sync=()=>document.querySelectorAll('.csb').forEach(e=>e.classList.toggle('hid',!(window.canSetRate&&window.canSetRate())));
 document.addEventListener('click',e=>{const b=e.target.closest('.csb [data-s]');if(b)tab(b.dataset.s==='R'?'RS':'C')});
 const _t6=tab;tab=function(k){_t6(k);sync()};
-const _ar6=applyRoleUI;applyRoleUI=function(p){_ar6(p);sync();mkPlace()};sync();
+const _ar6=applyRoleUI;applyRoleUI=function(p){_ar6(p);sync();mkPlace();const tv=teamsVisible().filter(k=>k!=='C'||canSO());if(tv.length&&!tv.includes(team))team=tv[0]};sync();
 function mkPlace(){const w=$('tW'),d=$('tDB'),l=$('tL'),f=$('tF'),c=$('tC'),cu=$('tCU'),s1=$('nsep1'),s2=$('nsep2');if(!w||!d||!l||!f||!c||!cu||!s1||!s2)return;
- const r=profile&&profile.role,tm=profile&&profile.team;
+ const r=profile&&profile.role,tm=profile&&profile.team,so=$('tSO'),rs=$('tRS');if(so&&rs)rs.before(so);
  if(r==='admin'){s1.after(w);w.after(d);d.after(f);f.after(s2);s2.after(l);l.after(cu);cu.after(c)}
  else if(r==='marketing'){s1.after(d);d.after(w);w.after(s2);s2.after(l);l.after(cu);cu.after(c)}
- else if(r==='sales'&&tm!=='C'){s1.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(w)}
+ else if(r==='sales'&&tm==='C'&&so){s1.after(so);so.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}
+ else if(r==='sales'){s1.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(w)}
  else{s1.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}}mkPlace();
 })();
 </script>
@@ -2661,7 +2663,7 @@ document.body.appendChild(pp);document.body.appendChild(b);set(cur);
 </script>
 <script>
 (function(){
-const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&&p.team==='C'){['tF','tCU','tL','tC'].forEach(id=>{const el=$(id);if(el)el.classList.add('hid')})}};
+const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&&p.team==='C'){['tF','tC'].forEach(id=>{const el=$(id);if(el)el.classList.add('hid')})}};
 })();
 </script>
 </body>
