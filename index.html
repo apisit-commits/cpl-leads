@@ -492,7 +492,7 @@ header .hd #who{display:none!important}
   <div class="pn fo-rec"><div class="fo-rh"><h3>คำตอบล่าสุด</h3></div><table><thead><tr><th>ลูกค้า</th><th>ฟอร์ม</th><th class="fo-slc">เซลล์</th><th class="r">กรอกเมื่อ</th></tr></thead><tbody id="fo_rb"></tbody></table><div class="empty hid" id="fo_rem">ยังไม่มีคำตอบ</div></div>
  </div>
  <div id="fo_inb" class="hid">
-  <div class="fo-top"><div><button type="button" class="fo-back" id="fo_back"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>ฟอร์มลูกค้า</button><h2 class="fo-h1" id="fo_it"></h2></div><div class="fo-acts"><button type="button" class="btn" id="fo_xl">ส่งออก Excel</button><button type="button" class="btn p" id="fo_nl">+ สร้างลิงก์</button></div></div>
+  <div class="fo-top"><div><button type="button" class="fo-back" id="fo_back" title="กลับ" aria-label="กลับ"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>ฟอร์มลูกค้า</button><h2 class="fo-h1" id="fo_it"></h2></div><div class="fo-acts"><button type="button" class="btn" id="fo_xl">ส่งออก Excel</button><button type="button" class="btn p" id="fo_nl">+ สร้างลิงก์</button></div></div>
   <div class="bar fo-bar"><div class="mkseg" id="fo_tabs"></div><select id="fo_fsl" aria-label="เซลล์"></select><span class="pgrp"><label>ช่วงเวลา <select id="fop"></select></label><label>ตั้งแต่ <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="fo1"></label><label>ถึง <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="fo2"></label></span></div>
   <div class="fo-split">
    <section class="fo-lst" aria-label="รายการคำตอบ"><div class="fo-lq"><input id="fo_q" type="search" placeholder="ค้นหาลูกค้า / ผู้ติดต่อ / เซลล์" aria-label="ค้นหา"></div><div id="fo_items"></div><div class="empty hid" id="fo_em">ไม่พบคำตอบ</div><button type="button" class="btn fo-more hid" id="fo_more">แสดงเพิ่ม</button></section>
@@ -2936,6 +2936,12 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 #vW .nh #mkgear{height:46px!important;width:46px!important}
 #vCU #cu_lv>.bar:first-child{min-height:46px;align-items:center;margin-top:0}
 #vFO .fo-top{align-items:flex-start}#vFO #fo_new{margin-top:3px;height:40px}
+
+#fo_home>.fo-top{justify-content:flex-end}#fo_home>.fo-top>div:first-child{display:none}
+#fo_inb>.fo-top{align-items:center;min-height:46px}#fo_inb>.fo-top>div:first-child{display:flex;align-items:center;gap:12px;min-width:0}
+#fo_inb .fo-back{width:40px;height:40px;flex:0 0 40px;margin:0;justify-content:center;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);box-shadow:var(--sh);font-size:0;gap:0}
+#fo_inb .fo-back svg{width:20px;height:20px}#fo_inb .fo-back:hover{color:var(--pr);border-color:var(--pr)}
+#fo_inb .fo-h1{font-size:20px}#fo_inb .fo-acts .btn{height:40px;box-sizing:border-box;display:inline-flex;align-items:center}
 </style>
 <script>
 (function(){
