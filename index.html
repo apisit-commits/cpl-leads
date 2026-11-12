@@ -2595,11 +2595,11 @@ const _ar6=applyRoleUI;applyRoleUI=function(p){_ar6(p);sync();mkPlace();const tv
 function mkPlace(){const w=$('tW'),d=$('tDB'),l=$('tL'),f=$('tF'),c=$('tC'),cu=$('tCU'),s1=$('nsep1'),s2=$('nsep2');if(!w||!d||!l||!f||!c||!cu||!s1||!s2)return;
  const r=profile&&profile.role,tm=profile&&profile.team,so=$('tSO'),rs=$('tRS');if(so&&rs)rs.before(so);
  const fo=$('tFO')||document.createElement('i');
- if(r==='admin'){s1.after(fo);fo.after(w);w.after(d);d.after(f);f.after(s2);s2.after(l);l.after(cu);cu.after(c)}
+ if(r==='admin'){s1.after(w);w.after(d);d.after(f);f.after(s2);s2.after(l);l.after(cu);cu.after(c)}
  else if(r==='marketing'){s1.after(d);d.after(w);w.after(s2);s2.after(l);l.after(cu);cu.after(c)}
- else if(r==='sales'&&tm==='C'&&so){s1.after(so);so.after(fo);fo.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}
- else if(r==='sales'){s1.after(fo);fo.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(w)}
- else{if(r==='sales_lead'){s1.after(fo);fo.after(s2)}else s1.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}}mkPlace();
+ else if(r==='sales'&&tm==='C'&&so){s1.after(so);so.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}
+ else if(r==='sales'){s1.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(w)}
+ else{s1.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}if(fo.id)l.before(fo)}mkPlace();
 })();
 </script>
 <script>
@@ -2686,6 +2686,7 @@ const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&
 #vFO .fo-hd{margin-bottom:12px}
 #vFO .bar input[type=search]{flex:1 1 220px;min-width:180px}
 .fo-pn{padding:6px 8px!important;overflow-x:auto}
+@media(min-width:801px){.tabs{overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.35) transparent}.tabs>*{flex-shrink:0!important}.tabs::-webkit-scrollbar{width:6px}.tabs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:6px}}
 .fo-pn table{width:100%}
 .fo-pn td{vertical-align:middle}
 .fo-pn td.fo-act{white-space:nowrap;text-align:right}
