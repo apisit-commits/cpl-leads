@@ -355,6 +355,7 @@ legend{font-size:13px}
 .dlgwide{width:min(1120px,96vw)!important}.dlgwide[open]{display:flex}.dlgwide>form{flex:1;min-width:0}#fq{overscroll-behavior:contain;width:340px;flex:none;border-left:1px solid var(--bd);padding:18px 16px;max-height:92vh;overflow:auto;border-radius:0 18px 18px 0}#fq h3{margin:0 0 12px}#fq.hid{display:none}@media(max-width:900px){.dlgwide[open]{display:block}#fq{width:auto;border-left:0;border-top:1px solid var(--bd);max-height:none;border-radius:0 0 18px 18px}}.qli details{margin-top:6px}.qli summary{cursor:pointer;color:var(--sub);font-size:12px}.qli .qd{font-size:12px;margin-top:6px;display:grid;gap:3px}.qli .qd div{display:flex;justify-content:space-between;gap:10px}
 .qli{border:1px solid var(--bd);border-radius:12px;padding:10px 12px;margin-bottom:8px}.qli .qh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.qli .qh span{flex:1;color:var(--sub)}.qli .qt{font-size:16px}.qli .qa{display:flex;gap:8px;margin-top:8px;align-items:center}.qli .qa select{flex:1}
 .rb-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.rb-rec{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;padding:10px 14px;border-radius:12px;background:var(--okb);color:var(--tx);font-size:14px}.rb-rec:empty{display:none}.rb-rec .sub{margin-left:auto}
 .rb-o{font:inherit;text-align:left;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
 .rb-o b{font-size:17px}.rb-o.on{background:var(--nv);color:var(--bg);border-color:var(--nv)}.rb-o:disabled{opacity:.5;cursor:default}
 .rb-big{font-size:30px;font-weight:700;color:var(--nv);margin:6px 0 2px}
@@ -449,7 +450,7 @@ header .hd #who{display:none!important}
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><label class="f">Lead<input id="cl_q" list="cl_dl" autocomplete="off" placeholder="ค้นหาชื่อลูกค้า / ประเทศ"><datalist id="cl_dl"></datalist></label><label class="f">ชื่อลูกค้าในใบเสนอราคา<input id="cl_qn" maxlength="120" autocomplete="off"></label></div></div>
 <div class="pn"><h3>การขนส่ง</h3>
  <div class="g"><label class="f">บริการ<select id="cl_mode"><option value="ac">Air Courier</option><option value="ak">Air Cargo</option><option value="sea">เรือ</option><option value="tc">รถ · คิดตาม CBM</option><option value="tw">รถ · คิดตามน้ำหนัก</option></select></label></div>
- <div id="rb_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="rb_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศปลายทาง<input id="rb_c" list="rb_cl" autocomplete="off"><datalist id="rb_cl"></datalist></label><label class="f">รหัสไปรษณีย์ปลายทาง<input id="rb_p" autocomplete="off"></label></div><div id="rb_opts" class="rb-opts" style="margin-top:10px"></div><div id="rb_rem" class="rb-row" style="margin-top:8px"></div></div>
+ <div id="rb_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="rb_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศปลายทาง<input id="rb_c" list="rb_cl" autocomplete="off"><datalist id="rb_cl"></datalist></label><label class="f">รหัสไปรษณีย์ปลายทาง<input id="rb_p" autocomplete="off"></label></div><div id="rb_opts" class="rb-opts" style="margin-top:10px"></div><div id="rb_rec" class="rb-rec" style="margin-top:10px"></div><div id="rb_rem" class="rb-row" style="margin-top:8px"></div></div>
  <div id="tk_blk" class="hid" style="margin-top:12px"><div class="g"><label class="f">ทิศทาง<span class="rb-seg" id="tk_d"><button type="button" class="on" data-d="ex">ส่งออก</button><button type="button" data-d="im">นำเข้า</button></span></label><label class="f">ประเทศ<input id="tk_c" list="tk_cl" autocomplete="off"><datalist id="tk_cl"></datalist></label><label class="f">จังหวัด / โซน<input id="tk_z" list="tk_zl" autocomplete="off"><datalist id="tk_zl"></datalist></label></div><div id="tk_opts" class="rb-opts" style="margin-top:10px"></div></div>
  <div class="g" style="margin-top:12px"><label class="f"><span id="cl_ru">เรท</span><span class="nf" id="cl_nf" data-u="บาท/กก."><input id="cl_rate" type="text" inputmode="decimal" data-num autocomplete="off"></span></label><label class="f"><span>ราคาพิเศษ</span><span class="nf" data-u="บาท"><input id="cl_flat" type="text" inputmode="decimal" data-num autocomplete="off"></span></label></div></div>
 <div class="pn"><h3>สินค้า</h3><div id="cgc"></div></div>
@@ -1710,15 +1711,16 @@ function rbRun(ap){const blk=$('rb_blk');window.RB_VER=RS&&RS.ver||'';window.RB_
  blk.classList.remove('hid');
  const country=rbCountry(),postal=$('rb_p').value.trim(),it=rbItems(),ready=country&&it.length;
  const res=SV[RB_D].map(([k,name,car])=>({k,name,car,r:ready&&RS.data[k]?calc(k,car,country,postal,it):null}));
- const ok=res.filter(o=>o.r),best=ok.length?ok.reduce((p,q)=>q.r.total<p.r.total?q:p):null;
- if(!PICK||!res.find(o=>o.k===PICK&&o.r))PICK=best&&best.k;
+ const ok=res.filter(o=>o.r),byTot=(p,q)=>p.r.total-q.r.total,sorted=[...ok].sort(byTot),noAp=sorted.filter(o=>!o.r.appr),rec=noAp[0]||sorted[0]||null,alt=rec?sorted.find(o=>o!==rec&&o.r.total>=rec.r.total)||null:null;
+ if(!PICK||!res.find(o=>o.k===PICK&&o.r))PICK=rec&&rec.k;
  const cur=res.find(o=>o.k===PICK&&o.r);window.RB_SEL=cur?cur.name:'';
- $('rb_opts').innerHTML=ready?res.map(o=>`<button type="button" class="rb-o${cur&&o.k===cur.k?' on':''}" data-k="${o.k}"${o.r?'':' disabled'}><span>${o.name}${best&&o.k===best.k?' · ถูกสุด':''}</span><b>${o.r?'฿'+N(o.r.total):'-'}</b></button>`).join(''):'';
+ $('rb_opts').innerHTML=ready?res.map(o=>`<button type="button" class="rb-o${cur&&o.k===cur.k?' on':''}" data-k="${o.k}"${o.r?'':' disabled'}><span>${o.name}${rec&&o.k===rec.k?' · แนะนำ':''}</span><b>${o.r?'฿'+N(o.r.total):'-'}</b></button>`).join(''):'';
  const rF=country&&postal?remote('FedEx',country,postal):null,rA=country&&postal?remote('Aramex',country,postal):null;
  let t='';
  if(country&&postal)t=(rF===undefined&&rA===undefined)?'<span class="rb-tg inf">ไม่มีรายชื่อ Remote Area</span>':((rF&&rF!==false)||rA)?'<span class="rb-tg wn">Remote Area</span>':'<span class="rb-tg ok">ไม่อยู่ในพื้นที่ห่างไกล</span>';
  if(cur&&cur.r.appr)t+='<span class="rb-tg wn">ต้องขออนุมัติจากค่ายก่อนส่ง</span>';
  $('rb_rem').innerHTML=t;
+ $('rb_rec').innerHTML=ready&&rec?`<span class="rb-tg ok">แนะนำ</span><span><b>${rec.name}</b> · ฿${N(rec.r.total)}</span>${alt?`<span class="sub">ถูกกว่า ${alt.name} ฿${N(alt.r.total-rec.r.total)}</span>`:''}`:'';
  if(ap&&cur){const act=it.reduce((a,x)=>a+x.n*x.W,0),vq=Math.ceil(it.reduce((a,x)=>a+x.n*x.L0*x.W0*x.H0,0)/5000-1e-9),qq=Math.max(act,vq,0.5),rate=Math.round(cur.r.freight/qq*100)/100;
   if(!window.RATE_MAN)$('cl_rate').value=fmtIn(rate);
   const set=(name,amt)=>{const i=OSV.indexOf(name);if(i<0)return;const c=$('cl_svc').querySelector(`input[type=checkbox][data-i="${i}"]`),p=$('cl_svc').querySelector(`[data-p="${i}"]`);if(!c||!p)return;c.checked=amt>0;p.value=amt>0?fmtIn(Math.round(amt)):''};
