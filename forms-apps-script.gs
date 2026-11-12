@@ -182,33 +182,36 @@ function imgs_(body) {
   const meta = dr.length ? UrlFetchApp.fetchAll(dr.map(function (u) {
     return { url: 'https://www.googleapis.com/drive/v3/files/' + did(u) + '?fields=thumbnailLink,mimeType,size&supportsAllDrives=true', headers: auth, muteHttpExceptions: true };
   })) : [];
-  const reqs = [], owner = [];
+  const reqs = [], owner = [], info = {};
   dr.forEach(function (u, i) {
     try {
       const m = JSON.parse(meta[i].getContentText());
+      info[u] = m;
       if (m.thumbnailLink) { reqs.push({ url: m.thumbnailLink.replace(/=s\d+$/, '') + '=s800', headers: auth, muteHttpExceptions: true }); owner.push(u); }
+      else if (/^image\//.test(m.mimeType || '')) { reqs.push({ url: 'https://www.googleapis.com/drive/v3/files/' + did(u) + '?alt=media&supportsAllDrives=true', headers: auth, muteHttpExceptions: true }); owner.push(u); }
     } catch (e) {}
   });
   miss.filter(function (u) { return !did(u) && /jotform\.com/.test(u); }).forEach(function (u) {
     reqs.push({ url: u + (jkey ? (u.indexOf('?') < 0 ? '?' : '&') + 'apiKey=' + encodeURIComponent(jkey) : ''), muteHttpExceptions: true }); owner.push(u);
   });
-  // 2) โหลดรูปทั้งหมดพร้อมกัน
+  const isPic = function (b) { return b && /^image\//.test(b.getContentType() || '') && b.getBytes().length > 200; };
   const res = reqs.length ? UrlFetchApp.fetchAll(reqs) : [];
-  const put = {};
+  const put = {}, retry = [];
   res.forEach(function (x, i) {
     const u = owner[i];
-    try {
-      let blob = x.getResponseCode() === 200 ? x.getBlob() : null;
-      if ((!blob || !/^image\//.test(blob.getContentType() || '')) && did(u)) {
-        const f = DriveApp.getFileById(did(u));
-        blob = f.getSize() < 3 * 1024 * 1024 ? f.getBlob() : null;
-      }
-      if (!blob || !/^image\//.test(blob.getContentType() || '')) return;
-      const d = 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
-      out[u] = d;
-      if (d.length < 95000) put[keyOf(u)] = d;
-    } catch (e) {}
+    let blob = x.getResponseCode() === 200 ? x.getBlob() : null;
+    if (!isPic(blob)) { if (did(u) && /^image\//.test((info[u] || {}).mimeType || '') && Number((info[u] || {}).size || 0) < 4 * 1024 * 1024) retry.push(u); return; }
+    out[u] = 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
   });
+  // รูปย่อใช้ไม่ได้: โหลดไฟล์จริงจาก Drive แทน
+  const res2 = retry.length ? UrlFetchApp.fetchAll(retry.map(function (u) {
+    return { url: 'https://www.googleapis.com/drive/v3/files/' + did(u) + '?alt=media&supportsAllDrives=true', headers: auth, muteHttpExceptions: true };
+  })) : [];
+  res2.forEach(function (x, i) {
+    const b = x.getResponseCode() === 200 ? x.getBlob() : null;
+    if (isPic(b)) out[retry[i]] = 'data:' + (info[retry[i]].mimeType || b.getContentType()) + ';base64,' + Utilities.base64Encode(b.getBytes());
+  });
+  Object.keys(out).forEach(function (u) { if (out[u].length < 95000) put[keyOf(u)] = out[u]; });
   try { if (Object.keys(put).length) cache.putAll(put, 21600); } catch (e) {}
   return { ok: true, imgs: out };
 }
