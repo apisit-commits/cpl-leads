@@ -2715,15 +2715,15 @@ const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&
 #vFO .fo-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
 #vFO .fo-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg,14px);box-shadow:var(--sh-1);padding:16px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s}
 #vFO .fo-card:hover{border-color:var(--lt,#52bdec)}
-#vFO .fo-ct{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-#vFO .fo-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 40px}
-#vFO .fo-bdg{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#vFO .fo-ct{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:28px}#vFO .fo-lgw{display:flex;align-items:center;min-width:0}#vFO .fo-card{border-top:3px solid var(--bc)!important}
+#vFO .fo-ic{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;background:var(--bt);color:var(--bc)}
+#vFO .fo-bdg{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end;flex:0 0 auto}#vFO .fo-lgw img{max-width:150px}#vFO .fo-ct2{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #vFO .fo-new,#vFO .fo-wt{font-style:normal;height:22px;padding:0 9px;border-radius:999px;font-size:12px;display:inline-flex;align-items:center;white-space:nowrap}
 #vFO .fo-new{background:var(--dgr);color:#fff;font-weight:600}
 #vFO .fo-wt{background:var(--wnb);color:var(--wn);font-weight:500}
-#vFO .fo-cn{font-size:var(--fs-lg,15px);font-weight:700;margin-bottom:-8px}
+#vFO .fo-cn{font-size:var(--fs-lg,15px);font-weight:700;display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--bd)}
 #vFO .fo-cb{font-size:13px;font-weight:600}
-#vFO .fo-cc{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+#vFO .fo-cc{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}#vFO .fo-cc .fo-wt{margin-left:auto;align-self:center}
 #vFO .fo-cc b{font-size:22px}#vFO .fo-cc span,#vFO .fo-cx{font-size:13px;color:var(--mu)}#vFO .fo-cx{margin-top:-6px;font-size:12px}
 #vFO .fo-ca{display:flex;gap:8px;margin-top:auto}#vFO .fo-ca .btn.p{flex:1}
 #vFO .fo-rec{margin-top:24px;padding:0;overflow-x:auto}
@@ -2829,8 +2829,8 @@ function renderHome(){const all=mine(),hs=!!profile&&profile.role==='sales',q=$(
  $('fo_st').innerHTML=[[TT('คำตอบใหม่ที่ยังไม่เปิด','New, not opened'),N(done.filter(isNew).length)],[TT('รอลูกค้ากรอก','Awaiting customer'),N(sent.length)],[TT('กรอกแล้วเดือนนี้','Submitted this month'),N(mon)],[TT('อัตราการกรอก','Completion rate'),rate+'%']].map(([x,v])=>`<div class="st"><b>${v}</b><span>${x}</span></div>`).join('');
  $('fo_bseg').innerHTML=[['',TT('ทั้งหมด','All')]].concat(BR.map(b=>[b,b])).map(([k,v])=>`<button type="button" class="${bf===k?'on':''}" data-fob="${H(k)}">${k?`<i class="fo-bd" style="background:${BRC[k]}"></i>`:''}${H(v)}</button>`).join('');
  const card=(k,b)=>{const L=all.filter(f=>f.kind===k&&f.brand===b),D=L.filter(subOf),n=D.filter(isNew).length,w=L.filter(f=>f.status==='sent'&&!isTpl(f)).length,last=D.reduce((m,f)=>{const t=f.submitted_at||f.created_at;return t>m?t:m},'');
-  return `<div class="fo-card"><div class="fo-ct"><span class="fo-ic" style="background:${BRT[b]};color:${BRC[b]}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${KIC[k]}</svg></span><span class="fo-bdg">${n?`<em class="fo-new">${N(n)} ${TT('ใหม่','new')}</em>`:''}${w?`<em class="fo-wt">${TT('รอกรอก','Waiting')} ${N(w)}</em>`:''}</span></div>
-  <div class="fo-cn">${H(kn(k))}</div><div class="fo-cb">${blogo(b,18)}</div>
+  return `<div class="fo-card" style="--bc:${BRC[b]};--bt:${BRT[b]}"><div class="fo-ct"><span class="fo-lgw">${blogo(b,22)}</span>${n?`<em class="fo-new">${N(n)} ${TT('ใหม่','new')}</em>`:''}</div>
+  <div class="fo-cn"><span class="fo-ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${KIC[k]}</svg></span><span class="fo-ct2">${H(kn(k))}</span>${w?`<em class="fo-wt">${TT('รอกรอก','Waiting')} ${N(w)}</em>`:''}</div>
   <div class="fo-cc"><b>${N(D.length)}</b><span>${TT('คำตอบ','submissions')}${last?' · '+TT('ล่าสุด ','last ')+dd(last):''}</span></div>${k==='job'?`<div class="fo-cx">${TT('ลิงก์ถาวร · เห็นเฉพาะ Admin','Permanent link · Admin only')}</div>`:''}
   <div class="fo-ca"><button type="button" class="btn p sm" data-fov="${k}|${b}">${TT('ดูคำตอบ','View answers')}</button><button type="button" class="btn sm" data-fonl="${k}|${b}">${TT('+ สร้างลิงก์','+ New link')}</button></div></div>`};
  const has=(k,b)=>all.some(f=>f.kind===k&&f.brand===b),okB=b=>!bf||b===bf,okQ=(k,b)=>!q||(kn(k)+' '+b).toLowerCase().includes(q);
