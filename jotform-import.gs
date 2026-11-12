@@ -5,7 +5,7 @@
  *   JOTFORM_KEY   = API Key ของ Jotform
  *   IMPORT_SECRET = รหัสเดียวกับที่ใส่ในตาราง form_admin (Supabase)
  *   JOTFORM_HOST  = (ไม่บังคับ) eu-api.jotform.com ถ้าบัญชีอยู่ฝั่งยุโรป  ค่าเริ่มต้น api.jotform.com
- * วิธีใช้: เลือกฟังก์ชัน importJotform → Run ซ้ำจนขึ้นว่า "เสร็จทั้งหมด" (แต่ละรอบทำงานไม่เกิน ~5 นาที ทำต่อจากเดิมเสมอ)
+ * วิธีใช้: เลือกฟังก์ชัน importJotform → Run ครั้งเดียว สคริปต์จะทำต่อเองทุก ~6 นาทีจนเสร็จ (ดูผลที่เมนู การดำเนินการ)
  * รันซ้ำได้ปลอดภัย: รายการที่นำเข้าแล้วจะไม่ซ้ำ
  */
 const JF_FORMS = [
@@ -35,7 +35,7 @@ function importJotform() {
     const brand = brandOf_(title);
     const formFolder = folder_(root, brand + ' · ' + title.replace(/[\\/:*?"<>|]/g, ' ').slice(0, 60));
     for (;;) {
-      if (Date.now() - t0 > JF_BUDGET_MS) { P.setProperty('JF_STATE', JSON.stringify(state)); Logger.log('พักรอบนี้ — Run ซ้ำเพื่อทำต่อ (นำเข้าแล้ว ' + state.n + ')'); return; }
+      if (Date.now() - t0 > JF_BUDGET_MS) { P.setProperty('JF_STATE', JSON.stringify(state)); schedule_(); Logger.log('พักรอบนี้ — จะทำต่อเองอัตโนมัติในอีก 1 นาที (นำเข้าแล้ว ' + state.n + ')'); return; }
       const res = jf_(host, '/form/' + fid + '/submissions', key, '&limit=20&offset=' + state.off + '&orderby=created_at&direction=ASC');
       const subs = (res.content || []).filter(function (s) { return s.status !== 'DELETED'; });
       if (!(res.content || []).length) break;
@@ -56,8 +56,23 @@ function importJotform() {
     P.setProperty('JF_STATE', JSON.stringify(state));
   }
   P.deleteProperty('JF_STATE');
+  unschedule_();
   Logger.log('เสร็จทั้งหมด — นำเข้าใหม่ ' + state.n + ' รายการ');
 }
+
+/** ให้นำเข้าทำต่อเองทุกครั้งที่พักรอบ จนเสร็จ (ไม่ต้องกด Run ซ้ำ) */
+function schedule_() {
+  unschedule_();
+  ScriptApp.newTrigger('importJotform').timeBased().after(60 * 1000).create();
+}
+function unschedule_() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'importJotform') ScriptApp.deleteTrigger(t);
+  });
+}
+
+/** หยุดการนำเข้าอัตโนมัติ */
+function importJotformStop() { unschedule_(); }
 
 function importJotformReset() { PropertiesService.getScriptProperties().deleteProperty('JF_STATE'); }
 
