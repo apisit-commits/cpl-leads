@@ -2747,7 +2747,7 @@ const _ar6=applyRoleUI;applyRoleUI=function(p){_ar6(p);sync();mkPlace();const tv
 function mkPlace(){const w=$('tW'),d=$('tDB'),l=$('tL'),f=$('tF'),c=$('tC'),cu=$('tCU'),s1=$('nsep1'),s2=$('nsep2');if(!w||!d||!l||!f||!c||!cu||!s1||!s2)return;
  const r=profile&&profile.role,tm=profile&&profile.team,so=$('tSO'),rs=$('tRS');if(so&&rs)rs.before(so);
  const fo=$('tFO')||document.createElement('i');
- if(r==='admin'){s1.after(w);w.after(d);d.after(f);f.after(s2);s2.after(l);l.after(cu);cu.after(c)}
+ if(r==='admin'){s1.after(d);d.after(w);w.after(f);f.after(s2);s2.after(l);l.after(cu);cu.after(c)}
  else if(r==='marketing'){s1.after(d);d.after(w);w.after(s2);s2.after(l);l.after(cu);cu.after(c)}
  else if(r==='sales'&&tm==='C'&&so){s1.after(so);so.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}
  else if(r==='sales'){s1.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(w)}
