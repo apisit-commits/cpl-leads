@@ -1215,7 +1215,7 @@ function renderMk(){renderMk0();mkFlashApply()}
 function renderMk0(){
  if(!profile)return;const T0=[['ov','ภาพรวม'],['todo','งานที่ต้องทำ'],['ap','CPL & ZIMP'],['po','ปฏิทิน'],['cp','Campaign'],['lk','ข้อมูล'],['rt','งานประจำ'],['dn','งานเสร็จแล้ว']],OS=profile.role==='zimp',T=OS?T0.filter(x=>x[0]==='ap'||x[0]==='po'):T0;if(OS&&!T.some(x=>x[0]===MK.tab))MK.tab='ap';
  const act=mkOf('todo').filter(r=>!mkClosed(r)).length,cnt={todo:act,ap:mkOf('approval').length,po:mkOf('post').length,dn:mkOf('todo').filter(mkClosed).length};
- const mkB=T.map(([k,l])=>`<button class="${MK.tab===k?'on':''}" data-t="${k}"${k==='dn'?` title="${TT('งานเสร็จแล้ว','Done')}" aria-label="${TT('งานเสร็จแล้ว','Done')}"`:k==='rt'?` title="${TT('งานประจำ','Routine')}" aria-label="${TT('งานประจำ','Routine')}"`:''}>${k==='rt'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>':k==='dn'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>':TT(l,{ov:'Overview',todo:'To do',ap:'Approvals',po:'TikTok / Reel calendar',lk:'Links',rt:'Routine'}[k])}${cnt[k]!=null?`<em>${cnt[k]}</em>`:''}</button>`);$('mktabs').innerHTML=mkB.filter((_,i)=>T[i][0]!=='rt').join('');$('mkgear').innerHTML=mkB.filter((_,i)=>T[i][0]==='rt').join('');$('mkgear').classList.toggle('hid',!T.some(x=>x[0]==='rt'));
+ const mkB=T.map(([k,l])=>`<button class="${MK.tab===k?'on':''}" data-t="${k}"${k==='dn'?` title="${TT('งานเสร็จแล้ว','Done')}" aria-label="${TT('งานเสร็จแล้ว','Done')}"`:k==='rt'?` title="${TT('งานประจำ','Routine')}" aria-label="${TT('งานประจำ','Routine')}"`:''}>${k==='rt'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>':k==='dn'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>':TT(l,{ov:'Overview',todo:'To do',ap:'CPL & ZIMP',po:'Calendar',cp:'Campaign',lk:'Info',rt:'Routine'}[k])}${cnt[k]!=null?`<em>${cnt[k]}</em>`:''}</button>`);$('mktabs').innerHTML=mkB.filter((_,i)=>T[i][0]!=='rt').join('');$('mkgear').innerHTML=mkB.filter((_,i)=>T[i][0]==='rt').join('');$('mkgear').classList.toggle('hid',!T.some(x=>x[0]==='rt'));
  const b=$('mkbody');if(MK.err){b.innerHTML='<div class="pn"><b>ยังใช้งานไม่ได้:</b> '+esc(MK.err)+'<div class="sub">ยังโหลดข้อมูลไม่ได้ กรุณาแจ้งผู้ดูแลระบบ</div></div>';return}
  const t=today(),add=(k,pre)=>`<button class="btn sm" data-add="${k}"${pre?` data-pre='${esc(JSON.stringify(pre))}'`:''}>+ ${TT('เพิ่ม','Add')}</button>`;
  if(MK.tab==='ov'){const todo=mkOf('todo'),prog=todo.filter(r=>r.status==='In Progress'),stuck=todo.filter(r=>r.status==='Waiting'),ap=mkOf('approval'),pend=ap.filter(apPend),pm=t.slice(0,7),pmn=mkOf('post').filter(r=>(r.date||'').slice(0,7)===pm).length;
@@ -1528,6 +1528,7 @@ document.body.appendChild(t);paint();b.addEventListener('click',paint)}
 
 const OB=new MutationObserver(ms=>{if(LANG!=='en')return;OB.disconnect();try{ms.forEach(m=>{if(m.type==='characterData')tn(m.target);else if(m.type==='attributes')ta(m.target);else m.addedNodes.forEach(tn)})}finally{OB.observe(document.body,OBO)}});OB.observe(document.body,OBO);
 if(LANG==='en')tn(document.body);
+window.__relang=()=>{if(LANG!=='en')return;OB.disconnect();try{tn(document.body)}finally{OB.observe(document.body,OBO)}};
 })();
 </script>
 <script>
@@ -2733,7 +2734,8 @@ function fix(st){
  if(st.dataset.uf)return;st.dataset.uf='1';
  const s=st.querySelector('span'),b=st.querySelector('b');if(!s||!b)return;
  const m=RX.exec(s.textContent);if(m)s.textContent=s.textContent.replace(RX,'');
- const k=pick(s.textContent,m&&m[1],b.textContent);if(!k)return;
+ if(typeof EN==='object'){const n=Object.keys(EN).length;if(window.__REVn!==n){window.__REVn=n;window.__REV={};for(const x in EN)window.__REV[String(EN[x]).trim()]=x}}
+ const tx=s.textContent.trim(),k=pick((window.__REV&&window.__REV[tx])||tx,m&&m[1],b.textContent);if(!k)return;
  const i=document.createElement('i');i.className='sti';i.setAttribute('aria-hidden','true');
  i.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+P[k]+'</svg>';b.appendChild(i)}
 function scan(n){if(n.nodeType!==1)return;if(n.matches&&n.matches('.st'))fix(n);n.querySelectorAll&&n.querySelectorAll('.st:not([data-uf])').forEach(fix)}
@@ -2960,6 +2962,10 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 .stats .st.clk.on{border-color:var(--pr);box-shadow:0 0 0 2px var(--pr) inset}
 .stats .st.clk.on b{color:var(--pr)}
 .stats .st.clk:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+
+.bar select{field-sizing:content;max-width:260px!important;min-width:84px}
+.bar #q{max-width:270px}
+.fo-ct2{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25}
 </style>
 <script>
 (function(){
@@ -3198,6 +3204,11 @@ if(typeof EN==='object')Object.assign(EN,{'เปิดโฟลเดอร์�
  $('fst').addEventListener('click',e=>{const c=e.target.closest('.st[data-fg]');if(!c)return;const g=document.querySelectorAll('#flist .fg')[+c.dataset.fg===3?0:+c.dataset.fg];if(g)g.scrollIntoView({block:'start',behavior:'smooth'})});
  document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.st.clk')){e.preventDefault();e.target.click()}});
 })();
+</script>
+
+<script>
+if(typeof EN==='object')Object.assign(EN,{"ทั่วไป":"General","📌 ทั่วไป":"📌 General","+ สร้างฟอร์ม":"+ Create form","คำตอบล่าสุด":"Latest answers","ฟอร์ม":"Form","กรอกเมื่อ":"Submitted","ค้นหาฟอร์ม":"Search forms","เยี่ยมลูกค้าโดยตรง":"Direct visit","+ เพิ่มลูกค้า":"+ Add customer","เจ้าของ":"Owner","แอดที่ทักเข้ามา":"Ads that messaged","Lead ล่าสุด":"Latest lead","ค้นหาชื่อ / เบอร์ / อีเมล":"Search name / phone / email","ชื่อลูกค้าในใบเสนอราคา":"Customer name on quotation","บันทึกใบเสนอราคา":"Save quotation","เรือ":"Sea","ตัวเลือกในฟอร์ม":"Form options","แผนเยี่ยมลูกค้า":"Customer Visit Plan","ค้นหาชื่อลูกค้า / Ads / ประเทศ…":"Search customer / Ads / country…"});
+window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch(e){}});
 </script>
 </body>
 </html>
