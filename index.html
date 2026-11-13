@@ -424,7 +424,7 @@ header .hd #who{display:none!important}
   <div class="hd lhd"><div class="seg" id="seg"></div><div class="seg hid" id="lsub" style="display:none!important"><button type="button" class="on" data-s="L">Lead</button><em id="pl_n" hidden>0</em></div><select id="rg" class="hid" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><input type="month" id="vm" class="hid"><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
   <div class="stats" id="stats"></div>
   <div class="bar">
-    <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…">
+    <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…"><select id="qf" aria-label="ค้นหาจาก"><option value="">ค้นหาทั้งหมด</option><option value="name">ชื่อลูกค้า</option><option value="ads">Ads</option><option value="country">ประเทศ</option><option value="ct">ผู้ติดต่อ / เบอร์ / อีเมล</option><option value="note">หมายเหตุ</option></select>
     <select id="fs"></select><select id="fc"></select><select id="fa"></select><select id="fm"></select>
     <span class="pgrp"><label>ช่วงเวลา <select id="lp"></select></label><label>ตั้งแต่ <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lf"></label><label>ถึง <input type="text" data-dmy data-iso placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" id="lt"></label></span><button class="btn sm hid" id="lclr" type="button">ล้างวันที่</button>
   </div>
@@ -948,14 +948,16 @@ async function del(id){if(!await ask('ลบ Lead นี้?\nลบแล้ว
 const inLr=r=>{const a=$('lf').value,b=$('lt').value,d=r.date||'';return (!a||d>=a)&&(!b||d<=b)};
 const inVm=r=>{const m=$('vm').value;return !m||(r.date||'').slice(0,7)===m};
 let SRX=[],QZ=0;
-async function qFetch(){const t=$('q').value.trim().replace(/[,()*%]/g,' ').trim(),id=++QZ;if(!t){SRX=[];return}const{data,error}=await sb.from('leads').select(cols()).eq('team',team).or(`name.ilike.%${t}%,ads.ilike.%${t}%,country.ilike.%${t}%`).order('date',{ascending:false}).limit(500);if(error||id!==QZ)return;SRX=(data||[]).map(norm);render()}
+async function qFetch(){const t=$('q').value.trim().replace(/[,()*%]/g,' ').trim(),id=++QZ;if(!t){SRX=[];return}const{data,error}=await sb.from('leads').select(cols()).eq('team',team).or(({name:`name.ilike.%${t}%`,ads:`ads.ilike.%${t}%`,country:`country.ilike.%${t}%`,note:`note.ilike.%${t}%`})[($('qf')||{}).value]||`name.ilike.%${t}%,ads.ilike.%${t}%,country.ilike.%${t}%,note.ilike.%${t}%`).order('date',{ascending:false}).limit(500);if(error||id!==QZ)return;SRX=(data||[]).map(norm);render()}
 let LFU=false;
+const QF={name:r=>[r.name],ads:r=>[r.ads],country:r=>[r.country],note:r=>[r.note],ct:r=>{const d=r.detail||{};return[JSON.stringify(d)]}};
+function qHit(r,q){const f=($('qf')||{}).value||'';const v=QF[f]?QF[f](r):[r.name,r.ads,r.country,r.note,r.quo];return v.filter(x=>x!=null).join(' ').toLowerCase().includes(q)}
 function filtered(){
  const q=$('q').value.toLowerCase(),s=$('fs').value,c=$('fc').value,a=$('fa').value,m=$('fm').value;
  const ok=r=>(!s||effS(r)===s)&&(!c||r.channel===c||((r.detail&&r.detail.ch2)||[]).includes(c))&&(!a||r.sales===a)&&(!m||r.svc.some(x=>svcCat(x)===m))&&(!LFU||(r.fu&&r.fu<=today()&&![ST_Y,ST_N].includes(effS(r))));
- if(q){const pool=new Map();rows.concat(SRX).forEach(r=>{if(r.team===team)pool.set(r.id,r)});return[...pool.values()].filter(r=>ok(r)&&[r.name,r.ads,r.country,r.note,r.quo].join(' ').toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date))}
+ if(q){const pool=new Map();rows.concat(SRX).forEach(r=>{if(r.team===team)pool.set(r.id,r)});return[...pool.values()].filter(r=>ok(r)&&qHit(r,q)).sort((a,b)=>b.date.localeCompare(a.date))}
  return rows.filter(r=>r.team===team&&inVm(r)&&inLr(r)&&(!s||effS(r)===s)&&(!c||r.channel===c||((r.detail&&r.detail.ch2)||[]).includes(c))&&(!a||r.sales===a)&&(!m||r.svc.some(x=>svcCat(x)===m))&&(!LFU||(r.fu&&r.fu<=today()&&![ST_Y,ST_N].includes(effS(r))))&&
-  (!q||[r.name,r.ads,r.country,r.note,r.quo].join(' ').toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
+  (!q||qHit(r,q))).sort((a,b)=>b.date.localeCompare(a.date));
 }
 
 /* ===== ข้อมูลสินค้า + คำนวณราคา ===== */
@@ -2966,6 +2968,9 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 .bar select{field-sizing:content;max-width:260px!important;min-width:84px}
 .bar #q{max-width:270px}
 .fo-ct2{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25}
+
+#vL .bar #q{border-top-right-radius:0!important;border-bottom-right-radius:0!important;margin-right:-6px}
+#vL .bar #qf{border-top-left-radius:0!important;border-bottom-left-radius:0!important;border-left:1px solid var(--bd)!important;min-width:0}
 </style>
 <script>
 (function(){
@@ -3209,6 +3214,16 @@ if(typeof EN==='object')Object.assign(EN,{'เปิดโฟลเดอร์�
 <script>
 if(typeof EN==='object')Object.assign(EN,{"ทั่วไป":"General","📌 ทั่วไป":"📌 General","+ สร้างฟอร์ม":"+ Create form","คำตอบล่าสุด":"Latest answers","ฟอร์ม":"Form","กรอกเมื่อ":"Submitted","ค้นหาฟอร์ม":"Search forms","เยี่ยมลูกค้าโดยตรง":"Direct visit","+ เพิ่มลูกค้า":"+ Add customer","เจ้าของ":"Owner","แอดที่ทักเข้ามา":"Ads that messaged","Lead ล่าสุด":"Latest lead","ค้นหาชื่อ / เบอร์ / อีเมล":"Search name / phone / email","ชื่อลูกค้าในใบเสนอราคา":"Customer name on quotation","บันทึกใบเสนอราคา":"Save quotation","เรือ":"Sea","ตัวเลือกในฟอร์ม":"Form options","แผนเยี่ยมลูกค้า":"Customer Visit Plan","ค้นหาชื่อลูกค้า / Ads / ประเทศ…":"Search customer / Ads / country…"});
 window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch(e){}});
+</script>
+
+<script>
+(function(){const q=document.getElementById('q'),f=document.getElementById('qf');if(!q||!f)return;
+ const PH={'':['ค้นหาชื่อลูกค้า / Ads / ประเทศ…','Search customer / Ads / country…'],name:['ค้นหาชื่อลูกค้า…','Search customer name…'],ads:['ค้นหา Ads…','Search Ads…'],country:['ค้นหาประเทศ…','Search country…'],ct:['ค้นหาผู้ติดต่อ / เบอร์ / อีเมล…','Search contact / phone / email…'],note:['ค้นหาหมายเหตุ…','Search notes…']};
+ const set=()=>{const p=PH[f.value]||PH[''];q.placeholder=TT(p[0],p[1])};
+ f.addEventListener('change',()=>{set();if(q.value.trim()){try{qFetch()}catch(e){}render()}q.focus()});set();
+ const lb=document.getElementById('lang');if(lb)lb.addEventListener('click',()=>setTimeout(set,0));
+ if(typeof EN==='object')Object.assign(EN,{"ค้นหาทั้งหมด":"All fields","ชื่อลูกค้า":"Customer name","ประเทศ":"Country","ผู้ติดต่อ / เบอร์ / อีเมล":"Contact / phone / email","หมายเหตุ":"Notes","ค้นหาจาก":"Search in"});
+})();
 </script>
 </body>
 </html>
