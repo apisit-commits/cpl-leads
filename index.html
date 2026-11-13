@@ -2942,6 +2942,15 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 #fo_inb .fo-back{width:40px;height:40px;flex:0 0 40px;margin:0;justify-content:center;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);box-shadow:var(--sh);font-size:0;gap:0}
 #fo_inb .fo-back svg{width:20px;height:20px}#fo_inb .fo-back:hover{color:var(--pr);border-color:var(--pr)}
 #fo_inb .fo-h1{font-size:20px}#fo_inb .fo-acts .btn{height:40px;box-sizing:border-box;display:inline-flex;align-items:center}
+
+.chips.pico{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px}
+.chips.pico label{display:block;min-width:0}
+.chips.pico span{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;height:84px;box-sizing:border-box;padding:8px 4px!important;border:1px solid var(--bd)!important;border-radius:var(--r-lg,12px)!important;background:var(--fld,var(--bg))!important;box-shadow:none!important;font-size:12px!important;color:var(--tx)}
+.chips.pico span:hover{border-color:var(--pr)!important}
+.chips.pico input:checked+span{border:1px solid var(--pr)!important;background:rgba(0,150,214,.08)!important;box-shadow:0 0 0 2px var(--pr) inset!important;color:var(--tx)}
+.chips.pico em{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-width:100%;overflow:hidden;text-align:center;white-space:normal;font-size:12px;line-height:1.2;min-height:2.4em;font-weight:500!important}
+.chips.pico input:checked+span em{color:var(--pr)}
+.chips.pico .chi{width:30px;height:30px;flex:0 0 30px}
 </style>
 <script>
 (function(){
