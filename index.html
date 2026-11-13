@@ -2502,7 +2502,7 @@ function cuGroups(ls){
 return Object.values(g).map(a=>({ls:a,name:top(a.map(x=>(x.name||'').trim())),owner:top(a.map(x=>x.sales))}))}
 /* ---- LINE points ---- */
 const PT={rows:[],ok:false,at:0};
-const PR={A:{b:'CPL-Inter',win:90,rule:['3,000 บาท = 1 แต้ม (สะสมได้)','Every 3,000 THB = 1 pt (stacks)'],earn:a=>Math.floor(a/3000)},B:{b:'CPLEx',win:60,rule:['ส่ง 1,000 บาทขึ้นไป = 1 แต้มต่อครั้ง','1 pt per shipment of 1,000 THB+'],earn:a=>a>=1000?1:0}};
+const PR={A:{b:'CPL-Inter',win:90,rule:['3,000 บาท = 1 แต้ม (สะสมได้)','Every 3,000 THB = 1 pt (stacks)'],earn:a=>Math.floor(a/3000)},B:{b:'CPLEx',win:60,rule:['1,000 บาท = 1 แต้ม (สะสมได้)','Every 1,000 THB = 1 pt (stacks)'],earn:a=>Math.floor(a/1000)}};
 const PRW={'CPL-Inter':{10:['ส่วนลด 10% (สูงสุด 1,000 บาท)','10% discount (max 1,000 THB)'],30:['ของรางวัลพิเศษ','Exclusive merchandise']},'CPLEx':{10:['ส่วนลด 200 บาท','200 THB discount'],30:['ของรางวัลพิเศษ หรือส่วนลด 500 บาท','Exclusive reward or 500 THB discount']}};
 const addD=(d,n)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
 const dGap=(a,b)=>Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/DAY);
@@ -2516,7 +2516,7 @@ function ptCalc(cid,team){const R=PR[team],b=R.b,rows=PT.rows.filter(x=>String(x
  const s=op.date,e=addD(s,365),act=today()<e;D.forEach(x=>x.in=x.d>=s&&x.d<e);
  const ok=D.filter(x=>x.in&&x.paid);ok.forEach(x=>x.p=R.earn(+x.l.deal_amt||0));
  let combo=0,g=[];ok.forEach(x=>{g.push(x);g=g.filter(y=>dGap(y.d,x.d)<=R.win);if(g.length>=3){combo++;x.combo=1;g=[]}});
- const rd=rows.filter(x=>x.kind==='redeem'&&x.date>=s&&x.date<e),red=rd.reduce((t,x)=>t+(+x.points||0),0),earned=2+ok.reduce((t,x)=>t+x.p,0)+combo*2;
+ const rd=rows.filter(x=>x.kind==='redeem'&&x.date>=s&&x.date<e),red=rd.reduce((t,x)=>t+(+x.points||0),0),adj=rows.filter(x=>x.kind==='adjust'&&x.date>=s&&x.date<e).reduce((t,x)=>t+(+x.points||0),0),earned=2+ok.reduce((t,x)=>t+x.p,0)+combo*2+adj;
  return{b,team,R,open:op,end:e,act,D,earned,red,bal:act?Math.max(0,earned-red):0,combo,rows,nred:rd.length}}
 function ptTeams(cid){const ls=CU.ls[cid]||[],c=CU.list.find(x=>String(x.id)===String(cid));const t=['A','B'].filter(k=>ls.some(l=>l.team===k)||PT.rows.some(x=>String(x.customer_id)===String(cid)&&x.brand===PR[k].b));return t}
 async function ptPanel(cid){const el=$('cd_pt');if(!el)return;await ptLoad();if(!PT.ok){el.innerHTML='';return}const T=ptTeams(cid);if(!T.length){el.innerHTML='';return}
@@ -2527,18 +2527,21 @@ async function ptPanel(cid){const el=$('cd_pt');if(!el)return;await ptLoad();if(
   return `<div class="pn pt-card" data-ptt="${team}"><div class="pt-h"><span class="pt-lg">${logo(b)}</span><span class="pt-tt">${TT('แต้มสะสม LINE','LINE points')}</span>${st}</div>
   <div class="pt-b"><div class="pt-bal"><b>${P.bal}</b><span>${TT('แต้ม','pts')}</span></div><div class="pt-bar"><div class="pt-tr"><i style="width:${pct}%"></i><em style="left:${10/30*100}%"></em></div><div class="pt-ms"><span style="left:${10/30*100}%">10</span><span style="left:100%">30</span></div></div></div>
   <div class="pt-rw">${[10,30].map(n=>`<button type="button" class="btn sm${P.act&&P.bal>=n?' p':''}" data-ptr="${n}"${P.act&&P.bal>=n?'':' disabled'}>${TT('แลก ','Redeem ')}${n} ${TT('แต้ม','pts')} · ${H(TT(W[n][0],W[n][1]))}</button>`).join('')}</div>
+  ${P.act?`<div class="pt-op pt-adj"><label>${TT('ปรับแต้ม (+/−)','Adjust (+/−)')}<input type="number" step="1" data-pta placeholder="0"></label><label class="pt-an">${TT('เหตุผล','Reason')}<input data-ptn maxlength="120"></label><button type="button" class="btn sm" data-ptj>${TT('บันทึก','Save')}</button></div>`:''}
   ${P.act?'':`<div class="pt-op"><label>${TT('วันที่เปิดบัตร','Card opened on')}<input type="date" data-ptd value="${today()}"></label><button type="button" class="btn sm p" data-pto>${P.open?TT('เปิดบัตรใหม่ (+2)','Open new card (+2)'):TT('บันทึกเปิดบัตร (+2)','Record card opening (+2)')}</button></div>`}
   ${rows.length?`<table class="pt-t"><thead><tr><th>${TT('วันที่ปิด','Closed')}</th><th>Lead</th><th class="r">${TT('ยอด (บาท)','Amount (THB)')}</th><th>${TT('ชำระแล้ว','Paid')}</th><th class="r">${TT('แต้ม','Pts')}</th></tr></thead><tbody>${rows.slice().reverse().map(x=>`<tr${P.open&&!x.in?' class="pt-out"':''}><td>${fmtD(x.d)}</td><td>${H(x.l.name)}</td><td class="r">${N(x.l.deal_amt)}</td><td><input type="checkbox" data-ptp="${x.l.id}"${x.paid?' checked':''}${P.open&&x.in?'':' disabled'} aria-label="${TT('ชำระแล้ว','Paid')}"></td><td class="r">${x.p?'+'+x.p:'—'}${x.combo?` <span class="pt-cb">+2 ${TT('ครบ 3 ครั้ง','3 shipments')}</span>`:''}</td></tr>`).join('')}</tbody></table>`:''}
-  ${P.open?`<div class="pt-hs">${[[P.open.date,TT('เปิดบัตร','Card opened'),'+2'],...P.rows.filter(x=>x.kind==='redeem'&&x.date>=P.open.date&&x.date<P.end).map(x=>[x.date,TT('แลก ','Redeemed ')+H(x.note||''),'−'+x.points])].sort((a,c)=>String(c[0]).localeCompare(String(a[0]))).map(([d,t,v])=>`<div><span>${fmtD(d)}</span><span>${t}</span><b>${v}</b></div>`).join('')}</div>`:''}
-  <div class="pt-rule">${H(TT(P.R.rule[0],P.R.rule[1]))} · ${TT('ส่งครบ 3 ครั้งใน ','3 shipments within ')}${P.R.win} ${TT('วัน +2','days +2')} · ${TT('เปิดบัตร +2 · บัตรอายุ 365 วัน · นับเฉพาะงานที่ปิดและชำระแล้ว','card +2 · valid 365 days · closed & paid jobs only')}</div></div>`}).join('')}</div>`}
+  ${P.open?`<div class="pt-hs">${[[P.open.date,TT('เปิดบัตร','Card opened'),'+2'],...P.rows.filter(x=>(x.kind==='redeem'||x.kind==='adjust')&&x.date>=P.open.date&&x.date<P.end).map(x=>x.kind==='redeem'?[x.date,TT('แลก ','Redeemed ')+H(x.note||''),'−'+x.points]:[x.date,TT('ปรับแต้ม','Adjusted')+(x.note?' · '+H(x.note):'')+(x.created_by?' · '+H(x.created_by):''),(x.points>0?'+':'−')+Math.abs(x.points)])].sort((a,c)=>String(c[0]).localeCompare(String(a[0]))).map(([d,t,v])=>`<div><span>${fmtD(d)}</span><span>${t}</span><b>${v}</b></div>`).join('')}</div>`:''}
+  </div>`}).join('')}</div>`}
 async function ptAct(e){const card=e.target.closest('[data-ptt]');if(!card||!CU.det)return;const team=card.dataset.ptt,b=PR[team].b,cid=String(CU.det),me=(profile&&profile.name)||'';
- const o=e.target.closest('[data-pto]'),r=e.target.closest('[data-ptr]'),pp=e.target.closest('[data-ptp]');let err=null;
+ const o=e.target.closest('[data-pto]'),r=e.target.closest('[data-ptr]'),pp=e.target.closest('[data-ptp]'),aj=e.target.closest('[data-ptj]');let err=null;
+ if(aj){const v=Math.trunc(+card.querySelector('[data-pta]').value||0),nt=card.querySelector('[data-ptn]').value.trim();if(!v)return alert(TT('ใส่จำนวนแต้มที่ต้องการปรับ','Enter points to adjust'));if(!nt)return alert(TT('ใส่เหตุผลการปรับแต้ม','Enter a reason'));err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'adjust',points:v,note:nt,date:today(),created_by:me})).error}
+ else 
  if(o){const d=card.querySelector('[data-ptd]').value||today();err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'open',points:2,date:d,created_by:me})).error}
  else if(r){const n=+r.dataset.ptr,w=PRW[b][n];if(!confirm(TT(`ยืนยันแลก ${n} แต้ม: ${w[0]}?`,`Redeem ${n} points: ${w[1]}?`)))return;err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'redeem',points:n,note:w[0],date:today(),created_by:me})).error}
  else if(pp){const lid=pp.dataset.ptp;if(pp.checked)err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'paid',lead_id:+lid,points:0,date:today(),created_by:me})).error;else err=(await sb.from('cust_points').delete().eq('customer_id',cid).eq('brand',b).eq('kind','paid').eq('lead_id',lid)).error}
  else return;
  if(err){alert(TT('บันทึกไม่สำเร็จ','Could not save'));}await ptLoad(true);ptPanel(cid);if(window.ptBell)window.ptBell()}
-document.addEventListener('click',e=>{if(e.target.closest('#cd_pt [data-pto],#cd_pt [data-ptr]'))ptAct(e)});
+document.addEventListener('click',e=>{if(e.target.closest('#cd_pt [data-pto],#cd_pt [data-ptr],#cd_pt [data-ptj]'))ptAct(e)});
 document.addEventListener('change',e=>{if(e.target.closest('#cd_pt [data-ptp]'))ptAct(e)});
 /* ---- forms on customer page ---- */
 async function foPanel(cid){const el=$('cd_fo');if(!el)return;const c=CU.list.find(x=>String(x.id)===String(cid));
@@ -3076,6 +3079,8 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 .pt-hs{display:flex;flex-direction:column;gap:4px;font-size:12.5px;margin-bottom:8px}.pt-hs div{display:grid;grid-template-columns:90px 1fr auto;gap:8px;color:var(--tx)}.pt-hs span:first-child{color:var(--mu)}
 .pt-rule{font-size:12px;color:var(--mu)}
 .cu-fo{cursor:pointer}.cu-fo:hover b{color:var(--pr)}
+.pt-adj{flex-wrap:wrap}.pt-adj input[data-pta]{width:110px}.pt-an{flex:1;min-width:160px}.pt-an input{width:100%}
+.pt-t{table-layout:fixed}.pt-t th:nth-child(1){width:92px}.pt-t th:nth-child(3){width:92px}.pt-t th:nth-child(4){width:70px}.pt-t th:nth-child(5){width:118px}.pt-t td:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pt-t td,.pt-t th{padding-left:6px!important;padding-right:6px!important}
 </style>
 <script>
 (function(){

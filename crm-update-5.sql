@@ -35,12 +35,12 @@ returns json language sql stable security definer set search_path = public as $$
 $$;
 grant execute on function public.form_get(uuid) to anon, authenticated;
 
--- 3) แต้มสะสม LINE: เปิดบัตร / ยืนยันชำระเงินของงานที่ปิด / แลกแต้ม
+-- 3) แต้มสะสม LINE: เปิดบัตร / ยืนยันชำระเงินของงานที่ปิด / แลกแต้ม / ปรับแต้ม
 create table if not exists public.cust_points (
   id bigint generated always as identity primary key,
   customer_id text not null,
   brand text not null,
-  kind text not null check (kind in ('open','paid','redeem')),
+  kind text not null,
   lead_id bigint,
   points integer not null default 0,
   note text,
@@ -51,4 +51,6 @@ create table if not exists public.cust_points (
 alter table public.cust_points enable row level security;
 drop policy if exists cust_points_rw on public.cust_points;
 create policy cust_points_rw on public.cust_points for all to authenticated using (true) with check (true);
+alter table public.cust_points drop constraint if exists cust_points_kind_check;
+alter table public.cust_points add constraint cust_points_kind_check check (kind in ('open','paid','redeem','adjust'));
 create index if not exists cust_points_customer_idx on public.cust_points(customer_id, brand);
