@@ -2528,7 +2528,7 @@ async function ptPanel(cid){const el=$('cd_pt');if(!el)return;await ptLoad();if(
   <div class="pt-b"><div class="pt-bal"><b>${P.bal}</b><span>${TT('แต้ม','pts')}</span></div><div class="pt-bar"><div class="pt-tr"><i style="width:${pct}%"></i><em style="left:${10/30*100}%"></em></div><div class="pt-ms"><span style="left:${10/30*100}%">10</span><span style="left:100%">30</span></div></div></div>
   <div class="pt-rw">${[10,30].map(n=>`<button type="button" class="btn sm${P.act&&P.bal>=n?' p':''}" data-ptr="${n}"${P.act&&P.bal>=n?'':' disabled'}>${TT('แลก ','Redeem ')}${n} ${TT('แต้ม','pts')} · ${H(TT(W[n][0],W[n][1]))}</button>`).join('')}</div>
   ${P.act?`<div class="pt-op pt-adj"><label>${TT('ปรับแต้ม (+/−)','Adjust (+/−)')}<input type="number" step="1" data-pta placeholder="0"></label><label class="pt-an">${TT('เหตุผล','Reason')}<input data-ptn maxlength="120"></label><button type="button" class="btn sm" data-ptj>${TT('บันทึก','Save')}</button></div>`:''}
-  ${P.act?'':`<div class="pt-op"><label>${TT('วันที่เปิดบัตร','Card opened on')}<input type="date" data-ptd value="${today()}"></label><button type="button" class="btn sm p" data-pto>${P.open?TT('เปิดบัตรใหม่ (+2)','Open new card (+2)'):TT('บันทึกเปิดบัตร (+2)','Record card opening (+2)')}</button></div>`}
+  ${P.act?'':`<div class="pt-op"><label>${TT('วันที่เปิดบัตร','Card opened on')}<input type="text" data-ptd data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" value="${fmtD(today())}"></label><button type="button" class="btn sm p" data-pto>${P.open?TT('เปิดบัตรใหม่ (+2)','Open new card (+2)'):TT('บันทึกเปิดบัตร (+2)','Record card opening (+2)')}</button></div>`}
   ${rows.length?`<table class="pt-t"><thead><tr><th>${TT('วันที่ปิด','Closed')}</th><th>Lead</th><th class="r">${TT('ยอด (บาท)','Amount (THB)')}</th><th>${TT('ชำระแล้ว','Paid')}</th><th class="r">${TT('แต้ม','Pts')}</th></tr></thead><tbody>${rows.slice().reverse().map(x=>`<tr${P.open&&!x.in?' class="pt-out"':''}><td>${fmtD(x.d)}</td><td>${H(x.l.name)}</td><td class="r">${N(x.l.deal_amt)}</td><td><input type="checkbox" data-ptp="${x.l.id}"${x.paid?' checked':''}${P.open&&x.in?'':' disabled'} aria-label="${TT('ชำระแล้ว','Paid')}"></td><td class="r">${x.p?'+'+x.p:'—'}${x.combo?` <span class="pt-cb">+2 ${TT('ครบ 3 ครั้ง','3 shipments')}</span>`:''}</td></tr>`).join('')}</tbody></table>`:''}
   ${P.open?`<div class="pt-hs">${[[P.open.date,TT('เปิดบัตร','Card opened'),'+2'],...P.rows.filter(x=>(x.kind==='redeem'||x.kind==='adjust')&&x.date>=P.open.date&&x.date<P.end).map(x=>x.kind==='redeem'?[x.date,TT('แลก ','Redeemed ')+H(x.note||''),'−'+x.points]:[x.date,TT('ปรับแต้ม','Adjusted')+(x.note?' · '+H(x.note):'')+(x.created_by?' · '+H(x.created_by):''),(x.points>0?'+':'−')+Math.abs(x.points)])].sort((a,c)=>String(c[0]).localeCompare(String(a[0]))).map(([d,t,v])=>`<div><span>${fmtD(d)}</span><span>${t}</span><b>${v}</b></div>`).join('')}</div>`:''}
   </div>`}).join('')}</div>`}
@@ -2536,7 +2536,7 @@ async function ptAct(e){const card=e.target.closest('[data-ptt]');if(!card||!CU.
  const o=e.target.closest('[data-pto]'),r=e.target.closest('[data-ptr]'),pp=e.target.closest('[data-ptp]'),aj=e.target.closest('[data-ptj]');let err=null;
  if(aj){const v=Math.trunc(+card.querySelector('[data-pta]').value||0),nt=card.querySelector('[data-ptn]').value.trim();if(!v)return alert(TT('ใส่จำนวนแต้มที่ต้องการปรับ','Enter points to adjust'));if(!nt)return alert(TT('ใส่เหตุผลการปรับแต้ม','Enter a reason'));err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'adjust',points:v,note:nt,date:today(),created_by:me})).error}
  else 
- if(o){const d=card.querySelector('[data-ptd]').value||today();err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'open',points:2,date:d,created_by:me})).error}
+ if(o){const dv=String(card.querySelector('[data-ptd]').value||'').trim(),dm=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(dv),d=dm?`${dm[3]}-${dm[2]}-${dm[1]}`:/^\d{4}-\d{2}-\d{2}$/.test(dv)?dv:today();err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'open',points:2,date:d,created_by:me})).error}
  else if(r){const n=+r.dataset.ptr,w=PRW[b][n];if(!confirm(TT(`ยืนยันแลก ${n} แต้ม: ${w[0]}?`,`Redeem ${n} points: ${w[1]}?`)))return;err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'redeem',points:n,note:w[0],date:today(),created_by:me})).error}
  else if(pp){const lid=pp.dataset.ptp;if(pp.checked)err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'paid',lead_id:+lid,points:0,date:today(),created_by:me})).error;else err=(await sb.from('cust_points').delete().eq('customer_id',cid).eq('brand',b).eq('kind','paid').eq('lead_id',lid)).error}
  else return;
@@ -2898,7 +2898,7 @@ document.body.appendChild(pp);document.body.appendChild(b);set(cur);
 })();
 </script>
 <script>
-(function(){const X='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';['spd','nd','mkd','aed','aud','cud','xd','cfd','sod','sodd','fod','foa'].forEach(id=>{const d=document.getElementById(id);if(!d||d.querySelector(':scope>.dlgx'))return;const b=document.createElement('button');b.type='button';b.className='dlgx';b.title=b.ariaLabel=TT('ปิด','Close');b.innerHTML=X;b.onclick=()=>d.close();d.append(b)})})();
+(function(){const X='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';['spd','nd','mkd','aed','aud','cud','xd','cfd','sod','sodd','fod','foa','fbd'].forEach(id=>{const d=document.getElementById(id);if(!d||d.querySelector(':scope>.dlgx'))return;const b=document.createElement('button');b.type='button';b.className='dlgx';b.title=b.ariaLabel=TT('ปิด','Close');b.innerHTML=X;b.onclick=()=>d.close();d.append(b)})})();
 
 (function(){const b=document.getElementById('sbt');if(!b)return;const set=c=>{document.body.classList.toggle('sbc',c);const t=c?TT('ขยายแถบด้านข้าง','Expand sidebar'):TT('ย่อแถบด้านข้าง','Collapse sidebar');b.title=t;b.setAttribute('aria-label',t);try{localStorage.setItem('sbc',c?'1':'')}catch(e){}};let c=false;try{c=localStorage.getItem('sbc')==='1'}catch(e){}set(c);b.onclick=()=>set(!document.body.classList.contains('sbc'))})();
 </script>
@@ -3033,8 +3033,6 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 
 .fo-ct2{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25}
 
-#vL .bar #q{border-top-right-radius:0!important;border-bottom-right-radius:0!important;margin-right:-6px}
-#vL .bar #qf{border-top-left-radius:0!important;border-bottom-left-radius:0!important;border-left:1px solid var(--bd)!important;min-width:0}
 #vL .bar #fs,#vL .bar #fc{width:116px}#vL .bar #fa,#vL .bar #fm{width:100px}
 
 #fbd{width:min(1040px,96vw);max-height:94vh}#fbf{display:flex;flex-direction:column;max-height:calc(94vh - 40px)}
@@ -3105,6 +3103,20 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
  #vL>.bar .pgrp label{gap:6px!important;white-space:nowrap}
  #vL>.bar #lf,#vL>.bar #lt{width:106px!important}
 }
+
+/* design-system alignment for recent additions */
+.pt-op input,.fo-cul input,.pt-adj input{height:var(--h-md,40px)!important;min-height:var(--h-md,40px);padding:0 12px!important;border-radius:var(--r-md,12px)!important;background:var(--fld)!important;border:1px solid transparent!important;font-size:14px!important;box-sizing:border-box}
+.pt-op label{font-size:13px;color:var(--mu)}
+.pt-op input[data-ptd]{width:130px}
+.pt-rw .btn{min-height:var(--h-sm,32px)}.pt-op .btn{min-height:var(--h-md,40px)}
+.fb-tb{border-radius:var(--r-md,12px)!important;min-height:var(--h-md,40px);transition:.15s}
+.fb-it{border-radius:var(--r-lg,14px)!important;box-shadow:var(--sh-1)}
+.fb-ty{border-radius:var(--r-pill,999px)!important;font-size:12px}
+.fb-rq{font-size:13px;color:var(--tx)}
+.fo-ib2{width:var(--h-sm,32px)!important;height:var(--h-sm,32px)!important;border-radius:var(--r-sm,8px)!important;transition:.15s}
+.fo-tpe{border-radius:var(--r-lg,14px)!important}
+.mcx{border-radius:var(--r-md,12px)}
+.pt-card .cub{white-space:nowrap}
 </style>
 <script>
 (function(){
@@ -3363,7 +3375,7 @@ function fbRender(){const ty=t=>FT.find(x=>x[0]===t)||FT[0];
   return `<div class="fb-it${pg?' fb-pg':''}" data-i="${i}" draggable="true"><div class="fb-ih"><span class="fb-grip" aria-hidden="true">⋮⋮</span><span class="fb-ty">${H(TT(t[1],t[2]))}</span><span style="flex:1"></span>${pg||hd?'':`<label class="fb-rq"><input type="checkbox" data-fk="req"${x.req?' checked':''}>${TT('บังคับกรอก','Required')}</label>`}<button type="button" class="fo-ib2" data-fbm="-1" aria-label="${TT('เลื่อนขึ้น','Move up')}"${i?'':' disabled'}>↑</button><button type="button" class="fo-ib2" data-fbm="1" aria-label="${TT('เลื่อนลง','Move down')}"${i<FB.items.length-1?'':' disabled'}>↓</button><button type="button" class="fo-ib2" data-fbx aria-label="${TT('ลบช่อง','Remove field')}">✕</button></div>
   <div class="fb-ib"><label class="f">${pg?TT('ชื่อหน้า','Page title'):hd?TT('ข้อความ','Text'):TT('คำถาม','Question')}${pg?'':'<b class="rq">*</b>'}<input data-fk="label" value="${H(x.label)}" maxlength="200"></label><label class="f">${TT('ภาษาอังกฤษ','English')}<input data-fk="label_en" value="${H(x.label_en||'')}" maxlength="200"></label>
   ${op?`<label class="f fb-w">${TT('ตัวเลือก (บรรทัดละ 1 ตัวเลือก)','Options (one per line)')}<b class="rq">*</b><textarea data-fk="options" rows="3">${H((x.options||[]).join('\n'))}</textarea></label>`:''}
-  ${pg||hd||x.type==='file'||x.type==='sign'||x.type==='check'?'':`<label class="f">${TT('ผูกกับข้อมูลลูกค้า','Maps to customer field')}<select data-fk="map">${FMAP.map(([v,th,en])=>`<option value="${v}"${x.map===v?' selected':''}>${H(TT(th,en))}</option>`).join('')}</select></label>`}</div></div>`}).join('')||`<div class="fo-tpe">${TT('ลากหรือกดชนิดช่องด้านซ้ายเพื่อเพิ่ม','')}</div>`}
+  ${pg||hd||x.type==='file'||x.type==='sign'||x.type==='check'?'':`<label class="f">${TT('ผูกกับข้อมูลลูกค้า','Maps to customer field')}<select data-fk="map">${FMAP.map(([v,th,en])=>`<option value="${v}"${x.map===v?' selected':''}>${H(TT(th,en))}</option>`).join('')}</select></label>`}</div></div>`}).join('')}
 function fbSchema(){const f=$('fbf'),pages=[{title:'',title_en:'',fields:[]}];
  FB.items.forEach(x=>{if(x.type==='page'){pages.push({title:x.label||'',title_en:x.label_en||'',fields:[]});return}const o={id:x.id,type:x.type,label:x.label.trim(),label_en:(x.label_en||'').trim()};if(x.req)o.req=1;if(x.type==='select'||x.type==='multi')o.options=(x.options||[]).map(s=>String(s).trim()).filter(Boolean);if(x.map)o.map=x.map;pages[pages.length-1].fields.push(o)});
  const nm=f.name.value.trim();return{v:1,title:nm,title_en:f.name_en.value.trim(),pages:pages.filter(p=>p.fields.length).map((p,i)=>({...p,title:p.title||(i?'':nm)}))}}
@@ -3426,7 +3438,7 @@ window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch
 
 <script>
 (function(){const q=document.getElementById('q'),f=document.getElementById('qf');if(!q||!f)return;
- const PH={'':['ค้นหาชื่อลูกค้า / Ads / ประเทศ…','Search customer / Ads…'],name:['ค้นหาชื่อลูกค้า…','Search customer name…'],ads:['ค้นหา Ads…','Search Ads…'],country:['ค้นหาประเทศ…','Search country…'],ct:['ค้นหาผู้ติดต่อ / เบอร์ / อีเมล…','Search contact / phone / email…'],note:['ค้นหาหมายเหตุ…','Search notes…']};
+ const PH={'':['ค้นหา…','Search…'],name:['ค้นหาชื่อลูกค้า…','Search customer name…'],ads:['ค้นหา Ads…','Search Ads…'],country:['ค้นหาประเทศ…','Search country…'],ct:['ค้นหาผู้ติดต่อ / เบอร์ / อีเมล…','Search contact / phone / email…'],note:['ค้นหาหมายเหตุ…','Search notes…']};
  const set=()=>{const p=PH[f.value]||PH[''];q.placeholder=TT(p[0],p[1])};
  f.addEventListener('change',()=>{set();if(q.value.trim()){try{qFetch()}catch(e){}render()}q.focus()});set();
  const lb=document.getElementById('lang');if(lb)lb.addEventListener('click',()=>setTimeout(set,0));
