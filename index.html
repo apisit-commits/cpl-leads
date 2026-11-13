@@ -3090,6 +3090,21 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 #ch input:checked+span,#ch2 input:checked+span{border-color:var(--pr)!important;background:rgba(0,150,214,.1)!important;box-shadow:none!important}
 #ch .chi,#ch2 .chi{width:30px;height:30px}
 #ch2 em,#ch em{display:none}
+
+#vL>.lhd{justify-content:flex-start!important}
+#vL>.lhd #seg{margin:0 auto 0 0!important}
+#vL{container-type:inline-size}
+#vL>.bar{column-gap:6px}
+#vL>.bar #q{flex:1 1 150px;min-width:150px;max-width:230px}
+@container (min-width:1250px){
+ #vL>.bar{flex-wrap:nowrap}
+ #vL>.bar>*{flex-shrink:0}
+ #vL>.bar #q{flex:1 1 140px;flex-shrink:1;min-width:100px}
+ #vL>.bar #qf{width:94px}
+ #vL>.bar .pgrp{gap:6px!important}
+ #vL>.bar .pgrp label{gap:6px!important;white-space:nowrap}
+ #vL>.bar #lf,#vL>.bar #lt{width:106px!important}
+}
 </style>
 <script>
 (function(){
