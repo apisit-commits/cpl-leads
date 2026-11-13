@@ -485,7 +485,7 @@ header .hd #who{display:none!important}
  </div>
 <div id="vFO" class="hid">
  <div id="fo_home">
-  <div class="fo-top"><div><h2 class="fo-h1">ฟอร์มลูกค้า</h2><div class="sub" id="fo_cnt"></div></div><button type="button" class="btn p" id="fo_new">+ สร้างฟอร์ม</button></div>
+  <div class="fo-top"><div><h2 class="fo-h1">ฟอร์มลูกค้า</h2><div class="sub" id="fo_cnt"></div></div><span class="fo-ta"><button type="button" class="btn" id="fo_new">+ สร้างลิงก์</button><button type="button" class="btn p" id="fo_bnew">+ สร้างฟอร์ม</button></span></div>
   <div class="stats" id="fo_st"></div>
   <div class="bar fo-bar"><input id="fo_fq" type="search" placeholder="ค้นหาฟอร์ม" aria-label="ค้นหาฟอร์ม"><div class="mkseg" id="fo_bseg"></div></div>
   <div id="fo_grp"></div>
@@ -3008,7 +3008,7 @@ main>div>.nh{min-height:46px;align-items:center}
 main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing:border-box;display:inline-flex;align-items:center}
 #vW .nh #mkgear{height:46px!important;width:46px!important}
 #vCU #cu_lv>.bar:first-child{min-height:46px;align-items:center;margin-top:0}
-#vFO .fo-top{align-items:flex-start}#vFO #fo_new{margin-top:3px;height:40px}
+#vFO .fo-top{align-items:flex-start}#vFO .fo-ta{margin-top:3px}
 
 #fo_home>.fo-top{justify-content:flex-end}#fo_home>.fo-top>div:first-child{display:none}
 #fo_inb>.fo-top{align-items:center;min-height:46px}#fo_inb>.fo-top>div:first-child{display:flex;align-items:center;gap:12px;min-width:0}
@@ -3081,6 +3081,7 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 .cu-fo{cursor:pointer}.cu-fo:hover b{color:var(--pr)}
 .pt-adj{flex-wrap:wrap}.pt-adj input[data-pta]{width:110px}.pt-an{flex:1;min-width:160px}.pt-an input{width:100%}
 .pt-t{table-layout:fixed}.pt-t th:nth-child(1){width:92px}.pt-t th:nth-child(3){width:92px}.pt-t th:nth-child(4){width:70px}.pt-t th:nth-child(5){width:118px}.pt-t td:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pt-t td,.pt-t th{padding-left:6px!important;padding-right:6px!important}
+.fo-ta{display:inline-flex;gap:8px;align-items:center}.fo-ta .btn{height:40px;box-sizing:border-box;display:inline-flex;align-items:center}
 </style>
 <script>
 (function(){
@@ -3128,7 +3129,8 @@ function renderHome(){const all=mine(),hs=!!profile&&profile.role==='sales',q=$(
  const g2=[];['acc','claim','tc','job'].forEach(k=>{if(k==='job'&&!(profile&&profile.role==='admin'))return;BR.forEach(b=>{if(okB(b)&&okQ(k,b)&&(has(k,b)||(b==='CPL-Inter'&&!BR.some(x=>has(k,x)))))g2.push(card(k,b))})});
  const sec=(t,c)=>c.length?`<section class="fo-g"><h3 class="fo-gh">${t}</h3><div class="fo-cards">${c.join('')}</div></section>`:'';
  const g3=(FO.tpl||[]).filter(t=>okB(t.brand)&&(!q||(t.name+' '+(t.name_en||'')+' '+t.brand).toLowerCase().includes(q))).map(t=>card('c'+t.id,t.brand));
- const sec3=FO.tplOk?`<section class="fo-g"><h3 class="fo-gh">${TT('ฟอร์มของฉัน','My forms')}<button type="button" class="btn sm" data-ftn>${TT('+ สร้างแบบฟอร์ม','+ New form')}</button></h3>${g3.length?`<div class="fo-cards">${g3.join('')}</div>`:`<div class="fo-tpe">${TT('ยังไม่มีแบบฟอร์มที่สร้างเอง','No custom forms yet')}</div>`}</section>`:'';
+ const sec3=FO.tplOk?`<section class="fo-g"><h3 class="fo-gh">${TT('ฟอร์มของฉัน','My forms')}</h3>${g3.length?`<div class="fo-cards">${g3.join('')}</div>`:`<div class="fo-tpe">${TT('ยังไม่มีแบบฟอร์มที่สร้างเอง','No custom forms yet')}</div>`}</section>`:'';
+ $('fo_bnew').classList.toggle('hid',!FO.tplOk);
  $('fo_grp').innerHTML=sec(TT('ใบจองงานขนส่ง','Shipment booking'),g1)+sec3+sec(TT('เอกสารอื่น','Other documents'),g2)||`<div class="empty">${TT('ไม่พบฟอร์ม','No forms found')}</div>`;
  const R=done.filter(f=>okB(f.brand)).sort((a,b)=>String(b.submitted_at||b.created_at).localeCompare(String(a.submitted_at||a.created_at))).slice(0,8);
  document.querySelectorAll('#fo_home .fo-slc').forEach(e=>e.classList.toggle('hid',hs));
@@ -3293,7 +3295,7 @@ $('foa_pr').onclick=foPrint;$('foa_pdf').onclick=foPdf;
 $('fo_items').addEventListener('mouseover',e=>{const it=e.target.closest('.fo-it');if(!it||it.dataset.pf)return;it.dataset.pf=1;const f=FO.list.find(x=>String(x.id)===it.dataset.foi);if(f&&f.status==='done')prefetch(f)});
 async function prefetch(f){try{if(f.answers===undefined){const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();if(f.answers!==undefined)return;f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}
  [...(f.files||[]).filter(isImg).map(x=>x.url),...(f.answers||[]).map(a=>String(a.v||'').trim()).filter(v=>/^https?:\/\/\S+$/.test(v)&&isImgU(v))].forEach(u=>getImg(u,f.id))}catch(e){}}
-$('fo_new').onclick=()=>openNew();$('fo_x').onclick=()=>$('fod').close();
+$('fo_new').onclick=()=>openNew();$('fo_bnew').onclick=()=>fbOpen(null);$('fo_x').onclick=()=>$('fod').close();
 $('fo_bseg').addEventListener('click',e=>{const x=e.target.closest('[data-fob]');if(!x)return;FO.brand=x.dataset.fob;render()});
 $('fo_fq').addEventListener('input',render);
 $('fo_grp').addEventListener('click',e=>{const v=e.target.closest('[data-fov]'),n=e.target.closest('[data-fonl]');if(v){const[k,b]=v.dataset.fov.split('|');openInbox(k,b)}else if(n){const[k,b]=n.dataset.fonl.split('|');openNew(k,b)}});
@@ -3395,7 +3397,7 @@ if(typeof EN==='object')Object.assign(EN,{'เปิดโฟลเดอร์�
 
 <script>
 if(typeof EN==='object')Object.assign(EN,{"ทั่วไป":"General","📌 ทั่วไป":"📌 General","+ สร้างฟอร์ม":"+ Create form","คำตอบล่าสุด":"Latest answers","ฟอร์ม":"Form","กรอกเมื่อ":"Submitted","ค้นหาฟอร์ม":"Search forms","เยี่ยมลูกค้าโดยตรง":"Direct visit","+ เพิ่มลูกค้า":"+ Add customer","เจ้าของ":"Owner","แอดที่ทักเข้ามา":"Ads that messaged","Lead ล่าสุด":"Latest lead","ค้นหาชื่อ / เบอร์ / อีเมล":"Search name / phone / email","ชื่อลูกค้าในใบเสนอราคา":"Customer name on quotation","บันทึกใบเสนอราคา":"Save quotation","เรือ":"Sea","ตัวเลือกในฟอร์ม":"Form options","แผนเยี่ยมลูกค้า":"Customer Visit Plan","ค้นหาชื่อลูกค้า / Ads / ประเทศ…":"Search customer / Ads / country…"});
-if(typeof EN==='object')Object.assign(EN,{"สร้างแบบฟอร์มใหม่":"New form","ชื่อฟอร์ม":"Form name","ชื่อภาษาอังกฤษ":"English name","ดูตัวอย่าง":"Preview","ไม่ระบุ":"None"});
+if(typeof EN==='object')Object.assign(EN,{"สร้างแบบฟอร์มใหม่":"New form","ชื่อฟอร์ม":"Form name","ชื่อภาษาอังกฤษ":"English name","ดูตัวอย่าง":"Preview","+ สร้างลิงก์":"+ New link","+ สร้างฟอร์ม":"+ Create form","ไม่ระบุ":"None"});
 window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch(e){}});
 </script>
 
