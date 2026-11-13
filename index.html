@@ -421,7 +421,7 @@ header .hd #who{display:none!important}
 <div id="bpn" class="bpn hid"></div>
 <div id="vW" class="hid"><div class="nh"><h3 style="margin:0">Marketing</h3><div id="mktabs" class="mktabs"></div><div id="mkgear" class="mktabs"></div></div><div id="mkbody"></div></div>
 <div id="vL">
-  <div class="hd lhd"><div class="seg" id="seg"></div><div class="seg hid" id="lsub"><button type="button" class="on" data-s="L">Lead</button><button type="button" data-s="P">Pool<em id="pl_n">0</em></button></div><select id="rg" class="hid" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><input type="month" id="vm" class="hid"><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
+  <div class="hd lhd"><div class="seg" id="seg"></div><div class="seg hid" id="lsub" style="display:none!important"><button type="button" class="on" data-s="L">Lead</button><em id="pl_n" hidden>0</em></div><select id="rg" class="hid" title="ช่วงข้อมูลที่โหลด"><option value="d30" selected>โหลด: 30 วันล่าสุด</option><option value="m">โหลด: เดือนนี้</option><option value="pm">โหลด: เดือนที่แล้ว</option><option value="2">โหลด: 2 เดือนล่าสุด</option><option value="3">โหลด: 3 เดือนล่าสุด</option><option value="y">โหลด: ปีนี้</option><option value="all">โหลด: ทั้งหมด</option></select><input type="month" id="vm" class="hid"><button class="btn" id="exp">ส่งออก Excel</button><button class="btn p" id="add">+ เพิ่ม Lead</button></div>
   <div class="stats" id="stats"></div>
   <div class="bar">
     <input id="q" placeholder="ค้นหาชื่อลูกค้า / Ads / ประเทศ…">
@@ -2751,8 +2751,9 @@ function mkPlace(){const w=$('tW'),d=$('tDB'),l=$('tL'),f=$('tF'),c=$('tC'),cu=$
  const fo=$('tFO')||document.createElement('i');
  if(r==='admin'){s1.after(d);d.after(w);w.after(f);f.after(s2);s2.after(l);l.after(cu);cu.after(c)}
  else if(r==='marketing'){s1.after(d);d.after(w);w.after(s2);s2.after(l);l.after(cu);cu.after(c)}
- else if(r==='sales'&&tm==='C'&&so){s1.after(so);so.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}
+ else if(r==='sales'&&tm==='C'&&so){s1.after(so);so.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w)}
  else if(r==='sales'){s1.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(w)}
+ else if(r==='sales_lead'){s1.after(d);d.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(w)}
  else{s1.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}if(fo.id)l.before(fo)}mkPlace();
 })();
 </script>
@@ -2833,7 +2834,7 @@ document.body.appendChild(pp);document.body.appendChild(b);set(cur);
 </script>
 <script>
 (function(){
-const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&&p.team==='C'){['tF','tC'].forEach(id=>{const el=$(id);if(el)el.classList.add('hid')})}};
+const _arSC=applyRoleUI;applyRoleUI=function(p){_arSC(p);if(p&&p.role==='sales'&&p.team==='C'){['tF'].forEach(id=>{const el=$(id);if(el)el.classList.add('hid')})}};
 })();
 </script>
 <style>
