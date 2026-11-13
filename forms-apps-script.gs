@@ -20,14 +20,15 @@ function doPost(e) {
     if (!form) return out_({ ok: false, error: 'not_found' });
     if (form.synced) return out_({ ok: false, error: 'already_sent' });
     const brand = BRANDS.indexOf(form.brand) >= 0 ? form.brand : 'CPL-Inter';
-    const kind = KIND_NAME[form.kind] ? form.kind : 'book';
+    const kind = form.kind === 'custom' ? 'custom' : (KIND_NAME[form.kind] ? form.kind : 'book');
+    const kname = kind === 'custom' ? String(form.title || 'ฟอร์ม').replace(/[\[\]*?:\/\\]/g, ' ').trim().slice(0, 90) || 'ฟอร์ม' : KIND_NAME[kind];
     const lock = LockService.getScriptLock();
     lock.waitLock(20000);
     let files, sheetUrl;
     try {
       const brandFolder = brandFolder_(brand);
-      files = saveFiles_(brandFolder, kind, body);
-      sheetUrl = appendRow_(brandFolder, brand, kind, body, files);
+      files = saveFiles_(brandFolder, kind, body, kname);
+      sheetUrl = appendRow_(brandFolder, brand, kind, body, files, kname);
     } finally {
       lock.releaseLock();
     }
@@ -80,12 +81,12 @@ function folder_(parent, name) {
   return it.hasNext() ? it.next() : parent.createFolder(name);
 }
 
-function saveFiles_(brandFolder, kind, body) {
+function saveFiles_(brandFolder, kind, body, kname) {
   const list = Array.isArray(body.files) ? body.files : [];
   if (!list.length) return [];
   const company = String(body.company || 'ลูกค้า').replace(/[\\/:*?"<>|]/g, ' ').slice(0, 80);
   const stamp = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd HHmm');
-  const kid = cachedId_('DIR_' + brandFolder.getId() + '_' + kind, function () { return folder_(brandFolder, 'ไฟล์แนบ ' + KIND_NAME[kind]).getId(); });
+  const kid = cachedId_('DIR_' + brandFolder.getId() + '_' + (kind === 'custom' ? 'c_' + kname : kind), function () { return folder_(brandFolder, 'ไฟล์แนบ ' + kname).getId(); });
   const dir = DriveApp.getFolderById(kid).createFolder(stamp + ' ' + company);
   return list.map(function (f) {
     const bytes = Utilities.base64Decode(f.data);
@@ -96,9 +97,9 @@ function saveFiles_(brandFolder, kind, body) {
   });
 }
 
-function appendRow_(brandFolder, brand, kind, body, files) {
+function appendRow_(brandFolder, brand, kind, body, files, kname) {
   const ss = spreadsheet_(brandFolder, brand);
-  const tabName = KIND_NAME[kind];
+  const tabName = kname || KIND_NAME[kind];
   const sh = ss.getSheetByName(tabName) || ss.insertSheet(tabName);
   const answers = Array.isArray(body.answers) ? body.answers : [];
   const fileCols = {};

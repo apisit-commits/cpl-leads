@@ -499,7 +499,7 @@ header .hd #who{display:none!important}
    <article class="fo-pv" id="fo_pv">
     <div class="fo-pe" id="fo_pe">เลือกคำตอบจากรายการ</div>
     <div id="fo_pc" class="hid">
-     <div class="fo-ph"><div><h3 id="foa_t"></h3><div class="sub" id="foa_s"></div></div>
+     <div class="fo-ph"><div><h3 id="foa_t"></h3><div class="sub" id="foa_s"></div><div class="fo-cul" id="foa_cu"></div></div>
       <div class="fo-pa"><button type="button" class="btn sm ic" id="fo_prv" aria-label="ก่อนหน้า" title="ก่อนหน้า"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="btn sm ic" id="fo_nxt" aria-label="ถัดไป" title="ถัดไป"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button type="button" class="btn sm" id="foa_pr">พิมพ์</button><button type="button" class="btn sm" id="foa_pdf">ดาวน์โหลด PDF</button><a class="btn sm" id="foa_sh" target="_blank" rel="noopener">เปิดใน Google Sheets</a><button type="button" class="btn sm" id="fo_pcp">คัดลอกลิงก์</button><button type="button" class="btn sm rb" id="fo_pdl" title="ลบ" aria-label="ลบ"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></div></div>
      <div id="fo_pw" class="fo-pw hid"></div>
      <div id="foa_b"></div><div id="foa_f"></div>
@@ -555,9 +555,13 @@ header .hd #who{display:none!important}
   <div class="acts"><button type="button" class="btn" id="cx">ยกเลิก</button><button class="btn p" id="sv_">บันทึก</button></div>
 </form><aside id="fq" class="hid"><h3>ใบเสนอราคา</h3><div id="fq_list"></div></aside></dialog>
 
+<dialog id="fbd"><form id="fbf" method="dialog" novalidate><h3 style="margin:0 0 12px" id="fb_ttl">สร้างแบบฟอร์มใหม่</h3>
+<div class="g fb-hd"><label class="f">ชื่อฟอร์ม<b class="rq">*</b><input name="name" maxlength="120"></label><label class="f">ชื่อภาษาอังกฤษ<input name="name_en" maxlength="120"></label><label class="f">แบรนด์<b class="rq">*</b><select name="brand"><option>CPL-Inter</option><option>CPLEx</option><option>CLMV</option><option>IMTH</option></select></label></div>
+<div class="fb-body"><div class="fb-tool" id="fb_tool"></div><div class="fb-list" id="fb_list"></div></div>
+<div class="acts"><span class="fb-err" id="fb_err"></span><span style="flex:1"></span><button type="button" class="btn" id="fb_x">ยกเลิก</button><button type="button" class="btn" id="fb_pv">ดูตัวอย่าง</button><button class="btn p" id="fb_sv">บันทึก</button></div></form></dialog>
 <dialog id="fod"><form id="fof" method="dialog" novalidate><h3 style="margin:0 0 12px">สร้างฟอร์มลูกค้า</h3>
-<div class="f" style="margin:0 0 12px">ประเภทฟอร์ม<b class="rq">*</b><div class="chips" style="margin-top:6px"><label><input type="radio" name="kind" value="book" checked><span>ใบจองงานขนส่ง</span></label><label><input type="radio" name="kind" value="acc"><span>ใบสมัครบัญชีลูกค้า</span></label><label><input type="radio" name="kind" value="claim"><span>เคลมสินค้า</span></label><label><input type="radio" name="kind" value="tc"><span>เงื่อนไขการใช้บริการ</span></label><label id="fo_kj"><input type="radio" name="kind" value="job"><span>ใบสมัครงาน</span></label></div></div>
-<div class="g"><label class="f fo-wide">แบรนด์<b class="rq">*</b><select name="brand"><option>CPL-Inter</option><option>CPLEx</option><option>CLMV</option><option>IMTH</option></select></label></div>
+<div class="f" style="margin:0 0 12px">ประเภทฟอร์ม<b class="rq">*</b><div class="chips" style="margin-top:6px"><label><input type="radio" name="kind" value="book" checked><span>ใบจองงานขนส่ง</span></label><label><input type="radio" name="kind" value="acc"><span>ใบสมัครบัญชีลูกค้า</span></label><label><input type="radio" name="kind" value="claim"><span>เคลมสินค้า</span></label><label><input type="radio" name="kind" value="tc"><span>เงื่อนไขการใช้บริการ</span></label><label id="fo_kj"><input type="radio" name="kind" value="job"><span>ใบสมัครงาน</span></label></div><div class="chips fo-kcs" id="fo_kc" style="margin-top:8px"></div></div>
+<div class="g"><label class="f fo-wide" id="fo_cuw">ลูกค้า<input id="fo_cu" list="fo_cul" autocomplete="off" placeholder="ไม่ระบุ"><datalist id="fo_cul"></datalist></label><label class="f fo-wide">แบรนด์<b class="rq">*</b><select name="brand"><option>CPL-Inter</option><option>CPLEx</option><option>CLMV</option><option>IMTH</option></select></label></div>
 <div id="fo_lw" class="hid" style="margin-top:12px"><label class="f">ลิงก์สำหรับลูกค้า<span class="fo-lk"><input id="fo_url" readonly><button type="button" class="btn p" id="fo_cp">คัดลอก</button></span></label></div>
 <div class="acts"><button type="button" class="btn" id="fo_x">ยกเลิก</button><button class="btn p" id="fo_mk">สร้างลิงก์</button></div></form></dialog>
 
@@ -2432,6 +2436,7 @@ function cuDet(id){
 <div class="stats">${[['Lead',s.n+' รายการ'],['ใบเสนอราคา',nq+' ใบ'],['ปิดการขาย',s.w+' ครั้ง'],['ยอดที่ปิดได้ (บาท)',N(s.amt)],['ความเสี่ยงหาย|เทียบระยะเงียบกับรอบปกติของลูกค้า: ไม่เกิน 1.5 เท่า ต่ำ · ไม่เกิน 2 เท่า กลาง · เกิน 2 เท่า สูง',`<span class="cub cub-${rk[1]}">${rk[0]}</span>`]].map(([t,v])=>{const q=t.split('|');return `<div class="st"><span>${q[0]}${q[1]?`<i class="ri" tabindex="0" data-tip="${q[1]}" aria-label="${q[1]}"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.500"/><path d="M12 11v6M12 7.500v.5"/></svg></i>`:''}</span><b>${v}</b></div>`}).join('')}</div>
 <div class="cu-two"><div class="pn"><h3>ผู้ติดต่อ</h3>${ct.length?ct.map((x,i)=>`<div class="cu-cr"><i>${i+1}</i><div><b>${H(x.name)}</b>${x.is_primary?' <span class="cub">หลัก</span>':''}<div class="sub">${H([x.role,x.phone,x.email,x.line].filter(Boolean).join(' · '))||'—'}</div></div><span class="sub">${chs(x)}</span></div>`).join(''):'<div class="sub">ยังไม่มีผู้ติดต่อ</div>'}</div>
 <div class="pn"><h3>ประวัติ Lead และใบเสนอราคา</h3>${ev.length?ev.map(e=>`<div class="cu-hr cu-hr-${e.c}"><div><b>${H(e.k)}</b><div class="sub">${H(e.s)}</div></div><span class="sub">${fmtD(e.d)}</span></div>`).join(''):'<div class="sub">ยังไม่มี Lead ที่ผูกกับลูกค้านี้</div>'}</div></div>`;
+ $('cu_dv').querySelector('.stats').insertAdjacentHTML('afterend','<div id="cd_pt"></div>');$('cu_dv').insertAdjacentHTML('beforeend','<div class="pn" id="cd_fo"></div>');ptPanel(id);foPanel(id);
  $('cd_back').onclick=cuBack;$('cd_edit').onclick=()=>cuOpen(id);$('cd_add').onclick=()=>{cuOpen(id);CU.edit.push({name:'',is_primary:!CU.edit.length});ctRender()}}
 function cuBack(){CU.det=null;$('cu_dv').classList.add('hid');$('cu_lv').classList.remove('hid');cuRender()}
 function llRender(){}
@@ -2495,6 +2500,64 @@ function cuGroups(ls){
  const g={};ls.forEach(r=>(g[find(r.id)]=g[find(r.id)]||[]).push(r));
  const top=a=>{const m={};a.forEach(x=>{if(x)m[x]=(m[x]||0)+1});return Object.entries(m).sort((x,y)=>y[1]-x[1])[0]?.[0]||''};
 return Object.values(g).map(a=>({ls:a,name:top(a.map(x=>(x.name||'').trim())),owner:top(a.map(x=>x.sales))}))}
+/* ---- LINE points ---- */
+const PT={rows:[],ok:false,at:0};
+const PR={A:{b:'CPL-Inter',win:90,rule:['3,000 บาท = 1 แต้ม (สะสมได้)','Every 3,000 THB = 1 pt (stacks)'],earn:a=>Math.floor(a/3000)},B:{b:'CPLEx',win:60,rule:['ส่ง 1,000 บาทขึ้นไป = 1 แต้มต่อครั้ง','1 pt per shipment of 1,000 THB+'],earn:a=>a>=1000?1:0}};
+const PRW={'CPL-Inter':{10:['ส่วนลด 10% (สูงสุด 1,000 บาท)','10% discount (max 1,000 THB)'],30:['ของรางวัลพิเศษ','Exclusive merchandise']},'CPLEx':{10:['ส่วนลด 200 บาท','200 THB discount'],30:['ของรางวัลพิเศษ หรือส่วนลด 500 บาท','Exclusive reward or 500 THB discount']}};
+const addD=(d,n)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const dGap=(a,b)=>Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/DAY);
+async function ptLoad(force){if(!force&&PT.at&&Date.now()-PT.at<60000)return PT.ok;try{const r=await sb.from('cust_points').select('*').order('date');PT.ok=!r.error;PT.rows=r.error?[]:(r.data||[]);PT.at=Date.now()}catch(e){PT.ok=false}return PT.ok}
+function ptCalc(cid,team){const R=PR[team],b=R.b,rows=PT.rows.filter(x=>String(x.customer_id)===String(cid)&&x.brand===b);
+ const deals=(CU.ls[cid]||[]).filter(l=>l.team===team&&effS(l)===ST_Y&&(+l.deal_amt||0)>0);
+ const op=rows.filter(x=>x.kind==='open').sort((x,y)=>String(y.date).localeCompare(String(x.date)))[0]||null;
+ const paid=new Set(rows.filter(x=>x.kind==='paid').map(x=>String(x.lead_id)));
+ const D=deals.map(l=>({l,d:l.deal_date||l.date||'',paid:paid.has(String(l.id)),p:0})).sort((x,y)=>x.d.localeCompare(y.d));
+ if(!op)return{b,team,R,open:null,act:false,D,earned:0,red:0,bal:0,combo:0,rows,nred:0};
+ const s=op.date,e=addD(s,365),act=today()<e;D.forEach(x=>x.in=x.d>=s&&x.d<e);
+ const ok=D.filter(x=>x.in&&x.paid);ok.forEach(x=>x.p=R.earn(+x.l.deal_amt||0));
+ let combo=0,g=[];ok.forEach(x=>{g.push(x);g=g.filter(y=>dGap(y.d,x.d)<=R.win);if(g.length>=3){combo++;x.combo=1;g=[]}});
+ const rd=rows.filter(x=>x.kind==='redeem'&&x.date>=s&&x.date<e),red=rd.reduce((t,x)=>t+(+x.points||0),0),earned=2+ok.reduce((t,x)=>t+x.p,0)+combo*2;
+ return{b,team,R,open:op,end:e,act,D,earned,red,bal:act?Math.max(0,earned-red):0,combo,rows,nred:rd.length}}
+function ptTeams(cid){const ls=CU.ls[cid]||[],c=CU.list.find(x=>String(x.id)===String(cid));const t=['A','B'].filter(k=>ls.some(l=>l.team===k)||PT.rows.some(x=>String(x.customer_id)===String(cid)&&x.brand===PR[k].b));return t}
+async function ptPanel(cid){const el=$('cd_pt');if(!el)return;await ptLoad();if(!PT.ok){el.innerHTML='';return}const T=ptTeams(cid);if(!T.length){el.innerHTML='';return}
+ const logo=b=>{const L=typeof LOGOS!=='undefined'&&LOGOS[{'CPL-Inter':'cplinter','CPLEx':'cplex'}[b]];return L?`<img src="${L.u}" alt="${H(b)}" style="height:18px;width:auto">`:`<b>${H(b)}</b>`};
+ el.innerHTML=`<div class="pt-wrap">${T.map(team=>{const P=ptCalc(cid,team),b=P.b,W=PRW[b],pct=Math.min(100,P.bal/30*100);
+  const st=!P.open?`<span class="cub cub-n">${TT('ยังไม่เปิดบัตร','No card yet')}</span>`:P.act?`<span class="cub cub-g">${TT('บัตรใช้ได้ถึง ','Valid until ')}${fmtD(P.end)}</span>`:`<span class="cub cub-a">${TT('บัตรหมดอายุ ','Card expired ')}${fmtD(P.end)}</span>`;
+  const rows=P.D.filter(x=>!P.open||x.in||!P.act);
+  return `<div class="pn pt-card" data-ptt="${team}"><div class="pt-h"><span class="pt-lg">${logo(b)}</span><span class="pt-tt">${TT('แต้มสะสม LINE','LINE points')}</span>${st}</div>
+  <div class="pt-b"><div class="pt-bal"><b>${P.bal}</b><span>${TT('แต้ม','pts')}</span></div><div class="pt-bar"><div class="pt-tr"><i style="width:${pct}%"></i><em style="left:${10/30*100}%"></em></div><div class="pt-ms"><span style="left:${10/30*100}%">10</span><span style="left:100%">30</span></div></div></div>
+  <div class="pt-rw">${[10,30].map(n=>`<button type="button" class="btn sm${P.act&&P.bal>=n?' p':''}" data-ptr="${n}"${P.act&&P.bal>=n?'':' disabled'}>${TT('แลก ','Redeem ')}${n} ${TT('แต้ม','pts')} · ${H(TT(W[n][0],W[n][1]))}</button>`).join('')}</div>
+  ${P.act?'':`<div class="pt-op"><label>${TT('วันที่เปิดบัตร','Card opened on')}<input type="date" data-ptd value="${today()}"></label><button type="button" class="btn sm p" data-pto>${P.open?TT('เปิดบัตรใหม่ (+2)','Open new card (+2)'):TT('บันทึกเปิดบัตร (+2)','Record card opening (+2)')}</button></div>`}
+  ${rows.length?`<table class="pt-t"><thead><tr><th>${TT('วันที่ปิด','Closed')}</th><th>Lead</th><th class="r">${TT('ยอด (บาท)','Amount (THB)')}</th><th>${TT('ชำระแล้ว','Paid')}</th><th class="r">${TT('แต้ม','Pts')}</th></tr></thead><tbody>${rows.slice().reverse().map(x=>`<tr${P.open&&!x.in?' class="pt-out"':''}><td>${fmtD(x.d)}</td><td>${H(x.l.name)}</td><td class="r">${N(x.l.deal_amt)}</td><td><input type="checkbox" data-ptp="${x.l.id}"${x.paid?' checked':''}${P.open&&x.in?'':' disabled'} aria-label="${TT('ชำระแล้ว','Paid')}"></td><td class="r">${x.p?'+'+x.p:'—'}${x.combo?` <span class="pt-cb">+2 ${TT('ครบ 3 ครั้ง','3 shipments')}</span>`:''}</td></tr>`).join('')}</tbody></table>`:''}
+  ${P.open?`<div class="pt-hs">${[[P.open.date,TT('เปิดบัตร','Card opened'),'+2'],...P.rows.filter(x=>x.kind==='redeem'&&x.date>=P.open.date&&x.date<P.end).map(x=>[x.date,TT('แลก ','Redeemed ')+H(x.note||''),'−'+x.points])].sort((a,c)=>String(c[0]).localeCompare(String(a[0]))).map(([d,t,v])=>`<div><span>${fmtD(d)}</span><span>${t}</span><b>${v}</b></div>`).join('')}</div>`:''}
+  <div class="pt-rule">${H(TT(P.R.rule[0],P.R.rule[1]))} · ${TT('ส่งครบ 3 ครั้งใน ','3 shipments within ')}${P.R.win} ${TT('วัน +2','days +2')} · ${TT('เปิดบัตร +2 · บัตรอายุ 365 วัน · นับเฉพาะงานที่ปิดและชำระแล้ว','card +2 · valid 365 days · closed & paid jobs only')}</div></div>`}).join('')}</div>`}
+async function ptAct(e){const card=e.target.closest('[data-ptt]');if(!card||!CU.det)return;const team=card.dataset.ptt,b=PR[team].b,cid=String(CU.det),me=(profile&&profile.name)||'';
+ const o=e.target.closest('[data-pto]'),r=e.target.closest('[data-ptr]'),pp=e.target.closest('[data-ptp]');let err=null;
+ if(o){const d=card.querySelector('[data-ptd]').value||today();err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'open',points:2,date:d,created_by:me})).error}
+ else if(r){const n=+r.dataset.ptr,w=PRW[b][n];if(!confirm(TT(`ยืนยันแลก ${n} แต้ม: ${w[0]}?`,`Redeem ${n} points: ${w[1]}?`)))return;err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'redeem',points:n,note:w[0],date:today(),created_by:me})).error}
+ else if(pp){const lid=pp.dataset.ptp;if(pp.checked)err=(await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'paid',lead_id:+lid,points:0,date:today(),created_by:me})).error;else err=(await sb.from('cust_points').delete().eq('customer_id',cid).eq('brand',b).eq('kind','paid').eq('lead_id',lid)).error}
+ else return;
+ if(err){alert(TT('บันทึกไม่สำเร็จ','Could not save'));}await ptLoad(true);ptPanel(cid);if(window.ptBell)window.ptBell()}
+document.addEventListener('click',e=>{if(e.target.closest('#cd_pt [data-pto],#cd_pt [data-ptr]'))ptAct(e)});
+document.addEventListener('change',e=>{if(e.target.closest('#cd_pt [data-ptp]'))ptAct(e)});
+/* ---- forms on customer page ---- */
+async function foPanel(cid){const el=$('cd_fo');if(!el)return;const c=CU.list.find(x=>String(x.id)===String(cid));
+ let L=[];try{const r=await sb.from('cust_forms').select('id,kind,brand,company,status,created_at,submitted_at,prefill,template_id,customer_id').eq('customer_id',String(cid)).order('created_at',{ascending:false}).limit(100);if(!r.error)L=r.data||[]}catch(e){}
+ if(String(CU.det)!==String(cid))return;
+ el.innerHTML=`<h3>${TT('ฟอร์มของลูกค้า','Customer forms')}</h3>${L.length?L.map(f=>`<div class="cu-hr cu-fo" data-cfo="${f.id}"><div><b>${H(window.foKn?window.foKn(f):f.kind)}</b><div class="sub">${H(f.brand)} · ${f.status==='done'?TT('กรอกแล้ว','Submitted'):TT('รอลูกค้ากรอก','Awaiting customer')}</div></div><span class="sub">${fmtD(String(f.submitted_at||f.created_at).slice(0,10))}</span></div>`).join(''):`<div class="sub">${TT('ยังไม่มีฟอร์มที่ผูกกับลูกค้านี้','No forms linked to this customer yet')}</div>`}`}
+document.addEventListener('click',e=>{const r=e.target.closest('#cd_fo [data-cfo]');if(r&&window.foOpen)window.foOpen(r.dataset.cfo)});
+window.cuGo=async id=>{tab('CU');await cuLoad(true);cuDet(String(id))};
+/* ---- point alerts for sales ---- */
+const ptSeenK=()=>'cpl_ptseen_'+((profile&&profile.id)||'');
+const ptSeen=()=>{try{return JSON.parse(localStorage.getItem(ptSeenK())||'{}')}catch(e){return{}}};
+function ptNots(){if(!profile||profile.role!=='sales'||!CU.ok||!PT.ok)return[];const me=profile.name;const out=[];
+ CU.list.filter(c=>c.owner===me).forEach(c=>['A','B'].forEach(t=>{if(!PT.rows.some(x=>String(x.customer_id)===String(c.id)&&x.brand===PR[t].b&&x.kind==='open'))return;const P=ptCalc(c.id,t);if(!P.act)return;[30,10].some(n=>{if(P.bal>=n){const k=[c.id,P.b,n,P.open.date,P.nred].join('|');out.push({k,c,P,n});return true}return false})}));
+ const sn=ptSeen();return out.map(o=>({...o,un:!sn[o.k]}))}
+window.ptNots=ptNots;
+window.ptBell=function(){const b=$('bell');if(!b||!profile||profile.role!=='sales')return;const L=ptNots(),n=L.filter(o=>o.un).length;b.classList.remove('hid');$('bn').textContent=n>99?'99+':n;$('bn').classList.toggle('hid',!n)};
+window.ptMark=k=>{const sn=ptSeen();if(k)sn[k]=1;else ptNots().forEach(o=>{sn[o.k]=1});try{localStorage.setItem(ptSeenK(),JSON.stringify(sn))}catch(e){}};
+async function ptBg(){if(!profile||profile.role!=='sales'||document.hidden)return;try{await cuLoad(true);await ptLoad(true);window.ptBell()}catch(e){}}
+setTimeout(ptBg,4000);setInterval(ptBg,600000);
 /* ---- lead form link ---- */
 const _sl=saveLead;saveLead=async function(id,o){if(CU.ok&&isBeta()&&o.name){let keep=false;if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();keep=!!(data&&data.customer_id)}if(!keep){try{const cid=await cuLink(o);if(cid)o={...o,customer_id:cid}}catch(e){}}}return _sl(id,o)};
 /* ---- tab ---- */
@@ -2970,6 +3033,49 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 #vL .bar #q{border-top-right-radius:0!important;border-bottom-right-radius:0!important;margin-right:-6px}
 #vL .bar #qf{border-top-left-radius:0!important;border-bottom-left-radius:0!important;border-left:1px solid var(--bd)!important;min-width:0}
 #vL .bar #fs,#vL .bar #fc{width:116px}#vL .bar #fa,#vL .bar #fm{width:100px}
+
+#fbd{width:min(1040px,96vw);max-height:94vh}#fbf{display:flex;flex-direction:column;max-height:calc(94vh - 40px)}
+.fb-hd{grid-template-columns:2fr 2fr 1fr!important}
+.fb-body{display:grid;grid-template-columns:190px 1fr;gap:14px;min-height:0;flex:1;overflow:hidden;margin:6px 0 4px}
+.fb-tool{display:flex;flex-direction:column;gap:6px;overflow:auto;padding-right:2px}
+.fb-tb{text-align:left;padding:9px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit;font-size:13.5px;cursor:grab}
+.fb-tb:hover{border-color:var(--pr);color:var(--pr)}
+.fb-list{overflow:auto;display:flex;flex-direction:column;gap:10px;padding:2px 4px 8px 2px;min-height:260px;max-height:62vh}
+.fb-it{border:1px solid var(--bd);border-radius:12px;background:var(--card);padding:10px 12px}
+.fb-it.fb-pg{background:color-mix(in srgb,var(--pr) 6%,var(--card));border-style:dashed}
+.fb-it.fb-ov{box-shadow:0 -3px 0 var(--pr)}
+.fb-ih{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.fb-grip{cursor:grab;color:var(--mu);letter-spacing:-2px;font-size:13px}
+.fb-ty{font-size:12px;font-weight:600;color:var(--pr);background:color-mix(in srgb,var(--pr) 10%,transparent);padding:2px 8px;border-radius:8px}
+.fb-rq{display:inline-flex;align-items:center;gap:6px;font-size:13px;margin-right:6px;white-space:nowrap}
+.fb-ib{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px 12px}.fb-it{padding:8px 12px}.fb-ih{margin-bottom:6px}.fb-ib .fb-w{grid-column:1/-1}
+.fb-ib .f{margin:0}.fb-ib textarea{min-height:70px}
+.fb-err{color:var(--dgr,#d9363e);font-size:13px}
+.fo-ib2{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--mu);cursor:pointer;font-size:13px;padding:0}
+.fo-ib2:hover:not(:disabled){color:var(--pr);border-color:var(--pr)}.fo-ib2:disabled{opacity:.4;cursor:default}
+.fo-tx{display:inline-flex;gap:4px;margin-left:auto}
+.fo-gh{display:flex;align-items:center;gap:10px}.fo-gh .btn{margin-left:auto}
+.fo-tpe{color:var(--mu);font-size:13.5px;padding:14px;border:1px dashed var(--bd);border-radius:12px;text-align:center}
+.fo-kcs:empty{display:none}
+@media(max-width:760px){.fb-body{grid-template-columns:1fr}.fb-tool{flex-direction:row;flex-wrap:wrap}.fb-hd{grid-template-columns:1fr!important}.fb-ib{grid-template-columns:1fr}}
+
+.fo-cul{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--tx)}.fo-cul:empty{display:none}.fo-cul svg{color:var(--mu)}
+.fo-cul input{height:32px;padding:4px 10px;font-size:13px;min-width:240px}
+.lnk{background:none;border:0;padding:0;color:var(--pr);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
+
+.pt-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:12px;margin-bottom:12px}
+.pt-card{margin:0!important}.pt-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}.pt-tt{font-weight:600;font-size:14px;margin-right:auto}
+.pt-b{display:flex;align-items:center;gap:18px;margin-bottom:10px}.pt-bal b{font-size:34px;line-height:1;color:var(--pr)}.pt-bal span{margin-left:6px;color:var(--mu);font-size:13px}
+.pt-bar{flex:1;min-width:0}.pt-tr{position:relative;height:10px;border-radius:6px;background:color-mix(in srgb,var(--pr) 12%,transparent);overflow:visible}.pt-tr i{display:block;height:100%;border-radius:6px;background:var(--pr)}
+.pt-tr em{position:absolute;top:-3px;width:2px;height:16px;background:var(--card);box-shadow:0 0 0 1px var(--bd)}
+.pt-ms{position:relative;height:16px;font-size:11.5px;color:var(--mu)}.pt-ms span{position:absolute;top:2px;transform:translateX(-50%)}.pt-ms span:last-child{transform:translateX(-100%)}
+.pt-rw{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pt-op{display:flex;align-items:flex-end;gap:8px;margin-bottom:10px;font-size:13px}.pt-op label{display:flex;flex-direction:column;gap:4px}.pt-op input{height:32px;padding:4px 8px}
+.pt-t{width:100%;font-size:13px;margin-bottom:8px;min-width:0!important}.pt-t th{white-space:nowrap}.pt-t .r{text-align:right}.pt-t tr.pt-out td{color:var(--mu)}
+.pt-cb{font-size:11px;color:#1d7a4a;background:#e7f6ee;border-radius:8px;padding:1px 6px;white-space:nowrap}
+.pt-hs{display:flex;flex-direction:column;gap:4px;font-size:12.5px;margin-bottom:8px}.pt-hs div{display:grid;grid-template-columns:90px 1fr auto;gap:8px;color:var(--tx)}.pt-hs span:first-child{color:var(--mu)}
+.pt-rule{font-size:12px;color:var(--mu)}
+.cu-fo{cursor:pointer}.cu-fo:hover b{color:var(--pr)}
 </style>
 <script>
 (function(){
@@ -2986,8 +3092,12 @@ const link=t=>new URL('form.html?k='+t,location.href).href;
 const mine=()=>FO.list.filter(f=>!profile||profile.role!=='sales'||f.team===profile.team);
 async function load(){const C0='id,token,lead_id,kind,brand,team,sales,company,prefill,status,sheet_url,created_by,created_at,submitted_at,source';
  const get=async C=>{let all=[];for(let o=0;o<20000;o+=1000){const{data,error}=await sb.from('cust_forms').select(C).order('created_at',{ascending:false}).range(o,o+999);if(error)return{error};all=all.concat(data||[]);if(!data||data.length<1000)break}return{all}};
- let r=await get(C0+',seen_at');FO.hasSeen=!r.error;if(r.error)r=await get(C0);FO.ok=!r.error;FO.list=r.error?[]:r.all;FO.loaded=true;render()}
-const KIC={book:'<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',acc:'<path d="M4 21V5a2 2 0 0 1 2-2h8l6 6v12z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',claim:'<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M12 8v5M12 16h.01"/>',tc:'<path d="M9 11l2 2 4-4"/><path d="M5 3h14v18H5z"/>',job:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
+ let r=await get(C0+',seen_at,template_id,customer_id');FO.hasCx=!r.error;if(r.error)r=await get(C0+',seen_at');FO.hasSeen=!r.error;if(r.error)r=await get(C0);FO.ok=!r.error;FO.list=r.error?[]:r.all;
+ await tplLoad();FO.list.forEach(foNorm);FO.loaded=true;render()}
+async function tplLoad(){try{const{data,error}=await sb.from('form_templates').select('*').order('created_at',{ascending:false});FO.tplOk=!error;FO.tpl=error?[]:(data||[])}catch(e){FO.tplOk=false;FO.tpl=[]}FO.tpl.forEach(tplReg)}
+function tplReg(t){const k='c'+t.id;KN[k]=[t.name,t.name_en||t.name];KIC[k]=KIC.custom}
+function foNorm(f){if(f.kind==='custom'&&f.template_id){f.kind='c'+f.template_id;if(!KN[f.kind]){const p=f.prefill||{};KN[f.kind]=[p.title||'ฟอร์ม',p.title_en||p.title||'Form'];KIC[f.kind]=KIC.custom}}return f}
+const KIC={book:'<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',acc:'<path d="M4 21V5a2 2 0 0 1 2-2h8l6 6v12z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',claim:'<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M12 8v5M12 16h.01"/>',tc:'<path d="M9 11l2 2 4-4"/><path d="M5 3h14v18H5z"/>',job:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',custom:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'};
 const BLK={'CPL-Inter':'cplinter','CPLEx':'cplex','CLMV':'clmv','IMTH':'imthai'};
 const blogo=(b,h)=>{const L=typeof LOGOS!=='undefined'&&LOGOS[BLK[b]];return L?`<img class="fo-lg" src="${L.u}" alt="${H(b)}" title="${H(b)}" style="height:${h}px;width:auto">`:`<span style="color:${BRC[b]};font-weight:600">${H(b)}</span>`};
 const BRT={'CPL-Inter':'rgba(0,130,192,.12)','CPLEx':'rgba(224,90,26,.12)','CLMV':'rgba(226,185,59,.18)','IMTH':'rgba(107,63,181,.12)'};
@@ -3004,7 +3114,7 @@ function renderHome(){const all=mine(),hs=!!profile&&profile.role==='sales',q=$(
  $('fo_st').innerHTML=[[TT('คำตอบใหม่ที่ยังไม่เปิด','New, not opened'),N(done.filter(isNew).length)],[TT('รอลูกค้ากรอก','Awaiting customer'),N(sent.length)],[TT('กรอกแล้วเดือนนี้','Submitted this month'),N(mon)],[TT('อัตราการกรอก','Completion rate'),rate+'%']].map(([x,v])=>`<div class="st"><b>${v}</b><span>${x}</span></div>`).join('');
  $('fo_bseg').innerHTML=[['',TT('ทั้งหมด','All')]].concat(BR.map(b=>[b,b])).map(([k,v])=>`<button type="button" class="${bf===k?'on':''}" data-fob="${H(k)}">${k?`<i class="fo-bd" style="background:${BRC[k]}"></i>`:''}${H(v)}</button>`).join('');
  const card=(k,b)=>{const L=all.filter(f=>f.kind===k&&f.brand===b),D=L.filter(subOf),n=D.filter(isNew).length,w=L.filter(f=>f.status==='sent'&&!isTpl(f)).length,last=D.reduce((m,f)=>{const t=f.submitted_at||f.created_at;return t>m?t:m},'');
-  return `<div class="fo-card" style="--bc:${BRC[b]};--bt:${BRT[b]};--bx:${BRX[b]}"><div class="fo-ct"><span class="fo-lgw">${blogo(b,22)}</span>${n?`<em class="fo-new">${N(n)} ${TT('ใหม่','new')}</em>`:''}</div>
+  return `<div class="fo-card" style="--bc:${BRC[b]};--bt:${BRT[b]};--bx:${BRX[b]}"><div class="fo-ct"><span class="fo-lgw">${blogo(b,22)}</span>${n?`<em class="fo-new">${N(n)} ${TT('ใหม่','new')}</em>`:''}${/^c\d/.test(k)?`<span class="fo-tx"><button type="button" class="fo-ib2" data-fte="${k.slice(1)}" title="${TT('แก้ไขแบบฟอร์ม','Edit form')}" aria-label="${TT('แก้ไขแบบฟอร์ม','Edit form')}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button><button type="button" class="fo-ib2" data-ftd="${k.slice(1)}" title="${TT('ลบแบบฟอร์ม','Delete form')}" aria-label="${TT('ลบแบบฟอร์ม','Delete form')}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></span>`:''}</div>
   <div class="fo-cn"><span class="fo-ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${KIC[k]}</svg></span><span class="fo-ct2">${H(kn(k))}</span>${w?`<em class="fo-wt">${TT('รอกรอก','Waiting')} ${N(w)}</em>`:''}</div>
   <div class="fo-cc"><b>${N(D.length)}</b><span>${TT('คำตอบ','submissions')}${last?' · '+TT('ล่าสุด ','last ')+dd(last):''}</span></div>${k==='job'?`<div class="fo-cx">${TT('ลิงก์ถาวร · เห็นเฉพาะ Admin','Permanent link · Admin only')}</div>`:''}
   <div class="fo-ca"><button type="button" class="btn p sm" data-fov="${k}|${b}">${TT('ดูคำตอบ','View answers')}</button><button type="button" class="btn sm" data-fonl="${k}|${b}">${TT('+ สร้างลิงก์','+ New link')}</button></div></div>`};
@@ -3012,7 +3122,9 @@ function renderHome(){const all=mine(),hs=!!profile&&profile.role==='sales',q=$(
  const g1=BR.filter(b=>okB(b)&&okQ('book',b)).map(b=>card('book',b));
  const g2=[];['acc','claim','tc','job'].forEach(k=>{if(k==='job'&&!(profile&&profile.role==='admin'))return;BR.forEach(b=>{if(okB(b)&&okQ(k,b)&&(has(k,b)||(b==='CPL-Inter'&&!BR.some(x=>has(k,x)))))g2.push(card(k,b))})});
  const sec=(t,c)=>c.length?`<section class="fo-g"><h3 class="fo-gh">${t}</h3><div class="fo-cards">${c.join('')}</div></section>`:'';
- $('fo_grp').innerHTML=sec(TT('ใบจองงานขนส่ง','Shipment booking'),g1)+sec(TT('เอกสารอื่น','Other documents'),g2)||`<div class="empty">${TT('ไม่พบฟอร์ม','No forms found')}</div>`;
+ const g3=(FO.tpl||[]).filter(t=>okB(t.brand)&&(!q||(t.name+' '+(t.name_en||'')+' '+t.brand).toLowerCase().includes(q))).map(t=>card('c'+t.id,t.brand));
+ const sec3=FO.tplOk?`<section class="fo-g"><h3 class="fo-gh">${TT('ฟอร์มของฉัน','My forms')}<button type="button" class="btn sm" data-ftn>${TT('+ สร้างแบบฟอร์ม','+ New form')}</button></h3>${g3.length?`<div class="fo-cards">${g3.join('')}</div>`:`<div class="fo-tpe">${TT('ยังไม่มีแบบฟอร์มที่สร้างเอง','No custom forms yet')}</div>`}</section>`:'';
+ $('fo_grp').innerHTML=sec(TT('ใบจองงานขนส่ง','Shipment booking'),g1)+sec3+sec(TT('เอกสารอื่น','Other documents'),g2)||`<div class="empty">${TT('ไม่พบฟอร์ม','No forms found')}</div>`;
  const R=done.filter(f=>okB(f.brand)).sort((a,b)=>String(b.submitted_at||b.created_at).localeCompare(String(a.submitted_at||a.created_at))).slice(0,8);
  document.querySelectorAll('#fo_home .fo-slc').forEach(e=>e.classList.toggle('hid',hs));
  $('fo_rb').innerHTML=R.map(f=>`<tr data-fr="${f.id}"><td><span class="fo-rn${isNew(f)?' nw':''}"><i></i>${H(f.company||'-')}</span></td><td><span class="fo-rf"><i style="background:${BRC[f.brand]}"></i>${H(kn(f.kind))} · ${H(f.brand)}</span></td>${hs?'':`<td class="sub">${H(f.sales||'-')}</td>`}<td class="r sub">${dt(f.submitted_at||f.created_at)}</td></tr>`).join('');
@@ -3044,11 +3156,13 @@ async function exportXl(){if(!FO.view||typeof XLSX==='undefined')return;const b=
  catch(e){alert(TT('ส่งออกไม่สำเร็จ','Export failed'))}b.disabled=false}
 async function copy(t,btn){try{await navigator.clipboard.writeText(t)}catch(e){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(_){}x.remove()}
  if(btn){const o=btn.textContent;btn.textContent=TT('คัดลอกแล้ว','Copied');setTimeout(()=>{btn.textContent=o},1500)}}
-function openNew(k,b){const f=$('fof');f.reset();if(k){const r=f.querySelector(`input[name=kind][value="${k}"]`);if(r)r.checked=true}if(b)f.brand.value=b;$('fo_kj').classList.toggle('hid',!(profile&&profile.role==='admin'));[...f.elements].forEach(e=>{if(e.id!=='fo_url')e.disabled=false});
- $('fo_lw').classList.add('hid');$('fo_mk').classList.remove('hid');$('fo_x').textContent=TT('ยกเลิก','Cancel');$('fod').showModal()}
+function openNew(k,b){const f=$('fof');f.reset();$('fo_kc').innerHTML=(FO.tpl||[]).map(t=>`<label><input type="radio" name="kind" value="c${t.id}" data-tb="${H(t.brand)}"><span>${H(t.name)}</span></label>`).join('');$('fo_cuw').classList.toggle('hid',!FO.hasCx);fillCu();if(k){const r=f.querySelector(`input[name=kind][value="${k}"]`);if(r)r.checked=true}if(b)f.brand.value=b;$('fo_kj').classList.toggle('hid',!(profile&&profile.role==='admin'));[...f.elements].forEach(e=>{if(e.id!=='fo_url')e.disabled=false});
+ $('fo_lw').classList.add('hid');$('fo_mk').classList.remove('hid');$('fo_x').textContent=TT('ยกเลิก','Cancel');kcSync();$('fod').showModal()}
 async function make(){if(FO.busy)return;const f=$('fof'),me=(profile&&profile.name)||(WHO&&WHO.n)||'';
  FO.busy=true;$('fo_mk').disabled=true;
- const{data,error}=await sb.from('cust_forms').insert({kind:f.kind.value,brand:f.brand.value,team:profile&&profile.role==='sales'?profile.team:null,sales:me||null,company:'',prefill:{sales:me}}).select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at,source').single();
+ const kv=f.kind.value,tp=/^c\d/.test(kv)?(FO.tpl||[]).find(t=>'c'+t.id===kv):null,cu=cuPick(),row={kind:tp?'custom':kv,brand:tp?tp.brand:f.brand.value,team:profile&&profile.role==='sales'?profile.team:null,sales:me||null,company:cu?cu.name:'',prefill:{sales:me}};
+ if(tp){row.template_id=tp.id;row.schema=tp.schema;row.prefill.title=tp.name;row.prefill.title_en=tp.name_en||tp.name}if(cu&&FO.hasCx)row.customer_id=String(cu.id);
+ const{data,error}=await sb.from('cust_forms').insert(row).select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at,source'+(FO.hasCx?',template_id,customer_id':'')).single();if(data)foNorm(data);
  FO.busy=false;$('fo_mk').disabled=false;
  if(error||!data)return alert(TT('สร้างฟอร์มไม่สำเร็จ','Failed to create form'));
  FO.list.unshift(data);$('fo_url').value=link(data.token);$('fo_lw').classList.remove('hid');$('fo_mk').classList.add('hid');$('fo_x').textContent=TT('ปิด','Close');
@@ -3086,6 +3200,7 @@ function secs(f,ans){ans=ans.filter(a=>String(a.v==null?'':a.v).trim()!=='');if(
   const x={...a,l};let k;
   if(f.source!=='jotform'){k=Object.keys(KEYSEC).find(p=>a.k===p||(p.endsWith('_')&&String(a.k).startsWith(p)));k=k?KEYSEC[k]:'oth'}
   else{k=l==='รายการสินค้า'?'gds':l==='ยอมรับเงื่อนไข'?'oth':jfSec(a.l||'',cur,f.kind);cur=k==='oth'?cur:k}add(k,x)});
+ if(ans.some(a=>a.s)){const G=new Map();ans.forEach(a=>{const t=TT(a.s||'',a.se||a.s||'');if(!G.has(t))G.set(t,[]);G.get(t).push(a)});return [...G].map(([t,L])=>`<section class="fo-sec"><h4>${H(t||TT('คำตอบ','Answers'))}</h4><dl class="fo-dl">${L.map(a=>`<div><dt>${H(TT(a.l,a.e||a.l))}</dt><dd>${val(a.v)}</dd></div>`).join('')}</dl></section>`).join('')}
  const ord=['per','app','clm','cd','cus','trn','shp','rcv','gds','co','ct','tm','ans','oth'];
  return ord.filter(k=>B.has(k)).map(k=>`<section class="fo-sec"><h4>${H(TT(SECN[k][0],SECN[k][1]))}</h4><dl class="fo-dl">${B.get(k).map(a=>{const w=/^[\[{]/.test(String(a.v).trim());return `<div${w?' class="fo-w"':''}><dt>${H(f.source==='jotform'?lab(a.l):TT(a.l,a.e||a.l))}</dt><dd>${val(a.v)}</dd></div>`}).join('')}</dl></section>`).join('')}
 const FO_GAS='https://script.google.com/macros/s/AKfycbzdkXD-47WaWAQxOZUmz4Vdo6-fBPz1Lm5OA-ZJVgd2R6FtAGjN3AK-Gb1D6QqUQlOH/exec',IMC={};
@@ -3105,10 +3220,10 @@ async function showAns(f){const done=f.status==='done',me=profile&&profile.id;
  $('foa_s').textContent=(done?[TT('กรอกเมื่อ ','Submitted ')+dt(f.submitted_at||f.created_at)]:[TT('ส่งลิงก์เมื่อ ','Link created ')+dt(f.created_at)]).concat(f.sales?[TT('เซลล์ ','Sales ')+f.sales]:[]).join(' · ');
  ['foa_pr','foa_pdf'].forEach(id=>$(id).classList.toggle('hid',!done));$('fo_pcp').classList.toggle('hid',done||f.source==='jotform');$('fo_pdl').classList.toggle('hid',!(profile&&profile.role==='admin')&&!(f.created_by&&f.created_by===me));
  $('fo_pw').classList.toggle('hid',done);$('fo_pw').textContent=done?'':TT('ลูกค้ายังไม่ได้กรอกฟอร์มนี้','The customer has not filled in this form yet');
- if(!done){FO.cur=f;$('foa_b').innerHTML='';$('foa_f').innerHTML='';$('foa_sh').classList.add('hid');return}
+ if(!done){cuLinkUI(f);FO.cur=f;$('foa_b').innerHTML='';$('foa_f').innerHTML='';$('foa_sh').classList.add('hid');return}
  if(f.answers===undefined){$('foa_b').innerHTML='<div class="fo-ldg"></div>';$('foa_f').innerHTML='';const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}
  if(FO.sel!=null&&FO.sel!==f.id)return;const ans=Array.isArray(f.answers)?f.answers:[];
- $('foa_b').innerHTML=secs(f,ans);
+ $('foa_b').innerHTML=secs(f,ans);cuLinkUI(f);
  const fl=Array.isArray(f.files)?f.files:[],im=fl.filter(isImg),ot=fl.filter(x=>!isImg(x));
  $('foa_f').innerHTML=fl.length?`<section class="fo-sec"><h4>${TT('ไฟล์แนบ','Attachments')}</h4>${im.length?`<div class="fo-im">${im.map(x=>`<a href="${H(x.url)}" target="_blank" rel="noopener" title="${H(x.name)}"><img data-u="${H(x.url)}" alt="" onerror="this.closest('a').classList.add('fo-ie')"><i class="fo-fn">${CLIP}${H(x.name||'')}</i><span>${H(lab(x.label||x.name))}</span></a>`).join('')}</div>`:''}${ot.length?`<div class="fo-fl">${ot.map(chip).join('')}</div>`:''}</section>`:'';
  const sh=$('foa_sh');sh.classList.toggle('hid',!f.sheet_url);sh.textContent=f.source==='jotform'?TT('เปิดโฟลเดอร์ใน Drive','Open Drive folder'):TT('เปิดใน Google Sheets','Open in Google Sheets');if(f.sheet_url)sh.href=f.sheet_url;FO.cur=f;FO.imgP=loadImgs(f)}
@@ -3183,6 +3298,69 @@ $('fo_nl').onclick=()=>FO.view&&openNew(FO.view[0],FO.view[1]);$('fo_xl').onclic
 $('fo_tabs').addEventListener('click',e=>{const x=e.target.closest('[data-fot]');if(!x)return;FO.tab=x.dataset.fot;FO.lim=150;render()});
 $('fo_items').addEventListener('click',e=>{const x=e.target.closest('[data-foi]');if(!x)return;const f=FO.list.find(y=>String(y.id)===x.dataset.foi);if(f)pick(f)});
 $('fo_more').onclick=()=>{FO.lim+=150;render()};
+function kcSync(){const f=$('fof'),r=f.querySelector('input[name=kind]:checked');const tb=r&&r.dataset.tb;f.brand.disabled=!!tb;if(tb)f.brand.value=tb}
+$('fof').addEventListener('change',e=>{if(e.target.name==='kind')kcSync()});
+async function fillCu(){$('fo_cu').value='';if(!FO.hasCx)return;try{if(!FO.cus){const{data}=await sb.from('customers').select('id,name,owner').order('name');FO.cus=data||[]}}catch(e){FO.cus=[]}$('fo_cul').innerHTML=(FO.cus||[]).map(c=>`<option value="${H(c.name)}">`).join('')}
+function cuPick(){const v=($('fo_cu').value||'').trim().toLowerCase();return v?(FO.cus||[]).find(c=>(c.name||'').trim().toLowerCase()===v)||null:null}
+window.foOpen=async id=>{tab('FO');if(!FO.loaded)await load();const f=FO.list.find(x=>String(x.id)===String(id));if(!f)return;openInbox(f.kind,f.brand);FO.sel=null;await pick(f);render()};
+window.foKn=f=>{const k=f.kind==='custom'&&f.template_id?'c'+f.template_id:f.kind;return KN[k]?TT(KN[k][0],KN[k][1]):TT((f.prefill||{}).title||'ฟอร์ม',(f.prefill||{}).title_en||(f.prefill||{}).title||'Form')};
+const cnorm=x=>String(x||'').toLowerCase().replace(/บริษัท|จำกัด|\(มหาชน\)|co\.?,?\s*ltd\.?|company|limited|\s|[.,()]/g,'');
+async function cuLinkUI(f){const el=$('foa_cu');if(!FO.hasCx){el.innerHTML='';return}
+ try{if(!FO.cus){const{data}=await sb.from('customers').select('id,name,owner').order('name');FO.cus=data||[]}}catch(e){FO.cus=FO.cus||[]}
+ const cur=f.customer_id&&(FO.cus||[]).find(c=>String(c.id)===String(f.customer_id)),sug=!cur&&f.company?(FO.cus||[]).find(c=>cnorm(c.name)&&cnorm(c.name)===cnorm(f.company)):null;
+ const ic='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+ el.innerHTML=cur?`${ic}<span>${TT('ลูกค้า','Customer')}: <a href="#" data-cugo="${H(cur.id)}">${H(cur.name)}</a></span><button type="button" class="lnk" data-cued>${TT('เปลี่ยน','Change')}</button>`
+  :sug?`${ic}<span>${TT('พบลูกค้าที่ตรงกัน','Matching customer')}: <b>${H(sug.name)}</b></span><button type="button" class="btn sm p" data-cuset="${H(sug.id)}">${TT('ผูกกับลูกค้านี้','Link')}</button><button type="button" class="lnk" data-cued>${TT('เลือกเอง','Choose')}</button>`
+  :`${ic}<span class="sub">${TT('ยังไม่ผูกกับลูกค้า','Not linked to a customer')}</span><button type="button" class="lnk" data-cued>${TT('ผูกกับลูกค้า','Link customer')}</button>`}
+async function cuSet(f,id){const{error}=await sb.from('cust_forms').update({customer_id:id?String(id):null}).eq('id',f.id);if(error)return alert(TT('บันทึกไม่สำเร็จ','Could not save'));f.customer_id=id?String(id):null;cuLinkUI(f)}
+$('foa_cu').addEventListener('click',e=>{const f=FO.cur||FO.list.find(x=>x.id===FO.sel);if(!f)return;const s1=e.target.closest('[data-cuset]'),ed=e.target.closest('[data-cued]'),go=e.target.closest('[data-cugo]'),ok=e.target.closest('[data-cuok]');
+ if(go){e.preventDefault();window.cuGo&&window.cuGo(go.dataset.cugo);return}
+ if(s1){cuSet(f,s1.dataset.cuset);return}
+ if(ed){$('foa_cu').innerHTML=`<input id="foa_cui" list="fo_cul" placeholder="${TT('พิมพ์ชื่อลูกค้า','Type customer name')}" autocomplete="off"><button type="button" class="btn sm p" data-cuok>${TT('บันทึก','Save')}</button>${f.customer_id?`<button type="button" class="lnk" data-cuok="0">${TT('ยกเลิกการผูก','Unlink')}</button>`:''}`;$('fo_cul').innerHTML=(FO.cus||[]).map(c=>`<option value="${H(c.name)}">`).join('');$('foa_cui').focus();return}
+ if(ok){if(ok.dataset.cuok==='0'){cuSet(f,null);return}const v=($('foa_cui').value||'').trim().toLowerCase(),c=(FO.cus||[]).find(x=>(x.name||'').trim().toLowerCase()===v);if(!c)return alert(TT('ไม่พบลูกค้าชื่อนี้','Customer not found'));cuSet(f,c.id)}});
+/* ===== form builder ===== */
+const FT=[['text','ข้อความสั้น','Short text'],['textarea','ข้อความยาว','Long text'],['num','ตัวเลข','Number'],['date','วันที่','Date'],['email','อีเมล','Email'],['tel','เบอร์โทร','Phone'],['addr','ที่อยู่','Address'],['select','ตัวเลือกเดียว','Single choice'],['multi','หลายตัวเลือก','Multiple choice'],['file','ไฟล์แนบ','File upload'],['sign','ลายเซ็น','Signature'],['check','ติ๊กยินยอม','Consent checkbox'],['head','หัวข้อ / ข้อความ','Heading / text'],['page','ขึ้นหน้าใหม่','Page break']];
+const FMAP=[['','ไม่ผูก','None'],['company','ชื่อบริษัท','Company'],['contact','ผู้ติดต่อ','Contact person'],['phone','เบอร์โทร','Phone'],['email','อีเมล','Email'],['country','ประเทศ','Country']];
+const FB={id:null,items:[],seq:1};
+const fbNew=t=>({id:'f'+(FB.seq++),type:t,label:'',label_en:'',req:0,options:t==='select'||t==='multi'?['ตัวเลือก 1','ตัวเลือก 2']:[],map:''});
+function fbOpen(t){FB.id=t?t.id:null;const f=$('fbf');f.reset();f.name.value=t?t.name:'';f.name_en.value=t?(t.name_en||''):'';f.brand.value=t?t.brand:'CPL-Inter';
+ const sc=t&&t.schema||{};FB.items=[];FB.seq=1;(sc.pages||[]).forEach((p,i)=>{if(i>0)FB.items.push({id:'p'+i,type:'page',label:p.title||'',label_en:p.title_en||''});(p.fields||[]).forEach(x=>{FB.items.push({...x,options:x.options||[]});const n=+String(x.id).replace(/\D/g,'');if(n>=FB.seq)FB.seq=n+1})});
+ if(!FB.items.length)FB.items=[{...fbNew('text'),label:'ชื่อบริษัท',req:1,map:'company'},{...fbNew('text'),label:'ผู้ติดต่อ',req:1,map:'contact'},{...fbNew('tel'),label:'เบอร์โทร',req:1,map:'phone'},{...fbNew('email'),label:'อีเมล',map:'email'}];
+ $('fb_ttl').textContent=t?TT('แก้ไขแบบฟอร์ม','Edit form'):TT('สร้างแบบฟอร์มใหม่','New form');$('fb_err').textContent='';fbRender();$('fbd').showModal()}
+function fbRender(){const ty=t=>FT.find(x=>x[0]===t)||FT[0];
+ $('fb_tool').innerHTML=FT.map(([k,th,en])=>`<button type="button" class="fb-tb" data-fba="${k}" draggable="true">${H(TT(th,en))}</button>`).join('');
+ $('fb_list').innerHTML=FB.items.map((x,i)=>{const t=ty(x.type),op=x.type==='select'||x.type==='multi',pg=x.type==='page',hd=x.type==='head';
+  return `<div class="fb-it${pg?' fb-pg':''}" data-i="${i}" draggable="true"><div class="fb-ih"><span class="fb-grip" aria-hidden="true">⋮⋮</span><span class="fb-ty">${H(TT(t[1],t[2]))}</span><span style="flex:1"></span>${pg||hd?'':`<label class="fb-rq"><input type="checkbox" data-fk="req"${x.req?' checked':''}>${TT('บังคับกรอก','Required')}</label>`}<button type="button" class="fo-ib2" data-fbm="-1" aria-label="${TT('เลื่อนขึ้น','Move up')}"${i?'':' disabled'}>↑</button><button type="button" class="fo-ib2" data-fbm="1" aria-label="${TT('เลื่อนลง','Move down')}"${i<FB.items.length-1?'':' disabled'}>↓</button><button type="button" class="fo-ib2" data-fbx aria-label="${TT('ลบช่อง','Remove field')}">✕</button></div>
+  <div class="fb-ib"><label class="f">${pg?TT('ชื่อหน้า','Page title'):hd?TT('ข้อความ','Text'):TT('คำถาม','Question')}${pg?'':'<b class="rq">*</b>'}<input data-fk="label" value="${H(x.label)}" maxlength="200"></label><label class="f">${TT('ภาษาอังกฤษ','English')}<input data-fk="label_en" value="${H(x.label_en||'')}" maxlength="200"></label>
+  ${op?`<label class="f fb-w">${TT('ตัวเลือก (บรรทัดละ 1 ตัวเลือก)','Options (one per line)')}<b class="rq">*</b><textarea data-fk="options" rows="3">${H((x.options||[]).join('\n'))}</textarea></label>`:''}
+  ${pg||hd||x.type==='file'||x.type==='sign'||x.type==='check'?'':`<label class="f">${TT('ผูกกับข้อมูลลูกค้า','Maps to customer field')}<select data-fk="map">${FMAP.map(([v,th,en])=>`<option value="${v}"${x.map===v?' selected':''}>${H(TT(th,en))}</option>`).join('')}</select></label>`}</div></div>`}).join('')||`<div class="fo-tpe">${TT('ลากหรือกดชนิดช่องด้านซ้ายเพื่อเพิ่ม','')}</div>`}
+function fbSchema(){const f=$('fbf'),pages=[{title:'',title_en:'',fields:[]}];
+ FB.items.forEach(x=>{if(x.type==='page'){pages.push({title:x.label||'',title_en:x.label_en||'',fields:[]});return}const o={id:x.id,type:x.type,label:x.label.trim(),label_en:(x.label_en||'').trim()};if(x.req)o.req=1;if(x.type==='select'||x.type==='multi')o.options=(x.options||[]).map(s=>String(s).trim()).filter(Boolean);if(x.map)o.map=x.map;pages[pages.length-1].fields.push(o)});
+ const nm=f.name.value.trim();return{v:1,title:nm,title_en:f.name_en.value.trim(),pages:pages.filter(p=>p.fields.length).map((p,i)=>({...p,title:p.title||(i?'':nm)}))}}
+function fbCheck(){const f=$('fbf');if(!f.name.value.trim())return TT('กรุณาตั้งชื่อฟอร์ม','Please name the form');
+ const q=FB.items.filter(x=>x.type!=='page');if(!q.length)return TT('เพิ่มอย่างน้อย 1 คำถาม','Add at least one question');
+ if(q.some(x=>!String(x.label||'').trim()))return TT('กรอกคำถามให้ครบทุกช่อง','Every field needs a question');
+ if(q.some(x=>(x.type==='select'||x.type==='multi')&&(x.options||[]).filter(s=>String(s).trim()).length<2))return TT('ช่องตัวเลือกต้องมีอย่างน้อย 2 ตัวเลือก','Choice fields need at least 2 options');return''}
+async function fbSave(){const e=fbCheck();$('fb_err').textContent=e;if(e)return;const f=$('fbf'),me=(profile&&profile.name)||'',row={name:f.name.value.trim(),name_en:f.name_en.value.trim()||null,brand:f.brand.value,schema:fbSchema(),owner_name:me,updated_at:new Date().toISOString()};
+ $('fb_sv').disabled=true;const r=FB.id?await sb.from('form_templates').update(row).eq('id',FB.id).select('*').single():await sb.from('form_templates').insert(row).select('*').single();$('fb_sv').disabled=false;
+ if(r.error||!r.data){$('fb_err').textContent=TT('บันทึกไม่สำเร็จ','Could not save');return}
+ const i=(FO.tpl||[]).findIndex(t=>t.id===r.data.id);if(i>=0)FO.tpl[i]=r.data;else(FO.tpl=FO.tpl||[]).unshift(r.data);tplReg(r.data);$('fbd').close();render()}
+async function fbDel(id){const t=(FO.tpl||[]).find(x=>String(x.id)===String(id));if(!t)return;const n=FO.list.filter(f=>f.kind==='c'+t.id).length;
+ if(!confirm(TT(`ลบแบบฟอร์ม "${t.name}"?`+(n?` (มีลิงก์/คำตอบ ${n} รายการ จะไม่แสดงในหน้านี้)`:''),`Delete form "${t.name}"?`+(n?` (${n} links/answers will be hidden)`:''))))return;
+ const{error}=await sb.from('form_templates').delete().eq('id',t.id);if(error)return alert(TT('ลบไม่สำเร็จ','Delete failed'));FO.tpl=FO.tpl.filter(x=>x.id!==t.id);render()}
+function fbPreview(){const f=$('fbf');try{localStorage.setItem('cplf_preview',JSON.stringify({schema:fbSchema(),brand:f.brand.value}))}catch(e){}window.open(new URL('form.html?preview=1',location.href).href,'_blank','noopener')}
+$('fo_grp').addEventListener('click',e=>{const a=e.target.closest('[data-fte]'),d=e.target.closest('[data-ftd]'),n=e.target.closest('[data-ftn]');if(a){e.stopPropagation();fbOpen((FO.tpl||[]).find(t=>String(t.id)===a.dataset.fte))}else if(d){e.stopPropagation();fbDel(d.dataset.ftd)}else if(n)fbOpen(null)},true);
+$('fb_tool').addEventListener('click',e=>{const b=e.target.closest('[data-fba]');if(!b)return;FB.items.push(fbNew(b.dataset.fba));fbRender();const l=$('fb_list').lastElementChild;if(l){l.scrollIntoView({block:'nearest'});const i=l.querySelector('[data-fk=label]');if(i)i.focus()}});
+$('fb_list').addEventListener('input',e=>{const t=e.target,k=t.dataset.fk,it=t.closest('[data-i]');if(!k||!it)return;const x=FB.items[+it.dataset.i];if(k==='req')x.req=t.checked?1:0;else if(k==='options')x.options=t.value.split('\n');else x[k]=t.value});
+$('fb_list').addEventListener('change',e=>{const t=e.target;if(t.dataset.fk==='map'||t.dataset.fk==='req'){const it=t.closest('[data-i]');const x=FB.items[+it.dataset.i];if(t.dataset.fk==='map')x.map=t.value;else x.req=t.checked?1:0}});
+$('fb_list').addEventListener('click',e=>{const it=e.target.closest('[data-i]');if(!it)return;const i=+it.dataset.i,m=e.target.closest('[data-fbm]');if(m){const j=i+(+m.dataset.fbm);if(j<0||j>=FB.items.length)return;[FB.items[i],FB.items[j]]=[FB.items[j],FB.items[i]];fbRender();return}if(e.target.closest('[data-fbx]')){FB.items.splice(i,1);fbRender()}});
+let fbDrag=null;
+$('fbd').addEventListener('dragstart',e=>{const it=e.target.closest&&e.target.closest('[data-i]'),tb=e.target.closest&&e.target.closest('[data-fba]');fbDrag=it?{i:+it.dataset.i}:tb?{t:tb.dataset.fba}:null;if(fbDrag){e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain','x')}catch(_){}}});
+$('fb_list').addEventListener('dragover',e=>{if(!fbDrag)return;e.preventDefault();document.querySelectorAll('.fb-it.fb-ov').forEach(x=>x.classList.remove('fb-ov'));const it=e.target.closest('[data-i]');if(it)it.classList.add('fb-ov')});
+$('fb_list').addEventListener('drop',e=>{if(!fbDrag)return;e.preventDefault();const it=e.target.closest('[data-i]');let j=it?+it.dataset.i:FB.items.length;
+ if(fbDrag.t!=null){FB.items.splice(j,0,fbNew(fbDrag.t))}else{const[x]=FB.items.splice(fbDrag.i,1);if(fbDrag.i<j)j--;FB.items.splice(j,0,x)}fbDrag=null;fbRender()});
+$('fbd').addEventListener('dragend',()=>{fbDrag=null;document.querySelectorAll('.fb-it.fb-ov').forEach(x=>x.classList.remove('fb-ov'))});
+$('fb_x').onclick=()=>$('fbd').close();$('fb_pv').onclick=fbPreview;$('fbf').addEventListener('submit',e=>{e.preventDefault();fbSave()});
 const step=d=>{const L=inbList().L,i=L.findIndex(f=>f.id===FO.sel),f=L[i+d];if(f){pick(f);const el=document.querySelector(`#fo_items [data-foi="${f.id}"]`);if(el)el.scrollIntoView({block:'nearest'})}};
 $('fo_prv').onclick=()=>step(-1);$('fo_nxt').onclick=()=>step(1);
 $('fo_pcp').onclick=e=>FO.cur&&copy(link(FO.cur.token),e.currentTarget);$('fo_pdl').onclick=()=>FO.cur&&del(FO.cur);
@@ -3212,6 +3390,7 @@ if(typeof EN==='object')Object.assign(EN,{'เปิดโฟลเดอร์�
 
 <script>
 if(typeof EN==='object')Object.assign(EN,{"ทั่วไป":"General","📌 ทั่วไป":"📌 General","+ สร้างฟอร์ม":"+ Create form","คำตอบล่าสุด":"Latest answers","ฟอร์ม":"Form","กรอกเมื่อ":"Submitted","ค้นหาฟอร์ม":"Search forms","เยี่ยมลูกค้าโดยตรง":"Direct visit","+ เพิ่มลูกค้า":"+ Add customer","เจ้าของ":"Owner","แอดที่ทักเข้ามา":"Ads that messaged","Lead ล่าสุด":"Latest lead","ค้นหาชื่อ / เบอร์ / อีเมล":"Search name / phone / email","ชื่อลูกค้าในใบเสนอราคา":"Customer name on quotation","บันทึกใบเสนอราคา":"Save quotation","เรือ":"Sea","ตัวเลือกในฟอร์ม":"Form options","แผนเยี่ยมลูกค้า":"Customer Visit Plan","ค้นหาชื่อลูกค้า / Ads / ประเทศ…":"Search customer / Ads / country…"});
+if(typeof EN==='object')Object.assign(EN,{"สร้างแบบฟอร์มใหม่":"New form","ชื่อฟอร์ม":"Form name","ชื่อภาษาอังกฤษ":"English name","ดูตัวอย่าง":"Preview","ไม่ระบุ":"None"});
 window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch(e){}});
 </script>
 
@@ -3222,6 +3401,16 @@ window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch
  f.addEventListener('change',()=>{set();if(q.value.trim()){try{qFetch()}catch(e){}render()}q.focus()});set();
  const lb=document.getElementById('lang');if(lb)lb.addEventListener('click',()=>setTimeout(set,0));
  if(typeof EN==='object')Object.assign(EN,{"ทั้งหมด":"All","ชื่อลูกค้า":"Customer name","ประเทศ":"Country","ผู้ติดต่อ / เบอร์ / อีเมล":"Contact / phone / email","หมายเหตุ":"Notes","ค้นหาจาก":"Search in"});
+})();
+</script>
+
+<script>
+(function(){if(typeof renderBell!=='function'||typeof bellOpen!=='function')return;
+ const _rb=renderBell;renderBell=function(){_rb.apply(this,arguments);try{if(profile&&profile.role==='sales'&&window.ptBell)window.ptBell()}catch(e){}};
+ const _bo=bellOpen;bellOpen=function(keep){_bo.apply(this,arguments);if(!(profile&&profile.role==='sales')||!window.ptNots)return;const L=window.ptNots(),p=$('bpn');if(!p)return;
+  const h=L.map(o=>`<div class="bi${o.un?' un':''}" data-pti="${esc(o.k)}" data-cid="${esc(String(o.c.id))}"><div><b>${esc(o.c.name)}</b> ${TT('มีแต้มสะสม ','has ')}${o.P.bal} ${TT('แต้ม','points')} (${esc(o.P.b)})</div><div class="bs"><span class="chip" style="background:#e7f6ee;color:#1d7a4a;padding:1px 8px;border-radius:10px;font-size:11px">${TT('แลกได้ ','Can redeem ')}${o.n} ${TT('แต้ม','pts')}</span></div></div>`).join('');
+  const hd=p.querySelector('.bph');p.querySelectorAll('.bi[data-bi],.sub').forEach(x=>{if(!x.closest('.bph')&&L.length&&x.classList.contains('sub')&&!x.closest('.bi'))x.remove()});if(hd)hd.insertAdjacentHTML('afterend',h)};
+ document.addEventListener('click',e=>{const x=e.target.closest('#bpn [data-pti]');if(x){window.ptMark(x.dataset.pti);$('bpn').classList.add('hid');window.ptBell();window.cuGo&&window.cuGo(x.dataset.cid);return}if(e.target.closest('#bra')&&window.ptMark){window.ptMark();setTimeout(()=>{window.ptBell&&window.ptBell()},0)}},true);
 })();
 </script>
 </body>

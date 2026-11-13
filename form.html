@@ -25,7 +25,7 @@ h1{font-size:19px;margin:6px 0 0}
 main{flex:1;padding:20px;display:flex;flex-direction:column;gap:14px}
 h2{font-size:16px;margin:0}
 label.f{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500}
-label.f .rq{color:var(--dgr);font-weight:700}
+label.f .rq,.f .rq{color:var(--dgr);font-weight:700}
 .lb{display:flex;gap:3px}
 input,select,textarea{font:inherit;font-size:16px;color:var(--tx);background:var(--fill);border:1px solid transparent;border-radius:var(--r);min-height:46px;padding:10px 14px;width:100%;outline:none;-webkit-appearance:none;appearance:none}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2362768c' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
@@ -71,6 +71,12 @@ footer{padding:12px 20px calc(18px + env(safe-area-inset-bottom,0px));border-top
 .ad label .rq{color:var(--dgr);font-weight:700}
 .err .ad input{border-color:transparent!important}.ad input:focus{border-color:var(--c)!important}.ad label.e input{border-color:var(--dgr)!important}
 @media(max-width:420px){.cc{grid-template-columns:112px 1fr}}
+
+.f{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500}.fhd{padding:6px 0 0;border-top:1px solid var(--bd)}.fhd b{font-size:15px}
+.mc{display:flex;flex-wrap:wrap;gap:8px}.mcx{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--r);background:var(--fill);font-size:15px;font-weight:500;cursor:pointer}
+.mcx input{width:18px;height:18px;min-height:0;padding:0;margin:0;accent-color:var(--c);-webkit-appearance:auto;appearance:auto}
+.err .mcx{outline:1px solid var(--dgr)}
+.pvb{position:sticky;top:0;z-index:5;background:#fff4d6;color:#7a5a00;text-align:center;font-size:13px;font-weight:600;padding:8px}
 </style>
 </head>
 <body>
@@ -79,7 +85,7 @@ footer{padding:12px 20px calc(18px + env(safe-area-inset-bottom,0px));border-top
 const SUPABASE_URL='https://mdhtrioxacscstaqmlvy.supabase.co';
 const SUPABASE_KEY='sb_publishable_00Ly9BUyenzeyyn9cWiCxQ_0HzrxeSF';
 const GAS_URL='https://script.google.com/macros/s/AKfycbzdkXD-47WaWAQxOZUmz4Vdo6-fBPz1Lm5OA-ZJVgd2R6FtAGjN3AK-Gb1D6QqUQlOH/exec';
-const BRAND_C={'CPL-Inter':'#0082c0','CPLEx':'#e05a1a','CLMV':'#11794a','IMTH':'#6b3fb5'};
+const BRAND_C={'CPL-Inter':'#0082c0','CPLEx':'#e05a1a','CLMV':'#b8901f','IMTH':'#6b3fb5'};
 const MAX_FILE=10*1024*1024;
 let LANG='th';
 const T=(th,en)=>LANG==='en'?en:th;
@@ -205,8 +211,13 @@ function telHtml(f){const k=f[0],cc=S.v[k+'__cc']||'+66';
  return `<div class="cc"><select data-k="${k}__cc" aria-label="${T('รหัสประเทศ','Country code')}">${CC.map(([c,d,th,en])=>`<option value="${d}"${cc===d?' selected':''}>${flag(c)} ${d}</option>`).join('')}</select><input data-k="${k}__n" type="tel" inputmode="tel" autocomplete="off" value="${esc(S.v[k+'__n']||'')}"></div>`}
 function addrHtml(f){const k=f[0],rq=f[4],e=S.err[k+'__p']||{};
  return `<div class="ad">${AP.map(([i,th,en,r,w])=>`<label class="${w?'w':''}${e[i]?' e':''}"><span>${esc(T(th,en))}${rq&&r?' <span class="rq">*</span>':''}</span><input data-k="${k}__${i}"${i==='5'?' inputmode="numeric"':''} autocomplete="off" value="${esc(S.v[k+'__'+i]||'')}"></label>`).join('')}</div>`}
+function fromSchema(sc){sc=sc||{};const pages=(sc.pages||[]).filter(p=>p&&(p.fields||[]).length);
+ return{th:sc.title||'ฟอร์ม',en:sc.title_en||sc.title||'Form',custom:1,steps:pages.map(p=>[[p.title||sc.title||'ฟอร์ม',p.title_en||p.title||sc.title_en||sc.title||'Form'],
+  p.fields.map(f=>[f.id,f.label||'',f.label_en||f.label||'',f.type||'text',f.req?1:0,null,(f.type==='select'||f.type==='multi')?(f.options||[]).map(o=>[o,o]):(f.map?{map:f.map}:null)])])}}
 function fieldHtml(f){const[k,th,en,ty,rq,,x]=f,lb=`<span class="lb">${esc(T(th,en))}${rq?'<span class="rq">*</span>':''}</span>`,v=S.v[k]==null?'':S.v[k],e=S.err[k];
  const em=e?`<span class="em">${esc(e)}</span>`:'';
+ if(ty==='head')return `<div class="fhd"><b>${esc(T(th,en))}</b></div>`;
+ if(ty==='multi'){const a=Array.isArray(v)?v:[];return `<div class="f${e?' err':''}">${lb}<div class="mc">${opts(f).map(([o,oe])=>`<label class="mcx"><input type="checkbox" data-mk="${k}" value="${esc(o)}"${a.includes(o)?' checked':''}><span>${esc(T(o,oe))}</span></label>`).join('')}</div>${em}</div>`}
  if(ty==='check')return `<label class="ck${e?' err':''}"><input type="checkbox" data-k="${k}"${v?' checked':''}><span>${esc(T(th,en))}${rq?'&nbsp;<span class="rq" style="color:var(--dgr)">*</span>':''}</span></label>${em}`;
  if(ty==='sign')return `<div class="f${e?' err':''}" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500">${lb}<div class="sg"><canvas data-sig="${k}"></canvas><span class="sgh">${T('เซ็นชื่อในกรอบนี้','Sign inside this box')}</span><button type="button" class="sgc" data-sgc="${k}">${T('ล้าง','Clear')}</button></div>${em}</div>`;
  if(ty==='file'){const fl=S.files[k];return `<div class="f${e?' err':''}" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500">${lb}<label class="up${fl?' has':''}"><input type="file" data-k="${k}" accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx,.xls,.xlsx"><span>${fl?esc(fl.name):T('แนบไฟล์ (PDF / รูปภาพ ไม่เกิน 10 MB)','Attach file (PDF / image, up to 10 MB)')}</span><b>${fl?T('เปลี่ยน','Change'):T('เลือกไฟล์','Choose')}</b></label>${em}</div>`}
@@ -229,11 +240,11 @@ function render(){const app=$('app');document.documentElement.lang=LANG;
  app.innerHTML=head(st)+`<main><h2>${esc(T(h[0],h[1]))}</h2>${fs.map(fieldHtml).join('')}${last?summary():''}</main><footer><button type="button" class="btn" id="back"${S.step?'':' disabled'}>${T('ย้อนกลับ','Back')}</button><button type="button" class="btn p" id="next">${last?T('ส่งข้อมูล','Submit'):T('ถัดไป','Next')}</button></footer>`}
 function summary(){cmbAll();const st=steps(),rows=[];st.slice(0,-1).forEach(([,fs])=>fs.forEach(f=>{if(f[3]==='sign')return;if(f[3]==='file'){if(S.files[f[0]])rows.push([T(f[1],f[2]),S.files[f[0]].name])}else if(S.v[f[0]])rows.push([T(f[1],f[2]),dispV(f)])}));
  return rows.length?`<div class="sum">${rows.map(([a,b])=>`<div><em>${esc(a)}</em><span>${esc(b)}</span></div>`).join('')}</div>`:''}
-function dispV(f){const v=S.v[f[0]];if(f[3]==='select'){const o=opts(f).find(x=>x[0]===v);return o?T(o[0],o[1]):v}if(f[3]==='num'&&f[6]&&f[6].u)return v+' '+T(f[6].u[0],f[6].u[1]);return v}
+function dispV(f){const v=S.v[f[0]];if(Array.isArray(v))return v.join(', ');if(f[3]==='select'){const o=opts(f).find(x=>x[0]===v);return o?T(o[0],o[1]):v}if(f[3]==='num'&&f[6]&&f[6].u)return v+' '+T(f[6].u[0],f[6].u[1]);return v}
 function validDate(s){const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s||'');if(!m)return false;const d=new Date(+m[3],+m[2]-1,+m[1]);return d.getDate()==+m[1]&&d.getMonth()==+m[2]-1}
 function check(){const[,fs]=steps()[S.step];S.err={};fs.forEach(cmb);
  fs.forEach(f=>{const[k,,,ty,rq,,x]=f,v=ty==='file'||ty==='sign'?S.files[k]:S.v[k];
-  if(rq&&(!v||(typeof v==='string'&&!v.trim())))S.err[k]=ty==='check'?T('กรุณายืนยัน','Please confirm'):ty==='sign'?T('กรุณาลงลายมือชื่อ','Please sign'):T('กรุณากรอกช่องนี้','This field is required');
+  if(rq&&(!v||(typeof v==='string'&&!v.trim())||(Array.isArray(v)&&!v.length)))S.err[k]=ty==='check'?T('กรุณายืนยัน','Please confirm'):ty==='sign'?T('กรุณาลงลายมือชื่อ','Please sign'):T('กรุณากรอกช่องนี้','This field is required');
   else if(v&&ty==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))S.err[k]=T('รูปแบบอีเมลไม่ถูกต้อง','Invalid email');
   else if(v&&ty==='date'&&!validDate(v))S.err[k]=T('รูปแบบวันที่ต้องเป็น dd/mm/yyyy','Use dd/mm/yyyy');
   else if(v&&x&&x.tax&&!/^\d{13}$/.test(v))S.err[k]=T('ต้องเป็นตัวเลข 13 หลัก','Must be 13 digits');
@@ -252,8 +263,11 @@ const _render=render;render=function(){_render();initSig()};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-sgc]');if(!b)return;const k=b.dataset.sgc;delete S.sig[k];delete S.files[k];const c=document.querySelector(`canvas[data-sig="${k}"]`);if(c){c.getContext('2d').clearRect(0,0,c.width,c.height);c.parentNode.classList.remove('has')}});
 const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
 async function submit(btn){cmbAll();btn.disabled=true;btn.textContent=T('กำลังส่ง…','Sending…');
- const all=FORMS[S.form.kind].steps.flatMap(s=>s[1]),answers=all.filter(f=>f[3]!=='file'&&f[3]!=='sign').map(f=>({k:f[0],l:f[1],e:f[2],v:f[3]==='check'?(S.v[f[0]]?'ยินยอม':''):(S.v[f[0]]==null?'':String(S.v[f[0]]))+(f[3]==='num'&&f[6]&&f[6].u&&S.v[f[0]]?' '+f[6].u[0]:'')}));
- const co=S.v.s_company||S.v.co_name||S.v.c_name||S.v.t_name||S.v.j_name||'',ct=S.v.s_contact||S.v.ct_name||S.v.c_contact||S.v.t_contact||S.v.j_pos||'';
+ const all=FORMS[S.form.kind].steps.flatMap(s=>s[1]),SEC0=0;let SEC;SEC={};FORMS[S.form.kind].steps.forEach(([h,fs])=>fs.forEach(f=>{SEC[f[0]]=h}));const custom=!!FORMS[S.form.kind].custom;
+ if(S.preview){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('นี่คือตัวอย่างฟอร์ม ข้อมูลจะไม่ถูกส่ง','This is a preview. Nothing was sent.'));return}
+ const answers=all.filter(f=>f[3]!=='file'&&f[3]!=='sign'&&f[3]!=='head').map(f=>({k:f[0],l:f[1],e:f[2],...(custom?{s:SEC[f[0]][0],se:SEC[f[0]][1]}:{}),v:f[3]==='check'?(S.v[f[0]]?'ยินยอม':''):Array.isArray(S.v[f[0]])?S.v[f[0]].join(', '):(S.v[f[0]]==null?'':String(S.v[f[0]]))+(f[3]==='num'&&f[6]&&f[6].u&&S.v[f[0]]?' '+f[6].u[0]:'')}));
+ const mp=m=>{const f=all.find(x=>x[6]&&x[6].map===m);return f?String(S.v[f[0]]||''):''};
+ const co=S.v.s_company||S.v.co_name||S.v.c_name||S.v.t_name||S.v.j_name||mp('company')||'',ct=S.v.s_contact||S.v.ct_name||S.v.c_contact||S.v.t_contact||S.v.j_pos||mp('contact')||'';
  try{const{data,error}=await sb.rpc('form_submit',{p_token:S.k,p_answers:answers,p_files:[],p_sheet:null,p_company:co,p_contact:ct});if(error)throw error}
  catch(e){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง','Could not submit. Please try again.'));return}
  S.form.status='done';
@@ -274,7 +288,7 @@ document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.k;
  if(/__n$/.test(k))t.value=t.value.replace(/[^\d\s-]/g,'').slice(0,18);
  if(/__5$/.test(k))t.value=t.value.replace(/[^\dA-Za-z\s-]/g,'').slice(0,10);
  S.v[k]=t.type==='checkbox'?t.checked:t.value;const mk=k.replace(/__\w+$/,'');if(mk!==k&&S.err[mk]){const pe=S.err[mk+'__p'];if(pe){delete pe[k.split('__')[1]];const L=t.closest('label');if(L)L.classList.remove('e');if(Object.keys(pe).length)return;delete S.err[mk+'__p']}delete S.err[mk];const w=t.closest('.err');if(w){w.classList.remove('err');const m=w.querySelector(':scope>.em');if(m)m.remove()}return}if(S.err[k]){delete S.err[k];const w=t.closest('.err');if(w){w.classList.remove('err');const m=w.querySelector('.em')||w.nextElementSibling;if(m&&m.classList&&m.classList.contains('em'))m.remove()}}});
-document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.mk){const mk=t.dataset.mk,a=Array.isArray(S.v[mk])?S.v[mk].slice():[];if(t.checked){if(!a.includes(t.value))a.push(t.value)}else a.splice(a.indexOf(t.value),1);S.v[mk]=a;if(S.err[mk]){delete S.err[mk];render()}return}const k=t.dataset&&t.dataset.k;if(!k)return;
  if(t.type==='file'){const f=t.files&&t.files[0];if(!f)return;if(f.size>MAX_FILE){alert(T('ไฟล์ใหญ่เกิน 10 MB','File is larger than 10 MB'));t.value='';return}S.files[k]=f;delete S.err[k];render();return}
  S.v[k]=t.type==='checkbox'?t.checked:t.value;if(S.err[k]){delete S.err[k];render()}});
 document.addEventListener('click',e=>{const l=e.target.closest('[data-lang]');if(l){LANG=l.dataset.lang;try{localStorage.setItem('cplf_lang',LANG)}catch(_){}render();return}
@@ -283,8 +297,10 @@ document.addEventListener('click',e=>{const l=e.target.closest('[data-lang]');if
  if(e.target.id==='next'){if(!check()){render();const x=document.querySelector('.err');if(x)x.scrollIntoView({block:'center',behavior:'smooth'});return}
   if(S.step<steps().length-1){S.step++;render();window.scrollTo(0,0)}else submit(e.target)}});
 (async function(){let sv=null;try{sv=localStorage.getItem('cplf_lang')}catch(_){}if(sv)LANG=sv;
+ if(new URLSearchParams(location.search).get('preview')){let pv=null;try{pv=JSON.parse(localStorage.getItem('cplf_preview')||'null')}catch(_){}if(pv&&pv.schema){FORMS.custom=fromSchema(pv.schema);S.preview=true;S.form={kind:'custom',brand:pv.brand||'CPL-Inter',status:'sent',prefill:{}};document.body.insertAdjacentHTML('afterbegin','<div class="pvb">'+T('ตัวอย่างฟอร์ม · ข้อมูลจะไม่ถูกส่ง','Form preview · nothing will be sent')+'</div>')}render();return}
  if(!sb||!/^[0-9a-f-]{36}$/i.test(S.k)){render();return}
  const{data,error}=await sb.rpc('form_get',{p_token:S.k});
+ if(!error&&data&&data.kind==='custom'&&data.schema)FORMS.custom=fromSchema(data.schema);
  if(!error&&data&&FORMS[data.kind]){S.form=data;['s_address','reg_address','c_address','j_address'].forEach(k=>{S.v[k+'__6']=data.brand==='CLMV'?'':'ไทย'});if(!sv&&data.brand==='CLMV')LANG='en';const p=data.prefill||{};FORMS[data.kind].steps.forEach(([,fs])=>fs.forEach(f=>{if(f[5]&&p[f[5]]!=null&&p[f[5]]!==''){let v=String(p[f[5]]);if(f[3]==='select'&&!opts(f).some(o=>o[0]===v))return;if(f[3]==='num')v=fmtN(v,f[6]&&f[6].d);if(f[3]==='tel'){const m=/^(\+\d{1,4})\s*(.*)$/.exec(v.trim());if(m&&CC.some(c=>c[1]===m[1])){S.v[f[0]+'__cc']=m[1];S.v[f[0]+'__n']=m[2]}else S.v[f[0]+'__n']=v;return}if(f[3]==='addr'){S.v[f[0]+'__1']=v;return}S.v[f[0]]=v}}))}
  render()})();
 </script>
