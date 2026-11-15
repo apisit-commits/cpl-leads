@@ -2393,9 +2393,9 @@ async function cuLoad(force){
  if(CU.loaded&&!force)return CU.ok;
  try{return await cuLoad0()}catch(e){CU.ok=false;CU.loaded=true;return false}}
 async function cuLoad0(){
- const a=await sb.from('customers').select('*').order('name');
- if(a.error){CU.ok=false;CU.loaded=true;return false}
- const b=await sb.from('customer_contacts').select('*').order('created_at');
+ const ad=await pg(()=>sb.from('customers').select('*').order('name').order('id'));
+ if(!ad){CU.ok=false;CU.loaded=true;return false}const a={data:ad};
+ const b={data:await pg(()=>sb.from('customer_contacts').select('*').order('created_at').order('id'))||[]};
  const l=await pg(()=>sb.from('leads').select('id,customer_id,team,name,ads,sales,status,fu,fu_status,date,deal_date,deal_amt,detail').not('customer_id','is',null));
  const off=!!profile&&profile.role==='sales'&&profile.team==='C',adm=!!profile&&profile.role==='admin',vis=r=>adm||(off?r.team==='C':r.team!=='C'),any=new Set((l||[]).map(r=>r.customer_id));const cs=new Set(salesFor('C')),ownOk=c=>adm||(off?cs.has(c.owner):!cs.has(c.owner));
  CU.ls={};(l||[]).filter(vis).forEach(r=>(CU.ls[r.customer_id]=CU.ls[r.customer_id]||[]).push(r));
@@ -2573,6 +2573,7 @@ setTimeout(async()=>{try{if(!profile||CU.loaded)return;await cuLoad(true);await 
 const _sl=saveLead;saveLead=async function(id,o){if(CU.ok&&isBeta()&&o.name){let keep=false;if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();keep=!!(data&&data.customer_id)}if(!keep){try{const cid=await cuLink(o);if(cid)o={...o,customer_id:cid}}catch(e){}}}return _sl(id,o)};
 /* ---- LINE points dashboard ---- */
 const PD={b:''};
+const ptdLock=()=>{const r=profile&&profile.role,t=profile&&profile.team;return r==='admin'?'':(t==='A'?'CPL-Inter':t==='B'?'CPLEx':'')};
 const ptdOk=()=>!!(profile&&['admin','sales','sales_lead'].includes(profile.role));
 function ptdCards(){const me=(profile&&profile.name)||'',r=profile&&profile.role,sl=$('psl')?$('psl').value:'';const out=[];
  CU.list.forEach(c=>{if(r==='sales'&&c.owner!==me)return;if(sl&&c.owner!==sl)return;['A','B'].forEach(t=>{const b=PR[t].b;if(PD.b&&PD.b!==b)return;if(!PT.rows.some(x=>String(x.customer_id)===String(c.id)&&x.brand===b&&x.kind==='open'))return;out.push({c,t,b,P:ptCalc(c.id,t)})})});return out}
@@ -2582,7 +2583,7 @@ function ptdEv(o){const P=o.P,E=[];if(!P.open)return E;E.push({d:P.open.date,e:2
 async function ptDash(){const el=$('ptd');if(!el)return;$('pslw').classList.toggle('hid',profile&&profile.role==='sales');
  if(!CU.loaded)await cuLoad();await ptLoad();if(!CU.ok||!PT.ok){el.innerHTML=`<div class="pn sub">${TT('โหลดข้อมูลแต้มไม่ได้','Could not load points')}</div>`;return}
  const so=$('psl'),cur=so.value,ow=[...new Set(CU.list.map(c=>c.owner).filter(Boolean))].sort();so.innerHTML=`<option value="">${TT('ทุกเซลล์','All sales')}</option>`+ow.map(x=>`<option>${H(x)}</option>`).join('');so.value=ow.includes(cur)?cur:'';
- document.querySelectorAll('#ptb [data-b]').forEach(x=>x.classList.toggle('on',x.dataset.b===PD.b));
+ const lk=ptdLock();if(lk)PD.b=lk;document.querySelectorAll('#ptb [data-b]').forEach(x=>{x.classList.toggle('on',x.dataset.b===PD.b);x.classList.toggle('hid',!!lk&&x.dataset.b!==lk)});
  const A=$('p1').value||'',B=$('p2').value||'',inR=d=>!!d&&(!A||d>=A)&&(!B||d<=B),td=today();
  const L=ptdCards(),act=L.filter(o=>o.P.act);
  L.forEach(o=>o.E=ptdEv(o));
@@ -2614,7 +2615,7 @@ async function ptDash(){const el=$('ptd');if(!el)return;$('pslw').classList.togg
  <div class="pn" id="ptd_wait"><h3>${TT('งานปิดแล้วรอยืนยันชำระ','Closed jobs awaiting payment')} <em class="ptd-n">${wait.length}</em></h3>${tWait}</div>${tSales}`}
 window.ptDash=ptDash;window.ptdOk=ptdOk;
 document.addEventListener('click',async e=>{const t=e.target;if(!t.closest||!t.closest('#vPT'))return;
- const bb=t.closest('#ptb [data-b]');if(bb){PD.b=bb.dataset.b;ptDash();return}
+ const bb=t.closest('#ptb [data-b]');if(bb){if(ptdLock())return;PD.b=bb.dataset.b;ptDash();return}
  const sg=t.closest('[data-pgo]');if(sg){const p=$('ptd_'+sg.dataset.pgo);if(p)p.scrollIntoView({behavior:'smooth',block:'start'});return}
  const cu=t.closest('[data-pcu]');if(cu){window.cuGo(cu.dataset.pcu);return}
  const pay=t.closest('[data-ppay]');if(pay){const[cid,b,lid]=pay.dataset.ppay.split('|');pay.disabled=true;const{error}=await sb.from('cust_points').insert({customer_id:cid,brand:b,kind:'paid',lead_id:+lid,points:0,date:today(),created_by:(profile&&profile.name)||''});if(error)alert(TT('บันทึกไม่สำเร็จ','Could not save'));await ptLoad(true);ptDash();if(window.ptBell)window.ptBell()}});
@@ -3445,13 +3446,13 @@ $('fo_items').addEventListener('click',e=>{const x=e.target.closest('[data-foi]'
 $('fo_more').onclick=()=>{FO.lim+=150;render()};
 function kcSync(){const f=$('fof'),r=f.querySelector('input[name=kind]:checked');const tb=r&&r.dataset.tb;f.brand.disabled=!!tb;if(tb)f.brand.value=tb}
 $('fof').addEventListener('change',e=>{if(e.target.name==='kind')kcSync()});
-async function fillCu(){$('fo_cu').value='';if(!FO.hasCx)return;try{if(!FO.cus){const{data}=await sb.from('customers').select('id,name,owner').order('name');FO.cus=data||[]}}catch(e){FO.cus=[]}$('fo_cul').innerHTML=(FO.cus||[]).map(c=>`<option value="${H(c.name)}">`).join('')}
+async function fillCu(){$('fo_cu').value='';if(!FO.hasCx)return;try{if(!FO.cus){FO.cus=await (async()=>{let o=[],i=0;for(;;){const{data,error}=await sb.from('customers').select('id,name,owner').order('name').order('id').range(i,i+999);if(error)break;o=o.concat(data||[]);if(!data||data.length<1000)break;i+=1000}return o})()}}catch(e){FO.cus=[]}$('fo_cul').innerHTML=(FO.cus||[]).map(c=>`<option value="${H(c.name)}">`).join('')}
 function cuPick(){const v=($('fo_cu').value||'').trim().toLowerCase();return v?(FO.cus||[]).find(c=>(c.name||'').trim().toLowerCase()===v)||null:null}
 window.foOpen=async id=>{tab('FO');if(!FO.loaded)await load();const f=FO.list.find(x=>String(x.id)===String(id));if(!f)return;openInbox(f.kind,f.brand);FO.sel=null;await pick(f);render()};
 window.foKn=f=>{const k=f.kind==='custom'&&f.template_id?'c'+f.template_id:f.kind;return KN[k]?TT(KN[k][0],KN[k][1]):TT((f.prefill||{}).title||'ฟอร์ม',(f.prefill||{}).title_en||(f.prefill||{}).title||'Form')};
 const cnorm=x=>String(x||'').toLowerCase().replace(/บริษัท|จำกัด|\(มหาชน\)|co\.?,?\s*ltd\.?|company|limited|\s|[.,()]/g,'');
 async function cuLinkUI(f){const el=$('foa_cu');if(!FO.hasCx){el.innerHTML='';return}
- try{if(!FO.cus){const{data}=await sb.from('customers').select('id,name,owner').order('name');FO.cus=data||[]}}catch(e){FO.cus=FO.cus||[]}
+ try{if(!FO.cus){FO.cus=await (async()=>{let o=[],i=0;for(;;){const{data,error}=await sb.from('customers').select('id,name,owner').order('name').order('id').range(i,i+999);if(error)break;o=o.concat(data||[]);if(!data||data.length<1000)break;i+=1000}return o})()}}catch(e){FO.cus=FO.cus||[]}
  const cur=f.customer_id&&(FO.cus||[]).find(c=>String(c.id)===String(f.customer_id)),sug=!cur&&f.company?(FO.cus||[]).find(c=>cnorm(c.name)&&cnorm(c.name)===cnorm(f.company)):null;
  const ic='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
  el.innerHTML=cur?`${ic}<span>${TT('ลูกค้า','Customer')}: <a href="#" data-cugo="${H(cur.id)}">${H(cur.name)}</a></span><button type="button" class="lnk" data-cued>${TT('เปลี่ยน','Change')}</button>`
