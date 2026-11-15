@@ -2417,7 +2417,7 @@ function fillOwner(sel,v){const o=[...new Set([...salesFor(''),...(v?[v]:[])])];
 function cuRender(){
  const so=$('cu_o'),cur=CU.own;so.innerHTML='<option value="">ทั้งหมด</option>'+ownersOf().map(x=>`<option>${H(x)}</option>`).join('');so.value=cur;
  const q=(CU.q||'').toLowerCase().trim();
- const qk=dupKey(q),L=CU.list.filter(c=>{if(CU.own&&c.owner!==CU.own)return false;if(!q)return true;const ls=CU.ls[c.id]||[],t=[c.name,c.tax_id,...(CU.cts[c.id]||[]).flatMap(x=>[x.name,x.phone,x.email,x.line]),...ls.flatMap(l=>[l.name,l.ads,l.sales])].join(' ').toLowerCase();return t.includes(q)||(qk.length>=3&&dupKey(t).includes(qk))||(/\d{6,}/.test(q.replace(/\D/g,''))&&ls.some(l=>leadPh(l.detail||{}).some(ph=>dupPh(ph)===dupPh(q))))});
+ const mine=profile&&profile.role==='sales'?profile.name:'';so.classList.toggle('hid',!!mine);const qk=dupKey(q),L=CU.list.filter(c=>{if(mine&&c.owner!==mine)return false;if(CU.own&&c.owner!==CU.own)return false;if(!q)return true;const ls=CU.ls[c.id]||[],t=[c.name,c.tax_id,...(CU.cts[c.id]||[]).flatMap(x=>[x.name,x.phone,x.email,x.line]),...ls.flatMap(l=>[l.name,l.ads,l.sales])].join(' ').toLowerCase();return t.includes(q)||(qk.length>=3&&dupKey(t).includes(qk))||(/\d{6,}/.test(q.replace(/\D/g,''))&&ls.some(l=>leadPh(l.detail||{}).some(ph=>dupPh(ph)===dupPh(q))))});
  if(!CU.ok){$('cu_b').innerHTML='<tr><td colspan="8" class="sub">โหลดข้อมูลลูกค้าไม่ได้</td></tr>';return}
  $('cu_b').innerHTML=L.length?L.map(c=>{const s=stats(c.id),b=badge(s),ct=(CU.cts[c.id]||[]),pm=ct.find(x=>x.is_primary)||ct[0];
   return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner||s.sl)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td>${s.fa?H(s.fa)+(s.ads.length>1?' +'+(s.ads.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="8" class="sub">ไม่พบลูกค้า</td></tr>'}
@@ -3181,7 +3181,7 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 
 /* LINE points dashboard */
 #vPT{--line:#06c755;--lineb:#e9f9ef;--lined:#04883a}
-#vPT .hid{display:none!important}
+#vPT .hid,#vCU #cu_o.hid{display:none!important}
 #vPT .ptd-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}#vPT .ptd-top .mktabs{margin:0}
 #vPT .mktabs button.on{background:var(--line)!important;border-color:var(--line)!important;color:#fff!important}#vPT td.ptd-nm{white-space:normal;min-width:110px;max-width:200px;overflow-wrap:anywhere}#vPT .cub{white-space:normal}
 #vPT .bar{margin-bottom:12px}
