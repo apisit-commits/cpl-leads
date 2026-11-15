@@ -557,7 +557,7 @@ header .hd #who{display:none!important}
 
 <dialog id="fbd"><form id="fbf" method="dialog" novalidate><h3 style="margin:0 0 12px" id="fb_ttl">สร้างแบบฟอร์มใหม่</h3>
 <div class="g fb-hd"><label class="f">ชื่อฟอร์ม<b class="rq">*</b><input name="name" maxlength="120"></label><label class="f">ชื่อภาษาอังกฤษ<input name="name_en" maxlength="120"></label><label class="f">แบรนด์<b class="rq">*</b><select name="brand"><option>CPL-Inter</option><option>CPLEx</option><option>CLMV</option><option>IMTH</option></select></label></div>
-<div class="fb-body"><div class="fb-tool" id="fb_tool"></div><div class="fb-list" id="fb_list"></div></div>
+<div class="fb-body"><div class="fb-tool" id="fb_tool"></div><div class="fb-list" id="fb_list"></div></div><div class="fb-pvw" id="fb_pvw" style="display:none"><iframe id="fb_ifr" title="Preview"></iframe></div>
 <div class="acts"><span class="fb-err" id="fb_err"></span><span style="flex:1"></span><button type="button" class="btn" id="fb_x">ยกเลิก</button><button type="button" class="btn" id="fb_pv">ดูตัวอย่าง</button><button class="btn p" id="fb_sv">บันทึก</button></div></form></dialog>
 <dialog id="fod"><form id="fof" method="dialog" novalidate><h3 style="margin:0 0 12px">สร้างฟอร์มลูกค้า</h3>
 <div class="f" style="margin:0 0 12px">ประเภทฟอร์ม<b class="rq">*</b><div class="chips" style="margin-top:6px"><label><input type="radio" name="kind" value="book" checked><span>ใบจองงานขนส่ง</span></label><label><input type="radio" name="kind" value="acc"><span>ใบสมัครบัญชีลูกค้า</span></label><label><input type="radio" name="kind" value="claim"><span>เคลมสินค้า</span></label><label><input type="radio" name="kind" value="tc"><span>เงื่อนไขการใช้บริการ</span></label><label id="fo_kj"><input type="radio" name="kind" value="job"><span>ใบสมัครงาน</span></label></div><div class="chips fo-kcs" id="fo_kc" style="margin-top:8px"></div></div>
@@ -3117,6 +3117,9 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 .fo-tpe{border-radius:var(--r-lg,14px)!important}
 .mcx{border-radius:var(--r-md,12px)}
 .pt-card .cub{white-space:nowrap}
+
+.fb-pvw{flex:none;height:min(62vh,640px);box-sizing:border-box;justify-content:center;margin:6px 0 4px;padding:12px;background:var(--fld);border-radius:var(--r-lg,14px)}
+.fb-pvw iframe{width:min(440px,100%);height:100%;border:1px solid var(--bd);border-radius:var(--r-lg,14px);background:#fff;box-shadow:var(--sh-1)}
 </style>
 <script>
 (function(){
@@ -3367,8 +3370,8 @@ const FB={id:null,items:[],seq:1};
 const fbNew=t=>({id:'f'+(FB.seq++),type:t,label:'',label_en:'',req:0,options:t==='select'||t==='multi'?['ตัวเลือก 1','ตัวเลือก 2']:[],map:''});
 function fbOpen(t){FB.id=t?t.id:null;const f=$('fbf');f.reset();f.name.value=t?t.name:'';f.name_en.value=t?(t.name_en||''):'';f.brand.value=t?t.brand:'CPL-Inter';
  const sc=t&&t.schema||{};FB.items=[];FB.seq=1;(sc.pages||[]).forEach((p,i)=>{if(i>0)FB.items.push({id:'p'+i,type:'page',label:p.title||'',label_en:p.title_en||''});(p.fields||[]).forEach(x=>{FB.items.push({...x,options:x.options||[]});const n=+String(x.id).replace(/\D/g,'');if(n>=FB.seq)FB.seq=n+1})});
- if(!FB.items.length)FB.items=[{...fbNew('text'),label:'ชื่อบริษัท',req:1,map:'company'},{...fbNew('text'),label:'ผู้ติดต่อ',req:1,map:'contact'},{...fbNew('tel'),label:'เบอร์โทร',req:1,map:'phone'},{...fbNew('email'),label:'อีเมล',map:'email'}];
- $('fb_ttl').textContent=t?TT('แก้ไขแบบฟอร์ม','Edit form'):TT('สร้างแบบฟอร์มใหม่','New form');$('fb_err').textContent='';fbRender();$('fbd').showModal()}
+ if(!FB.items.length)FB.items=[{...fbNew('text'),label:'ชื่อบริษัท',map:'company'},{...fbNew('text'),label:'ผู้ติดต่อ',map:'contact'},{...fbNew('tel'),label:'เบอร์โทร',map:'phone'},{...fbNew('email'),label:'อีเมล',map:'email'}];
+ if(FB.pv)fbPv(false);$('fb_ttl').textContent=t?TT('แก้ไขแบบฟอร์ม','Edit form'):TT('สร้างแบบฟอร์มใหม่','New form');$('fb_err').textContent='';fbRender();$('fbd').showModal()}
 function fbRender(){const ty=t=>FT.find(x=>x[0]===t)||FT[0];
  $('fb_tool').innerHTML=FT.map(([k,th,en])=>`<button type="button" class="fb-tb" data-fba="${k}" draggable="true">${H(TT(th,en))}</button>`).join('');
  $('fb_list').innerHTML=FB.items.map((x,i)=>{const t=ty(x.type),op=x.type==='select'||x.type==='multi',pg=x.type==='page',hd=x.type==='head';
@@ -3390,7 +3393,8 @@ async function fbSave(){const e=fbCheck();$('fb_err').textContent=e;if(e)return;
 async function fbDel(id){const t=(FO.tpl||[]).find(x=>String(x.id)===String(id));if(!t)return;const n=FO.list.filter(f=>f.kind==='c'+t.id).length;
  if(!confirm(TT(`ลบแบบฟอร์ม "${t.name}"?`+(n?` (มีลิงก์/คำตอบ ${n} รายการ จะไม่แสดงในหน้านี้)`:''),`Delete form "${t.name}"?`+(n?` (${n} links/answers will be hidden)`:''))))return;
  const{error}=await sb.from('form_templates').delete().eq('id',t.id);if(error)return alert(TT('ลบไม่สำเร็จ','Delete failed'));FO.tpl=FO.tpl.filter(x=>x.id!==t.id);render()}
-function fbPreview(){const f=$('fbf');try{localStorage.setItem('cplf_preview',JSON.stringify({schema:fbSchema(),brand:f.brand.value}))}catch(e){}window.open(new URL('form.html?preview=1',location.href).href,'_blank','noopener')}
+function fbPv(on){const b=document.querySelector('#fbf .fb-body');b.style.display=on?'none':'';$('fb_pvw').style.display=on?'flex':'none';$('fb_pv').textContent=on?TT('กลับไปแก้ไข','Back to editing'):TT('ดูตัวอย่าง','Preview');FB.pv=on;if(!on)$('fb_ifr').src='about:blank'}
+function fbPreview(){if(FB.pv)return fbPv(false);const f=$('fbf');try{localStorage.setItem('cplf_preview',JSON.stringify({schema:fbSchema(),brand:f.brand.value}))}catch(e){}$('fb_ifr').src=new URL('form.html?preview=1&t='+Date.now(),location.href).href;fbPv(true)}
 $('fo_grp').addEventListener('click',e=>{const a=e.target.closest('[data-fte]'),d=e.target.closest('[data-ftd]'),n=e.target.closest('[data-ftn]');if(a){e.stopPropagation();fbOpen((FO.tpl||[]).find(t=>String(t.id)===a.dataset.fte))}else if(d){e.stopPropagation();fbDel(d.dataset.ftd)}else if(n)fbOpen(null)},true);
 $('fb_tool').addEventListener('click',e=>{const b=e.target.closest('[data-fba]');if(!b)return;FB.items.push(fbNew(b.dataset.fba));fbRender();const l=$('fb_list').lastElementChild;if(l){l.scrollIntoView({block:'nearest'});const i=l.querySelector('[data-fk=label]');if(i)i.focus()}});
 $('fb_list').addEventListener('input',e=>{const t=e.target,k=t.dataset.fk,it=t.closest('[data-i]');if(!k||!it)return;const x=FB.items[+it.dataset.i];if(k==='req')x.req=t.checked?1:0;else if(k==='options')x.options=t.value.split('\n');else x[k]=t.value});

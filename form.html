@@ -211,6 +211,7 @@ function telHtml(f){const k=f[0],cc=S.v[k+'__cc']||'+66';
  return `<div class="cc"><select data-k="${k}__cc" aria-label="${T('รหัสประเทศ','Country code')}">${CC.map(([c,d,th,en])=>`<option value="${d}"${cc===d?' selected':''}>${flag(c)} ${d}</option>`).join('')}</select><input data-k="${k}__n" type="tel" inputmode="tel" autocomplete="off" value="${esc(S.v[k+'__n']||'')}"></div>`}
 function addrHtml(f){const k=f[0],rq=f[4],e=S.err[k+'__p']||{};
  return `<div class="ad">${AP.map(([i,th,en,r,w])=>`<label class="${w?'w':''}${e[i]?' e':''}"><span>${esc(T(th,en))}${rq&&r?' <span class="rq">*</span>':''}</span><input data-k="${k}__${i}"${i==='5'?' inputmode="numeric"':''} autocomplete="off" value="${esc(S.v[k+'__'+i]||'')}"></label>`).join('')}</div>`}
+Object.values(FORMS).forEach(F=>F.steps.forEach(([,fs])=>fs.forEach(f=>{f[4]=0})));
 function fromSchema(sc){sc=sc||{};const pages=(sc.pages||[]).filter(p=>p&&(p.fields||[]).length);
  return{th:sc.title||'ฟอร์ม',en:sc.title_en||sc.title||'Form',custom:1,steps:pages.map(p=>[[p.title||sc.title||'ฟอร์ม',p.title_en||p.title||sc.title_en||sc.title||'Form'],
   p.fields.map(f=>[f.id,f.label||'',f.label_en||f.label||'',f.type||'text',f.req?1:0,null,(f.type==='select'||f.type==='multi')?(f.options||[]).map(o=>[o,o]):(f.map?{map:f.map}:null)])])}}
