@@ -642,6 +642,13 @@ let CLZ=new Map();
 async function fetchClosed(){const m=new Map();for(const k of['status','fu_status']){let i=0;for(;;){const{data,error}=await sb.from('leads').select(cols()).eq(k,ST_Y).order('id',{ascending:true}).range(i,i+999);if(error)return;data.forEach(x=>m.set(x.id,norm(x)));if(data.length<1000)break;i+=1000}}CLZ=m}
 function upRow(n){if(!n||n.id==null)return;const r=norm(n),f=rangeFrom(),i=rows.findIndex(x=>x.id===r.id);if(typeof SRX!=='undefined'){const j=SRX.findIndex(x=>x.id===r.id);if(j>=0)SRX[j]=r}if(closedR(r))CLZ.set(r.id,r);else CLZ.delete(r.id);if(typeof f==='string'&&r.date<f&&!($('vm').value&&r.date.slice(0,7)===$('vm').value)&&!($('lf').value&&r.date>=$('lf').value&&(!$('lt').value||r.date<=$('lt').value))&&!($('d1').value&&r.date>=$('d1').value&&(!$('d2').value||r.date<=$('d2').value))){if(i>=0)rows.splice(i,1)}else if(i>=0)rows[i]=r;else rows.push(r)}
 async function saveLead(id,o){o={...o,fu:o.fu||null,date:o.date||today()};const q=id?sb.from('leads').update(o).eq('id',id):sb.from('leads').insert({team,...o});const{data,error}=await q.select();if(error){alert('บันทึกไม่สำเร็จ: '+error.message);return}if(data&&data[0]){upRow(data[0]);refresh()}else reload();window.toast&&toast(TT('บันทึกแล้ว','Saved'))}
+/* centre spinner while data is loading */
+(function(){if(window.__spinWrap)return;window.__spinWrap=1;const of=window.fetch.bind(window);let n=0,t=null,el=null;
+ const show=()=>{if(!el){el=document.createElement('div');el.id='gspin';el.setAttribute('role','status');el.setAttribute('aria-live','polite');el.innerHTML='<span class="gs-r" aria-hidden="true"></span><span class="gs-t"></span>';document.body.appendChild(el)}el.querySelector('.gs-t').textContent=typeof TT==='function'?TT('กำลังโหลด…','Loading…'):'กำลังโหลด…';el.classList.add('on')};
+ const hide=()=>{clearTimeout(t);t=null;if(el)el.classList.remove('on')};
+ window.fetch=function(u,o){const url=String(u&&u.url||u||''),m=String((o&&o.method)||(u&&u.method)||'GET').toUpperCase(),track=/supabase/.test(url)&&m==='GET'&&!/\/auth\//.test(url)&&!document.hidden;
+  if(!track)return of(u,o);n++;if(!t)t=setTimeout(()=>{if(n>0)show()},450);
+  return of(u,o).finally(()=>{n=Math.max(0,n-1);if(!n)hide()})}})();
 async function start(){
  document.body.classList.add('out');
  if(!window.supabase||SUPABASE_URL.startsWith('PASTE')){$('lge').textContent='ยังไม่ได้ใส่ SUPABASE_URL / SUPABASE_KEY ในไฟล์ index.html';return}
@@ -3457,6 +3464,11 @@ html[data-theme=dark] .fbx-fh img,html[data-theme=dark] #vPT .ptd-lg,html[data-t
 .pt-li2{display:grid;grid-template-columns:84px 1fr auto;gap:8px;align-items:start;padding:5px 0;font-size:13px;border-bottom:1px dashed color-mix(in srgb,var(--bd) 70%,transparent)}.pt-li2:last-child{border-bottom:0}
 .pt-ld{color:var(--mu)}.pt-lt{min-width:0;overflow-wrap:anywhere}.pt-lt em{display:block;font-style:normal;font-size:12px;color:var(--mu)}.pt-li2 b{color:var(--lined);white-space:nowrap}.pt-li2 b.neg{color:var(--er,#b42318)}
 #vFO.fo-loading .stats .st b,#vFO.fo-loading .fo-cc>b{color:transparent!important;border-radius:6px;background:linear-gradient(90deg,var(--fld) 25%,color-mix(in srgb,var(--fld) 40%,var(--card)) 50%,var(--fld) 75%);background-size:200% 100%;animation:skm 1.2s linear infinite}
+#gspin{position:fixed;left:50%;top:50%;z-index:2147482000;display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 22px;border-radius:16px;background:color-mix(in srgb,var(--card,#fff) 92%,transparent);box-shadow:0 12px 34px rgba(11,34,64,.18);backdrop-filter:blur(6px);transform:translate(-50%,-50%) scale(.92);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+#gspin.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#gspin .gs-r{width:38px;height:38px;border-radius:50%;border:4px solid color-mix(in srgb,var(--br,#0096d6) 18%,transparent);border-top-color:var(--br,#0096d6);animation:gsr .8s linear infinite}
+#gspin .gs-t{font-size:12.5px;font-weight:600;color:var(--mu,#62768c)}
+@keyframes gsr{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){#gspin .gs-r{animation-duration:2.4s}}
 /* LINE points dashboard */
 #vPT{--line:#06c755;--lineb:#e9f9ef;--lined:#04883a}
 #vPT .hid,#vCU #cu_o.hid{display:none!important}
