@@ -411,12 +411,12 @@ header .hd #who{display:none!important}
 #dlg.lf2 .lf-rail button.on .lf-m{border-color:var(--pr);color:var(--pr)}
 #dlg.lf2 .lf-m.ok{background:var(--ok);border-color:var(--ok);color:#fff}
 #dlg.lf2 .lf-rail button>span:nth-child(2){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#dlg.lf2 .lf-x{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--erb);color:var(--er);font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none}
-#dlg.lf2 .lf-sc{flex:1;min-width:0;overflow:auto;overscroll-behavior:contain;padding:20px 24px 28px;display:flex;flex-direction:column;gap:16px;background:#f5f8fc;scroll-behavior:smooth}
+#dlg.lf2 .lf-sc{flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:20px 24px 28px;display:flex;flex-direction:column;gap:16px;background:#f5f8fc;scroll-behavior:smooth}
 html[data-theme=dark] #dlg.lf2 .lf-sc{background:var(--bg)}
 #dlg.lf2 .lf-sc>fieldset{margin:0;border:1px solid var(--bd);border-radius:16px;padding:18px 20px 20px;background:var(--card);min-width:0}
 #dlg.lf2 .lf-sc>fieldset.hid,#dlg.lf2 .lf-sc>.hid{display:none}
 #dlg.lf2 .lf-sc>fieldset>legend{float:left;width:100%;padding:0;margin:0 0 14px;display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:600;color:var(--tx)}
-#dlg.lf2 .lf-sc>fieldset>legend+*{clear:both}
+#dlg.lf2 .lf-sc>fieldset>legend~*{clear:both}
 #dlg.lf2 .lf-n{width:26px;height:26px;flex:none;border-radius:8px;background:rgba(0,150,214,.12);color:var(--pr);font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
 #dlg.lf2 .lf-s1>.g{grid-template-columns:1.4fr 1fr 1fr}
 #dlg.lf2 #ch_wrap,#dlg.lf2 #ch2_wrap{margin:0!important}
@@ -466,7 +466,7 @@ html[data-theme=dark] #dlg.lf2 .lf-sc{background:var(--bg)}
 #dlg.lf2 .lf-qk{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 #dlg.lf2 .lf-qk button{height:30px;padding:0 11px;border-radius:9px;border:1px solid var(--bd);background:var(--card);font-size:12.5px;cursor:pointer;color:var(--tx)}
 #dlg.lf2 .lf-qk button:hover,#dlg.lf2 .lf-qk button.on{border-color:var(--pr);color:var(--pr);background:rgba(0,150,214,.08)}
-#dlg.lf2 .lf-nm{position:relative}
+#dlg.lf2 .lf-nm{position:relative}#dlg.lf2 .lf-phw{display:flex;gap:6px;min-width:0}#dlg.lf2 .lf-phw select{width:112px;flex:none;min-width:0}#dlg.lf2 .lf-phw input{flex:1;min-width:0}
 #dlg.lf2 .lf-sg{position:absolute;left:0;right:0;top:100%;margin-top:6px;z-index:20;padding:6px;border:1px solid var(--bd);border-radius:14px;background:var(--card);box-shadow:0 14px 34px rgba(11,34,64,.18);display:flex;flex-direction:column;gap:2px}
 #dlg.lf2 .lf-sg.hid{display:none}
 #dlg.lf2 .lf-sg button{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:0;border-radius:9px;background:none;text-align:left;cursor:pointer;color:var(--tx);font-weight:400}
@@ -487,7 +487,7 @@ html[data-theme=dark] #dlg.lf2 .lf-sc{background:var(--bg)}
 #dlg.lf2 #fm_.lf-try div.em-f{background:none!important;box-shadow:0 0 0 1.5px var(--er)!important;border-radius:12px}
 #dlg.lf2 #fm_.lf-try .ib [data-k=dir].em-f{box-shadow:inset 0 0 0 1.5px var(--er)!important}
 @media(min-width:900px){#dlg.lf2{width:min(1100px,calc(100vw - 120px))}#dlg.lf2.dlgwide{width:min(1400px,calc(100vw - 120px))!important}}
-#dlg.lf2 .lf-sc>fieldset .g{align-items:start}
+#dlg.lf2 .lf-sc>fieldset .g{align-items:start}#dlg.lf2 .lf-sc :is(.g,.g3)>*{min-width:0}
 @media(max-width:860px){#dlg.lf2 .lf-rail{display:none}#dlg.lf2 .lf-sc{padding:14px 12px 20px}#dlg.lf2 .lf-s1>.g,#dlg.lf2 .ib>.g{grid-template-columns:1fr}#dlg.lf2 .lf-sc>fieldset{padding:14px 14px 16px}#dlg.lf2 .lf-tags{display:none}#dlg.lf2 .lf-hd,#dlg.lf2 .lf-ft{padding-left:14px;padding-right:14px}#dlg.lf2 .lf-bar{width:60px}}
 @media(max-width:480px){#dlg.lf2 .lf-bar{display:none}}
 </style>
@@ -647,7 +647,7 @@ html[data-theme=dark] #dlg.lf2 .lf-sc{background:var(--bg)}
     <label class="f">แบรนด์<b class="rq">*</b><select name="brand"></select></label>
   </div><div class="g3" style="margin-top:12px">
     <label class="f">วันที่ปิดได้<input name="deal_date" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label><label class="f">ยอดที่ปิดได้<span class="nf" data-u="บาท"><input name="deal_amt" inputmode="decimal" data-num autocomplete="off" placeholder="เช่น 50,000"></span></label>
-    <label class="f">โปรโมชัน<b class="rq">*</b><select name="promo"></select></label>
+    <label class="f">โปรโมชัน<select name="promo"></select></label>
   </div><div id="dl2"></div><div style="margin-top:12px"><button type="button" class="btn sm" id="dla">+ ปิดได้อีก</button></div></fieldset>
   <datalist id="adsl"></datalist><datalist id="dl_dial"></datalist><datalist id="dl_it"></datalist><datalist id="cl"></datalist>
   <div class="acts"><button type="button" class="btn" id="cx">ยกเลิก</button><button class="btn p" id="sv_">บันทึก</button></div>
@@ -835,6 +835,13 @@ stc.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return
 /* follow-up quick dates */
 {const fl=f.fu.closest('label'),qk=mk('div','lf-qk');[[1,'พรุ่งนี้'],[3,'3 วัน'],[7,'1 สัปดาห์'],[14,'2 สัปดาห์']].forEach(([n,t])=>{const b=mk('button');b.type='button';b.dataset.n=n;b.textContent=t;qk.append(b)});fl.append(qk);
  qk.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();f.fu.value=fmtD(addDays(today(),+b.dataset.n));['input','change'].forEach(t=>f.fu.dispatchEvent(new Event(t,{bubbles:true})))})}
+/* phone with country code */
+const pL=f.d_p0.closest('label');pL.classList.add('lf-ph');const pw=mk('span','lf-phw');const dc=mk('select');dc.id='lf_dc';dc.setAttribute('aria-label','รหัสประเทศ');const pn=mk('input');pn.type='tel';pn.id='lf_pn';pn.autocomplete='off';pn.inputMode='tel';
+f.d_p0.after(pw);pw.append(dc,pn);f.d_p0.type='hidden';
+function dcFill(){if(dc.options.length)return;try{DIAL.forEach(d=>{const o=document.createElement('option');o.value=d[0];o.textContent=d[0]+' '+TT(d[1],d[2]);dc.append(o)})}catch(_){const o=document.createElement('option');o.value='+66';o.textContent='+66';dc.append(o)}}
+function phSet(){dcFill();const v=(f.d_p0.value||'').trim(),m=v.match(/^(\+\d{1,4})\s*(.*)$/);let c='+66',n=v;if(m&&[...dc.options].some(o=>o.value===m[1])){c=m[1];n=m[2]}dc.value=c;pn.value=n}
+function phOut(){const c=dc.value,n=pn.value.trim();f.d_p0.value=!n?'':c==='+66'||!c?n:c+' '+n.replace(/^0+/,'');f.d_p0.dispatchEvent(new Event('input',{bubbles:true}))}
+dc.addEventListener('change',phOut);pn.addEventListener('input',phOut);
 /* cargo total */
 const cgt=mk('div','lf-cgt');sCg.append(cgt);
 function cgTot(){try{const it=cgGet('cgf');if(!it.length){cgt.innerHTML='';return}let q=0,kg=0,cbm=0;it.forEach(x=>{const n=+x.q||1;q+=n;kg+=n*(+x.kg||0)*(/TON/i.test(x.wu||'')?1000:1);cbm+=n*(+x.l||0)*(+x.w||0)*(+x.h||0)/1e6});
@@ -846,7 +853,7 @@ function sgShow(){const q=f.name.value.trim().toLowerCase();if(editId||q.length<
  sgL=[...m.values()].sort((a,b)=>(a.n.toLowerCase().startsWith(q)?0:1)-(b.n.toLowerCase().startsWith(q)?0:1)||b.c-a.c).slice(0,6);sgI=-1;
  if(!sgL.length||(sgL.length===1&&sgL[0].n.toLowerCase()===q)){sg.classList.add('hid');return}
  sg.innerHTML=sgL.map((o,i)=>`<button type="button" data-i="${i}"><span class="av">${esc(o.n.replace(/[^A-Za-z0-9ก-๙]/g,'').slice(0,2).toUpperCase())}</span><span class="t"><b>${esc(o.n)}</b><small>${TT('ลูกค้าเดิม','Existing customer')} · ${o.c} Lead${o.r.sales?' · '+esc(o.r.sales):''}</small></span></button>`).join('');sg.classList.remove('hid')}
-function sgPick(i){const o=sgL[i];if(!o)return;f.name.value=o.n;const d=o.r.detail||{};if(f.d_p0&&!f.d_p0.value&&d.p0)f.d_p0.value=d.p0;if(f.d_tax&&!f.d_tax.value&&d.tax)f.d_tax.value=d.tax;sg.classList.add('hid');f.name.dispatchEvent(new Event('change',{bubbles:true}));refresh()}
+function sgPick(i){const o=sgL[i];if(!o)return;f.name.value=o.n;const d=o.r.detail||{};if(f.d_p0&&!f.d_p0.value&&d.p0){f.d_p0.value=d.p0;phSet()}if(f.d_tax&&!f.d_tax.value&&d.tax)f.d_tax.value=d.tax;sg.classList.add('hid');f.name.dispatchEvent(new Event('change',{bubbles:true}));refresh()}
 f.name.addEventListener('input',sgShow);
 f.name.addEventListener('keydown',e=>{if(sg.classList.contains('hid'))return;const b=sg.querySelectorAll('button');if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();sgI=(sgI+(e.key==='ArrowDown'?1:-1)+b.length)%b.length;b.forEach((x,i)=>x.classList.toggle('on',i===sgI))}else if(e.key==='Enter'&&sgI>=0){e.preventDefault();sgPick(sgI)}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();sg.classList.add('hid')}});
 f.name.addEventListener('blur',()=>setTimeout(()=>sg.classList.add('hid'),150));
@@ -854,7 +861,7 @@ sg.addEventListener('mousedown',e=>e.preventDefault());
 sg.addEventListener('click',e=>{const b=e.target.closest('button');if(b)sgPick(+b.dataset.i)});
 /* rail + progress */
 const vis=e=>!!(e&&(e.offsetParent||e.getClientRects().length));
-function reqs(){const L=[];['date','ads','name','fu','fu_status','reason','quo','sales','brand','promo'].forEach(k=>{const e=f[k];if(!e||!e.closest||!e.classList)return;const lb=e.closest('label.f');if(lb&&lb.classList.contains('norq'))return;if(vis(e))L.push(e)});
+function reqs(){const L=[];['date','ads','name','fu','fu_status','reason','quo','sales','brand'].forEach(k=>{const e=f[k];if(!e||!e.closest||!e.classList)return;const lb=e.closest('label.f');if(lb&&lb.classList.contains('norq'))return;if(vis(e))L.push(e)});
  if(vis($('ch')))L.push($('ch'));$('ints').querySelectorAll('.ib').forEach(b=>L.push(b.querySelector('.chips'),b.querySelector('[data-k=country]'),b.querySelector('[data-k=svc]')));return L.filter(Boolean)}
 let act=null;
 function refresh(){if(!dlg.open)return;stSync();cgTot();
@@ -879,12 +886,12 @@ let rq=0;const later=()=>{if(rq)return;rq=requestAnimationFrame(()=>{rq=0;refres
 f.addEventListener('invalid',()=>f.classList.add('lf-try'),true);
 $('sv_').addEventListener('click',()=>f.classList.add('lf-try'),true);
 new MutationObserver(later).observe(sc,{subtree:true,attributes:true,attributeFilter:['class']});
-function onOpen(){f.classList.remove('lf-try');chDeco();sg.classList.add('hid');
+function onOpen(){f.classList.remove('lf-try');chDeco();phSet();f.ads.required=!$('ads_wrap').classList.contains('hid');sg.classList.add('hid');
  {const t=dt.textContent,i=t.lastIndexOf(' · ');if(i>0&&!dt.querySelector('.lf-tm')){dt.textContent='';const a=mk('span');a.textContent=t.slice(0,i);const c=mk('span','lf-tm');c.textContent=t.slice(i+3);dt.append(a,c)}}
  act=null;sc.style.scrollBehavior='auto';sc.scrollTop=0;sc.style.scrollBehavior='';refresh();spy()}
 new MutationObserver(()=>{if(dlg.open)onOpen()}).observe(dlg,{attributes:true,attributeFilter:['open']});
 new MutationObserver(()=>{if(dlg.open&&!dt.querySelector('.lf-tm'))onOpen()}).observe(dt,{childList:true,characterData:true,subtree:true});
-Object.assign(EN,{'ลูกค้า':'Customer','ช่องทาง':'Channel','ช่องทางหลัก':'Main channel','ทักมาทางอื่นด้วย':'Also contacted via','งานที่สนใจ':'Interested in','หมายเหตุเพิ่มเติม':'Additional notes','ข้อมูลเพิ่มเติม':'More details','ข้อมูลลูกค้า':'Customer','การขนส่ง':'Shipping','พัสดุ':'Package','ปิดงาน และผู้รับผิดชอบ':'Closing & owner','กรอกแล้ว':'Filled','พรุ่งนี้':'Tomorrow','3 วัน':'3 days','1 สัปดาห์':'1 week','2 สัปดาห์':'2 weeks','รวม':'Total','ชิ้น':'pcs','Messenger ส่วนตัว':'Messenger Private','LINE ส่วนตัว':'LINE Private','โทรเข้า':'Call in','เว็บไซต์':'Website','อีเมล':'Email','หัวข้อ':'Sections','ปิดงาน':'Closing'});
+Object.assign(EN,{'ลูกค้า':'Customer','ช่องทาง':'Channel','ช่องทางหลัก':'Main channel','ทักมาทางอื่นด้วย':'Also contacted via','งานที่สนใจ':'Interested in','หมายเหตุเพิ่มเติม':'Additional notes','ข้อมูลเพิ่มเติม':'More details','ข้อมูลลูกค้า':'Customer','การขนส่ง':'Shipping','พัสดุ':'Package','ปิดงาน และผู้รับผิดชอบ':'Closing & owner','กรอกแล้ว':'Filled','พรุ่งนี้':'Tomorrow','3 วัน':'3 days','1 สัปดาห์':'1 week','2 สัปดาห์':'2 weeks','รวม':'Total','ชิ้น':'pcs','Messenger ส่วนตัว':'Messenger Private','LINE ส่วนตัว':'LINE Private','โทรเข้า':'Call in','เว็บไซต์':'Website','อีเมล':'Email','หัวข้อ':'Sections','ปิดงาน':'Closing','รหัสประเทศ':'Country code'});
 })();
 
 async function start(){
@@ -1172,7 +1179,7 @@ function ch2Sync(){const f=$('fm_'),c=(f.querySelector('input[name=channel]:chec
 document.addEventListener('change',e=>{if(e.target&&e.target.name==='channel')ch2Sync()});
 function markEmpty(){
  const f=$('fm_'),st=stv(f.status.value),closed=[ST_Y,ST_N].includes(st);
- ['date','ads','name','fu','fu_status','reason','quo','sales','brand','promo'].forEach(k=>{const e=f[k];if(!e)return;const need=!((k==='fu'||k==='fu_status')&&closed)&&!(k==='reason'&&formEff(f)!==ST_N);const lb=e.closest('label.f');if(lb)lb.classList.toggle('norq',!need);e.classList.toggle('em-f',need&&!e.value.trim())});
+ ['date','ads','name','fu','fu_status','reason','quo','sales','brand'].forEach(k=>{const e=f[k];if(!e)return;const need=!((k==='fu'||k==='fu_status')&&closed)&&!(k==='reason'&&formEff(f)!==ST_N);const lb=e.closest('label.f');if(lb)lb.classList.toggle('norq',!need);e.classList.toggle('em-f',need&&!e.value.trim())});
  $('ch').classList.toggle('em-f',!f.querySelector('input[name=channel]:checked'));$('ints').querySelectorAll('.ib').forEach(e=>{e.querySelector('.chips').classList.toggle('em-f',!e.querySelector('.chips input:checked'));const c=e.querySelector('[data-k=country]'),v=e.querySelector('[data-k=svc]');c.classList.toggle('em-f',!c.value.trim());v.classList.toggle('em-f',!v.value)});
 }
 function onSave(e){
@@ -2897,7 +2904,19 @@ async function foPanel(cid){const el=$('cd_fo');if(!el)return;const c=CU.list.fi
  if(String(CU.det)!==String(cid))return;
  el.innerHTML=`<h3>${TT('ฟอร์มของลูกค้า','Customer forms')}</h3>${L.length?L.map(f=>`<div class="cu-hr cu-fo" data-cfo="${f.id}"><div><b>${H(window.foKn?window.foKn(f):f.kind)}</b><div class="sub">${H(f.brand)} · ${f.status==='done'?TT('กรอกแล้ว','Submitted'):TT('รอลูกค้ากรอก','Awaiting customer')}</div></div><span class="sub">${fmtD(String(f.submitted_at||f.created_at).slice(0,10))}</span></div>`).join(''):`<div class="sub">${TT('ยังไม่มีฟอร์มที่ผูกกับลูกค้านี้','No forms linked to this customer yet')}</div>`}`}
 document.addEventListener('click',e=>{const r=e.target.closest('#cd_fo [data-cfo]');if(r&&window.foOpen)window.foOpen(r.dataset.cfo)});
-window.cuRe=()=>{if(!CU.det)cuRender()};window.cuGo=async id=>{tab('CU');await cuLoad(true);cuDet(String(id))};
+window.cuRe=()=>{if(!CU.det)cuRender()};window.cuGo=async id=>{tab('CU');await cuLoad(true);const c=CU.list.find(x=>String(x.id)===String(id));cuDet(c?c.id:String(id))};
+const QC={'เสนอแล้ว':'var(--inf)','ต่อรอง':'var(--wn)','ได้งาน':'var(--ok)','ไม่ได้งาน':'var(--er)'},qst=q=>q.st||'เสนอแล้ว';
+/* customer detail: quotations tab */
+function qAll(cid){const out=[];((typeof CU!=='undefined'&&CU.ls[cid])||[]).forEach(r=>((r.detail&&r.detail.quotes)||[]).forEach(q=>out.push({q,r})));return out.sort((a,b)=>String(b.q.at||b.q.t||'').localeCompare(String(a.q.at||a.q.t||'')))}
+function qHtml(cid){const A=qAll(cid);if(!A.length)return '<div class="sub" style="padding:18px 4px">ยังไม่มีใบเสนอราคา</div>';
+ const won=A.filter(x=>qst(x.q)==='ได้งาน'),wait=A.filter(x=>['เสนอแล้ว','ต่อรอง'].includes(qst(x.q)));
+ return `<div class="cqs"><div><span>ใบเสนอราคาทั้งหมด</span><b>${A.length}</b></div><div><span>ได้งาน</span><b>${won.length}</b> <small class="sub">${Math.round(won.length/A.length*100)}%</small></div><div><span>ยอดที่ได้งาน</span><b>${N(won.reduce((s,x)=>s+(+x.q.tot||0),0))} ฿</b></div><div><span>รอผล</span><b>${wait.length}</b></div></div>
+ <div class="cqw"><table class="cqt"><thead><tr><th>วันที่</th><th>Lead</th><th>บริการ</th><th>ประเทศ</th><th>ยอด</th><th>สถานะ</th><th>ผู้เสนอ</th><th></th></tr></thead><tbody>${A.map(({q,r})=>{const s=qst(q);return `<tr data-lid="${esc(r.id)}"><td style="white-space:nowrap">${fmtD(q.t)}</td><td style="color:var(--pr);white-space:nowrap">Lead ${fmtD(r.date)}</td><td>${esc(QMD[q.mode]||q.m||'')}${q.sv?' · '+esc(q.sv):''}</td><td>${esc(q.country||'')}</td><td style="font-weight:600;white-space:nowrap">฿${N(q.tot)}</td><td><span class="qc" style="--c:${QC[s]||'var(--inf)'}">${esc(s)}</span></td><td>${esc(q.by||'')}</td><td style="text-align:right"><button type="button" class="btn sm" data-cqo="${esc(q.id)}">เปิด</button></td></tr>`}).join('')}</tbody></table></div>`}
+{const _cd=cuDet;cuDet=function(id){_cd(id);try{const dv=$('cu_dv'),tb=dv&&dv.querySelector('.cdx-tb');if(!tb||CU.det!==id)return;const n=qAll(id).length;
+ tb.insertAdjacentHTML('beforeend',`<button type="button" data-cdt="qt">ใบเสนอราคา (${n})</button>`);const o=tb.onclick;
+ tb.onclick=e=>{const t=e.target.closest('[data-cdt]');if(t&&t.dataset.cdt==='qt'){tb.querySelectorAll('[data-cdt]').forEach(x=>x.classList.toggle('on',x===t));$('cd_tab').innerHTML=qHtml(id);return}o&&o(e)};
+ $('cd_tab').addEventListener('click',e=>{const b=e.target.closest('[data-cqo]');if(!b)return;e.stopPropagation();const it=qAll(id).find(x=>String(x.q.id)===b.dataset.cqo);if(!it)return;const r=rows.find(x=>x.id===it.r.id);tab('C');const k=r&&typeof CLM!=='undefined'&&Object.keys(CLM).find(x=>CLM[x]===String(r.id));if(k){$('cl_q').value=k;calcPick()}qlLoad(it.q)},true)}catch(e){console.error(e)}}}
+
 /* ---- point alerts for sales ---- */
 const ptSeenK=()=>'cpl_ptseen_'+((profile&&profile.id)||'');
 const ptSeen=()=>{try{return JSON.parse(localStorage.getItem(ptSeenK())||'{}')}catch(e){return{}}};
@@ -3222,9 +3241,9 @@ function mkPlace(){const w=$('tW'),d=$('tDB'),l=$('tL'),f=$('tF'),c=$('tC'),cu=$
  if(r==='admin'){s1.after(d);d.after(w);w.after(f);f.after(s2);s2.after(l);l.after(cu);cu.after(c)}
  else if(r==='marketing'){s1.after(d);d.after(w);w.after(s2);s2.after(l);l.after(cu);cu.after(c)}
  else if(r==='sales'&&tm==='C'&&so){s1.after(so);so.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w)}
- else if(r==='sales'){s1.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(w)}
+ else if(r==='sales'){s1.after(l);l.after(f);f.after(c);c.after(s2);s2.after(cu);cu.after(d);d.after(w)}
  else if(r==='sales_lead'){s1.after(d);d.after(f);f.after(c);c.after(s2);s2.after(l);l.after(cu);cu.after(w)}
- else{s1.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}const pt=$('tPT');if(pt)cu.after(pt);if(fo.id)l.before(fo)}mkPlace();
+ else{s1.after(s2);s2.after(l);l.after(cu);cu.after(d);d.after(f);f.after(w);w.after(c)}const pt=$('tPT');if(pt)cu.after(pt);if(fo.id){if(r==='sales'&&tm!=='C')(pt||cu).after(fo);else l.before(fo)}}mkPlace();
 })();
 </script>
 <script>
@@ -4201,6 +4220,95 @@ window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch
   const h=L.map(o=>`<div class="bi${o.un?' un':''}" data-pti="${esc(o.k)}" data-cid="${esc(String(o.c.id))}"><div><b>${esc(o.c.name)}</b> ${TT('มีแต้มสะสม ','has ')}${o.P.bal} ${TT('แต้ม','points')} (${esc(o.P.b)})</div><div class="bs"><span class="chip" style="background:#e7f6ee;color:#1d7a4a;padding:1px 8px;border-radius:10px;font-size:11px">${TT('แลกได้ ','Can redeem ')}${o.n} ${TT('แต้ม','pts')}</span></div></div>`).join('');
   const hd=p.querySelector('.bph');p.querySelectorAll('.bi[data-bi],.sub').forEach(x=>{if(!x.closest('.bph')&&L.length&&x.classList.contains('sub')&&!x.closest('.bi'))x.remove()});if(hd)hd.insertAdjacentHTML('afterend',h)};
  document.addEventListener('click',e=>{const x=e.target.closest('#bpn [data-pti]');if(x){window.ptMark(x.dataset.pti);$('bpn').classList.add('hid');window.ptBell();window.cuGo&&window.cuGo(x.dataset.cid);return}if(e.target.closest('#bra')&&window.ptMark){window.ptMark();setTimeout(()=>{window.ptBell&&window.ptBell()},0)}},true);
+})();
+</script>
+<style id="fq2css">
+#dlg.lf2 #fq{padding:0;display:flex;flex-direction:column;background:var(--card);max-height:none;height:min(880px,92vh);box-sizing:border-box;overflow:hidden;width:350px}
+#dlg.lf2 #fq.hid{display:none}
+#fq .fqc{padding:18px 18px 16px;border-bottom:1px solid var(--bd);flex:none}
+#fq .fqc.hid{display:none}
+#fq .fqk{font-size:12px;font-weight:600;color:var(--mu);margin-bottom:10px}
+#fq .fqp{display:flex;align-items:center;gap:12px}
+#fq .fqa{width:44px;height:44px;flex:none;border-radius:50%;background:rgba(124,92,214,.14);color:#7c5cd6;font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+#fq .fqn{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fq .fqs{display:flex;gap:8px;margin-top:14px}
+#fq .fqs>div{flex:1;padding:10px 12px;border-radius:12px;background:var(--fld);min-width:0}
+#fq .fqs b{display:block;font-size:17px}
+#fq .fqs span{font-size:11.5px;color:var(--mu);white-space:nowrap}
+#fq .fqgo{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:42px;border:0;border-radius:12px;background:var(--br);color:#fff;font-weight:600;cursor:pointer}
+#fq .fqgo.hid{display:none}
+#fq .fqq{padding:16px 18px;flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb,var(--fld) 35%,var(--card))}
+#fq .fqh{display:flex;align-items:center;gap:8px}
+#fq .fqh h3{margin:0!important;font-size:14px;font-weight:600}
+#fq .fqh em{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:rgba(0,150,214,.12);color:var(--pr);font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
+#fq .fqh button{margin-left:auto;border:0;background:none;color:var(--pr);font-weight:600;font-size:12.5px;cursor:pointer;padding:4px 0}
+#fq #fq_list{display:flex;flex-direction:column;gap:10px}
+#fq .qli{margin:0;border:1px solid var(--bd);border-radius:14px;padding:12px 14px;background:var(--card)}
+#fq .qli .qh{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+#fq .qli .qh b{font-size:13px;white-space:nowrap}
+#fq .qli .qh span{flex:1;min-width:0;font-size:12.5px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#fq .qli .qt{font-size:14px!important}
+#fq .qli .qm{display:flex;align-items:center;gap:8px;margin-top:6px}
+#fq .qli .qm .sub{flex:1;min-width:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#fq .qli select.qs{height:28px;padding:0 26px 0 10px;border-radius:14px;border:0;font-size:12px;font-weight:600;background-color:color-mix(in srgb,var(--c) 12%,transparent);color:var(--c);width:auto;min-width:0}
+#fq .qli details{margin-top:8px}
+#fq .qli summary{font-size:12.5px;color:var(--pr);cursor:pointer}
+#fq .qli .qd{margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd);font-size:12.5px;display:flex;flex-direction:column;gap:4px}
+#fq .qli .qd>div{display:flex;justify-content:space-between;gap:8px}
+#fq .qli .qd span{color:var(--mu)}
+#fq .qli .qx{margin-top:8px;height:30px;padding:0 10px;border-radius:9px;border:1px solid var(--bd);background:var(--card);font-size:12.5px;cursor:pointer}
+#fq .fqe{font-size:13px;color:var(--mu);padding:14px;border:1px dashed var(--bd);border-radius:12px;text-align:center}
+@media(max-width:900px){#dlg.lf2 #fq{width:auto;height:auto;max-height:none}}
+#cu_dv .cqs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:4px 0 14px}
+#cu_dv .cqs>div{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;background:var(--card)}
+#cu_dv .cqs span{font-size:12px;color:var(--mu);display:block}
+#cu_dv .cqs b{font-size:19px}
+#cu_dv .cqt{width:100%;border-collapse:collapse;min-width:0!important;font-size:13.5px}
+#cu_dv .cqt th{text-align:left;font-size:12.5px;font-weight:600;color:var(--mu);white-space:nowrap;padding:9px 10px;border-bottom:1px solid var(--bd)}
+#cu_dv .cqt td{padding:10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+#cu_dv .cqt tr[data-lid]{cursor:pointer}
+#cu_dv .cqt tr[data-lid]:hover td{background:rgba(0,150,214,.05)}
+#cu_dv .cqt .qc{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:11px;font-size:12px;font-weight:600;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+#cu_dv .cqt .qc::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+#cu_dv .cqw{overflow-x:auto}
+@media(max-width:760px){#cu_dv .cqs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<script>
+(function(){
+const QC={'เสนอแล้ว':'var(--inf)','ต่อรอง':'var(--wn)','ได้งาน':'var(--ok)','ไม่ได้งาน':'var(--er)'};
+const qst=q=>q.st||'เสนอแล้ว',H=esc,B='บาท';
+const ini=n=>String(n||'').replace(/[^A-Za-z0-9ก-๙ ]/g,'').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'?';
+const AR='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+/* edit dialog side panel */
+const fq=$('fq');const h3=fq.querySelector('h3'),fl=$('fq_list');
+fq.innerHTML='';const cc=document.createElement('div');cc.className='fqc hid';cc.id='fq_cu';
+const qq=document.createElement('div');qq.className='fqq';const hh=document.createElement('div');hh.className='fqh';
+h3.textContent='ใบเสนอราคาของ Lead นี้';hh.append(h3);hh.insertAdjacentHTML('beforeend','<em id="fq_n">0</em><button type="button" id="fq_calc">+ คำนวณราคา</button>');
+qq.append(hh,fl);fq.append(cc,qq);
+const toCalc=(r,q)=>{$('dlg').close();tab('C');const k=r&&typeof CLM!=='undefined'&&Object.keys(CLM).find(x=>CLM[x]===String(r.id));if(k){$('cl_q').value=k;calcPick()}if(q)qlLoad(q)};
+$('fq_calc').onclick=()=>toCalc(editId&&rows.find(x=>x.id===editId));
+let CUQ=0;
+async function cuCard(r){const id=++CUQ;let cid=r&&r.customer_id;
+ try{if(!cid&&r){const{data:x}=await sb.from('leads').select('customer_id').eq('id',r.id).maybeSingle();cid=x&&x.customer_id;if(cid)r.customer_id=cid}if(id!==CUQ)return;if(!cid){cc.classList.add('hid');return}const[{data:c},{data:ls}]=await Promise.all([sb.from('customers').select('*').eq('id',cid).maybeSingle(),sb.from('leads').select(cols()+',customer_id').eq('customer_id',cid)]);if(id!==CUQ||!c)return cc.classList.add('hid');
+  const L=(ls||[]).map(x=>{try{return norm(x)}catch(e){return x}}),won=L.filter(x=>{try{return effS(x)===ST_Y}catch(e){return false}});
+  let third=[N(won.reduce((s,x)=>s+(+x.deal_amt||0),0)),'ยอดที่ปิดได้'];
+  if(typeof PR!=='undefined'&&PR[r.team]&&typeof ptCalc==='function'){try{if(typeof ptLoad==='function')await ptLoad();const p=ptCalc(cid,r.team);if(p&&p.bal!=null)third=[N(p.bal),'แต้ม LINE']}catch(e){}}
+  if(id!==CUQ)return;
+  const since=L.map(x=>x.date).filter(Boolean).sort()[0];
+  const mine=!(profile&&profile.role==='sales'&&c.owner&&c.owner!==profile.name);
+  cc.innerHTML=`<div class="fqk">ลูกค้ารายนี้</div><div class="fqp"><span class="fqa">${H(ini(c.name))}</span><div style="min-width:0;flex:1"><div class="fqn">${H(c.name)}</div><div class="sub" style="font-size:12.5px">${c.owner?'เจ้าของ '+H(c.owner):''}${c.owner&&since?' · ':''}${since?'ลูกค้าตั้งแต่ '+fmtD(since):''}</div></div></div><div class="fqs"><div><b>${L.length}</b><span>Lead ทั้งหมด</span></div><div><b>${won.length}</b><span>ปิดได้</span></div><div><b>${third[0]}</b><span>${third[1]}</span></div></div><button type="button" class="fqgo${mine?'':' hid'}" data-cid="${H(cid)}">ดูข้อมูลลูกค้า ${AR}</button>`;
+  cc.classList.remove('hid')}catch(e){cc.classList.add('hid')}}
+cc.addEventListener('click',e=>{const b=e.target.closest('.fqgo');if(!b)return;$('dlg').close();window.cuGo&&window.cuGo(b.dataset.cid)});
+const qDet=q=>`<details><summary>รายละเอียด</summary><div class="qd">${(q.items||[]).map(x=>`<div><span>${H(x.it||'สินค้า')} ${N(x.q||1)} × ${N(x.l||0)}×${N(x.w||0)}×${N(x.h||0)} ซม. · ${N(x.kg||0)} กก.</span></div>`).join('')}${q.qty!=null?`<div><span>ค่าขนส่ง ${N(q.qty)} ${H(q.unit||'')} × ${N(q.rate)}</span><b>${N(q.ship)} ${B}</b></div>`:''}${(q.fees||[]).map(f=>`<div><span>${H(f[0])}</span><b>${N(f[1])} ${B}</b></div>`).join('')}<div><span>รวมทั้งสิ้น</span><b>${N(q.tot)} ${B}</b></div></div></details>`;
+let lastId=null;
+renderQL=function(){if(!fq||!$('dlg').open)return;const r=editId&&rows.find(x=>x.id===editId);
+ $('dlg').classList.toggle('dlgwide',!!r);fq.classList.toggle('hid',!r);if(!r){CUQ++;lastId=null;return}
+ const l=((r.detail&&r.detail.quotes)||[]).slice().reverse(),ed=typeof can!=='function'||can(r);$('fq_n').textContent=l.length;
+ fl.innerHTML=l.length?l.map(q=>{const s=qst(q);return `<div class="qli" data-q="${H(q.id)}"><div class="qh"><b>${fmtD(q.t)}</b><span>${H(QMD[q.mode]||q.m||'')}${q.sv?' · '+H(q.sv):''}</span><b class="qt">฿${N(q.tot)}</b></div><div class="qm"><span class="sub">${H([q.country,q.postal].filter(Boolean).join(' · '))}${q.by?' · '+H(q.by):''}</span><select class="qs" data-qs aria-label="สถานะ" style="--c:${QC[s]||'var(--inf)'}"${ed?'':' disabled'}>${QST.map(x=>`<option${x===s?' selected':''}>${x}</option>`).join('')}</select></div>${qDet(q)}<button type="button" class="qx" data-ql>เปิดในหน้าคำนวณ</button></div>`}).join(''):'<div class="fqe">ยังไม่มีใบเสนอราคา</div>';
+ if(lastId!==r.id){lastId=r.id;cc.classList.add('hid');cuCard(r)}};
+fl.addEventListener('change',e=>{const t=e.target;if(t.matches('[data-qs]'))t.style.setProperty('--c',QC[t.value]||'var(--inf)')});
+new MutationObserver(()=>{if(!$('dlg').open)lastId=null}).observe($('dlg'),{attributes:true,attributeFilter:['open']});
+Object.assign(EN,{'ใบเสนอราคาของ Lead นี้':'Quotations for this lead','+ คำนวณราคา':'+ Calculate price','ลูกค้ารายนี้':'This customer','ดูข้อมูลลูกค้า':'View customer','Lead ทั้งหมด':'Total leads','ปิดได้':'Closed','ยอดที่ปิดได้':'Closed amount','แต้ม LINE':'LINE points','เปิดในหน้าคำนวณ':'Open in calculator','รายละเอียด':'Details','ยังไม่มีใบเสนอราคา':'No quotations yet','ใบเสนอราคาทั้งหมด':'All quotations','ได้งาน':'Won','ยอดที่ได้งาน':'Won amount','รอผล':'Pending','ผู้เสนอ':'Quoted by','เปิด':'Open','บริการ':'Service','ประเทศ':'Country','ยอด':'Amount','เสนอแล้ว':'Quoted','ต่อรอง':'Negotiating','ไม่ได้งาน':'Lost'});
 })();
 </script>
 </body>
