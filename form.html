@@ -76,7 +76,7 @@ footer{padding:12px 20px calc(18px + env(safe-area-inset-bottom,0px));border-top
 .mc{display:flex;flex-wrap:wrap;gap:8px}.mcx{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--r);background:var(--fill);font-size:15px;font-weight:500;cursor:pointer}
 .mcx input{width:18px;height:18px;min-height:0;padding:0;margin:0;accent-color:var(--c);-webkit-appearance:auto;appearance:auto}
 .err .mcx{outline:1px solid var(--dgr)}
-.tcx{display:flex;flex-direction:column;gap:8px;margin:0 0 14px}.tcx>b{font-size:14px}.tcb{max-height:340px;overflow:auto;padding:14px 16px;border:1px solid #e0e8f0;border-radius:12px;background:#f7f9fc;font-size:13.5px;line-height:1.7;color:#24364b;overscroll-behavior:contain}
+.tcx{display:flex;flex-direction:column;gap:8px;margin:0 0 14px}.tcx>b{font-size:14px}.tcb p{margin:0 0 6px}.tcb .tch{display:block;margin:12px 0 4px;color:#0e2238}.tcb{max-height:340px;overflow:auto;padding:14px 16px;border:1px solid #e0e8f0;border-radius:12px;background:#f7f9fc;font-size:13.5px;line-height:1.7;color:#24364b;overscroll-behavior:contain}
 .pvb{position:sticky;top:0;z-index:5;background:#fff4d6;color:#7a5a00;text-align:center;font-size:13px;font-weight:600;padding:8px}
 </style>
 </head>
@@ -220,7 +220,7 @@ function fieldHtml(f){const[k,th,en,ty,rq,,x]=f,lb=`<span class="lb">${esc(T(th,
  const em=e?`<span class="em">${esc(e)}</span>`:'';
  if(ty==='head')return `<div class="fhd"><b>${esc(T(th,en))}</b></div>`;
  if(ty==='multi'){const a=Array.isArray(v)?v:[];return `<div class="f${e?' err':''}">${lb}<div class="mc">${opts(f).map(([o,oe])=>`<label class="mcx"><input type="checkbox" data-mk="${k}" value="${esc(o)}"${a.includes(o)?' checked':''}><span>${esc(T(o,oe))}</span></label>`).join('')}</div>${em}</div>`}
- if(k==='t_sales'&&!x&&S.form&&S.form.kind==='tc'){const p=S.form.prefill||{},tx=(LANG==='en'?(p.terms_en||p.terms):(p.terms||p.terms_en))||'';if(tx)return `<div class="tcx"><b>${T('ข้อตกลงและเงื่อนไขการใช้บริการ','Terms & Conditions of Service')}</b><div class="tcb">${esc(tx).replace(/\n/g,'<br>')}</div></div>`+fieldHtml([k,th,en,ty,rq,f[5],1])}
+ if(k==='t_sales'&&!x&&S.form&&S.form.kind==='tc'){const p=S.form.prefill||{},tx=(LANG==='en'?(p.terms_en||p.terms):(p.terms||p.terms_en))||'';if(tx)return `<div class="tcx"><b>${T('ข้อตกลงและเงื่อนไขการใช้บริการ','Terms & Conditions of Service')}</b><div class="tcb">${tx.split('\n').map(l=>{const t=l.trim();return !t?'':(t.length<=60?'<b class="tch">'+esc(t)+'</b>':'<p>'+esc(t)+'</p>')}).join('')}</div></div>`+fieldHtml([k,th,en,ty,rq,f[5],1])}
  if(ty==='check'||ty==='check2')return `<label class="ck${e?' err':''}"><input type="checkbox" data-k="${k}"${v?' checked':''}><span>${esc(T(th,en))}${rq?'&nbsp;<span class="rq" style="color:var(--dgr)">*</span>':''}</span></label>${em}`;
  if(ty==='sign')return `<div class="f${e?' err':''}" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500">${lb}<div class="sg"><canvas data-sig="${k}"></canvas><span class="sgh">${T('เซ็นชื่อในกรอบนี้','Sign inside this box')}</span><button type="button" class="sgc" data-sgc="${k}">${T('ล้าง','Clear')}</button></div>${em}</div>`;
  if(ty==='file'){const fl=S.files[k];return `<div class="f${e?' err':''}" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500">${lb}<label class="up${fl?' has':''}"><input type="file" data-k="${k}" accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx,.xls,.xlsx"><span>${fl?esc(fl.name):T('แนบไฟล์ (PDF / รูปภาพ ไม่เกิน 10 MB)','Attach file (PDF / image, up to 10 MB)')}</span><b>${fl?T('เปลี่ยน','Change'):T('เลือกไฟล์','Choose')}</b></label>${em}</div>`}
@@ -304,6 +304,7 @@ document.addEventListener('click',e=>{const l=e.target.closest('[data-lang]');if
  if(!sb||!/^[0-9a-f-]{36}$/i.test(S.k)){render();return}
  const{data,error}=await sb.rpc('form_get',{p_token:S.k});
  if(!error&&data&&data.kind==='custom'&&data.schema)FORMS.custom=fromSchema(data.schema);
+ if(!error&&data&&data.kind==='tc'){const p=data.prefill=data.prefill||{};if(!p.terms){try{const r=await fetch('assets/terms/'+encodeURIComponent(data.brand||'CPL-Inter')+'.json',{cache:'no-cache'});if(r.ok){const j=await r.json();p.terms=j.th||'';p.terms_en=j.en||''}}catch(e){}}}
  if(!error&&data&&FORMS[data.kind]){S.form=data;['s_address','reg_address','c_address','j_address'].forEach(k=>{S.v[k+'__6']=data.brand==='CLMV'?'':'ไทย'});if(!sv&&data.brand==='CLMV')LANG='en';const p=data.prefill||{};FORMS[data.kind].steps.forEach(([,fs])=>fs.forEach(f=>{if(f[5]&&p[f[5]]!=null&&p[f[5]]!==''){let v=String(p[f[5]]);if(f[3]==='select'&&!opts(f).some(o=>o[0]===v))return;if(f[3]==='num')v=fmtN(v,f[6]&&f[6].d);if(f[3]==='tel'){const m=/^(\+\d{1,4})\s*(.*)$/.exec(v.trim());if(m&&CC.some(c=>c[1]===m[1])){S.v[f[0]+'__cc']=m[1];S.v[f[0]+'__n']=m[2]}else S.v[f[0]+'__n']=v;return}if(f[3]==='addr'){S.v[f[0]+'__1']=v;return}S.v[f[0]]=v}}))}
  render()})();
 </script>

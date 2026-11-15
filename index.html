@@ -4419,7 +4419,7 @@ if(top){const b=document.createElement('button');b.type='button';b.className='bt
  if(typeof applyRoleUI==='function'){const _a=applyRoleUI;applyRoleUI=function(p){_a(p);vis()}}
  b.onclick=async()=>{const f=$('tcf');f.reset();await load();fill();$('tcd').showModal()}}
 const f=$('tcf'),cur=()=>(f.querySelector('input[name=b]:checked')||{}).value||'CPL-Inter';
-function fill(){const t=TC[cur()]||{};f.th.value=t.th||'';f.en.value=t.en||''}
+async function fill(){const b=cur();let t=TC[b];if(!t){try{const r=await fetch('assets/terms/'+encodeURIComponent(b)+'.json',{cache:'no-cache'});if(r.ok){const j=await r.json();t={th:j.th||'',en:j.en||''}}}catch(e){}}t=t||{};if(cur()!==b)return;f.th.value=t.th||'';f.en.value=t.en||''}
 $('tc_b').addEventListener('change',fill);
 $('tc_x').onclick=()=>$('tcd').close();
 $('tc_sv').onclick=async()=>{if(busy)return;busy=true;const b=cur(),d={brand:b,th:f.th.value.trim(),en:f.en.value.trim()},o=TC[b];
