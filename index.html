@@ -2610,13 +2610,18 @@ async function ptPanel(cid){const el=$('cd_pt');if(!el)return;await ptLoad();if(
   const st=!P.open?`<span class="cub cub-n">${TT('ยังไม่เปิดบัตร','No card yet')}</span>`:P.act?`<span class="cub cub-g">${TT('บัตรใช้ได้ถึง ','Valid until ')}${fmtD(P.end)}</span>`:`<span class="cub cub-a">${TT('บัตรหมดอายุ ','Card expired ')}${fmtD(P.end)}</span>`;
   const rows=P.D.filter(x=>!P.open||x.in||!P.act);
   return `<div class="pn pt-card" data-ptt="${team}"><div class="pt-h"><span class="pt-li">${chIcon('LINE',30)}</span><span class="pt-tt"><b>${TT('แต้มสะสม LINE','LINE points')}</b><span class="pt-lg">${logo(b)}</span></span>${st}</div>
+  <div class="pt-rule">${(()=>{const dv={A:3000,B:1000}[team]||3000;return [TT('เปิดบัตร +2','Open card +2'),TT(`ทุก ${N(dv)} บาท = 1 แต้ม`,`Every ${N(dv)} THB = 1 pt`),TT(`ส่งครบ 3 ครั้งใน ${P.R.win} วัน +2`,`3 shipments in ${P.R.win} days +2`)].map(x=>`<span>${x}</span>`).join('')})()}</div>
   <div class="pt-b"><div class="pt-bal"><b>${P.bal}</b><span>${TT('แต้ม','pts')}</span></div><div class="pt-bar"><div class="pt-tr"><i style="width:${pct}%"></i><em class="${P.bal>=10?'on':''}" style="left:${10/30*100}%"></em><em class="${P.bal>=30?'on':''}" style="left:100%"></em></div><div class="pt-ms"><span style="left:${10/30*100}%">10 ${TT('แต้ม','pts')}</span><span style="left:100%">30 ${TT('แต้ม','pts')}</span></div></div></div>
   <div class="pt-rw">${[10,30].map(n=>`<button type="button" class="btn sm pt-rd${P.act&&P.bal>=n?' on':''}" data-ptr="${n}"${P.act&&P.bal>=n?'':' disabled'}>${TT('แลก ','Redeem ')}${n} ${TT('แต้ม','pts')} · ${H(TT(W[n][0],W[n][1]))}</button>`).join('')}</div>
   ${P.act?`<div class="pt-op pt-adj"><label>${TT('ปรับแต้ม (+/−)','Adjust (+/−)')}<input type="number" step="1" data-pta placeholder="0"></label><label class="pt-an">${TT('เหตุผล','Reason')}<input data-ptn maxlength="120"></label><button type="button" class="btn sm" data-ptj>${TT('บันทึก','Save')}</button></div>`:''}
   ${P.act?'':`<div class="pt-op"><label>${TT('วันที่เปิดบัตร','Card opened on')}<input type="text" data-ptd data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" value="${fmtD(today())}"></label><button type="button" class="btn sm p" data-pto>${P.open?TT('เปิดบัตรใหม่ (+2)','Open new card (+2)'):TT('บันทึกเปิดบัตร (+2)','Record card opening (+2)')}</button></div>`}
   ${rows.length?`<table class="pt-t"><thead><tr><th>${TT('วันที่ปิด','Closed')}</th><th>Lead</th><th class="r">${TT('ยอด (บาท)','Amount (THB)')}</th><th>${TT('ชำระแล้ว','Paid')}</th><th class="r">${TT('แต้ม','Pts')}</th></tr></thead><tbody>${rows.slice().reverse().map(x=>`<tr${P.open&&!x.in?' class="pt-out"':''}><td>${fmtD(x.d)}</td><td>${H(x.l.name)}${x.pre?` <span class="pt-pre">${TT('ก่อนเปิดบัตร','Before card')}</span>`:''}</td><td class="r">${N(x.l.deal_amt)}</td><td><input type="checkbox" data-ptp="${x.l.id}"${x.paid?' checked':''}${P.open&&x.in?'':' disabled'} aria-label="${TT('ชำระแล้ว','Paid')}"></td><td class="r">${x.p?'+'+x.p:'—'}${x.combo?` <span class="pt-cb">+2 ${TT('ครบ 3 ครั้ง','3 shipments')}</span>`:''}</td></tr>`).join('')}</tbody></table>`:''}
-  ${P.open?`<button type="button" class="btn sm pt-more" data-ptm>${TT('ประวัติแต้มและงานรอยืนยันชำระ','Points history and jobs awaiting payment')}${(()=>{const n=P.D.filter(x=>x.in&&!x.paid).length;return n?` (${n})`:''})()}</button>`:''}
-  ${P.open?`<div class="pt-hs">${[[P.open.date,TT('เปิดบัตร','Card opened'),'+2'],...P.rows.filter(x=>(x.kind==='redeem'||x.kind==='adjust')&&x.date>=P.open.date&&x.date<P.end).map(x=>x.kind==='redeem'?[x.date,TT('แลก ','Redeemed ')+H(x.note||''),'−'+x.points]:[x.date,TT('ปรับแต้ม','Adjusted')+(x.note?' · '+H(x.note):'')+(x.created_by?' · '+H(x.created_by):''),(x.points>0?'+':'−')+Math.abs(x.points)])].sort((a,c)=>String(c[0]).localeCompare(String(a[0]))).map(([d,t,v])=>`<div><span>${fmtD(d)}</span><span>${t}</span><b>${v}</b></div>`).join('')}</div>`:''}
+  ${P.open?`<button type="button" class="btn sm pt-more" data-ptm>${TT('งานปิดและปรับแต้ม','Closed jobs and adjustments')}${(()=>{const n=P.D.filter(x=>x.in&&!x.paid).length;return n?` (${n})`:''})()}</button>`:''}
+  ${P.open?(()=>{const dv={A:3000,B:1000}[team]||3000,L=[[P.open.date,TT('เปิดบัตร','Card opened'),'',2]];
+   P.D.filter(x=>x.in&&x.paid).forEach(x=>{const a=+x.l.deal_amt||0;L.push([x.d,TT('งานปิด ','Job ')+H(x.l.name),`${N(a)} ${TT('บาท','THB')} ÷ ${N(dv)} = ${x.p} ${TT('แต้ม','pts')}`,x.p]);if(x.combo)L.push([x.d,TT(`ส่งครบ 3 ครั้งใน ${P.R.win} วัน`,`3 shipments within ${P.R.win} days`),'',2])});
+   P.rows.filter(x=>(x.kind==='redeem'||x.kind==='adjust')&&x.date>=P.open.date&&x.date<P.end).forEach(x=>L.push(x.kind==='redeem'?[x.date,TT('แลก ','Redeemed ')+H(x.note||''),'',-(+x.points||0)]:[x.date,TT('ปรับแต้ม','Adjusted'),[x.note,x.created_by].filter(Boolean).map(H).join(' · '),+x.points||0]));
+   L.sort((a,c)=>String(c[0]).localeCompare(String(a[0])));
+   return `<div class="pt-led"><div class="pt-lh"><b>${TT('ที่มาของแต้ม','Where points came from')}</b><span>${TT('ได้','Earned')} ${P.earned} · ${TT('แลก','Redeemed')} ${P.red} · ${TT('คงเหลือ','Balance')} ${P.bal}</span></div>${L.map(([d,t,sub,v])=>`<div class="pt-li2"><span class="pt-ld">${fmtD(d)}</span><span class="pt-lt">${t}${sub?`<em>${sub}</em>`:''}</span><b class="${v<0?'neg':''}">${v<0?'−':'+'}${Math.abs(v)}</b></div>`).join('')}</div>`})():''}
   </div>`}).join('')}</div>`;if(CU.ptOpen)el.querySelectorAll('.pt-card').forEach(x=>x.classList.add('open'));if(!ptCan(cid))el.querySelectorAll('button:not([data-ptm]),input').forEach(x=>x.disabled=true)}
 const ptCan=cid=>{const r=profile&&profile.role;if(['admin','sales_lead','ceo','marketing'].includes(r))return true;if(r!=='sales')return false;const c=CU.list.find(x=>String(x.id)===String(cid));return !!c&&c.owner===profile.name};
 async function ptAct(e){if(!ptCan(CU.det))return;const card=e.target.closest('[data-ptt]');if(!card||!CU.det)return;const team=card.dataset.ptt,b=PR[team].b,cid=String(CU.det),me=(profile&&profile.name)||'';
@@ -3410,13 +3415,48 @@ html[data-theme=dark] .fbx-fh img,html[data-theme=dark] #vPT .ptd-lg,html[data-t
 .cdx-pm{font-size:11.5px;font-weight:600;color:var(--pr);background:color-mix(in srgb,var(--br) 12%,transparent);padding:1px 8px;border-radius:999px}
 .cdx-qbs{display:flex;gap:6px;flex:none}.cdx-qb{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;border:1px solid var(--bd);background:var(--card)}.cdx-qb:hover{border-color:currentColor}.q-tel{color:var(--pr)}.q-line{color:#06c755}.q-mail{color:var(--ac,#f07d22)}
 #cd_pt .pt-wrap{display:flex;flex-direction:column;gap:14px}#cd_pt .pt-card{margin:0}
-#cd_pt .pt-card:not(.open) .pt-t,#cd_pt .pt-card:not(.open) .pt-hs,#cd_pt .pt-card:not(.open) .pt-adj{display:none}
+#cd_pt .pt-card:not(.open) .pt-t,#cd_pt .pt-card:not(.open) .pt-adj{display:none}
 #cd_pt .pt-more{width:100%;margin-top:10px}#cd_pt .pt-rw{display:grid;grid-template-columns:1fr;gap:8px}#cd_pt .pt-rw .btn{white-space:normal;text-align:center}
 #cd_fo h3{font-size:15px}
 @media(max-width:600px){.cdx-c{flex-wrap:wrap}.cdx-ci{flex-basis:calc(100% - 52px)}.cdx-qbs{margin-left:52px}.cdx-hm{gap:18px}.cdx-hd{gap:12px}}
 /* Lead table header: one line, vertically centred */
 #vL thead th{white-space:nowrap!important;vertical-align:middle!important;overflow:visible!important;text-overflow:clip!important;padding-top:10px!important;padding-bottom:10px!important}
 #vL thead th:nth-child(7){width:128px!important}html[lang=en] #vL thead th:nth-child(7){width:160px!important}#vL thead th:nth-child(9){width:120px!important}
+
+/* grouped filter bars (design 1) */
+.bar.fgbar{display:flex!important;flex-wrap:wrap;align-items:flex-end!important;gap:10px 10px!important}
+.bar.fgbar>.mkseg,.bar.fgbar>.btn{align-self:flex-end}
+.fg{display:flex;flex-direction:column;gap:4px;min-width:0;flex:none}.fg.hid{display:none!important}
+.fg-l{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--mu);padding-left:4px;white-space:nowrap;line-height:1.2}
+.fg-b{display:flex;align-items:stretch;height:40px;border-radius:var(--r-md,12px);background:var(--fld);box-sizing:border-box;border:1px solid transparent;transition:border-color .15s,box-shadow .15s}
+.fg-b:focus-within{border-color:var(--br);box-shadow:0 0 0 3px color-mix(in srgb,var(--br) 16%,transparent);background:var(--card)}
+.fg:has(>.fg-b>.hid:only-child),.fg:has(>.fg-b:empty){display:none}
+.fgbar .fg-b>select,.fgbar .fg-b>input,.fgbar .fg-b>label>select{height:100%!important;min-height:0!important;margin:0!important;border:0!important;border-radius:0!important;background-color:transparent!important;box-shadow:none!important;outline:0;flex:none!important;width:auto!important;max-width:220px!important;min-width:0!important;field-sizing:content;padding:0 26px 0 12px!important;font-size:14px}
+.fgbar .fg-b>input{padding:0 10px!important;width:104px!important;field-sizing:fixed}
+.fgbar .fg-b>*+*:not(.fg-dash):not(.qa-pop){border-left:1px solid var(--bd)!important}
+.fgbar .fg-b>select:first-child{border-radius:12px 0 0 12px!important}.fgbar .fg-b>:last-child{border-radius:0 12px 12px 0!important}
+.fgbar .fg-b>.hid{display:none!important}
+.fg-dash{display:flex;align-items:center;color:var(--mu);padding:0 2px}.fg-dash+input{border-left:0!important}
+.fg-per .fg-b>input{border-left:0!important;border-radius:0!important}.fg-per .fg-b>select{border-right:1px solid var(--bd)!important;border-left:0!important}.fg-per .fg-b>input:last-child{border-radius:0 12px 12px 0!important}
+.fgbar .fg-b>select{padding:0 24px 0 12px!important}
+/* search group */
+.fgbar .fg-search .fg-b{background:transparent!important;border:0!important;height:auto;box-shadow:none!important}
+.fgbar .qbox{position:relative;display:flex!important;align-items:center;width:260px;max-width:none!important;min-width:0!important;flex:none!important;height:40px;border-radius:12px;background:var(--fld);border:1px solid transparent;overflow:visible!important;box-sizing:border-box;padding:0 8px 0 0}
+.fgbar .qbox:focus-within{border-color:var(--br);box-shadow:0 0 0 3px color-mix(in srgb,var(--br) 16%,transparent);background:var(--card)}
+.fgbar .qbox .qa-sel{display:none!important}
+.fgbar .qbox .qic{flex:none;margin:0 6px 0 12px!important;color:var(--mu)}
+.fgbar .qbox input{flex:1 1 auto!important;min-width:0!important;width:100%!important;max-width:none!important;height:100%!important;margin:0!important;padding:0 4px 0 0!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:0}
+.qa-tok{display:inline-flex;align-items:center;gap:4px;height:24px;margin-right:6px;padding:0 8px;border:0;border-radius:999px;background:color-mix(in srgb,var(--br) 14%,transparent);color:var(--pr);font:inherit;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;flex:none;max-width:130px}.qa-tok span{overflow:hidden;text-overflow:ellipsis}
+.qa-pop{display:none;position:absolute;left:-1px;top:calc(100% + 6px);z-index:60;width:340px;max-width:90vw;padding:10px 12px 12px;border:1px solid var(--bd);border-radius:12px;background:var(--card);box-shadow:0 12px 30px rgba(11,34,64,.16);box-sizing:border-box}
+.qa.open .qa-pop{display:block}.qa-h{display:block;font-size:12px;color:var(--mu);margin-bottom:8px}
+.qa-cs{display:flex;flex-wrap:wrap;gap:6px}.qa-c{height:30px;padding:0 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--tx);font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap}.qa-c:hover{border-color:var(--br)}.qa-c.on{background:var(--pr);border-color:var(--pr);color:#fff}
+@media(max-width:760px){.bar.fgbar{gap:8px}.fg{max-width:100%;flex:1 1 100%}.fg-b{width:100%;min-width:0}.fgbar .fg-b>select{flex:1 1 0!important;min-width:0!important;max-width:none!important;text-overflow:ellipsis}.fg-per .fg-b>select{flex:1.2 1 0!important}.fgbar .fg-b>input{flex:1 1 0!important;width:auto!important;min-width:0!important}.fgbar .qbox{width:100%!important}.fgbar .qbox{width:min(300px,calc(100vw - 40px))}.fg-per .fg-b{flex-wrap:nowrap}.fgbar .fg-b>select{max-width:160px!important}}
+.pt-rule{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px}.pt-rule span{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--lineb);color:var(--lined);font-weight:600;white-space:nowrap}
+.pt-led{margin-top:12px;border-top:1px solid var(--bd);padding-top:10px;display:flex;flex-direction:column;gap:2px}
+.pt-lh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px}.pt-lh b{font-size:13.5px}.pt-lh span{font-size:12px;color:var(--mu)}
+.pt-li2{display:grid;grid-template-columns:84px 1fr auto;gap:8px;align-items:start;padding:5px 0;font-size:13px;border-bottom:1px dashed color-mix(in srgb,var(--bd) 70%,transparent)}.pt-li2:last-child{border-bottom:0}
+.pt-ld{color:var(--mu)}.pt-lt{min-width:0;overflow-wrap:anywhere}.pt-lt em{display:block;font-style:normal;font-size:12px;color:var(--mu)}.pt-li2 b{color:var(--lined);white-space:nowrap}.pt-li2 b.neg{color:var(--er,#b42318)}
+#vFO.fo-loading .stats .st b,#vFO.fo-loading .fo-cc>b{color:transparent!important;border-radius:6px;background:linear-gradient(90deg,var(--fld) 25%,color-mix(in srgb,var(--fld) 40%,var(--card)) 50%,var(--fld) 75%);background-size:200% 100%;animation:skm 1.2s linear infinite}
 /* LINE points dashboard */
 #vPT{--line:#06c755;--lineb:#e9f9ef;--lined:#04883a}
 #vPT .hid,#vCU #cu_o.hid{display:none!important}
@@ -3476,9 +3516,10 @@ const dt=t=>{if(!t)return'-';const d=new Date(t);return p2(d.getDate())+'/'+p2(d
 const link=t=>new URL('form.html?k='+t,location.href).href;
 const mine=()=>FO.list.filter(f=>!profile||profile.role!=='sales'||f.team===profile.team);
 async function load(){const C0='id,token,lead_id,kind,brand,team,sales,company,prefill,status,sheet_url,created_by,created_at,submitted_at,source';
- const get=async C=>{let all=[];for(let o=0;o<20000;o+=1000){const{data,error}=await sb.from('cust_forms').select(C).order('created_at',{ascending:false}).range(o,o+999);if(error)return{error};all=all.concat(data||[]);if(!data||data.length<1000)break}return{all}};
+ const q=(C,o)=>sb.from('cust_forms').select(C,o===0?{count:'exact'}:undefined).order('created_at',{ascending:false}).order('id',{ascending:false}).range(o,o+999);
+ const get=async C=>{const f=await q(C,0);if(f.error)return{error:f.error};let all=f.data||[];if(all.length<1000)return{all};if(typeof f.count!=='number'||f.count<=all.length){for(let o=1000;o<20000;o+=1000){const r=await q(C,o);if(r.error)return{error:r.error};all=all.concat(r.data||[]);if(!r.data||r.data.length<1000)break}return{all}}const n=f.count;const offs=[];for(let o=1000;o<Math.min(n,20000);o+=1000)offs.push(o);const rs=await Promise.all(offs.map(o=>q(C,o)));for(const r of rs){if(r.error)return{error:r.error};all=all.concat(r.data||[])}return{all}};
  let r=await get(C0+',seen_at,template_id,customer_id');FO.hasCx=!r.error;if(r.error)r=await get(C0+',seen_at');FO.hasSeen=!r.error;if(r.error)r=await get(C0);FO.ok=!r.error;FO.list=r.error?[]:r.all;
- await tplLoad();FO.list.forEach(foNorm);FO.loaded=true;render()}
+ await tplLoad();FO.list.forEach(foNorm);FO.loaded=true;FO.at=Date.now();render()}
 async function tplLoad(){try{const{data,error}=await sb.from('form_templates').select('*').order('created_at',{ascending:false});FO.tplOk=!error;FO.tpl=error?[]:(data||[])}catch(e){FO.tplOk=false;FO.tpl=[]}FO.tpl.forEach(tplReg)}
 function tplReg(t){const k='c'+t.id;KN[k]=[t.name,t.name_en||t.name];KIC[k]=KIC.custom}
 function foNorm(f){if(f.kind==='custom'&&f.template_id){f.kind='c'+f.template_id;if(!KN[f.kind]){const p=f.prefill||{};KN[f.kind]=[p.title||'ฟอร์ม',p.title_en||p.title||'Form'];KIC[f.kind]=KIC.custom}}return f}
@@ -3491,7 +3532,7 @@ const isNew=f=>f.status==='done'&&!f.seen_at&&FO.hasSeen;
 const subOf=f=>f.status==='done'&&!isTpl(f);
 const dd=t=>{if(!t)return'-';const d=new Date(t);return p2(d.getDate())+'/'+p2(d.getMonth()+1)+'/'+d.getFullYear()};
 const kn=k=>TT(KN[k][0],KN[k][1]);
-function render(){if($('vFO').classList.contains('hid'))return;const inb=!!FO.view;$('fo_home').classList.toggle('hid',inb);$('fo_inb').classList.toggle('hid',!inb);inb?renderInbox():renderHome()}
+function render(){if($('vFO').classList.contains('hid'))return;$('vFO').classList.toggle('fo-loading',!FO.loaded);const inb=!!FO.view;$('fo_home').classList.toggle('hid',inb);$('fo_inb').classList.toggle('hid',!inb);inb?renderInbox():renderHome()}
 function renderHome(){const all=mine(),hs=!!profile&&profile.role==='sales',q=$('fo_fq').value.trim().toLowerCase(),bf=FO.brand;
  const done=all.filter(subOf),sent=all.filter(f=>f.status==='sent'&&!isTpl(f)),m0=new Date();m0.setDate(1);m0.setHours(0,0,0,0);
  const mon=done.filter(f=>new Date(f.submitted_at||f.created_at)>=m0).length,lnk=all.filter(f=>!isTpl(f)&&f.source!=='jotform'&&f.source!=='apply'),rate=lnk.length?Math.round(lnk.filter(f=>f.status==='done').length/lnk.length*100):0;
@@ -3787,9 +3828,51 @@ $('fo_pcp').onclick=e=>FO.cur&&copy(link(FO.cur.token),e.currentTarget);$('fo_pd
 $('fof').addEventListener('submit',e=>{e.preventDefault();make()});$('fo_cp').onclick=e=>copy($('fo_url').value,e.currentTarget);
 $('fo_q').addEventListener('input',()=>{FO.lim=150;render()});$('fo_fsl').addEventListener('change',render);
 $('fop').value='30';perSet('30',$('fo1'),$('fo2'));$('fop').addEventListener('change',()=>{perSet($('fop').value,$('fo1'),$('fo2'));render()});['fo1','fo2'].forEach(id=>$(id).addEventListener('input',()=>{$('fop').value='c';render()}));
-const _t=tab;tab=function(k){if(k==='FO'){if(!canFO())return;document.querySelectorAll('main>[id^="v"]').forEach(v=>v.classList.toggle('hid',v.id!=='vFO'));document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.id==='tFO'));const fnb=$('fnb');if(fnb)fnb.classList.add('hid');render();load();return}
+const _t=tab;tab=function(k){if(k==='FO'){if(!canFO())return;document.querySelectorAll('main>[id^="v"]').forEach(v=>v.classList.toggle('hid',v.id!=='vFO'));document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.id==='tFO'));const fnb=$('fnb');if(fnb)fnb.classList.add('hid');render();if(!FO.loaded||!FO.at||Date.now()-FO.at>120000){if(!FO.busy){FO.busy=1;load().finally(()=>{FO.busy=0})}}return}
  $('vFO').classList.add('hid');$('tFO').classList.remove('on');return _t(k)};
 $('tFO').onclick=()=>tab('FO');
+/* ---- grouped filter bars + search-in popover ---- */
+(function(){const $=id=>document.getElementById(id);
+const IC={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5c3 0 5.5 1.6 5.5 4.5"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'};
+const svg=(k,n)=>`<svg viewBox="0 0 24 24" width="${n||12}" height="${n||12}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
+const strip=el=>{if(!el)return el;[...el.childNodes].forEach(n=>{if(n.nodeType===3)n.remove()});return el};
+function grp(icon,label,nodes,cls){const g=document.createElement('div');g.className='fg'+(cls?' '+cls:'');g.innerHTML=`<span class="fg-l">${svg(icon)}<span>${label}</span></span><div class="fg-b"></div>`;const b=g.lastElementChild;nodes.filter(Boolean).forEach(n=>b.appendChild(n));return g}
+function per(sel,a,b){const d=document.createElement('span');d.className='fg-dash';d.textContent='–';return grp('cal','ช่วงเวลา',[$(sel),$(a),d,$(b)],'fg-per')}
+function wrapGroup(id,icon,label,inner){const w=$(id);if(!w)return null;strip(w);const hid=w.classList.contains('hid');w.className='fg'+(hid?' hid':'');const kids=[...w.children];w.innerHTML=`<span class="fg-l">${svg(icon)}<span>${label}</span></span><div class="fg-b"></div>`;kids.forEach(k=>w.lastElementChild.appendChild(k));return w}
+function build(bar,parts){if(!bar||bar.dataset.fg)return;bar.dataset.fg='1';bar.classList.add('fgbar');const keep=[...bar.children];parts.forEach(p=>{if(p)bar.appendChild(p)});
+ keep.forEach(k=>{if(k.isConnected&&k.parentElement===bar&&!k.classList.contains('fg')&&!k.matches('button,.mkseg,.qbox'))k.remove()})}
+function qA(box,sel,inp){if(!box||!sel||!inp||box.dataset.qa)return;box.dataset.qa='1';box.classList.add('qa');sel.classList.add('qa-sel');sel.tabIndex=-1;sel.setAttribute('aria-hidden','true');
+ const tok=document.createElement('button');tok.type='button';tok.className='qa-tok';inp.before(tok);
+ const pop=document.createElement('div');pop.className='qa-pop';pop.setAttribute('role','listbox');box.appendChild(pop);
+ const T=(th,en)=>typeof TT==='function'?TT(th,en):th;
+ const R=()=>{const o=sel.options[sel.selectedIndex];tok.style.display=sel.value?'':'none';tok.innerHTML=sel.value?`<span>${(o&&o.textContent)||''}</span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`:'';tok.title=tok.ariaLabel=T('ค้นหาทั้งหมด','Search all');
+  pop.innerHTML=`<span class="qa-h">${T('ค้นหาจาก','Search in')}</span><div class="qa-cs">${[...sel.options].map(o=>`<button type="button" class="qa-c${o.value===sel.value?' on':''}" data-v="${o.value}" role="option" aria-selected="${o.value===sel.value}">${o.textContent}</button>`).join('')}</div>`};
+ const set=v=>{if(sel.value===v)return;sel.value=v;sel.dispatchEvent(new Event('change',{bubbles:true}));R()};
+ const open=()=>{R();box.classList.add('open')},close=()=>box.classList.remove('open');
+ inp.addEventListener('focus',open);inp.addEventListener('click',open);
+ inp.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+ pop.addEventListener('mousedown',e=>e.preventDefault());
+ pop.addEventListener('click',e=>{const c=e.target.closest('[data-v]');if(!c)return;set(c.dataset.v);close();inp.focus();setTimeout(close,0)});
+ tok.addEventListener('click',()=>{set('');inp.focus()});
+ document.addEventListener('mousedown',e=>{if(!box.contains(e.target))close()});
+ sel.addEventListener('change',R);const lb=$('lang');if(lb)lb.addEventListener('click',()=>setTimeout(R,0));R()}
+function init(){
+ // Lead
+ const lb=$('q')&&$('q').closest('.bar');if(lb){const qb=lb.querySelector('.qbox');build(lb,[grp('search','ค้นหา',[qb],'fg-search'),grp('tag','สถานะงาน',[$('fs'),$('fc'),$('fm')]),grp('user','เซลล์',[$('fa')]),per('lp','lf','lt'),$('lclr'),$('lfx')]);qA(qb,$('qf'),$('q'))}
+ // Customers
+ const cb=$('cu_q')&&$('cu_q').closest('.bar');if(cb){const qb=cb.querySelector('.qbox');build(cb,[grp('search','ค้นหา',[qb],'fg-search'),grp('tag','สถานะลูกค้า',[$('cu_st'),$('cu_ch'),$('cu_sv')]),grp('user','เซลล์',[$('cu_o')]),per('cu_p','cu_f','cu_t'),$('cu_fx')]);qA(qb,$('cu_qf'),$('cu_q'))}
+ // Dashboard
+ const db=$('dp')&&$('dp').closest('.bar');if(db){strip($('dtm').parentElement);build(db,[per('dp','d1','d2'),grp('team','ทีม',[$('dtm')]),wrapGroup('dslw','user','เซลล์')])}
+ // Follow-up
+ const kb=$('kyb');if(kb)build(kb,[per('kp','k1','k2')]);
+ // Forms
+ const fb=$('fop')&&$('fop').closest('.bar');if(fb)build(fb,[$('fo_tabs'),grp('user','เซลล์',[$('fo_fsl')]),per('fop','fo1','fo2')]);
+ // LINE points
+ const pb=$('pp')&&$('pp').closest('.bar');if(pb)build(pb,[per('pp','p1','p2'),wrapGroup('pslw','user','เซลล์')]);
+ const trim=()=>document.querySelectorAll('.fg-per select').forEach(sl=>[...sl.options].forEach(o=>{const t=o.textContent.replace(/\s*\([^)]*\)\s*$/,'');if(t!==o.textContent)o.textContent=t}));trim();if(typeof fLabels==='function'){const _fl=fLabels;fLabels=function(){const r=_fl.apply(this,arguments);try{trim()}catch(e){}return r}}
+ if(typeof EN==='object')Object.assign(EN,{'สถานะงาน':'Status','สถานะลูกค้า':'Customer status','ทีม':'Team','ค้นหา':'Search','ช่วงเวลา':'Period','เซลล์':'Sales'})}
+init();})();
+
 (function(){const _tp=tab;tab=function(k){if(k==='PT'){if(!window.ptdOk||!window.ptdOk())return;document.querySelectorAll('main>[id^="v"]').forEach(v=>v.classList.toggle('hid',v.id!=='vPT'));document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.id==='tPT'));const fnb=$('fnb');if(fnb)fnb.classList.add('hid');window.ptDash();return}
  $('vPT').classList.add('hid');$('tPT').classList.remove('on');return _tp(k)};
  $('tPT').onclick=()=>tab('PT');
