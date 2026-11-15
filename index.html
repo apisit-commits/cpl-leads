@@ -2574,7 +2574,7 @@ const _sl=saveLead;saveLead=async function(id,o){if(CU.ok&&isBeta()&&o.name){let
 /* ---- LINE points dashboard ---- */
 const PD={b:''};
 const ptdLock=()=>{const r=profile&&profile.role,t=profile&&profile.team;return r==='admin'?'':(t==='A'?'CPL-Inter':t==='B'?'CPLEx':'')};
-const ptdOk=()=>!!(profile&&['admin','sales','sales_lead'].includes(profile.role));
+const ptdOk=()=>!!(profile&&['admin','sales','sales_lead'].includes(profile.role)&&!(profile.role==='sales'&&profile.team==='C'));
 function ptdCards(){const me=(profile&&profile.name)||'',r=profile&&profile.role,sl=$('psl')?$('psl').value:'';const out=[];
  CU.list.forEach(c=>{if(r==='sales'&&c.owner!==me)return;if(sl&&c.owner!==sl)return;['A','B'].forEach(t=>{const b=PR[t].b;if(PD.b&&PD.b!==b)return;if(!PT.rows.some(x=>String(x.customer_id)===String(c.id)&&x.brand===b&&x.kind==='open'))return;out.push({c,t,b,P:ptCalc(c.id,t)})})});return out}
 function ptdEv(o){const P=o.P,E=[];if(!P.open)return E;E.push({d:P.open.date,e:2,r:0});
