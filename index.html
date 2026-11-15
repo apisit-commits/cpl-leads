@@ -477,6 +477,7 @@ html[data-theme=dark] #dlg.lf2 .lf-sc{background:var(--bg)}
 #dlg.lf2 .lf-sg span.t{flex:1;min-width:0}
 #dlg.lf2 .lf-ft{display:flex;align-items:center;gap:10px;padding:12px 24px;border-top:1px solid var(--bd);background:var(--card);flex:none}
 #dlg.lf2 .lf-ft>.acts{margin:0 0 0 auto!important;padding:0!important;border:0!important;position:static!important;background:none!important;box-shadow:none!important}
+#dlg.lf2 .lf-del{color:var(--er);border-color:color-mix(in srgb,var(--er) 35%,var(--bd));margin-right:4px}#dlg.lf2 .lf-del:hover{background:var(--erb)}#dlg.lf2 .lf-del.hid{display:none}
 #dlg.lf2 .lf-pg{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--mu);white-space:nowrap}
 #dlg.lf2 .lf-bar{width:140px;height:6px;border-radius:3px;background:var(--fld);overflow:hidden;display:block}
 #dlg.lf2 .lf-bar i{display:block;height:6px;width:0;background:var(--br);border-radius:3px;transition:width .2s}
@@ -912,12 +913,14 @@ let rq=0;const later=()=>{if(rq)return;rq=requestAnimationFrame(()=>{rq=0;refres
 f.addEventListener('invalid',()=>f.classList.add('lf-try'),true);
 $('sv_').addEventListener('click',()=>f.classList.add('lf-try'),true);
 new MutationObserver(later).observe(sc,{subtree:true,attributes:true,attributeFilter:['class']});
-function onOpen(){f.classList.remove('lf-try');chDeco();phSet();f.ads.required=!$('ads_wrap').classList.contains('hid');sg.classList.add('hid');
+const delB=mk('button','btn lf-del');delB.type='button';delB.textContent='ลบ Lead';acts.prepend(delB);
+delB.onclick=async()=>{const id=editId;if(!id)return;await del(id);if(!rows.some(x=>x.id===id)&&dlg.open)dlg.close()};
+function onOpen(){{const r=editId&&rows.find(x=>x.id===editId);delB.classList.toggle('hid',!(r&&can(r)&&profile&&profile.role!=='sales_lead'))}f.classList.remove('lf-try');chDeco();phSet();f.ads.required=!$('ads_wrap').classList.contains('hid');sg.classList.add('hid');
  {const t=dt.textContent,i=t.lastIndexOf(' · ');if(i>0&&!dt.querySelector('.lf-tm')){dt.textContent='';const a=mk('span');a.textContent=t.slice(0,i);const c=mk('span','lf-tm');c.textContent=t.slice(i+3);dt.append(a,c)}}
  act=null;sc.style.scrollBehavior='auto';sc.scrollTop=0;sc.style.scrollBehavior='';refresh();spy()}
 new MutationObserver(()=>{if(dlg.open)onOpen()}).observe(dlg,{attributes:true,attributeFilter:['open']});
 new MutationObserver(()=>{if(dlg.open&&!dt.querySelector('.lf-tm'))onOpen()}).observe(dt,{childList:true,characterData:true,subtree:true});
-Object.assign(EN,{'ลูกค้า':'Customer','ช่องทาง':'Channel','ช่องทางหลัก':'Main channel','ทักมาทางอื่นด้วย':'Also contacted via','งานที่สนใจ':'Interested in','หมายเหตุเพิ่มเติม':'Additional notes','ข้อมูลเพิ่มเติม':'More details','ข้อมูลลูกค้า':'Customer','การขนส่ง':'Shipping','พัสดุ':'Package','ปิดงาน และผู้รับผิดชอบ':'Closing & owner','กรอกแล้ว':'Filled','พรุ่งนี้':'Tomorrow','3 วัน':'3 days','1 สัปดาห์':'1 week','2 สัปดาห์':'2 weeks','รวม':'Total','ชิ้น':'pcs','Messenger ส่วนตัว':'Messenger Private','LINE ส่วนตัว':'LINE Private','โทรเข้า':'Call in','เว็บไซต์':'Website','อีเมล':'Email','หัวข้อ':'Sections','ปิดงาน':'Closing','รหัสประเทศ':'Country code'});
+Object.assign(EN,{'ลูกค้า':'Customer','ช่องทาง':'Channel','ช่องทางหลัก':'Main channel','ทักมาทางอื่นด้วย':'Also contacted via','งานที่สนใจ':'Interested in','หมายเหตุเพิ่มเติม':'Additional notes','ข้อมูลเพิ่มเติม':'More details','ข้อมูลลูกค้า':'Customer','การขนส่ง':'Shipping','พัสดุ':'Package','ปิดงาน และผู้รับผิดชอบ':'Closing & owner','กรอกแล้ว':'Filled','พรุ่งนี้':'Tomorrow','3 วัน':'3 days','1 สัปดาห์':'1 week','2 สัปดาห์':'2 weeks','รวม':'Total','ชิ้น':'pcs','Messenger ส่วนตัว':'Messenger Private','LINE ส่วนตัว':'LINE Private','โทรเข้า':'Call in','เว็บไซต์':'Website','อีเมล':'Email','หัวข้อ':'Sections','ลบ Lead':'Delete lead','ปิดงาน':'Closing','รหัสประเทศ':'Country code'});
 })();
 
 /* extra details box v2 */
