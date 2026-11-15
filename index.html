@@ -2530,9 +2530,9 @@ async function ptPanel(cid){const el=$('cd_pt');if(!el)return;await ptLoad();if(
  el.innerHTML=`<div class="pt-wrap">${T.map(team=>{const P=ptCalc(cid,team),b=P.b,W=PRW[b],pct=Math.min(100,P.bal/30*100);
   const st=!P.open?`<span class="cub cub-n">${TT('ยังไม่เปิดบัตร','No card yet')}</span>`:P.act?`<span class="cub cub-g">${TT('บัตรใช้ได้ถึง ','Valid until ')}${fmtD(P.end)}</span>`:`<span class="cub cub-a">${TT('บัตรหมดอายุ ','Card expired ')}${fmtD(P.end)}</span>`;
   const rows=P.D.filter(x=>!P.open||x.in||!P.act);
-  return `<div class="pn pt-card" data-ptt="${team}"><div class="pt-h"><span class="pt-lg">${logo(b)}</span><span class="pt-tt">${TT('แต้มสะสม LINE','LINE points')}</span>${st}</div>
-  <div class="pt-b"><div class="pt-bal"><b>${P.bal}</b><span>${TT('แต้ม','pts')}</span></div><div class="pt-bar"><div class="pt-tr"><i style="width:${pct}%"></i><em style="left:${10/30*100}%"></em></div><div class="pt-ms"><span style="left:${10/30*100}%">10</span><span style="left:100%">30</span></div></div></div>
-  <div class="pt-rw">${[10,30].map(n=>`<button type="button" class="btn sm${P.act&&P.bal>=n?' p':''}" data-ptr="${n}"${P.act&&P.bal>=n?'':' disabled'}>${TT('แลก ','Redeem ')}${n} ${TT('แต้ม','pts')} · ${H(TT(W[n][0],W[n][1]))}</button>`).join('')}</div>
+  return `<div class="pn pt-card" data-ptt="${team}"><div class="pt-h"><span class="pt-li">${chIcon('LINE',30)}</span><span class="pt-tt"><b>${TT('แต้มสะสม LINE','LINE points')}</b><span class="pt-lg">${logo(b)}</span></span>${st}</div>
+  <div class="pt-b"><div class="pt-bal"><b>${P.bal}</b><span>${TT('แต้ม','pts')}</span></div><div class="pt-bar"><div class="pt-tr"><i style="width:${pct}%"></i><em class="${P.bal>=10?'on':''}" style="left:${10/30*100}%"></em><em class="${P.bal>=30?'on':''}" style="left:100%"></em></div><div class="pt-ms"><span style="left:${10/30*100}%">10 ${TT('แต้ม','pts')}</span><span style="left:100%">30 ${TT('แต้ม','pts')}</span></div></div></div>
+  <div class="pt-rw">${[10,30].map(n=>`<button type="button" class="btn sm pt-rd${P.act&&P.bal>=n?' on':''}" data-ptr="${n}"${P.act&&P.bal>=n?'':' disabled'}>${TT('แลก ','Redeem ')}${n} ${TT('แต้ม','pts')} · ${H(TT(W[n][0],W[n][1]))}</button>`).join('')}</div>
   ${P.act?`<div class="pt-op pt-adj"><label>${TT('ปรับแต้ม (+/−)','Adjust (+/−)')}<input type="number" step="1" data-pta placeholder="0"></label><label class="pt-an">${TT('เหตุผล','Reason')}<input data-ptn maxlength="120"></label><button type="button" class="btn sm" data-ptj>${TT('บันทึก','Save')}</button></div>`:''}
   ${P.act?'':`<div class="pt-op"><label>${TT('วันที่เปิดบัตร','Card opened on')}<input type="text" data-ptd data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" value="${fmtD(today())}"></label><button type="button" class="btn sm p" data-pto>${P.open?TT('เปิดบัตรใหม่ (+2)','Open new card (+2)'):TT('บันทึกเปิดบัตร (+2)','Record card opening (+2)')}</button></div>`}
   ${rows.length?`<table class="pt-t"><thead><tr><th>${TT('วันที่ปิด','Closed')}</th><th>Lead</th><th class="r">${TT('ยอด (บาท)','Amount (THB)')}</th><th>${TT('ชำระแล้ว','Paid')}</th><th class="r">${TT('แต้ม','Pts')}</th></tr></thead><tbody>${rows.slice().reverse().map(x=>`<tr${P.open&&!x.in?' class="pt-out"':''}><td>${fmtD(x.d)}</td><td>${H(x.l.name)}</td><td class="r">${N(x.l.deal_amt)}</td><td><input type="checkbox" data-ptp="${x.l.id}"${x.paid?' checked':''}${P.open&&x.in?'':' disabled'} aria-label="${TT('ชำระแล้ว','Paid')}"></td><td class="r">${x.p?'+'+x.p:'—'}${x.combo?` <span class="pt-cb">+2 ${TT('ครบ 3 ครั้ง','3 shipments')}</span>`:''}</td></tr>`).join('')}</tbody></table>`:''}
@@ -2567,6 +2567,7 @@ window.ptBell=function(){const b=$('bell');if(!b||!profile||profile.role!=='sale
 window.ptMark=k=>{const sn=ptSeen();if(k)sn[k]=1;else ptNots().forEach(o=>{sn[o.k]=1});try{localStorage.setItem(ptSeenK(),JSON.stringify(sn))}catch(e){}};
 async function ptBg(){if(!profile||profile.role!=='sales'||document.hidden)return;try{await cuLoad(true);await ptLoad(true);window.ptBell()}catch(e){}}
 setTimeout(ptBg,4000);setInterval(ptBg,600000);
+setTimeout(async()=>{try{if(!profile||CU.loaded)return;await cuLoad(true);await cuAuto()}catch(e){}},8000);
 /* ---- lead form link ---- */
 const _sl=saveLead;saveLead=async function(id,o){if(CU.ok&&isBeta()&&o.name){let keep=false;if(id){const{data}=await sb.from('leads').select('customer_id').eq('id',id).single();keep=!!(data&&data.customer_id)}if(!keep){try{const cid=await cuLink(o);if(cid)o={...o,customer_id:cid}}catch(e){}}}return _sl(id,o)};
 /* ---- tab ---- */
@@ -3126,6 +3127,28 @@ main>div>.nh .btn.p,main>div>.nh>.nbar>.btn,#l_exp,#l_add{height:40px;box-sizing
 
 .fb-pvw{flex:none;height:min(62vh,640px);box-sizing:border-box;justify-content:center;margin:6px 0 4px;padding:12px;background:var(--fld);border-radius:var(--r-lg,14px)}
 .fb-pvw iframe{width:min(440px,100%);height:100%;border:1px solid var(--bd);border-radius:var(--r-lg,14px);background:#fff;box-shadow:var(--sh-1)}
+
+/* LINE points card */
+.pt-card{--line:#06c755;--lineb:#e9f9ef;--lined:#04883a;padding:0 16px 16px!important;overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 35%,var(--bd))!important}
+.pt-card .pt-h{margin:0 -16px 14px;padding:12px 16px;background:linear-gradient(135deg,var(--lineb),color-mix(in srgb,var(--line) 18%,var(--card)));border-bottom:1px solid color-mix(in srgb,var(--line) 25%,var(--bd))}
+.pt-li{display:inline-flex;filter:drop-shadow(0 2px 4px rgba(6,199,85,.35))}
+.pt-tt{display:flex;flex-direction:column;gap:2px;margin-right:auto}.pt-tt b{font-size:15px;color:var(--lined)}
+.pt-lg img{height:14px!important;opacity:.9}
+.pt-card .pt-bal b{color:var(--line)!important;font-size:38px}
+.pt-card .pt-tr{background:color-mix(in srgb,var(--line) 14%,transparent)!important;height:12px!important}
+.pt-card .pt-tr i{background:linear-gradient(90deg,#3ddc84,var(--line))!important}
+.pt-card .pt-tr em{top:-4px!important;width:14px!important;height:14px!important;margin-left:-7px;border-radius:50%;background:var(--card)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--line) 45%,var(--bd))!important}
+.pt-card .pt-tr em.on{background:var(--line)!important;box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--line)!important}
+.pt-card .pt-tr em:last-of-type{margin-left:-14px}
+.pt-card .pt-ms{margin-top:4px}
+.pt-rd{border-color:color-mix(in srgb,var(--line) 35%,var(--bd))!important}
+.pt-rd.on{background:var(--line)!important;border-color:var(--line)!important;color:#fff!important;font-weight:600;box-shadow:0 4px 12px rgba(6,199,85,.3)}
+.pt-rd:disabled{opacity:.55;cursor:default}
+.pt-card [data-pto]{background:var(--line)!important;box-shadow:0 4px 12px rgba(6,199,85,.3)!important}
+.pt-card .cub-g{background:var(--lineb);color:var(--lined)}
+.pt-card .pt-t input[type=checkbox]:checked{accent-color:var(--line)}
+.pt-card .pt-hs b{color:var(--lined)}
+.pt-card .pt-ms span{white-space:nowrap}.pt-card .pt-t input[type=checkbox]:checked{background-color:var(--line)!important;border-color:var(--line)!important}
 </style>
 <script>
 (function(){
