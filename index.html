@@ -2988,7 +2988,7 @@ function qAll(cid){const out=[];((typeof CU!=='undefined'&&CU.ls[cid])||[]).forE
 function qHtml(cid){const A=qAll(cid);if(!A.length)return '<div class="sub" style="padding:18px 4px">ยังไม่มีใบเสนอราคา</div>';
  const won=A.filter(x=>qst(x.q)==='ได้งาน'),wait=A.filter(x=>['เสนอแล้ว','ต่อรอง'].includes(qst(x.q)));
  return `<div class="cqs"><div><span>ใบเสนอราคาทั้งหมด</span><b>${A.length}</b></div><div><span>ได้งาน</span><b>${won.length}</b> <small class="sub">${Math.round(won.length/A.length*100)}%</small></div><div><span>ยอดที่ได้งาน</span><b>${N(won.reduce((s,x)=>s+(+x.q.tot||0),0))} ฿</b></div><div><span>รอผล</span><b>${wait.length}</b></div></div>
- <div class="cqw"><table class="cqt"><thead><tr><th>วันที่</th><th>Lead</th><th>บริการ</th><th>ประเทศ</th><th>ยอด</th><th>สถานะ</th><th>ผู้เสนอ</th><th></th></tr></thead><tbody>${A.map(({q,r})=>{const s=qst(q);return `<tr data-lid="${esc(r.id)}"><td style="white-space:nowrap">${fmtD(q.t)}</td><td style="color:var(--pr);white-space:nowrap">Lead ${fmtD(r.date)}</td><td>${esc(QMD[q.mode]||q.m||'')}${q.sv?' · '+esc(q.sv):''}</td><td>${esc(q.country||'')}</td><td style="font-weight:600;white-space:nowrap">฿${N(q.tot)}</td><td><span class="qc" style="--c:${QC[s]||'var(--inf)'}">${esc(s)}</span></td><td>${esc(q.by||'')}</td><td style="text-align:right"><button type="button" class="btn sm" data-cqo="${esc(q.id)}">เปิด</button></td></tr>`}).join('')}</tbody></table></div>`}
+ <div class="cqw"><table class="cqt"><thead><tr><th>วันที่</th><th>Lead</th><th>บริการ</th><th>ยอด</th><th>สถานะ</th><th></th></tr></thead><tbody>${A.map(({q,r})=>{const s=qst(q);return `<tr data-lid="${esc(r.id)}"><td>${fmtD(q.t)}</td><td style="color:var(--pr);white-space:nowrap">${fmtD(r.date)}</td><td>${esc(QMD[q.mode]||q.m||'')}${q.sv?' · '+esc(q.sv):''}${q.country||q.by?`<div class="sub" style="font-size:12px">${esc([q.country,q.by].filter(Boolean).join(' · '))}</div>`:''}</td><td style="font-weight:600;white-space:nowrap">฿${N(q.tot)}</td><td><span class="qc" style="--c:${QC[s]||'var(--inf)'}">${esc(s)}</span></td><td style="text-align:right"><button type="button" class="btn sm" data-cqo="${esc(q.id)}">เปิด</button></td></tr>`}).join('')}</tbody></table></div>`}
 {const _cd=cuDet;cuDet=function(id){_cd(id);try{const dv=$('cu_dv'),tb=dv&&dv.querySelector('.cdx-tb');if(!tb||CU.det!==id)return;const n=qAll(id).length;
  tb.insertAdjacentHTML('beforeend',`<button type="button" data-cdt="qt">ใบเสนอราคา (${n})</button>`);const o=tb.onclick;
  tb.onclick=e=>{const t=e.target.closest('[data-cdt]');if(t&&t.dataset.cdt==='qt'){tb.querySelectorAll('[data-cdt]').forEach(x=>x.classList.toggle('on',x===t));$('cd_tab').innerHTML=qHtml(id);return}o&&o(e)};
@@ -4340,14 +4340,14 @@ window.addEventListener('load',()=>{try{window.__relang&&window.__relang()}catch
 #cu_dv .cqs>div{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;background:var(--card)}
 #cu_dv .cqs span{font-size:12px;color:var(--mu);display:block}
 #cu_dv .cqs b{font-size:19px}
-#cu_dv .cqt{width:100%;border-collapse:collapse;min-width:0!important;font-size:13.5px}
-#cu_dv .cqt th{text-align:left;font-size:12.5px;font-weight:600;color:var(--mu);white-space:nowrap;padding:9px 10px;border-bottom:1px solid var(--bd)}
-#cu_dv .cqt td{padding:10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+#cu_dv .cqt{width:100%;border-collapse:collapse;min-width:0!important;font-size:13.5px;table-layout:fixed}#cu_dv .cqt th:nth-child(1),#cu_dv .cqt th:nth-child(2){width:92px}#cu_dv .cqt th:nth-child(4){width:92px}#cu_dv .cqt th:nth-child(5){width:104px}#cu_dv .cqt th:nth-child(6){width:64px}#cu_dv .cqt td{overflow:hidden;text-overflow:ellipsis}
+#cu_dv .cqt th{text-align:left;font-size:12.5px;font-weight:600;color:var(--mu);white-space:nowrap;padding:9px 8px;border-bottom:1px solid var(--bd)}
+#cu_dv .cqt td{padding:10px 8px;border-bottom:1px solid var(--bd);vertical-align:middle}
 #cu_dv .cqt tr[data-lid]{cursor:pointer}
 #cu_dv .cqt tr[data-lid]:hover td{background:rgba(0,150,214,.05)}
 #cu_dv .cqt .qc{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:11px;font-size:12px;font-weight:600;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
 #cu_dv .cqt .qc::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
-#cu_dv .cqw{overflow-x:auto}
+#cu_dv .cqw{overflow:hidden}@media(max-width:760px){#cu_dv .cqt th:nth-child(2),#cu_dv .cqt td:nth-child(2){display:none}}
 @media(max-width:760px){#cu_dv .cqs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <script>
