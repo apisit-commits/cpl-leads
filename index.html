@@ -2399,8 +2399,14 @@ async function cuLoad0(){
  const off=!!profile&&profile.role==='sales'&&profile.team==='C',adm=!!profile&&profile.role==='admin',vis=r=>adm||(off?r.team==='C':r.team!=='C'),any=new Set((l||[]).map(r=>r.customer_id));const cs=new Set(salesFor('C')),ownOk=c=>adm||(off?cs.has(c.owner):!cs.has(c.owner));
  CU.ls={};(l||[]).filter(vis).forEach(r=>(CU.ls[r.customer_id]=CU.ls[r.customer_id]||[]).push(r));
  CU.list=(a.data||[]).filter(c=>any.has(c.id)?CU.ls[c.id]:ownOk(c));CU.cts={};(b.data||[]).forEach(c=>(CU.cts[c.customer_id]=CU.cts[c.customer_id]||[]).push(c));
- CU.ok=true;CU.loaded=true;return true}
-function stats(id){const ls=CU.ls[id]||[],w=ls.filter(r=>effS(r)===ST_Y);return{n:ls.length,ds:[...new Set(ls.map(r=>r.date).filter(Boolean))].sort(),w:w.length,last:ls.map(r=>r.date||'').sort().pop()||'',lw:w.map(r=>r.deal_date||r.date||'').sort().pop()||'',amt:w.reduce((t,r)=>t+(+r.deal_amt||0),0),ads:[...new Set(ls.map(r=>r.ads).filter(Boolean))],fa:(ls.filter(r=>r.ads).sort((a,b)=>(a.date||'').localeCompare(b.date||''))[0]||{}).ads||''}}
+ cuSync();CU.ok=true;CU.loaded=true;return true}
+function cuSync(){const q=[];CU.list.forEach(c=>{const ls=(CU.ls[c.id]||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')),lt=ls[0];if(!lt)return;const u={};
+ if(!c.owner&&lt.sales)u.owner=lt.sales;
+ const nm=String(lt.name||'').trim();if(ls.length===1&&nm&&nm!==String(c.name||'').trim()&&!c.tax_id&&!(CU.cts[c.id]||[]).length)u.name=nm;
+ if(Object.keys(u).length){Object.assign(c,u);q.push([c.id,u])}});
+ CU.list.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'th'));
+ (async()=>{for(const[id,u]of q.slice(0,300)){try{await sb.from('customers').update(u).eq('id',id)}catch(e){}}})()}
+function stats(id){const ls=CU.ls[id]||[],w=ls.filter(r=>effS(r)===ST_Y);return{n:ls.length,ds:[...new Set(ls.map(r=>r.date).filter(Boolean))].sort(),w:w.length,last:ls.map(r=>r.date||'').sort().pop()||'',lw:w.map(r=>r.deal_date||r.date||'').sort().pop()||'',amt:w.reduce((t,r)=>t+(+r.deal_amt||0),0),ads:[...new Set(ls.map(r=>r.ads).filter(Boolean))],fa:(ls.filter(r=>r.ads).sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0]||{}).ads||'',sl:(ls.filter(r=>r.sales).sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0]||{}).sales||''}}
 function badge(s){const d=s.lw?Math.floor((Date.now()-new Date(s.lw))/DAY):0,old=d>CHURN;
  if(s.w>=2)return old?['ลูกค้าประจำ · ไม่ส่งมานาน','a']:['ลูกค้าประจำ','g'];
  if(s.w===1)return old?['เคยปิดการขาย · ไม่ส่งมานาน','a']:['เคยปิดการขาย','g'];
@@ -2413,7 +2419,7 @@ function cuRender(){
  const L=CU.list.filter(c=>(!CU.own||c.owner===CU.own)&&(!q||[c.name,c.tax_id,...(CU.cts[c.id]||[]).flatMap(x=>[x.name,x.phone,x.email,x.line])].join(' ').toLowerCase().includes(q)));
  if(!CU.ok){$('cu_b').innerHTML='<tr><td colspan="8" class="sub">โหลดข้อมูลลูกค้าไม่ได้</td></tr>';return}
  $('cu_b').innerHTML=L.length?L.map(c=>{const s=stats(c.id),b=badge(s),ct=(CU.cts[c.id]||[]),pm=ct.find(x=>x.is_primary)||ct[0];
-  return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td>${s.fa?H(s.fa)+(s.ads.length>1?' +'+(s.ads.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="8" class="sub">ไม่พบลูกค้า</td></tr>'}
+  return `<tr data-id="${c.id}" class="cu-r"><td><b>${H(c.name)}</b></td><td>${H(c.owner||s.sl)||'—'}</td><td>${pm?H(pm.name)+(ct.length>1?' +'+(ct.length-1):''):'—'}</td><td>${s.fa?H(s.fa)+(s.ads.length>1?' +'+(s.ads.length-1):''):'—'}</td><td class="num">${s.n}</td><td class="num">${s.w}</td><td>${s.last?fmtD(s.last):'—'}</td><td><span class="cub cub-${b[1]}">${b[0]}</span></td></tr>`}).join(''):'<tr><td colspan="8" class="sub">ไม่พบลูกค้า</td></tr>'}
 async function cuInit(){await cuLoad(true);cuRender();if(CU.det)cuDet(CU.det);cuAuto()}
 function ctRender(){
  $('cu_ct').innerHTML=CU.edit.length?CU.edit.map((c,i)=>`<div class="cu-ct" data-i="${i}"><input data-k="name" placeholder="ชื่อ *" value="${H(c.name)}" maxlength="80"><input data-k="role" placeholder="ตำแหน่ง" value="${H(c.role)}" maxlength="60"><input data-k="phone" placeholder="เบอร์โทร" value="${H(c.phone)}" maxlength="40"><input data-k="email" placeholder="อีเมล" value="${H(c.email)}" maxlength="80"><input data-k="line" placeholder="LINE" value="${H(c.line)}" maxlength="60"><label class="cu-pm"><input type="radio" name="cu_pm"${c.is_primary?' checked':''}>หลัก</label><button type="button" class="btn sm" data-rm aria-label="ลบผู้ติดต่อ">×</button></div>`).join(''):'<div class="sub">ยังไม่มีผู้ติดต่อ</div>'}
