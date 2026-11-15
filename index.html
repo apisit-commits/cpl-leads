@@ -3965,6 +3965,7 @@ async function make(){if(FO.busy)return;const f=$('fof'),me=(profile&&profile.na
  FO.busy=true;$('fo_mk').disabled=true;
  const kv=f.kind.value,tp=/^c\d/.test(kv)?(FO.tpl||[]).find(t=>'c'+t.id===kv):null,cu=cuPick(),row={kind:tp?'custom':kv,brand:tp?tp.brand:f.brand.value,team:profile&&profile.role==='sales'?profile.team:null,sales:me||null,company:cu?cu.name:'',prefill:{sales:me}};
  if(tp){row.template_id=tp.id;row.schema=tp.schema;row.prefill.title=tp.name;row.prefill.title_en=tp.name_en||tp.name}if(cu&&FO.hasCx)row.customer_id=String(cu.id);
+ if(row.kind==='tc'&&window.tcGet){try{const t=await window.tcGet(row.brand);if(t){if(t.th)row.prefill.terms=t.th;if(t.en)row.prefill.terms_en=t.en}}catch(e){}}
  const{data,error}=await sb.from('cust_forms').insert(row).select('id,token,lead_id,kind,brand,team,sales,company,prefill,status,answers,files,sheet_url,created_by,created_at,submitted_at,source'+(FO.hasCx?',template_id,customer_id':'')).single();if(data)foNorm(data);
  FO.busy=false;$('fo_mk').disabled=false;
  if(error||!data)return alert(TT('สร้างฟอร์มไม่สำเร็จ','Failed to create form'));
@@ -4394,6 +4395,34 @@ renderQL=function(){if(!fq||!$('dlg').open)return;const r=editId&&rows.find(x=>x
 fl.addEventListener('change',e=>{const t=e.target;if(t.matches('[data-qs]'))t.style.setProperty('--c',QC[t.value]||'var(--inf)')});
 new MutationObserver(()=>{if(!$('dlg').open)lastId=null}).observe($('dlg'),{attributes:true,attributeFilter:['open']});
 Object.assign(EN,{'ใบเสนอราคาของ Lead นี้':'Quotations for this lead','+ คำนวณราคา':'+ Calculate price','ลูกค้ารายนี้':'This customer','ดูข้อมูลลูกค้า':'View customer','Lead ทั้งหมด':'Total leads','ปิดได้':'Closed','ยอดที่ปิดได้':'Closed amount','แต้ม LINE':'LINE points','เปิดในหน้าคำนวณ':'Open in calculator','รายละเอียด':'Details','ยังไม่มีใบเสนอราคา':'No quotations yet','ใบเสนอราคาทั้งหมด':'All quotations','ได้งาน':'Won','ยอดที่ได้งาน':'Won amount','รอผล':'Pending','ผู้เสนอ':'Quoted by','เปิด':'Open','บริการ':'Service','ประเทศ':'Country','ยอด':'Amount','เสนอแล้ว':'Quoted','ต่อรอง':'Negotiating','ไม่ได้งาน':'Lost'});
+})();
+</script>
+
+<dialog id="tcd"><form id="tcf" method="dialog" novalidate><h3 style="margin:0 0 12px">ข้อตกลงและเงื่อนไขการใช้บริการ</h3>
+<div class="f" style="margin:0 0 12px">แบรนด์<div class="chips" id="tc_b" style="margin-top:6px"><label><input type="radio" name="b" value="CPL-Inter" checked><span>CPL-Inter</span></label><label><input type="radio" name="b" value="CPLEx"><span>CPLEx</span></label><label><input type="radio" name="b" value="CLMV"><span>CLMV</span></label><label><input type="radio" name="b" value="IMTH"><span>IMTH</span></label></div></div>
+<label class="f">ภาษาไทย<textarea name="th" rows="12"></textarea></label>
+<label class="f" style="margin-top:12px">English<textarea name="en" rows="8"></textarea></label>
+<div class="acts"><button type="button" class="btn" id="tc_x">ยกเลิก</button><button type="button" class="btn p" id="tc_sv">บันทึก</button></div></form></dialog>
+<style>#tcd{width:min(820px,94vw)}#tcd textarea{width:100%;box-sizing:border-box;font:inherit;line-height:1.6}</style>
+<script>
+(function(){
+const TC={};let busy=false;
+async function load(){const{data,error}=await sb.from('mk_items').select('id,data').eq('kind','tc_terms');if(error)return false;Object.keys(TC).forEach(k=>delete TC[k]);(data||[]).forEach(r=>{const b=r.data&&r.data.brand;if(b)TC[b]={id:r.id,th:r.data.th||'',en:r.data.en||''}});return true}
+window.tcGet=async b=>{await load();return TC[b]||null};
+const can=()=>!!profile&&['admin','marketing'].includes(profile.role);
+const top=document.querySelector('#vFO .fo-ta');
+if(top){const b=document.createElement('button');b.type='button';b.className='btn';b.id='fo_tc';b.textContent='ข้อตกลงและเงื่อนไข';top.prepend(b);
+ const vis=()=>b.classList.toggle('hid',!can());vis();
+ if(typeof applyRoleUI==='function'){const _a=applyRoleUI;applyRoleUI=function(p){_a(p);vis()}}
+ b.onclick=async()=>{const f=$('tcf');f.reset();await load();fill();$('tcd').showModal()}}
+const f=$('tcf'),cur=()=>(f.querySelector('input[name=b]:checked')||{}).value||'CPL-Inter';
+function fill(){const t=TC[cur()]||{};f.th.value=t.th||'';f.en.value=t.en||''}
+$('tc_b').addEventListener('change',fill);
+$('tc_x').onclick=()=>$('tcd').close();
+$('tc_sv').onclick=async()=>{if(busy)return;busy=true;const b=cur(),d={brand:b,th:f.th.value.trim(),en:f.en.value.trim()},o=TC[b];
+ const r=o?await sb.from('mk_items').update({data:d}).eq('id',o.id).select('id'):await sb.from('mk_items').insert({kind:'tc_terms',data:d}).select('id');busy=false;
+ if(r.error||!r.data||!r.data.length){alert(TT('บันทึกไม่สำเร็จ','Failed to save'));return}TC[b]={id:r.data[0].id,th:d.th,en:d.en};window.toast&&toast(TT('บันทึกแล้ว','Saved'));$('tcd').close()};
+Object.assign(EN,{'ข้อตกลงและเงื่อนไข':'Terms & Conditions','ข้อตกลงและเงื่อนไขการใช้บริการ':'Terms & Conditions of Service','ภาษาไทย':'Thai'});
 })();
 </script>
 </body>
