@@ -3438,7 +3438,7 @@ html[data-theme=dark] .fbx-fh img,html[data-theme=dark] #vPT .ptd-lg,html[data-t
 /* grouped filter bars (design 1) */
 .bar.fgbar{display:flex!important;flex-wrap:wrap;align-items:flex-end!important;gap:10px 10px!important}
 .bar.fgbar>.mkseg,.bar.fgbar>.btn{align-self:flex-end}
-.fg{display:flex;flex-direction:column;gap:4px;min-width:0;flex:none}.fg.hid{display:none!important}
+.fg{display:flex;flex-direction:column;gap:4px;min-width:0;flex:none;margin:0!important}.fg.hid{display:none!important}
 .fg-l{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--mu);padding-left:4px;white-space:nowrap;line-height:1.2}
 .fg-b{display:flex;align-items:stretch;height:40px;border-radius:var(--r-md,12px);background:var(--fld);box-sizing:border-box;border:1px solid transparent;transition:border-color .15s,box-shadow .15s}
 .fg-b:focus-within{border-color:var(--br);box-shadow:0 0 0 3px color-mix(in srgb,var(--br) 16%,transparent);background:var(--card)}
@@ -3474,6 +3474,9 @@ html[data-theme=dark] .fbx-fh img,html[data-theme=dark] #vPT .ptd-lg,html[data-t
 #gspin .gs-r{width:38px;height:38px;border-radius:50%;border:4px solid color-mix(in srgb,var(--br,#0096d6) 18%,transparent);border-top-color:var(--br,#0096d6);animation:gsr .8s linear infinite}
 #gspin .gs-t{font-size:12.5px;font-weight:600;color:var(--mu,#62768c)}
 @keyframes gsr{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){#gspin .gs-r{animation-duration:2.4s}}
+.bar.fgbar>.btn,.bar.fgbar>.fx-clr{align-self:flex-end!important;height:40px!important;min-height:40px!important;margin:0!important;padding:0 14px!important;border-radius:12px!important;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;font-size:13.5px!important;line-height:1}
+.bar.fgbar>.fx-clr{border:1px solid color-mix(in srgb,var(--br) 35%,var(--bd))!important;background:var(--card)!important;color:var(--pr)!important;font-weight:600}.bar.fgbar>.fx-clr:hover{background:color-mix(in srgb,var(--br) 8%,var(--card))!important}
+.bar.fgbar>.hid,.bar.fgbar>.fx-clr.hid{display:none!important}
 /* LINE points dashboard */
 #vPT{--line:#06c755;--lineb:#e9f9ef;--lined:#04883a}
 #vPT .hid,#vCU #cu_o.hid{display:none!important}
