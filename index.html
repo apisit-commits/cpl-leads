@@ -4363,7 +4363,15 @@ const qq=document.createElement('div');qq.className='fqq';const hh=document.crea
 h3.textContent='ใบเสนอราคาของ Lead นี้';hh.append(h3);hh.insertAdjacentHTML('beforeend','<em id="fq_n">0</em><button type="button" id="fq_calc">+ คำนวณราคา</button>');
 qq.append(hh,fl);fq.append(cc,qq);
 const toCalc=(r,q)=>{$('dlg').close();tab('C');const k=r&&typeof CLM!=='undefined'&&Object.keys(CLM).find(x=>CLM[x]===String(r.id));if(k){$('cl_q').value=k;calcPick()}if(q)qlLoad(q)};
-$('fq_calc').onclick=()=>toCalc(editId&&rows.find(x=>x.id===editId));
+$('fq_calc').onclick=()=>{if(!editId)return;window.open(location.href.split('#')[0]+'#calc='+encodeURIComponent(editId),'_blank','noopener')};
+(function(){const m=location.hash.match(/^#calc=(.+)$/);if(!m)return;const id=decodeURIComponent(m[1]),t0=Date.now();
+ const go=async()=>{const ready=typeof profile!=='undefined'&&profile&&typeof rows!=='undefined'&&Array.isArray(rows);if(!ready||(!rows.some(x=>String(x.id)===id)&&!rows.length&&Date.now()-t0<15000)){if(Date.now()-t0<30000)setTimeout(go,300);return}
+  let r=rows.find(x=>String(x.id)===id);
+  if(!r){try{const{data}=await sb.from('leads').select(cols()).eq('id',id).maybeSingle();if(data){r=norm(data);rows.push(r)}}catch(e){}}
+  history.replaceState(null,'',location.href.split('#')[0]);if(!r)return;
+  if(r.team&&r.team!==team){team=r.team;try{buildSeg();setSales()}catch(e){}}
+  let moved=false;document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('nav.tabs'))moved=true},true);const show=()=>{if(moved)return;if($('vC').classList.contains('hid'))tab('C');try{calcLeads()}catch(e){}const k=Object.keys(CLM).find(x=>CLM[x]===String(r.id));if(k&&$('cl_q').value!==k){$('cl_q').value=k;calcPick()}};show();[600,1500,3000].forEach(t=>setTimeout(show,t))};
+ setTimeout(go,300)})();
 let CUQ=0;
 async function cuCard(r){const id=++CUQ;let cid=r&&r.customer_id;
  try{if(!cid&&r){const{data:x}=await sb.from('leads').select('customer_id').eq('id',r.id).maybeSingle();cid=x&&x.customer_id;if(cid)r.customer_id=cid}if(id!==CUQ)return;if(!cid){cc.classList.add('hid');return}const[{data:c},{data:ls}]=await Promise.all([sb.from('customers').select('*').eq('id',cid).maybeSingle(),sb.from('leads').select(cols()+',customer_id').eq('customer_id',cid)]);if(id!==CUQ||!c)return cc.classList.add('hid');
