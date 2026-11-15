@@ -490,6 +490,28 @@ html[data-theme=dark] #dlg.lf2 .lf-sc{background:var(--bg)}
 #dlg.lf2 .lf-sc>fieldset .g{align-items:start}#dlg.lf2 .lf-sc :is(.g,.g3)>*{min-width:0}
 @media(max-width:860px){#dlg.lf2 .lf-rail{display:none}#dlg.lf2 .lf-sc{padding:14px 12px 20px}#dlg.lf2 .lf-s1>.g,#dlg.lf2 .ib>.g{grid-template-columns:1fr}#dlg.lf2 .lf-sc>fieldset{padding:14px 14px 16px}#dlg.lf2 .lf-tags{display:none}#dlg.lf2 .lf-hd,#dlg.lf2 .lf-ft{padding-left:14px;padding-right:14px}#dlg.lf2 .lf-bar{width:60px}}
 @media(max-width:480px){#dlg.lf2 .lf-bar{display:none}}
+#dlg.lf2 .dd-hid{display:none!important}
+#dlg.lf2 #dd h4.dh2{display:flex;align-items:center;gap:12px;margin:22px 0 12px;font-size:13.5px;font-weight:600;color:var(--tx)}
+#dlg.lf2 #dd h4.dh2:first-of-type{margin-top:4px}
+#dlg.lf2 #dd h4.dh2 .dh2l{flex:1;height:1px;background:var(--bd)}
+#dlg.lf2 #dd h4.dh2>.chips{margin:0!important;font-weight:400}
+#dlg.lf2 .seg2{display:inline-flex!important;padding:3px;gap:2px;border-radius:12px;background:var(--fld);flex-wrap:wrap;align-items:center}
+#dlg.lf2 .seg2 label{display:inline-flex}
+#dlg.lf2 .seg2 label span,#dlg.lf2 .seg2>button{height:34px;display:inline-flex;align-items:center;padding:0 14px;border:0!important;border-radius:9px!important;background:none!important;box-shadow:none!important;color:var(--mu);font-size:13px;cursor:pointer}
+#dlg.lf2 .seg2 input:checked+span,#dlg.lf2 .seg2>button.on{background:var(--card)!important;box-shadow:0 1px 3px rgba(0,0,0,.14)!important;color:var(--pr);font-weight:600}
+#dlg.lf2 #dd h4.dh2 .dd-cml{margin:0 -4px 0 6px!important;padding:0!important;border:0!important;background:none!important;color:var(--mu);font-size:12.5px;font-weight:400}
+#dlg.lf2 .dd-r1{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}#dlg.lf2 .dd-r1>label:first-child{width:200px}#dlg.lf2 .dd-r1>label:last-child{flex:1 1 440px;min-width:0}#dlg.lf2 #cpr{grid-template-columns:1fr 1.3fr 1fr}
+#dlg.lf2 .dd-st{margin-top:2px}
+#dlg.lf2 .dd-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+#dlg.lf2 .dd-card{border:1px solid var(--bd);border-radius:14px;padding:16px;background:color-mix(in srgb,var(--fld) 30%,var(--card));display:flex;flex-direction:column;gap:12px;min-width:0}
+#dlg.lf2 .dd-ch{display:flex;align-items:center;gap:8px;font-size:14px}
+#dlg.lf2 .dd-ci{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(0,150,214,.12);color:var(--pr)}
+#dlg.lf2 .dd-card[data-p=y] .dd-ci{background:rgba(240,125,34,.14);color:#c05a00}
+#dlg.lf2 .dd-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#dlg.lf2 .dd-g2>*,#dlg.lf2 .dd-g1>*{min-width:0}
+#dlg.lf2 .dd-card.is-th .fx,#dlg.lf2 .dd-card:not(.is-th) .th{display:none}
+#dlg.lf2 .dd-svc{margin-top:12px}
+@media(max-width:860px){#dlg.lf2 .dd-cards,#dlg.lf2 #cpr{grid-template-columns:1fr}#dlg.lf2 .dd-r1>label:first-child{width:100%}}
 </style>
 </head>
 <body>
@@ -840,8 +862,11 @@ const pL=f.d_p0.closest('label');pL.classList.add('lf-ph');const pw=mk('span','l
 f.d_p0.after(pw);pw.append(dc,pn);f.d_p0.type='hidden';
 function dcFill(){if(dc.options.length)return;try{DIAL.forEach(d=>{const o=document.createElement('option');o.value=d[0];o.textContent=d[0]+' '+TT(d[1],d[2]);dc.append(o)})}catch(_){const o=document.createElement('option');o.value='+66';o.textContent='+66';dc.append(o)}}
 function phSet(){dcFill();const v=(f.d_p0.value||'').trim(),m=v.match(/^(\+\d{1,4})\s*(.*)$/);let c='+66',n=v;if(m&&[...dc.options].some(o=>o.value===m[1])){c=m[1];n=m[2]}dc.value=c;pn.value=n}
-function phOut(){const c=dc.value,n=pn.value.trim();f.d_p0.value=!n?'':c==='+66'||!c?n:c+' '+n.replace(/^0+/,'');f.d_p0.dispatchEvent(new Event('input',{bubbles:true}))}
+function phOut(){const c=dc.value,n=pn.value.trim();f.d_p0.value=!n?'':c==='+66'||!c?n:c+' '+n.replace(/^0+/,'');f.d_p0.dispatchEvent(new Event('input',{bubbles:true}));if(window.__lfPhSet)window.__lfPhSet(f.d_ph)}
 dc.addEventListener('change',phOut);pn.addEventListener('input',phOut);
+window.__lfPh=function(inp){const L=inp.closest('label'),w=mk('span','lf-phw'),s=mk('select'),n=mk('input');s.setAttribute('aria-label','รหัสประเทศ');n.type='tel';n.autocomplete='off';inp.after(w);w.append(s,n);inp.type='hidden';inp._ph=[s,n];
+ const out=()=>{const c=s.value,v=n.value.trim();inp.value=!v?'':c==='+66'||!c?v:c+' '+v.replace(/^0+/,'');inp.dispatchEvent(new Event('input',{bubbles:true}))};s.addEventListener('change',out);n.addEventListener('input',out)};
+window.__lfPhSet=function(inp){if(!inp._ph)return;const[s,n]=inp._ph;if(!s.options.length){try{DIAL.forEach(d=>{const o=document.createElement('option');o.value=d[0];o.textContent=d[0]+' '+TT(d[1],d[2]);s.append(o)})}catch(_){}}const v=(inp.value||'').trim(),m=v.match(/^(\+\d{1,4})\s*(.*)$/);let c='+66',x=v;if(m&&[...s.options].some(o=>o.value===m[1])){c=m[1];x=m[2]}s.value=c;n.value=x};
 /* cargo total */
 const cgt=mk('div','lf-cgt');sCg.append(cgt);
 function cgTot(){try{const it=cgGet('cgf');if(!it.length){cgt.innerHTML='';return}let q=0,kg=0,cbm=0;it.forEach(x=>{const n=+x.q||1;q+=n;kg+=n*(+x.kg||0)*(/TON/i.test(x.wu||'')?1000:1);cbm+=n*(+x.l||0)*(+x.w||0)*(+x.h||0)/1e6});
@@ -893,6 +918,57 @@ new MutationObserver(()=>{if(dlg.open)onOpen()}).observe(dlg,{attributes:true,at
 new MutationObserver(()=>{if(dlg.open&&!dt.querySelector('.lf-tm'))onOpen()}).observe(dt,{childList:true,characterData:true,subtree:true});
 Object.assign(EN,{'ลูกค้า':'Customer','ช่องทาง':'Channel','ช่องทางหลัก':'Main channel','ทักมาทางอื่นด้วย':'Also contacted via','งานที่สนใจ':'Interested in','หมายเหตุเพิ่มเติม':'Additional notes','ข้อมูลเพิ่มเติม':'More details','ข้อมูลลูกค้า':'Customer','การขนส่ง':'Shipping','พัสดุ':'Package','ปิดงาน และผู้รับผิดชอบ':'Closing & owner','กรอกแล้ว':'Filled','พรุ่งนี้':'Tomorrow','3 วัน':'3 days','1 สัปดาห์':'1 week','2 สัปดาห์':'2 weeks','รวม':'Total','ชิ้น':'pcs','Messenger ส่วนตัว':'Messenger Private','LINE ส่วนตัว':'LINE Private','โทรเข้า':'Call in','เว็บไซต์':'Website','อีเมล':'Email','หัวข้อ':'Sections','ปิดงาน':'Closing','รหัสประเทศ':'Country code'});
 })();
+
+/* extra details box v2 */
+setTimeout(function(){try{
+const f=$('fm_'),dd=$('dd');if(!f||!dd||dd.dataset.v2)return;dd.dataset.v2='1';dd.classList.add('dd2');
+const mk=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const SIDES=[['x','og','sn','ต้นทาง · ผู้ส่ง','ผู้ส่ง'],['y','ds','rn','ปลายทาง · ผู้รับ','ผู้รับ']],PARTS=['a','z','t','d','p','c','s','k'];
+SIDES.forEach(([p])=>PARTS.forEach(k=>{if(!DK.includes(p+k))DK.push(p+k)}));
+const hs=[...dd.querySelectorAll(':scope>h4.dh')];
+const ctp=$('ctp'),cmr=$('cmr');
+/* headers */
+const head=(h,t,extra)=>{h.textContent='';h.classList.add('dh2');const s=mk('span');s.textContent=t;h.append(s);if(extra)h.append(extra);h.append(mk('i','dh2l'))};
+head(hs[0],'ข้อมูลลูกค้า',ctp);ctp.classList.add('seg2');
+/* shipping block */
+const sd=f.d_sd.closest('label'),stL=f.d_st.closest('label'),shipG=sd.parentElement;
+head(hs[1],'การขนส่ง');
+const r1=mk('div','dd-r1');shipG.after(r1);r1.append(sd,stL);
+const stc=mk('div','seg2 dd-st');[...f.d_st.options].filter(o=>o.value).forEach(o=>{const b=mk('button');b.type='button';b.dataset.v=o.value;b.textContent=o.textContent;stc.append(b)});stL.append(stc);f.d_st.classList.add('dd-hid');
+const stSync=()=>stc.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===f.d_st.value));
+stc.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();f.d_st.value=f.d_st.value===b.dataset.v?'':b.dataset.v;f.d_st.dispatchEvent(new Event('change',{bubbles:true}));stSync()});
+const cards=mk('div','dd-cards');r1.after(cards);
+const CN=()=>{try{return DIAL.map(d=>[d[1],TT(d[1],d[2])])}catch(_){return[['ไทย','ไทย']]}};
+const isTH=v=>!v||v==='ไทย'||v==='Thailand';
+SIDES.forEach(([p,big,nm,title,who])=>{const c=mk('div','dd-card');c.dataset.p=p;
+ c.innerHTML=`<div class="dd-ch"><span class="dd-ci"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><b></b></div><div class="dd-g2 dd-top"></div><div class="dd-g1"><label class="f"><span class="la"></span><input name="d_${p}a" autocomplete="off"></label></div>
+ <div class="dd-g2 th"><label class="f">รหัสไปรษณีย์<input name="d_${p}z" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="5 หลัก"></label><label class="f">ตำบล / แขวง<input name="d_${p}t" autocomplete="off"></label></div>
+ <div class="dd-g2 th"><label class="f">อำเภอ / เขต<input name="d_${p}d" autocomplete="off"></label><label class="f">จังหวัด<input name="d_${p}p" autocomplete="off"></label></div>
+ <div class="dd-g2 fx"><label class="f">City<input name="d_${p}c" autocomplete="off"></label><label class="f">State / Province<input name="d_${p}s" autocomplete="off"></label></div>
+ <div class="dd-g2 fx"><label class="f">Postal code<input data-zz="${p}" autocomplete="off"></label></div>`;
+ c.querySelector('.dd-ch b').textContent=title;
+ const top=c.querySelector('.dd-top'),nl=f['d_'+nm].closest('label');top.append(nl);
+ const kl=mk('label','f');kl.append(document.createTextNode('ประเทศ'));const ks=mk('select');ks.name='d_'+p+'k';kl.append(ks);top.append(kl);
+ const big_=f['d_'+big];big_.closest('label').classList.add('dd-hid');c.append(big_.closest('label'));
+ cards.append(c)});
+/* package + services */
+{const t=cmr.querySelector('.sub'),fr=document.createDocumentFragment();if(t){t.classList.add('dd-cml');fr.append(t)}fr.append(cmr);head(hs[2],'พัสดุ และบริการ',fr)}cmr.classList.add('seg2');
+const pg=dd.querySelector(':scope>.g:last-of-type');const svc=mk('div','g dd-svc');svc.append(f.d_os.closest('label'),f.d_nt.closest('label'));pg.after(svc);
+shipG.remove();
+/* phone code for personal phone */
+if(window.__lfPh)window.__lfPh(f.d_ph);
+/* address logic */
+const P=(p,k)=>f['d_'+p+k];
+function fillK(p){const s=P(p,'k');if(s.options.length)return;CN().forEach(([v,t])=>{const o=mk('option');o.value=v==='ไทย'?'':v;o.textContent=t;s.append(o)})}
+function mode(p){const c=cards.querySelector(`[data-p="${p}"]`),th=isTH(P(p,'k').value);c.classList.toggle('is-th',th);c.querySelector('.la').textContent=th?'บ้านเลขที่ / อาคาร / ถนน':'Address';c.querySelector(`[data-zz="${p}"]`).value=P(p,'z').value}
+function compose(p,big){const g=k=>P(p,k).value.trim(),th=isTH(g('k'));const v=th?[g('a'),g('t'),g('d'),g('p'),g('z')].filter(Boolean).join(' '):[[g('a'),g('c'),[g('s'),g('z')].filter(Boolean).join(' ')].filter(Boolean).join(', '),g('k')].filter(Boolean).join(', ');
+ const has=PARTS.some(k=>k!=='k'&&g(k));f['d_'+big].value=has?v:(f['d_'+big].dataset.legacy||'')}
+SIDES.forEach(([p,big])=>{cards.querySelector(`[data-p="${p}"]`).addEventListener('input',e=>{if(e.target.dataset.zz)P(p,'z').value=e.target.value;compose(p,big)});P(p,'k').addEventListener('change',()=>{mode(p);compose(p,big)})});
+function open_(){SIDES.forEach(([p,big])=>{fillK(p);const b=f['d_'+big];delete b.dataset.legacy;const any=PARTS.some(k=>P(p,k).value);if(!any&&b.value){P(p,'a').value=b.value}const kv=P(p,'k').dataset.v||P(p,'k').value;if(kv==='ไทย')P(p,'k').value='';if(P(p,'k').value!==''&&![...P(p,'k').options].some(o=>o.value===P(p,'k').value)){const o=mk('option');o.value=o.textContent=P(p,'k').value;P(p,'k').append(o)}mode(p)});stSync();if(window.__lfPhSet)window.__lfPhSet(f.d_ph)}
+SIDES.forEach(([p])=>fillK(p));
+new MutationObserver(()=>{if($('dlg').open)open_()}).observe($('dlg'),{attributes:true,attributeFilter:['open']});
+Object.assign(EN,{'ต้นทาง · ผู้ส่ง':'Origin · Sender','ปลายทาง · ผู้รับ':'Destination · Receiver','ประเทศ':'Country','บ้านเลขที่ / อาคาร / ถนน':'House no. / building / street','รหัสไปรษณีย์':'Postal code','ตำบล / แขวง':'Subdistrict','อำเภอ / เขต':'District','จังหวัด':'Province','5 หลัก':'5 digits','การขนส่ง':'Shipping','พัสดุ และบริการ':'Package & services'});
+}catch(e){console.error(e)}},0);
 
 async function start(){
  document.body.classList.add('out');
