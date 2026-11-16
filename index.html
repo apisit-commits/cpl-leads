@@ -3341,13 +3341,18 @@ f.addEventListener('submit',async e=>{e.preventDefault();
  if(!role)return alert(TT('เลือกบทบาทก่อน','Choose a role first'));if(role==='sales'&&!team)return alert(TT('เซลล์ต้องเลือกทีม','A sales account needs a team'));
  const b=$('au_sv');b.disabled=true;
  try{
+  let ok=false,uid=null;
+  const rp=await sb.rpc('admin_create_user',{p_email:email,p_password:pw,p_name:name||null,p_role:role,p_team:team||null});
+  if(!rp.error){uid=rp.data;ok=true}
+  else if(!/admin_create_user|PGRST202|schema cache/i.test((rp.error.code||'')+' '+(rp.error.message||''))){const m=rp.error.message||'';throw new Error(/email exists/.test(m)?TT('อีเมลนี้มีบัญชีอยู่แล้ว','This email is already registered'):/not allowed/.test(m)?TT('เฉพาะผู้ดูแลระบบเท่านั้น','Admins only'):m)}
+  else{
   const c=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'sb-newuser'}});
   const r=await c.auth.signUp({email,password:pw});
   if(r.error)throw new Error(r.error.message||'');
   const u=r.data&&r.data.user;if(!u)throw new Error('no user');
   if(u.identities&&!u.identities.length)throw new Error(TT('อีเมลนี้มีบัญชีอยู่แล้ว','This email is already registered'));
-  let ok=false;
   for(let i=0;i<6&&!ok;i++){const q=await sb.from('profiles').update({name:name||null,role,team}).eq('id',u.id).select('id');if(!q.error&&q.data&&q.data.length)ok=true;else await new Promise(z=>setTimeout(z,500))}
+  }
   if(ok&&role==='sales'&&name&&!salesFor(team).includes(name)){await sb.from('options').insert({kind:'sales',value:name,team});await loadOpts()}
   d.close();await loadUsers();
   if(!ok)alert(TT('สร้างบัญชีแล้ว แต่ยังกำหนดสิทธิ์ไม่สำเร็จ กรุณากำหนดในรายชื่อผู้ใช้','Account created but access could not be set. Please set it in the user list'))
