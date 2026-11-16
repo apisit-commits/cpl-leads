@@ -4816,6 +4816,7 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 #vSO .soc-t td .sub{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis}
 #vSO .soc-t tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
 #vSO .soc-t .btn{height:32px;padding:0 12px}
+#vSO .soc-t th{vertical-align:middle}#vSO .soc-t td{vertical-align:middle}
 #vSO .soc-pg{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 2px 0;font-size:13px;color:var(--mu)}
 #vSO .soc-pg .btn{height:32px}
 #socd,#soid{width:min(640px,94vw)}
@@ -4839,7 +4840,7 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 #soid tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
 #soid td.r,#soid th.r{text-align:right}
 #soid .soc-sc{max-height:220px;overflow:auto;border:1px solid var(--bd);border-radius:12px}
-@media(max-width:700px){#vSO .soc-t .soc-hm{display:none}#soid .soc-gp{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){#vSO .soc-t .soc-hm{display:none}#vSO .soc-t col.soc-hm{visibility:collapse;width:0!important}#soid .soc-gp{grid-template-columns:minmax(0,1fr)}}
 </style>
 <dialog id="socd"><form id="socf" method="dialog" novalidate><h3 style="margin:0 0 2px">บันทึกผลการโทร</h3><div class="sub" id="soc_m"></div>
 <div class="soc-ph"><div style="min-width:0"><b id="soc_n"></b><span class="sub" id="soc_a"></span></div><a id="soc_tel" href="#"></a></div>
@@ -4890,7 +4891,7 @@ function callsV(){
   const act=lk?`<button type="button" class="btn" disabled>${E(TT('กำลังโทร','On a call'))}</button>`:`<button type="button" class="btn${cl?'':' p'}" data-ca="open" data-id="${E(c.id)}">${E(cl?TT('ประวัติ','History'):TT('โทร','Call'))}</button>`;
   const stt=lk?`<span class="so2-chip" style="--c:var(--inf)">${E(TT('กำลังโทร · ','On a call · ')+c.calling_by)}</span>`:c.status==='noans'?chip('noans').replace('</span>',' · '+NF(c.attempts)+'</span>'):c.status==='cb'&&c.callback_date?chip('cb').replace('</span>',' '+fmtD(c.callback_date)+'</span>'):chip(c.status);
   return `<tr><td>${E(c.company)}<span class="sub">${E(c.contact||'')}</span></td><td>${c.phone?E(c.phone):`<span class="sub">${E(TT('ไม่มีเบอร์','No phone'))}</span>`}</td><td class="soc-hm">${E(c.country||'')}</td><td class="soc-hm">${c.last_buy?fmtD(c.last_buy):''}</td><td>${stt}</td><td class="soc-hm">${E(c.assignee||'')}</td><td class="soc-hm">${c.last_call_at?E(dt(c.last_call_at)+(c.last_call_by?' · '+c.last_call_by.split(' ')[0]:'')):''}</td><td style="text-align:right">${act}</td></tr>`};
- const tbl=`<div style="overflow-x:auto"><table class="so2-t soc-t"><colgroup><col><col style="width:150px"><col class="soc-hm" style="width:110px"><col class="soc-hm" style="width:100px"><col style="width:170px"><col class="soc-hm" style="width:150px"><col class="soc-hm" style="width:140px"><col style="width:110px"></colgroup><thead><tr><th>${TT('ลูกค้า','Customer')}</th><th>${TT('เบอร์โทร','Phone')}</th><th class="soc-hm">${TT('ประเทศ','Country')}</th><th class="soc-hm">${TT('ซื้อล่าสุด','Last order')}</th><th>${TT('สถานะ','Status')}</th><th class="soc-hm">${TT('ผู้รับผิดชอบ','Assignee')}</th><th class="soc-hm">${TT('โทรล่าสุด','Last call')}</th><th></th></tr></thead><tbody>${P.length?P.map(row).join(''):`<tr><td colspan="8" class="sub" style="text-align:center;padding:24px;cursor:default">${E(TT('ยังไม่มีข้อมูล','No data yet'))}</td></tr>`}</tbody></table></div>
+ const tbl=`<div><table class="so2-t soc-t"><colgroup><col><col style="width:150px"><col class="soc-hm" style="width:110px"><col class="soc-hm" style="width:100px"><col style="width:170px"><col class="soc-hm" style="width:150px"><col class="soc-hm" style="width:140px"><col style="width:110px"></colgroup><thead><tr><th>${TT('ลูกค้า','Customer')}</th><th>${TT('เบอร์โทร','Phone')}</th><th class="soc-hm">${TT('ประเทศ','Country')}</th><th class="soc-hm">${TT('ซื้อล่าสุด','Last order')}</th><th>${TT('สถานะ','Status')}</th><th class="soc-hm">${TT('ผู้รับผิดชอบ','Assignee')}</th><th class="soc-hm">${TT('โทรล่าสุด','Last call')}</th><th></th></tr></thead><tbody>${P.length?P.map(row).join(''):`<tr><td colspan="8" class="sub" style="text-align:center;padding:24px;cursor:default">${E(TT('ยังไม่มีข้อมูล','No data yet'))}</td></tr>`}</tbody></table></div>
 <div class="soc-pg"><span>${L.length?NF(f.pg*PS+1)+'–'+NF(f.pg*PS+P.length)+' '+TT('จาก','of')+' '+NF(L.length):''}</span><span style="display:flex;gap:6px"><button type="button" class="btn" data-ca="pg" data-n="-1"${f.pg?'':' disabled'}>${E(TT('ก่อนหน้า','Prev'))}</button><button type="button" class="btn" data-ca="pg" data-n="1"${f.pg<pages-1?'':' disabled'}>${E(TT('ถัดไป','Next'))}</button></span></div>`;
  const hd=boss()?`<div class="so2-hd"><span class="so2-r"><button type="button" class="btn p" data-ca="imp">${E(TT('นำเข้าไฟล์','Import file'))}</button></span></div>`:'';
  return hd+`<div class="stats">${stats}</div>${prog?`<div class="so2-p soc-pr" style="margin-bottom:16px">${prog}</div>`:''}<div class="so2-p">${flt}${tbl}</div>`}
