@@ -44,3 +44,8 @@ alter table public.so_call_logs enable row level security;
 drop policy if exists so_call_logs_rw on public.so_call_logs;
 create policy so_call_logs_rw on public.so_call_logs for all to authenticated using (true) with check (true);
 create index if not exists so_call_logs_call_idx on public.so_call_logs(call_id, created_at desc);
+
+-- Hand-off from Online (Lead ไม่สนใจ ครบ 30 วัน ที่มีเบอร์)
+alter table public.so_calls add column if not exists src text;
+alter table public.so_calls add column if not exists src_lead bigint;
+create unique index if not exists so_calls_src_lead_uq on public.so_calls(src_lead) where src_lead is not null;
