@@ -4875,14 +4875,14 @@ if(typeof SO==='undefined'||!$('vSO'))return;
 const E=s=>esc(s==null?'':String(s)),NF=v=>Math.round(+v||0).toLocaleString('en-US'),TM='C',LOCK=15*60e3,PS=50;
 const ST={new:['ยังไม่โทร','Not called','var(--mu)'],noans:['ไม่รับสาย','No answer','var(--wn)'],cb:['โทรกลับ','Call back','var(--inf)'],int:['สนใจ','Interested','var(--ok)'],no:['ไม่สนใจ','Not interested','var(--gy,#4a5b6e)'],bad:['ติดต่อไม่ได้','Unreachable','var(--er)'],dnc:['ขอไม่ให้ติดต่อ','Do not call','var(--er)'],online:['ลูกค้า Online','Online customer','#7c5cd6']};
 const GRP={th:['ลูกค้าไทย','Thai'],intl:['ลูกค้าต่างประเทศ','Overseas'],na:['ไม่ระบุประเทศ','No country']};
-const CLOSED=['no','bad','dnc'];
+const CLOSED=['no','bad','dnc'],isOn=c=>c.src==='online'||c.batch==='online';
 SO.calls=[];SO.callsOk=null;SO.cf={st:'open',who:'',grp:'',src:'',q:'',pg:0};
 const me=()=>soActor();
 const boss=()=>!!profile&&(profile.role==='admin'||profile.role==='sales_lead');
 const chip=k=>{const s=ST[k]||ST.new;return `<span class="so2-chip" style="--c:${s[2]}">${E(TT(s[0],s[1]))}</span>`};
 const dt=iso=>{if(!iso)return'';const d=new Date(iso),p=n=>String(n).padStart(2,'0');return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear()};
 const locked=c=>c.calling_by&&c.calling_by!==me()&&c.calling_at&&Date.now()-new Date(c.calling_at).getTime()<LOCK;
-async function callsLoad(){let o=[],i=0;for(;;){const{data,error}=await sb.from('so_calls').select('*').eq('team',TM).order('id').range(i,i+999);if(error){SO.callsOk=false;SO.calls=[];return}o=o.concat(data||[]);if(!data||data.length<1000)break;i+=1000}SO.calls=o;SO.callsOk=true;if(!SO.synced&&(boss()||(profile&&profile.team==='C'))){SO.synced=true;syncOnline().then(n=>{if(n&&SO.page==='C')callsLoad().then(soRender)}).catch(()=>{})}}
+async function callsLoad(){let o=[],i=0;for(;;){const{data,error}=await sb.from('so_calls').select('*').eq('team',TM).order('id').range(i,i+999);if(error){SO.callsOk=false;SO.calls=[];return}o=o.concat(data||[]);if(!data||data.length<1000)break;i+=1000}SO.calls=o;SO.callsOk=true;if(Date.now()-(SO.synced||0)>3e5&&(boss()||(profile&&profile.team==='C'))){SO.synced=Date.now();syncOnline().then(n=>{if(n&&SO.page==='C')callsLoad().then(soRender)}).catch(()=>{})}}
 function callsV(){
  if(SO.callsOk===null){callsLoad().then(()=>{if(SO.page==='C')soRender()});return `<div class="so2-p"><div class="so2-emp">${E(TT('กำลังโหลด…','Loading…'))}</div></div>`}
  const f=SO.cf,td=today(),mine=!boss(),who=f.who||(mine?me():'');
@@ -4895,7 +4895,7 @@ function callsV(){
   return `<div><div class="h"><b>${E(p)}</b><span>${E(TT('โทรแล้ว ','Called '))}${NF(d)} / ${NF(L.length)}</span></div><i><em style="width:${pc}%"></em></i></div>`}).join('');
  const ms=c=>{const s=f.st;if(s==='open')return c.status!=='online'&&!CLOSED.includes(c.status);if(s==='closed')return CLOSED.includes(c.status);if(s==='cb')return c.status==='cb';return c.status===s};
  const q=f.q.trim().toLowerCase(),qd=q.replace(/\D/g,'');
- const L=base.filter(c=>ms(c)&&(!f.grp||c.grp===f.grp)&&(!f.src||(f.src==='online'?c.src==='online':c.src!=='online'))&&(!q||[c.company,c.contact,c.country,c.email].join(' ').toLowerCase().includes(q)||(qd.length>=4&&String(c.phone||'').replace(/\D/g,'').includes(qd))))
+ const L=base.filter(c=>ms(c)&&(!f.grp||c.grp===f.grp)&&(!f.src||(f.src==='online'?isOn(c):!isOn(c)))&&(!q||[c.company,c.contact,c.country,c.email].join(' ').toLowerCase().includes(q)||(qd.length>=4&&String(c.phone||'').replace(/\D/g,'').includes(qd))))
   .sort((a,b)=>{const K=x=>x.status==='cb'?(x.callback_date||'8'):x.status==='new'?'8':x.status==='noans'?'9':'A',ka=K(a),kb=K(b);return ka.localeCompare(kb)||(b.last_buy||'').localeCompare(a.last_buy||'')});
  const pages=Math.max(1,Math.ceil(L.length/PS));if(f.pg>=pages)f.pg=pages-1;const P=L.slice(f.pg*PS,f.pg*PS+PS);
  const sel=(k,lab,opts)=>`<select data-cf="${k}" aria-label="${E(lab)}">${opts.map(([v,t])=>`<option value="${E(v)}"${f[k]===v?' selected':''}>${E(t)}</option>`).join('')}</select>`;
@@ -4905,7 +4905,7 @@ function callsV(){
  const row=c=>{const lk=locked(c),cl=c.status==='online'||CLOSED.includes(c.status);
   const act=lk?`<button type="button" class="btn" disabled>${E(TT('กำลังโทร','On a call'))}</button>`:`<button type="button" class="btn${cl?'':' p'}" data-ca="open" data-id="${E(c.id)}">${E(cl?TT('ประวัติ','History'):TT('โทร','Call'))}</button>`;
   const stt=lk?`<span class="so2-chip" style="--c:var(--inf)">${E(TT('กำลังโทร · ','On a call · ')+c.calling_by)}</span>`:c.status==='noans'?chip('noans').replace('</span>',' · '+NF(c.attempts)+'</span>'):c.status==='cb'&&c.callback_date?chip('cb').replace('</span>',' '+fmtD(c.callback_date)+'</span>'):chip(c.status);
-  const og=c.src==='online'?`<span class="so2-chip" style="--c:var(--ac);margin-right:6px">${E(TT('จาก Online','From Online')+((c.data||{}).sales?' · '+c.data.sales:''))}</span>`:'';
+  const og=isOn(c)?`<span class="so2-chip" style="--c:var(--ac);margin-right:6px">${E(TT('จาก Online','From Online')+((c.data||{}).sales?' · '+c.data.sales:''))}</span>`:'';
   return `<tr><td>${E(c.company)}<span class="sub">${og}${E(c.contact||'')}</span></td><td>${c.phone?E(c.phone):`<span class="sub">${E(TT('ไม่มีเบอร์','No phone'))}</span>`}</td><td class="soc-hm">${E(c.country||'')}</td><td class="soc-hm">${c.last_buy?fmtD(c.last_buy):''}</td><td>${stt}</td><td class="soc-hm">${E(c.assignee||'')}</td><td class="soc-hm">${c.last_call_at?E(dt(c.last_call_at)+(c.last_call_by?' · '+c.last_call_by.split(' ')[0]:'')):''}</td><td style="text-align:right">${act}</td></tr>`};
  const tbl=`<div><table class="so2-t soc-t"><colgroup><col><col style="width:150px"><col class="soc-hm" style="width:110px"><col class="soc-hm" style="width:100px"><col style="width:170px"><col class="soc-hm" style="width:150px"><col class="soc-hm" style="width:140px"><col style="width:110px"></colgroup><thead><tr><th>${TT('ลูกค้า','Customer')}</th><th>${TT('เบอร์โทร','Phone')}</th><th class="soc-hm">${TT('ประเทศ','Country')}</th><th class="soc-hm">${TT('ซื้อล่าสุด','Last order')}</th><th>${TT('สถานะ','Status')}</th><th class="soc-hm">${TT('ผู้รับผิดชอบ','Assignee')}</th><th class="soc-hm">${TT('โทรล่าสุด','Last call')}</th><th></th></tr></thead><tbody>${P.length?P.map(row).join(''):`<tr><td colspan="8" class="sub" style="text-align:center;padding:24px;cursor:default">${E(TT('ยังไม่มีข้อมูล','No data yet'))}</td></tr>`}</tbody></table></div>
 <div class="soc-pg"><span>${L.length?NF(f.pg*PS+1)+'–'+NF(f.pg*PS+P.length)+' '+TT('จาก','of')+' '+NF(L.length):''}</span><span style="display:flex;gap:6px"><button type="button" class="btn" data-ca="pg" data-n="-1"${f.pg?'':' disabled'}>${E(TT('ก่อนหน้า','Prev'))}</button><button type="button" class="btn" data-ca="pg" data-n="1"${f.pg<pages-1?'':' disabled'}>${E(TT('ถัดไป','Next'))}</button></span></div>`;
@@ -4939,7 +4939,7 @@ async function cOpen(id){const c=SO.calls.find(z=>String(z.id)===String(id));if(
  const tel=$('soc_tel'),ph=String(c.phone||'').split(/[,\/]| or /i)[0].trim();tel.classList.toggle('hid',!ph);tel.href='tel:'+ph.replace(/[^\d+]/g,'');tel.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>'+E(c.phone||'');
  if(['int','cb','no','dnc','online'].includes(c.status)){cf.querySelector('input[value=ok]').checked=true;cf.st.value=c.status}
  {const d=c.data||{},kv=[[TT('วันที่ได้ Lead','Lead date'),d.date?fmtD(d.date):''],[TT('เซลล์เดิม','Previous sales'),[d.team_n,d.sales].filter(Boolean).join(' · ')],['Ads',d.ads],[TT('บริการที่ถาม','Service asked'),(d.svc||[]).join(', ')],[TT('ใบเสนอราคา','Quotation'),d.quo],[TT('เหตุผลที่ไม่สนใจ','Reason'),d.reason],[TT('โน้ตเซลล์เดิม','Previous notes'),d.note]].filter(x=>x[1]);
-  $('soc_og').innerHTML=c.src==='online'&&kv.length?`<div class="soc-og"><b>${E(TT('ข้อมูลจาก Lead Online','From the Online Lead'))}</b><dl>${kv.map(([k,v])=>`<dt>${E(k)}</dt><dd>${E(v)}</dd>`).join('')}</dl></div>`:''}
+  $('soc_og').innerHTML=isOn(c)&&kv.length?`<div class="soc-og"><b>${E(TT('ข้อมูลจาก Lead Online','From the Online Lead'))}</b><dl>${kv.map(([k,v])=>`<dt>${E(k)}</dt><dd>${E(v)}</dd>`).join('')}</dl></div>`:''}
  cf.cb.value=c.callback_date?fmtD(c.callback_date):'';cf.note.value=c.note||'';
  $('soc_asw').classList.toggle('hid',!boss());if(boss()){const o=[...new Set([...salesFor('C'),...(c.assignee?[c.assignee]:[])])];cf.as.innerHTML='<option value=""></option>'+o.map(s=>`<option${s===c.assignee?' selected':''}>${E(s)}</option>`).join('')}
  syncC();$('soc_hs').innerHTML='';cd.showModal();
@@ -4961,19 +4961,20 @@ cf.addEventListener('submit',async e=>{e.preventDefault();const c=CUR;if(!c)retu
  CUR=null;cd.close();soRender()});
 /* auto hand-off: Online leads not interested for 30 days, with a phone */
 async function syncOnline(){const cut=new Date(Date.now()-30*864e5).toISOString().slice(0,10),L=new Map();
- for(const k of['status','fu_status']){const d=await pg2(()=>sb.from('leads').select(cols()).in('team',['A','B']).eq(k,ST_N));d.forEach(x=>L.set(x.id,norm(x)))}
- const tn=t=>t==='A'?'CPL-Inter':t==='B'?'CPLEx':t,ph=r=>{const d=r.detail||{};return d.ph||d.cpt||d.ctt||''};
- const have=new Set(SO.calls.map(c=>String(c.src_lead||'')).filter(Boolean)),phSet=new Set(SO.calls.flatMap(c=>phs(c.phone)));
+ for(const k of['status','fu_status']){let d=await pg2(()=>sb.from('leads').select(cols()+',customer_id').in('team',['A','B']).eq(k,ST_N));if(!d.length)d=await pg2(()=>sb.from('leads').select(cols()).in('team',['A','B']).eq(k,ST_N));d.forEach(x=>L.set(x.id,{...norm(x),customer_id:x.customer_id}))}
+ const CP=new Map(),cids=[...new Set([...L.values()].map(r=>r.customer_id).filter(Boolean))];for(let i=0;i<cids.length;i+=200){const ch=cids.slice(i,i+200);const a=await sb.from('customers').select('*').in('id',ch);(a.data||[]).forEach(c=>{if(c.phone)CP.set(c.id,c.phone)});const b=await sb.from('customer_contacts').select('*').in('customer_id',ch);(b.data||[]).forEach(c=>{if(c.phone&&!CP.has(c.customer_id))CP.set(c.customer_id,c.phone)})}
+ const tn=t=>t==='A'?'CPL-Inter':t==='B'?'CPLEx':t,PHR=/(\+?\d[\d\s\-().]{7,}\d)/,ph=r=>{const d=r.detail||{};let p=d.ph||d.cpt||d.ctt||(r.customer_id&&CP.get(r.customer_id))||'';if(!p)for(const t of[d.nt,r.note,r.name]){const m=String(t||'').match(PHR);if(m&&m[1].replace(/\D/g,'').length>=9){p=m[1].trim();break}}return p};
+ const have=new Set(SO.calls.map(c=>String(c.src_lead||(c.data||{}).lead_id||'')).filter(Boolean)),phSet=new Set(SO.calls.flatMap(c=>phs(c.phone)));
  const ppl=salesFor('C'),load={};ppl.forEach(p=>load[p]=SO.calls.filter(c=>c.assignee===p&&!['online','no','bad','dnc'].includes(c.status)).length);
  const ins=[];[...L.values()].sort((a,b)=>(a.date||'').localeCompare(b.date||'')).forEach(r=>{if(effS(r)!==ST_N||have.has(String(r.id)))return;const p=ph(r);if(!p)return;const base=r.fu&&r.fu>r.date?r.fu:r.date;if(!base||base>cut)return;const pk=phs(p);if(!pk.length||pk.some(x=>phSet.has(x)))return;pk.forEach(x=>phSet.add(x));
   const d=r.detail||{},a=ppl.length?ppl.slice().sort((x,y)=>load[x]-load[y])[0]:null;if(a)load[a]++;
   ins.push({team:TM,company:d.cpn||r.name||'-',contact:d.fn||d.ctn||(d.cpn?r.name:null)||null,phone:p,email:d.em||d.cpe||null,country:r.country||null,grp:'na',assignee:a,status:'new',src:'online',src_lead:r.id,batch:'online',
    data:{lead_id:r.id,date:r.date,team:r.team,team_n:tn(r.team),sales:r.sales||'',ads:r.ads||'',svc:r.svc||[],quo:r.quo||'',reason:r.reason||'',note:r.note||''}})});
- for(let i=0;i<ins.length;i+=500){const{error}=await sb.from('so_calls').insert(ins.slice(i,i+500));if(error)return 0}
+ for(let i=0;i<ins.length;i+=500){const part=ins.slice(i,i+500);let{error}=await sb.from('so_calls').insert(part);if(error){({error}=await sb.from('so_calls').insert(part.map(({src,src_lead,...x})=>x)))}if(error){console.warn('call list hand-off',error.message);return i}}
  /* customer came back on their own: newer Online lead with the same phone */
- const open=SO.calls.filter(c=>c.src==='online'&&['new','noans'].includes(c.status));let back=0;
+ const open=SO.calls.filter(c=>isOn(c)&&['new','noans'].includes(c.status));let back=0;
  if(open.length){const from=open.map(c=>(c.data||{}).date||'').filter(Boolean).sort()[0]||cut;const R=await pg2(()=>sb.from('leads').select('id,team,sales,date,detail').in('team',['A','B']).gte('date',from));
-  for(const c of open){const pk=new Set(phs(c.phone)),sd=(c.data||{}).date||'',hit=R.find(x=>x.id!==c.src_lead&&(x.date||'')>sd&&phs(ph(x)).some(k=>pk.has(k)));
+  for(const c of open){const pk=new Set(phs(c.phone)),sd=(c.data||{}).date||'',hit=R.find(x=>x.id!==(c.src_lead||(c.data||{}).lead_id)&&(x.date||'')>sd&&phs(ph(x)).some(k=>pk.has(k)));
    if(hit){const m=TT('ทักกลับมา · ','Came back · ')+[tn(hit.team),hit.sales].filter(Boolean).join(' · ');const u=await sb.from('so_calls').update({status:'online',matched:m}).eq('id',c.id);if(!u.error)back++}}}
  return ins.length+back}
 /* import */
