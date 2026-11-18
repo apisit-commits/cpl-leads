@@ -4847,29 +4847,30 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 #vSO .soc-t th{vertical-align:middle}#vSO .soc-t td{vertical-align:middle}
 #vSO .soc-pg{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 2px 0;font-size:13px;color:var(--mu)}
 #vSO .soc-pg .btn{height:32px}
-#socs{width:min(680px,94vw)}
-#socs .socs-in{padding:24px;display:flex;flex-direction:column;gap:16px;max-height:92vh;overflow-y:auto;box-sizing:border-box}
+#socs{width:min(940px,96vw)}
+#socs .socs-in{padding:20px 22px;display:flex;flex-direction:column;gap:14px;max-height:92vh;overflow-y:auto;overflow-x:hidden;box-sizing:border-box}
+#socs .socs-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:14px;align-items:start}
 #socs .socs-nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 #socs .socs-ib{width:40px;padding:0;justify-content:center}
 #socs #socs_d{width:140px;text-align:center}
 #socs .socs-k{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-#socs .socs-k div{border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+#socs .socs-k div{border:1px solid var(--bd);border-radius:14px;padding:10px 14px}
 #socs .socs-k b{display:block;font-size:22px}
 #socs .socs-k span{font-size:12px;color:var(--mu)}
 #socs h4{margin:0 0 6px;font-size:14px;display:flex;align-items:center;gap:8px}
 #socs h4::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ac)}
-#socs .socs-r{display:grid;grid-template-columns:140px minmax(0,1fr) 44px;gap:12px;align-items:center;font-size:14px;padding:5px 0}
+#socs .socs-r{display:grid;grid-template-columns:120px minmax(0,1fr) 36px;gap:10px;align-items:center;font-size:13px;padding:4px 0}
 #socs .socs-r span{display:flex;align-items:center;gap:8px;white-space:nowrap}
 #socs .socs-r span i{width:10px;height:10px;border-radius:999px}
 #socs .socs-r em{font-style:normal;text-align:right;font-weight:600}
 #socs .socs-r div{height:10px;border-radius:999px;background:var(--fld);overflow:hidden}
 #socs .socs-r div i{display:block;height:100%;border-radius:999px}
-#socs table{width:100%!important;min-width:0!important;table-layout:fixed;border-collapse:collapse;font-size:13px}#socs th:first-child,#socs td:first-child{width:34%}
-#socs th{text-align:left;font-weight:600;color:var(--mu);white-space:nowrap;padding:9px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
-#socs td{padding:9px 10px;border-bottom:1px solid var(--bd);white-space:nowrap}
+#socs table{width:100%!important;min-width:0!important;table-layout:fixed;border-collapse:collapse;font-size:13px}#socs th:first-child,#socs td:first-child{width:30%;overflow:hidden;text-overflow:ellipsis}
+#socs th{text-align:left;font-weight:600;color:var(--mu);white-space:nowrap;padding:7px 8px;border-bottom:1px solid var(--bd);vertical-align:middle}
+#socs td{padding:7px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}
 #socs tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
 #socs .r{text-align:right}
-@media(max-width:700px){#socs .socs-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){#socs .socs-k{grid-template-columns:repeat(2,minmax(0,1fr))}#socs .socs-two{grid-template-columns:minmax(0,1fr)}}
 #soid{width:min(640px,94vw)}
 #socd,#soid,#socs{overflow:visible}
 #socd{width:min(900px,94vw);padding:0}
@@ -4926,8 +4927,8 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 <label class="soc-sw" id="soc_tgw"><span>เพิ่มเข้ารายชื่อเป้าหมาย</span><input type="checkbox" name="tg" role="switch"><i></i></label>
 <label class="f hid" id="soc_asw">ผู้รับผิดชอบ<select name="as"></select></label>
 <div class="acts" style="margin-top:auto"><button type="button" class="btn" id="soc_x">ยกเลิก</button><button type="submit" class="btn p">บันทึก</button></div></div></div></form></dialog>
-<dialog id="socs"><div class="socs-in"><h3 style="margin:0">สรุปการโทร</h3>
-<div class="socs-nav"><button type="button" class="btn socs-ib" data-sd="-1" aria-label="วันก่อนหน้า"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><input id="socs_d" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" aria-label="วันที่"><button type="button" class="btn socs-ib" data-sd="1" aria-label="วันถัดไป"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><span style="flex:1"></span><div class="seg socs-src" role="group" aria-label="ที่มา"><button type="button" data-ss="" class="on">ทั้งหมด</button><button type="button" data-ss="C">รายชื่อโทร</button><button type="button" data-ss="O">ส่งต่อจาก Online</button></div></div>
+<dialog id="socs"><div class="socs-in">
+<div class="socs-nav"><h3 style="margin:0 8px 0 0;white-space:nowrap">สรุปการโทร</h3><button type="button" class="btn socs-ib" data-sd="-1" aria-label="วันก่อนหน้า"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><input id="socs_d" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" aria-label="วันที่"><button type="button" class="btn socs-ib" data-sd="1" aria-label="วันถัดไป"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><span style="flex:1"></span><div class="seg socs-src" role="group" aria-label="ที่มา"><button type="button" data-ss="" class="on">ทั้งหมด</button><button type="button" data-ss="C">รายชื่อโทร</button><button type="button" data-ss="O">ส่งต่อจาก Online</button></div></div>
 <div id="socs_b"></div></div></dialog>
 <dialog id="soid"><form id="soif" method="dialog" novalidate><h3 style="margin:0 0 12px">นำเข้ารายชื่อโทร</h3>
 <label class="f">ไฟล์ Excel<b class="rq">*</b><input name="file" type="file" accept=".xlsx,.xls,.csv"></label>
@@ -5062,8 +5063,8 @@ async function sLoad(){const box=$('socs_b');box.innerHTML=`<div class="sub" sty
  const RK=['noans','cb','int','no','bad','dnc','online'],mx=Math.max(1,...RK.map(cntS));
  const kp=[[NF(nCall),TT('เบอร์ที่โทร','Numbers called'),''],[NF(reach),TT('ติดต่อได้','Reached')+(nCall?' · '+Math.round(reach/nCall*100)+'%':''),'var(--ok)'],[NF(cntS('int')),TT('สนใจ','Interested'),'var(--pr)'],[NF(cntS('cb')),TT('โทรกลับ','Call back'),'']];
  box.innerHTML=`<div class="socs-k">${kp.map(([v,l,c])=>`<div><b${c?` style="color:${c}"`:''}>${v}</b><span>${E(l)}</span></div>`).join('')}</div>
-<div style="margin-top:16px"><h4>${E(TT('ผลการโทร','Call results'))}</h4>${RK.map(k=>{const v=cntS(k);return `<div class="socs-r"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><div><i style="width:${v/mx*100}%;background:${SC[k]}"></i></div><em>${NF(v)}</em></div>`}).join('')}</div>
-<div style="margin-top:16px"><h4>${E(TT('แยกตามคน','By person'))}</h4><table><thead><tr><th>${E(TT('ผู้โทร','Caller'))}</th><th class="r">${E(TT('โทร','Called'))}</th><th class="r">${E(TT('ติดต่อได้','Reached'))}</th><th class="r">${E(TT('สนใจ','Interested'))}</th><th class="r">${E(TT('โทรกลับ','Call back'))}</th></tr></thead><tbody>${by.size?[...by.entries()].sort((a,b)=>b[1].size-a[1].size).map(([a,m])=>{const v=[...m.values()];return `<tr><td>${E(a)}</td><td class="r">${NF(v.length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='int').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='cb').length)}</td></tr>`}).join(''):`<tr><td colspan="5" class="sub" style="text-align:center;padding:18px">${E(TT('ไม่มีการโทรในวันนี้','No calls on this day'))}</td></tr>`}</tbody></table></div>`}
+<div class="socs-two"><div><h4>${E(TT('ผลการโทร','Call results'))}</h4>${RK.map(k=>{const v=cntS(k);return `<div class="socs-r"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><div><i style="width:${v/mx*100}%;background:${SC[k]}"></i></div><em>${NF(v)}</em></div>`}).join('')}</div>
+<div><h4>${E(TT('แยกตามคน','By person'))}</h4><table><thead><tr><th>${E(TT('ผู้โทร','Caller'))}</th><th class="r">${E(TT('โทร','Called'))}</th><th class="r">${E(TT('ติดต่อได้','Reached'))}</th><th class="r">${E(TT('สนใจ','Interested'))}</th><th class="r">${E(TT('โทรกลับ','Call back'))}</th></tr></thead><tbody>${by.size?[...by.entries()].sort((a,b)=>b[1].size-a[1].size).map(([a,m])=>{const v=[...m.values()];return `<tr><td>${E(a)}</td><td class="r">${NF(v.length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='int').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='cb').length)}</td></tr>`}).join(''):`<tr><td colspan="5" class="sub" style="text-align:center;padding:18px">${E(TT('ไม่มีการโทรในวันนี้','No calls on this day'))}</td></tr>`}</tbody></table></div></div>`}
 /* import */
 const iff=$('soif'),idg=$('soid');let IMP=null;
 $('soi_x').onclick=()=>idg.close();
