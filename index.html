@@ -4863,6 +4863,7 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 #socs .socs-r span{display:flex;align-items:center;gap:8px;white-space:nowrap}
 #socs .socs-r span i{width:10px;height:10px;border-radius:999px}
 #socs .socs-r em{font-style:normal;text-align:right;font-weight:600}
+#socs .socs-r.sub2{padding:2px 0;font-size:12.5px;color:var(--mu)}#socs .socs-r.sub2 span{padding-left:18px}#socs .socs-r.sub2 span i{width:7px;height:7px}#socs .socs-r.sub2 div{height:6px}#socs .socs-r.sub2 em{font-weight:500}
 #socs .socs-r div{height:10px;border-radius:999px;background:var(--fld);overflow:hidden}
 #socs .socs-r div i{display:block;height:100%;border-radius:999px}
 #socs table{width:100%!important;min-width:0!important;table-layout:fixed;border-collapse:collapse;font-size:13px}#socs th:first-child,#socs td:first-child{width:30%;overflow:hidden;text-overflow:ellipsis}
@@ -5060,10 +5061,11 @@ async function sLoad(){const box=$('socs_b');box.innerHTML=`<div class="sub" sty
  if(d!==SUM.d)return;
  const last=new Map(),by=new Map();L.forEach(x=>{last.set(x.call_id,x);const a=x.actor||'-';if(!by.has(a))by.set(a,new Map());by.get(a).set(x.call_id,x)});
  const fin=[...last.values()],nCall=fin.length,reach=fin.filter(x=>x.result==='ok').length,cntS=k=>fin.filter(x=>(x.result==='ok'?x.status:x.result)===k).length;
- const RK=['noans','cb','int','no','bad','dnc','online'],mx=Math.max(1,...RK.map(cntS));
+ const cR=k=>fin.filter(x=>x.result===k).length,mx=Math.max(1,nCall);
+ const RT=[['ok',TT('ติดต่อได้','Reached'),'var(--ok)',cR('ok'),0],...['int','cb','no','dnc'].map(k=>[k,TT(ST[k][0],ST[k][1]),SC[k],fin.filter(x=>x.result==='ok'&&x.status===k).length,1]),['noans',TT('ไม่รับสาย','No answer'),'#f0a23a',cR('noans'),0],['bad',TT('ติดต่อไม่ได้','Unreachable'),'var(--er)',cR('bad'),0],['online',TT('ลูกค้า Online','Online customer'),'#7c5cd6',cR('online'),0]];
  const kp=[[NF(nCall),TT('เบอร์ที่โทร','Numbers called'),''],[NF(reach),TT('ติดต่อได้','Reached')+(nCall?' · '+Math.round(reach/nCall*100)+'%':''),'var(--ok)'],[NF(cntS('int')),TT('สนใจ','Interested'),'var(--pr)'],[NF(cntS('cb')),TT('โทรกลับ','Call back'),'']];
  box.innerHTML=`<div class="socs-k">${kp.map(([v,l,c])=>`<div><b${c?` style="color:${c}"`:''}>${v}</b><span>${E(l)}</span></div>`).join('')}</div>
-<div class="socs-two"><div><h4>${E(TT('ผลการโทร','Call results'))}</h4>${RK.map(k=>{const v=cntS(k);return `<div class="socs-r"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><div><i style="width:${v/mx*100}%;background:${SC[k]}"></i></div><em>${NF(v)}</em></div>`}).join('')}</div>
+<div class="socs-two"><div><h4>${E(TT('ผลการโทร','Call results'))}</h4>${RT.map(([k,l,c,v,sub])=>`<div class="socs-r${sub?' sub2':''}"><span><i style="background:${c}"></i>${E(l)}</span><div><i style="width:${v/mx*100}%;background:${c}"></i></div><em>${NF(v)}</em></div>`).join('')}</div>
 <div><h4>${E(TT('แยกตามคน','By person'))}</h4><table><thead><tr><th>${E(TT('ผู้โทร','Caller'))}</th><th class="r">${E(TT('โทร','Called'))}</th><th class="r">${E(TT('ติดต่อได้','Reached'))}</th><th class="r">${E(TT('สนใจ','Interested'))}</th><th class="r">${E(TT('โทรกลับ','Call back'))}</th></tr></thead><tbody>${by.size?[...by.entries()].sort((a,b)=>b[1].size-a[1].size).map(([a,m])=>{const v=[...m.values()];return `<tr><td>${E(a)}</td><td class="r">${NF(v.length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='int').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='cb').length)}</td></tr>`}).join(''):`<tr><td colspan="5" class="sub" style="text-align:center;padding:18px">${E(TT('ไม่มีการโทรในวันนี้','No calls on this day'))}</td></tr>`}</tbody></table></div></div>`}
 /* import */
 const iff=$('soif'),idg=$('soid');let IMP=null;
