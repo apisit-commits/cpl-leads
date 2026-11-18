@@ -4946,20 +4946,21 @@ const CLOSED=['no','bad','dnc'],onC=()=>SO.page==='C'||SO.page==='O',isOn=c=>c.s
 SO.calls=[];SO.callsOk=null;SO.cfs={};Object.defineProperty(SO,'cf',{configurable:true,get(){const k=SO.page==='O'?'O':'C';return SO.cfs[k]||(SO.cfs[k]={st:'open',who:'',grp:'',q:'',pg:0})}});
 const me=()=>soActor();
 const boss=()=>!!profile&&(profile.role==='admin'||profile.role==='sales_lead');
+const seeAll=()=>!!profile&&['admin','sales_lead','marketing'].includes(profile.role);
 const chip=k=>{const s=ST[k]||ST.new;return `<span class="so2-chip" style="--c:${s[2]}">${E(TT(s[0],s[1]))}</span>`};
 const dt=iso=>{if(!iso)return'';const d=new Date(iso),p=n=>String(n).padStart(2,'0');return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear()};
 const locked=c=>c.calling_by&&c.calling_by!==me()&&c.calling_at&&Date.now()-new Date(c.calling_at).getTime()<LOCK;
 async function callsLoad(){let o=[],i=0;for(;;){const{data,error}=await sb.from('so_calls').select('*').eq('team',TM).order('id').range(i,i+999);if(error){SO.callsOk=false;SO.calls=[];return}o=o.concat(data||[]);if(!data||data.length<1000)break;i+=1000}SO.calls=o;SO.callsOk=true;if(Date.now()-(SO.synced||0)>3e5&&(boss()||(profile&&profile.team==='C'))){SO.synced=Date.now();syncOnline().then(n=>{if(n&&onC())callsLoad().then(soRender)}).catch(()=>{})}}
 function callsV(){
  if(SO.callsOk===null){callsLoad().then(()=>{if(onC())soRender()});return `<div class="so2-p"><div class="so2-emp">${E(TT('กำลังโหลด…','Loading…'))}</div></div>`}
- const f=SO.cf,td=today(),mine=!boss(),who=f.who||(mine?me():'');
+ const f=SO.cf,td=today(),mine=!seeAll(),who=mine?me():f.who;
  const base=SO.calls.filter(c=>(SO.page==='O'?isOn(c):!isOn(c))&&(!who||who==='*'||c.assignee===who));
  const live=base.filter(c=>c.status!=='online');
  const n=k=>live.filter(c=>c.status===k).length,cbDue=live.filter(c=>c.status==='cb'&&c.callback_date&&c.callback_date<=td).length,doneToday=live.filter(c=>(c.last_call_at||'').slice(0,10)===td).length;
  const cnt=k=>base.filter(c=>c.status===k).length,tot=base.length,pc2=v=>tot?Math.round(v/tot*100)+'%':'0%';
  const sbar=L=>`<div class="soc-bar">${SK.map(k=>{const v=L.filter(c=>c.status===k).length;return v?`<i style="flex:${v};background:${SC[k]}" title="${E(TT(ST[k][0],ST[k][1])+' '+v)}"></i>`:''}).join('')}</div>`;
  const stats=`<div class="so2-p soc-sp"><div class="soc-sh"><h3>${E(TT('สถานะทั้งหมด','All statuses'))}</h3><span>${E(TT('ทั้งหมด ','Total '))}<b>${NF(tot)}</b>${E(TT(' รายชื่อ',''))}</span></div>${sbar(base)}<div class="soc-ss">${SK.map(k=>`<button type="button" class="soc-s${f.st===k?' on':''}" data-ca="st" data-k="${k}"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><b>${NF(cnt(k))}</b><em>${k==='cb'?E(TT('วันนี้ ','Today '))+NF(cbDue):pc2(cnt(k))}</em></button>`).join('')}</div></div>`;
- const ppl=[...new Set(SO.calls.filter(c=>SO.page==='O'?isOn(c):!isOn(c)).map(c=>c.assignee).filter(Boolean))].sort();
+ const ppl=mine?[me()]:[...new Set(SO.calls.filter(c=>SO.page==='O'?isOn(c):!isOn(c)).map(c=>c.assignee).filter(Boolean))].sort();
  const prog=ppl.map(p=>{const L=SO.calls.filter(c=>(SO.page==='O'?isOn(c):!isOn(c))&&c.assignee===p),d=L.filter(c=>c.status!=='new').length;
   return `<div class="soc-pp"><b>${E(p)}</b>${sbar(L)}<span>${E(TT('โทรแล้ว ','Called '))}${NF(d)} / ${NF(L.length)}</span></div>`}).join('');
  const ms=c=>{const s=f.st;if(s==='open')return c.status!=='online'&&!CLOSED.includes(c.status);if(s==='closed')return CLOSED.includes(c.status);if(s==='cb')return c.status==='cb';return c.status===s};
@@ -4969,8 +4970,8 @@ function callsV(){
  const pages=Math.max(1,Math.ceil(L.length/PS));if(f.pg>=pages)f.pg=pages-1;const P=L.slice(f.pg*PS,f.pg*PS+PS);
  const sel=(k,lab,opts)=>`<select data-cf="${k}" aria-label="${E(lab)}">${opts.map(([v,t])=>`<option value="${E(v)}"${f[k]===v?' selected':''}>${E(t)}</option>`).join('')}</select>`;
  const stO=[['open',TT('รอโทร','To call')],['new',TT(ST.new[0],ST.new[1])],['cb',TT(ST.cb[0],ST.cb[1])],['noans',TT(ST.noans[0],ST.noans[1])],['int',TT(ST.int[0],ST.int[1])],['no',TT(ST.no[0],ST.no[1])],['bad',TT(ST.bad[0],ST.bad[1])],['dnc',TT(ST.dnc[0],ST.dnc[1])],['closed',TT('ปิดรายการ','Closed')],['online',TT(ST.online[0],ST.online[1])]];
- const whoO=mine?[['',TT('ของฉัน','Mine')],['*',TT('ทั้งทีม','Whole team')]]:[['',TT('ทุกคน','Everyone')]];
- const flt=`<div class="so2-f"><input data-cf="q" value="${E(f.q)}" placeholder="${E(TT('ค้นหาชื่อ / เบอร์ / ประเทศ','Search name / phone / country'))}">${sel('st',TT('สถานะ','Status'),stO)}${sel('who',TT('ผู้รับผิดชอบ','Assignee'),whoO.concat(ppl.map(p=>[p,p])))}${sel('grp',TT('กลุ่ม','Group'),[['',TT('ทุกกลุ่ม','All groups')]].concat(Object.entries(GRP).map(([k,v])=>[k,TT(v[0],v[1])])))}</div>`;
+ const whoO=[['',TT('ทุกคน','Everyone')]];
+ const flt=`<div class="so2-f"><input data-cf="q" value="${E(f.q)}" placeholder="${E(TT('ค้นหาชื่อ / เบอร์ / ประเทศ','Search name / phone / country'))}">${sel('st',TT('สถานะ','Status'),stO)}${mine?'':sel('who',TT('ผู้รับผิดชอบ','Assignee'),whoO.concat(ppl.map(p=>[p,p])))}${sel('grp',TT('กลุ่ม','Group'),[['',TT('ทุกกลุ่ม','All groups')]].concat(Object.entries(GRP).map(([k,v])=>[k,TT(v[0],v[1])])))}</div>`;
  const row=c=>{const lk=locked(c),cl=c.status==='online'||CLOSED.includes(c.status);
   const act=lk?`<button type="button" class="btn" disabled>${E(TT('กำลังโทร','On a call'))}</button>`:`<button type="button" class="btn${cl?'':' p'}" data-ca="open" data-id="${E(c.id)}">${E(cl?TT('ประวัติ','History'):TT('โทร','Call'))}</button>`;
   const stt=lk?`<span class="so2-chip" style="--c:var(--inf)">${E(TT('กำลังโทร · ','On a call · ')+c.calling_by)}</span>`:c.status==='noans'?chip('noans').replace('</span>',' · '+NF(c.attempts)+'</span>'):c.status==='cb'&&c.callback_date?chip('cb').replace('</span>',' '+fmtD(c.callback_date)+'</span>'):chip(c.status);
@@ -5057,7 +5058,7 @@ $('socs_d').addEventListener('change',()=>{const v=d2i($('socs_d').value.trim())
 async function sLoad(){const box=$('socs_b');box.innerHTML=`<div class="sub" style="padding:12px 0">${E(TT('กำลังโหลด…','Loading…'))}</div>`;const d=SUM.d;
  const st=new Date(d+'T00:00:00').toISOString(),en=new Date(shiftD(d,1)+'T00:00:00').toISOString();
  const ids=new Map(SO.calls.map(c=>[String(c.id),c]));
- const L=(await pg2(()=>sb.from('so_call_logs').select('*').gte('created_at',st).lt('created_at',en).order('created_at'))).filter(x=>{const c=ids.get(String(x.call_id));return c&&(!SUM.src||(SUM.src==='O'?isOn(c):!isOn(c)))});
+ const L=(await pg2(()=>sb.from('so_call_logs').select('*').gte('created_at',st).lt('created_at',en).order('created_at'))).filter(x=>{const c=ids.get(String(x.call_id));return c&&(seeAll()||x.actor===me())&&(!SUM.src||(SUM.src==='O'?isOn(c):!isOn(c)))});
  if(d!==SUM.d)return;
  const last=new Map(),by=new Map();L.forEach(x=>{last.set(x.call_id,x);const a=x.actor||'-';if(!by.has(a))by.set(a,new Map());by.get(a).set(x.call_id,x)});
  const fin=[...last.values()],nCall=fin.length,reach=fin.filter(x=>x.result==='ok').length,cntS=k=>fin.filter(x=>(x.result==='ok'?x.status:x.result)===k).length;
