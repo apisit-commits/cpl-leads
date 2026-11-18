@@ -5265,5 +5265,30 @@ $('soMain').addEventListener('click',e=>{const b=e.target.closest('[data-tpf]');
 Object.assign(EN,{'ระดับลูกค้า':'Customer level','ระดับ':'Level'});
 })();
 </script>
+<style>
+nav.tabs .nv-drag{position:relative;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.28);transform:scale(1.03);opacity:.95;transition:transform .12s;cursor:grabbing!important}
+nav.tabs.nv-on{user-select:none;-webkit-user-select:none}nav.tabs.nv-on>button:not(.nv-drag){transition:transform .12s}
+</style>
+<script>
+/* sidebar: long-press and drag to reorder (saved per user on this browser) */
+(function(){const nav=document.querySelector('nav.tabs');if(!nav)return;
+const its=()=>[...nav.children].filter(e=>e.id&&(e.tagName==='BUTTON'||e.classList.contains('navsep')));
+const key=()=>'cplNav:'+((profile&&(profile.id||profile.email||profile.name))||'');
+function apply(){let o;try{o=JSON.parse(localStorage.getItem(key())||'null')}catch(e){o=null}if(!Array.isArray(o)||!o.length)return;
+ const I=its();if(!I.length)return;const anc=I[I.length-1].nextSibling,m=new Map(I.map(e=>[e.id,e])),seq=o.map(id=>m.get(id)).filter(Boolean);I.forEach(e=>{if(!seq.includes(e))seq.push(e)});seq.forEach(e=>nav.insertBefore(e,anc))}
+function save(){try{localStorage.setItem(key(),JSON.stringify(its().map(e=>e.id)))}catch(e){}}
+const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);try{apply()}catch(e){}return r};try{apply()}catch(e){}
+let tm=null,st=null,dr=null,sup=false;
+const end=()=>{clearTimeout(tm);tm=null;st=null;if(dr){dr.classList.remove('nv-drag');nav.classList.remove('nv-on');dr=null;save();sup=true;setTimeout(()=>sup=false,350)}};
+nav.addEventListener('pointerdown',e=>{if(e.button!==0)return;const b=e.target.closest('nav.tabs>button[id]');if(!b)return;st={x:e.clientX,y:e.clientY,b,id:e.pointerId};
+ tm=setTimeout(()=>{if(!st)return;dr=st.b;dr.classList.add('nv-drag');nav.classList.add('nv-on');try{nav.setPointerCapture(st.id)}catch(_){}if(navigator.vibrate)try{navigator.vibrate(15)}catch(_){}},450)});
+nav.addEventListener('pointermove',e=>{if(!st)return;if(!dr){if(Math.abs(e.clientX-st.x)+Math.abs(e.clientY-st.y)>8){clearTimeout(tm);st=null}return}
+ e.preventDefault();const I=its().filter(x=>x!==dr&&x.offsetParent!==null);for(const x of I){const r=x.getBoundingClientRect();if(e.clientY>=r.top&&e.clientY<=r.bottom){const after=e.clientY>r.top+r.height/2;if(after){if(x.nextSibling!==dr)x.after(dr)}else if(x.previousSibling!==dr)x.before(dr);break}}});
+['pointerup','pointercancel','lostpointercapture'].forEach(t=>nav.addEventListener(t,end));
+nav.addEventListener('touchmove',e=>{if(dr)e.preventDefault()},{passive:false});
+nav.addEventListener('contextmenu',e=>{if(st||dr)e.preventDefault()});
+nav.addEventListener('click',e=>{if(sup){e.preventDefault();e.stopImmediatePropagation();sup=false}},true);
+})();
+</script>
 </body>
 </html>
