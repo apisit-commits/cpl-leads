@@ -3095,7 +3095,7 @@ if(typeof EN==='object')Object.assign(EN,{'ไทม์ไลน์':'Timeline',
 })();
 /* ---- Sales Offline (beta) ---- */
 const H=s=>esc(s==null?'':String(s));
-const SO={page:'V',deals:[],visits:[],acts:[],ship:'all',loaded:false};
+const SO={page:'C',deals:[],visits:[],acts:[],ship:'all',loaded:false};
 const SO_ST=[['lead','Lead ใหม่'],['visit','นัดพบ / เยี่ยม'],['quote','ส่ง Quotation'],['nego','เจรจา']];
 const SO_ORD=['lead','visit','quote','nego','closed'];
 const SO_SHIP=['ระหว่างขนส่ง','รอเอกสาร','ส่งมอบแล้ว'];
@@ -3194,7 +3194,7 @@ function soLead(){
 <tbody>${l.length?l.slice(0,300).map(r=>leadRow(r)).join(''):`<tr><td colspan="10" class="sub" style="text-align:center;padding:24px">${TT('ยังไม่มีข้อมูล','No data yet')}</td></tr>`}</tbody></table></div></div>`;
 }
 function soRender(){const m=$('soMain');if(!m)return;document.querySelectorAll('#vSO [data-so]').forEach(b=>b.classList.toggle('on',b.dataset.so===SO.page));m.innerHTML=({L:soLead,D:soDash,P:soPipe,V:soVisit})[SO.page]()}
-function soOpenView(){SO.page=SO.page&&SO.page!=='L'?SO.page:'V';if(SO.loaded)soRender();else m_loading();soLoad().then(soRender)}
+function soOpenView(){SO.page=SO.page&&SO.page!=='L'&&SO.page!=='V'?SO.page:'C';if(SO.loaded)soRender();else m_loading();soLoad().then(soRender)}
 function m_loading(){const m=$('soMain');if(m)m.innerHTML='<div class="soEmpty">กำลังโหลด…</div>'}
 const _tSO=tab;
 tab=function(k){
@@ -4757,7 +4757,7 @@ function todayV(){const td=today(),day=SO.day||td,me=soActor(),mine=profile&&pro
 <div class="so2-dn"><button type="button" data-a="day" data-n="-1" aria-label="${E(TT('วันก่อน','Previous day'))}">‹</button><b>${day===td?TT('วันนี้','Today'):fmtD(day)}</b><button type="button" data-a="day" data-n="1" aria-label="${E(TT('วันถัดไป','Next day'))}">›</button></div>
 ${st}<div class="so2-bt"><button type="button" class="btn" id="so_add">+ ${TT('วางแผนเยี่ยม','Plan a visit')}</button><button type="button" class="btn p" data-a="tadd">+ ${TT('ลูกค้าใหม่','New company')}</button></div></div>`}
 /* nav */
-const nav=document.querySelector('#vSO .soNav');if(nav){nav.innerHTML=`<button type="button" data-so="V">แผนวันนี้</button><button type="button" data-so="T">รายชื่อเป้าหมาย</button><button type="button" data-so="P">Pipeline</button><button type="button" data-so="D">ภาพรวม</button>`;
+const nav=document.querySelector('#vSO .soNav');if(nav){nav.innerHTML=`<button type="button" data-so="T">รายชื่อเป้าหมาย</button><button type="button" data-so="P">Pipeline</button><button type="button" data-so="D">ภาพรวม</button>`;
  nav.addEventListener('click',e=>{const b=e.target.closest('[data-so]');if(!b)return;SO.page=b.dataset.so;soRender()})}
 const VIEW={D:dash,T:targets,V:todayV,P:soPipe,L:soLead};
 soRender=function(){const m=$('soMain');if(!m)return;document.querySelectorAll('#vSO [data-so]').forEach(b=>b.classList.toggle('on',b.dataset.so===SO.page));m.innerHTML=(VIEW[SO.page]||todayV)()};
