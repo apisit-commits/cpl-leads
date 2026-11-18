@@ -3134,21 +3134,21 @@ const SO_SAMPLE=[];
 const soHM=iso=>{if(!iso)return'';const d=new Date(iso),p=n=>String(n).padStart(2,'0');return p(d.getHours())+':'+p(d.getMinutes())};
 const soDeal=id=>SO.deals.find(x=>String(x.id)===String(id));
 const soActor=()=>(profile&&profile.name)||'';
-async function soLog(action_text){try{await sb.from('so_activity').insert({team,actor_name:soActor(),action_text})}catch(e){}}
+async function soLog(action_text){try{await sb.from('so_activity').insert({team:'C',actor_name:soActor(),action_text})}catch(e){}}
 async function soLoad(){
  const[d,v,a]=await Promise.all([
-  sb.from('so_deals').select('*').eq('team',team).order('created_at',{ascending:false}).limit(1000),
-  sb.from('so_visits').select('*').eq('team',team).order('visit_date',{ascending:false}).order('visit_time',{ascending:false}).limit(1000),
-  sb.from('so_activity').select('*').eq('team',team).order('created_at',{ascending:false}).limit(30)
+  sb.from('so_deals').select('*').eq('team','C').order('created_at',{ascending:false}).limit(1000),
+  sb.from('so_visits').select('*').eq('team','C').order('visit_date',{ascending:false}).order('visit_time',{ascending:false}).limit(1000),
+  sb.from('so_activity').select('*').eq('team','C').order('created_at',{ascending:false}).limit(30)
  ]);
  SO.deals=d.error?[]:(d.data||[]);SO.visits=v.error?[]:(v.data||[]);SO.acts=a.error?[]:(a.data||[]);SO.loaded=true}
 function soDlg(){const f=$('sof');f.reset();f.so_d.value=fmtD(today());f.so_t.value=soHM(new Date().toISOString());
  $('so_dl').innerHTML=SO.deals.map(r=>`<option value="${H(r.company)}"></option>`).join('');$('sod').showModal()}
 async function soSubmit(e){e.preventDefault();const f=$('sof'),nm=f.so_n.value.trim();if(!nm)return;
  const key=nm.toLowerCase();let d=SO.deals.find(x=>(x.company||'').trim().toLowerCase()===key);
- if(!d){const r=await sb.from('so_deals').insert({team,company:nm,mode:f.so_m.value.trim()||null,stage:'lead',sales:soActor()}).select().single();
+ if(!d){const r=await sb.from('so_deals').insert({team:'C',company:nm,mode:f.so_m.value.trim()||null,stage:'lead',sales:soActor()}).select().single();
   if(r.error||!r.data)return alert('บันทึกไม่สำเร็จ');d=r.data;SO.deals.unshift(d);await soLog(`สร้างดีลใหม่: ${nm}`)}
- const vr=await sb.from('so_visits').insert({team,deal_id:d.id,company:d.company,sales:soActor(),visit_date:d2i(f.so_d.value)||today(),visit_time:f.so_t.value,purpose:f.so_p.value.trim()||null,checked_in:false}).select().single();
+ const vr=await sb.from('so_visits').insert({team:'C',deal_id:d.id,company:d.company,sales:soActor(),visit_date:d2i(f.so_d.value)||today(),visit_time:f.so_t.value,purpose:f.so_p.value.trim()||null,checked_in:false}).select().single();
  if(vr.error||!vr.data)return alert('บันทึกไม่สำเร็จ');SO.visits.unshift(vr.data);await soLog(`บันทึกแผนเยี่ยม: ${d.company}`);
  $('sod').close();await soLoad();soRender()}
 async function soMove(id,to){const d=soDeal(id);if(!d||!to)return;const patch={stage:to};if(to==='closed'||to==='lost')patch.closed_at=new Date().toISOString();else patch.closed_at=null;
@@ -3161,13 +3161,13 @@ async function soSyncDealToLead(d,to){
  rows.forEach(r=>{if(r.team==='C'&&(r.name||'')===d.company){r.stage=label;r.status=SO_STAT[to]}});
  try{refresh()}catch(e){}}
 async function soSyncLeadToDeal(o){
- if(team!=='C'||!o.name)return;
+ if((o.team||team)!=='C'||!o.name)return;
  if(!SO.loaded)await soLoad();
  const key=o.name.trim().toLowerCase();
  let d=SO.deals.find(x=>(x.company||'').trim().toLowerCase()===key);
  const st=SO_KEY[o.status]||'lead',done=st==='closed'||st==='lost';
  if(!d){
-  const ins={team,company:o.name,mode:null,stage:st,sales:o.sales||soActor()};
+  const ins={team:'C',company:o.name,mode:null,stage:st,sales:o.sales||soActor()};
   if(done)ins.closed_at=new Date().toISOString();
   const r=await sb.from('so_deals').insert(ins).select().single();
   if(!r.error&&r.data)SO.deals.unshift(r.data);
@@ -4730,7 +4730,7 @@ const dShort=s=>{const d=new Date(s+'T00:00:00');return TT(DW[d.getDay()],DWE[d.
 const ini=n=>String(n||'?').trim().slice(0,1).toUpperCase();
 const COL=['#0096d6','#f07d22','#7c5cd6','#11794a','#b42318','#0d8a6a'];const sCol=n=>{const L=[...new Set(SO.deals.map(d=>d.sales).concat(SO.visits.map(v=>v.sales)).filter(Boolean))].sort();const i=L.indexOf(n);return COL[(i<0?0:i)%COL.length]};
 async function detect(){if(SO.hasData!==null)return;try{const r=await sb.from('so_deals').select('data').limit(1);SO.hasData=!r.error}catch(e){SO.hasData=false}}
-async function goalLoad(){try{const{data}=await sb.from('mk_items').select('id,data').eq('kind','so_goal');const g=(data||[]).find(x=>x.data&&x.data.team===team);SO.goal=g?{id:g.id,...g.data}:{}}catch(e){SO.goal={}}}
+async function goalLoad(){try{const{data}=await sb.from('mk_items').select('id,data').eq('kind','so_goal');const g=(data||[]).find(x=>x.data&&x.data.team==='C');SO.goal=g?{id:g.id,...g.data}:{}}catch(e){SO.goal={}}}
 const _load=soLoad;soLoad=async function(){await Promise.all([_load(),detect(),SO.goal?null:goalLoad()])};
 const visOf=id=>SO.visits.filter(v=>String(v.deal_id)===String(id));
 function status(d){const st=d.stage||'lead';if(st==='closed')return'closed';if(st==='lost')return'lost';if(st==='nego')return'nego';if(st==='quote')return'quote';
@@ -4804,7 +4804,7 @@ tf.addEventListener('submit',async e=>{e.preventDefault();const n=tf.n.value.tri
  const x={...(d?D(d):{}),area:tf.area.value.trim(),ind:tf.ind.value.trim(),ct:tf.ct.value.trim(),ph:tf.ph.value.trim(),note:tf.note.value.trim()};
  const row={company:n,mode:tf.m.value.trim()||null,sales:tf.s.value||null};if(SO.hasData)row.data=x;
  let r;if(d){r=await sb.from('so_deals').update(row).eq('id',id).select().single();if(!r.error){Object.assign(d,r.data||row);SO.visits.filter(v=>String(v.deal_id)===String(id)).forEach(v=>v.company=n)}}
- else{r=await sb.from('so_deals').insert({team,stage:'lead',...row}).select().single();if(!r.error&&r.data){SO.deals.unshift(r.data);await soLog(`เพิ่มรายชื่อเป้าหมาย: ${n}`)}}
+ else{r=await sb.from('so_deals').insert({team:'C',stage:'lead',...row}).select().single();if(!r.error&&r.data){SO.deals.unshift(r.data);await soLog(`เพิ่มรายชื่อเป้าหมาย: ${n}`)}}
  if(r.error)return alert(TT('บันทึกไม่สำเร็จ','Failed to save'));$('sotd').close();soRender()});
 $('sot_x').onclick=()=>$('sotd').close();
 $('sot_del').onclick=async()=>{const id=tf.dataset.id;if(!id)return;if(!await ask(TT('ลบรายชื่อนี้?','Delete this company?'),{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ',oke:'Delete',danger:true}))return;
@@ -4829,7 +4829,7 @@ vf.addEventListener('submit',async e=>{e.preventDefault();const v=SO.visits.find
  const dl=soDeal(v.deal_id);if(dl){const to={int:'visit',quote:'quote',no:'lost'}[res];const ord=['lead','visit','quote','nego','closed'];let dp={};
   if(to==='lost'&&dl.stage!=='closed')dp={stage:'lost',closed_at:new Date().toISOString()};else if(to&&ord.indexOf(to)>ord.indexOf(dl.stage||'lead'))dp={stage:to,closed_at:null};else if(res==='miss'&&(dl.stage||'lead')==='lead')dp={stage:'visit'};
   if(SO.hasData)dp.data={...D(dl),next:nx||'',next_note:vf.todo.value||''};if(Object.keys(dp).length){const r=await sb.from('so_deals').update(dp).eq('id',dl.id);if(!r.error)Object.assign(dl,dp)}
-  if(nx&&vf.todo.value==='นัดเยี่ยมอีกครั้ง'&&!SO.visits.some(z=>String(z.deal_id)===String(dl.id)&&z.visit_date===nx)){const r=await sb.from('so_visits').insert({team,deal_id:dl.id,company:dl.company,sales:v.sales||soActor(),visit_date:nx,visit_time:'10:00',purpose:TT('นัดเยี่ยมอีกครั้ง','Follow-up visit'),checked_in:false}).select().single();if(!r.error&&r.data)SO.visits.unshift(r.data)}}
+  if(nx&&vf.todo.value==='นัดเยี่ยมอีกครั้ง'&&!SO.visits.some(z=>String(z.deal_id)===String(dl.id)&&z.visit_date===nx)){const r=await sb.from('so_visits').insert({team:'C',deal_id:dl.id,company:dl.company,sales:v.sales||soActor(),visit_date:nx,visit_time:'10:00',purpose:TT('นัดเยี่ยมอีกครั้ง','Follow-up visit'),checked_in:false}).select().single();if(!r.error&&r.data)SO.visits.unshift(r.data)}}
  await soLog(`ผลการเยี่ยม ${v.company}: ${(RES.find(z=>z[0]===res)||[])[1]||''}`);$('sovd').close();soRender()});
 $('sov_x').onclick=()=>$('sovd').close();
 /* check-in with location, then open the result form */
@@ -4839,7 +4839,7 @@ soCheck=async function(vid){const v=SO.visits.find(x=>String(x.id)===String(vid)
  const{error}=await sb.from('so_visits').update(patch).eq('id',vid);if(error)return alert(TT('บันทึกไม่สำเร็จ','Failed to save'));Object.assign(v,patch);v.data=x;await soLog(`เยี่ยมลูกค้า: ${v.company}`);soRender();vOpen(vid)};
 /* goals */
 const gf=$('soggf');$('sog_x').onclick=()=>$('soggd').close();
-gf.addEventListener('submit',async e=>{e.preventDefault();const d={team,vw:+gf.vw.value||0,pm:+gf.pm.value||0,qm:+gf.qm.value||0,dm:+gf.dm.value||0};const g=SO.goal||{};
+gf.addEventListener('submit',async e=>{e.preventDefault();const d={team:'C',vw:+gf.vw.value||0,pm:+gf.pm.value||0,qm:+gf.qm.value||0,dm:+gf.dm.value||0};const g=SO.goal||{};
  const r=g.id?await sb.from('mk_items').update({data:d}).eq('id',g.id).select('id'):await sb.from('mk_items').insert({kind:'so_goal',data:d}).select('id');if(r.error)return alert(TT('บันทึกไม่สำเร็จ','Failed to save'));
  SO.goal={id:(r.data&&r.data[0]&&r.data[0].id)||g.id,...d};$('soggd').close();soRender()});
 /* clicks */
@@ -5217,6 +5217,7 @@ const _sv=saveLead;saveLead=async function(id,o){if(!SOF.on||o.team&&o.team!=='C
   const res=await _sv.call(this,id,{...o,team:'C'});
   const lead=id?rows.find(y=>y.id===id):rows.filter(y=>y.team==='C'&&nk(y.name)===nk(o.name)).sort((a,b)=>b.id-a.id)[0];
   dl=SO.deals.find(z=>nk(z.company)===nk(o.name))||dl;
+  if(!dl&&lead&&o.name){const st=SO_KEY[o.status]||'lead',r=await sb.from('so_deals').insert({team:'C',company:o.name,stage:st,sales:o.sales||soActor()}).select().single();if(!r.error&&r.data){dl=r.data;SO.deals.unshift(dl)}}
   if(dl&&lead){const dt=o.detail||{},x={...(dl.data||{}),lead_id:lead.id,area:dt.area||'',ind:dt.ind||'',ph:dt.p0||dt.ph||dt.cpt||dt.ctt||(dl.data||{}).ph||'',ct:dt.ctn||dt.fn||(dl.data||{}).ct||''};
    const patch={};if(SO.hasData!==false)patch.data=x;if(o.sales&&o.sales!==dl.sales)patch.sales=o.sales;
    if(Object.keys(patch).length){const{error}=await sb.from('so_deals').update(patch).eq('id',dl.id);if(!error)Object.assign(dl,patch)}}
