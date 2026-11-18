@@ -4990,7 +4990,7 @@ const GRP={th:['ลูกค้าไทย','Thai'],intl:['ลูกค้า�
 const hasPh=c=>String(c.phone||'').replace(/\D/g,'').length>=6,isCaller=()=>!!profile&&profile.role==='sales'&&salesFor('C').includes(me());
 const SK=['new','noans','cb','int','no','bad','dnc','online'],SC={new:'#b8c4d2',noans:'#f0a23a',cb:'var(--pr)',int:'#2fb170',no:'#62768c',bad:'#e03131',dnc:'#7a1f17',online:'#7c5cd6'};
 const CLOSED=['no','bad','dnc'],onC=()=>SO.page==='C'||SO.page==='O',isOn=c=>c.src==='online'||c.batch==='online';
-SO.calls=[];SO.callsOk=null;SO.cfs={};Object.defineProperty(SO,'cf',{configurable:true,get(){const k=SO.page==='O'?'O':'C';return SO.cfs[k]||(SO.cfs[k]={st:'open',who:'',grp:'',q:'',pg:0})}});
+SO.calls=[];SO.callsOk=null;SO.cfs={};Object.defineProperty(SO,'cf',{configurable:true,get(){const k=SO.page==='O'?'O':'C';return SO.cfs[k]||(SO.cfs[k]={st:'open',who:'',grp:'',q:'',tp:'',pg:0})}});
 const me=()=>soActor();
 const boss=()=>!!profile&&(profile.role==='admin'||profile.role==='sales_lead');
 const seeAll=()=>!!profile&&['admin','sales_lead','marketing'].includes(profile.role);
@@ -5006,19 +5006,19 @@ function callsV(){
  const n=k=>live.filter(c=>c.status===k).length,cbDue=live.filter(c=>c.status==='cb'&&c.callback_date&&c.callback_date<=td).length,doneToday=live.filter(c=>(c.last_call_at||'').slice(0,10)===td).length;
  const cnt=k=>base.filter(c=>c.status===k).length,tot=base.length,pc2=v=>tot?Math.round(v/tot*100)+'%':'0%';
  const sbar=L=>`<div class="soc-bar">${SK.map(k=>{const v=L.filter(c=>c.status===k).length;return v?`<i style="flex:${v};background:${SC[k]}" title="${E(TT(ST[k][0],ST[k][1])+' '+v)}"></i>`:''}).join('')}</div>`;
- const stats=`<div class="so2-p soc-sp"><div class="soc-sh"><h3>${E(TT('สถานะทั้งหมด','All statuses'))}</h3><span>${E(TT('ทั้งหมด ','Total '))}<b>${NF(tot)}</b>${E(TT(' รายชื่อ',''))}</span></div>${sbar(base)}<div class="soc-ss">${SK.map(k=>`<button type="button" class="soc-s${f.st===k?' on':''}" data-ca="st" data-k="${k}"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><b>${NF(cnt(k))}</b><em>${k==='cb'?E(TT('วันนี้ ','Today '))+NF(cbDue):pc2(cnt(k))}</em></button>`).join('')}</div></div>`;
+ const stats=`<div class="so2-p soc-sp"><div class="soc-sh"><h3>${E(TT('สถานะทั้งหมด','All statuses'))}</h3><span>${E(TT('ทั้งหมด ','Total '))}<b>${NF(tot)}</b>${E(TT(' รายชื่อ',''))}</span></div>${sbar(base)}<div class="soc-ss">${SK.map(k=>`<button type="button" class="soc-s${f.st===k?' on':''}" data-ca="st" data-k="${k}"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><b>${NF(cnt(k))}</b><em>${k==='cb'?E(TT('วันนี้ ','Today '))+NF(cbDue):pc2(cnt(k))}</em></button>`).join('')}</div><div class="soc-tpr"><span>${E(TT('ระดับลูกค้า','Customer level'))}</span>${Object.entries(TEMP).map(([k,[l,c]])=>`<button type="button" class="${f.tp===k?'on':''}" data-ca="tp" data-k="${k}" style="--c:${c}"><i></i>${l}<b>${NF(base.filter(x=>(x.data||{}).temp===k).length)}</b></button>`).join('')}</div></div>`;
  const ppl=mine?[me()]:[...new Set(SO.calls.filter(c=>SO.page==='O'?isOn(c):!isOn(c)).map(c=>c.assignee).filter(Boolean))].sort();
  const prog=ppl.map(p=>{const L=SO.calls.filter(c=>hasPh(c)&&(SO.page==='O'?isOn(c):!isOn(c))&&c.assignee===p),d=L.filter(c=>c.status!=='new').length;
   return `<div class="soc-pp"><b>${E(p)}</b>${sbar(L)}<span>${E(TT('โทรแล้ว ','Called '))}${NF(d)} / ${NF(L.length)}</span></div>`}).join('');
  const ms=c=>{const s=f.st;if(s==='open')return c.status!=='online'&&!CLOSED.includes(c.status);if(s==='closed')return CLOSED.includes(c.status);if(s==='cb')return c.status==='cb';return c.status===s};
  const q=f.q.trim().toLowerCase(),qd=q.replace(/\D/g,'');
- const L=base.filter(c=>ms(c)&&(!f.grp||c.grp===f.grp)&&(!q||[c.company,c.contact,c.country,c.email].join(' ').toLowerCase().includes(q)||(qd.length>=4&&String(c.phone||'').replace(/\D/g,'').includes(qd))))
+ const L=base.filter(c=>(f.tp?(c.data||{}).temp===f.tp&&(f.st==='open'||ms(c)):ms(c))&&(!f.grp||c.grp===f.grp)&&(!q||[c.company,c.contact,c.country,c.email].join(' ').toLowerCase().includes(q)||(qd.length>=4&&String(c.phone||'').replace(/\D/g,'').includes(qd))))
   .sort((a,b)=>{const K=x=>x.status==='cb'?(x.callback_date||'8'):x.status==='new'?'8':x.status==='noans'?'9':'A',ka=K(a),kb=K(b);return ka.localeCompare(kb)||(b.last_buy||'').localeCompare(a.last_buy||'')});
  const pages=Math.max(1,Math.ceil(L.length/PS));if(f.pg>=pages)f.pg=pages-1;const P=L.slice(f.pg*PS,f.pg*PS+PS);
  const sel=(k,lab,opts)=>`<select data-cf="${k}" aria-label="${E(lab)}">${opts.map(([v,t])=>`<option value="${E(v)}"${f[k]===v?' selected':''}>${E(t)}</option>`).join('')}</select>`;
  const stO=[['open',TT('รอโทร','To call')],['new',TT(ST.new[0],ST.new[1])],['cb',TT(ST.cb[0],ST.cb[1])],['noans',TT(ST.noans[0],ST.noans[1])],['int',TT(ST.int[0],ST.int[1])],['no',TT(ST.no[0],ST.no[1])],['bad',TT(ST.bad[0],ST.bad[1])],['dnc',TT(ST.dnc[0],ST.dnc[1])],['closed',TT('ปิดรายการ','Closed')],['online',TT(ST.online[0],ST.online[1])]];
  const whoO=[['',TT('ทุกคน','Everyone')]];
- const flt=`<div class="so2-f"><input data-cf="q" value="${E(f.q)}" placeholder="${E(TT('ค้นหาชื่อ / เบอร์ / ประเทศ','Search name / phone / country'))}">${sel('st',TT('สถานะ','Status'),stO)}${mine?'':sel('who',TT('ผู้รับผิดชอบ','Assignee'),whoO.concat(ppl.map(p=>[p,p])))}${sel('grp',TT('กลุ่ม','Group'),[['',TT('ทุกกลุ่ม','All groups')]].concat(Object.entries(GRP).map(([k,v])=>[k,TT(v[0],v[1])])))}</div>`;
+ const flt=`<div class="so2-f"><input data-cf="q" value="${E(f.q)}" placeholder="${E(TT('ค้นหาชื่อ / เบอร์ / ประเทศ','Search name / phone / country'))}">${sel('st',TT('สถานะ','Status'),stO)}${mine?'':sel('who',TT('ผู้รับผิดชอบ','Assignee'),whoO.concat(ppl.map(p=>[p,p])))}${sel('grp',TT('กลุ่ม','Group'),[['',TT('ทุกกลุ่ม','All groups')]].concat(Object.entries(GRP).map(([k,v])=>[k,TT(v[0],v[1])])))}${sel('tp',TT('ระดับลูกค้า','Customer level'),[['',TT('ทุกระดับ','All levels')]].concat(Object.entries(TEMP).map(([k,v])=>[k,v[0]])))}</div>`;
  const row=c=>{const lk=locked(c),cl=c.status==='online'||CLOSED.includes(c.status);
   const act=lk?`<button type="button" class="btn" disabled>${E(TT('กำลังโทร','On a call'))}</button>`:`<button type="button" class="btn${cl?'':' p'}" data-ca="open" data-id="${E(c.id)}">${E(cl?TT('ประวัติ','History'):TT('โทร','Call'))}</button>`;
   const stt=lk?`<span class="so2-chip" style="--c:var(--inf)">${E(TT('กำลังโทร · ','On a call · ')+c.calling_by)}</span>`:c.status==='noans'?chip('noans').replace('</span>',' · '+NF(c.attempts)+'</span>'):(c.status==='cb'&&c.callback_date?chip('cb').replace('</span>',' '+fmtD(c.callback_date)+'</span>'):chip(c.status))+(['int','cb'].includes(c.status)&&(c.data||{}).temp?' '+tpChip(c.data.temp):'');
@@ -5035,7 +5035,7 @@ const nav=document.querySelector('#vSO .soNav');if(nav&&!nav.querySelector('[dat
 const _r=soRender;soRender=function(){if(!onC())return _r();const m=$('soMain');if(!m)return;SO.tele=SO.page;document.querySelectorAll('#vSO [data-so]').forEach(b=>b.classList.toggle('on',b.dataset.so==='TS'));m.innerHTML=callsV()};
 const main=$('soMain');
 main.addEventListener('click',e=>{if(!onC())return;const t=e.target.closest('[data-ca]');if(!t){const tr=e.target.closest('.soc-t tr[data-cid]');if(tr&&!tr.querySelector('button[disabled]'))cOpen(tr.dataset.cid);return}const a=t.dataset.ca;
- if(a==='pg'){SO.cf.pg=Math.max(0,SO.cf.pg+ +t.dataset.n);soRender()}else if(a==='open')cOpen(t.dataset.id);else if(a==='imp')iOpen();else if(a==='sum')sOpen();else if(a==='sub'){SO.page=t.dataset.k;soRender()}else if(a==='st'){const f=SO.cf;f.st=f.st===t.dataset.k?'open':t.dataset.k;f.pg=0;soRender()}});
+ if(a==='pg'){SO.cf.pg=Math.max(0,SO.cf.pg+ +t.dataset.n);soRender()}else if(a==='open')cOpen(t.dataset.id);else if(a==='imp')iOpen();else if(a==='sum')sOpen();else if(a==='sub'){SO.page=t.dataset.k;soRender()}else if(a==='st'){const f=SO.cf;f.st=f.st===t.dataset.k?'open':t.dataset.k;f.pg=0;soRender()}else if(a==='tp'){const f=SO.cf;f.tp=f.tp===t.dataset.k?'':t.dataset.k;f.pg=0;soRender()}});
 main.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.cf;if(k&&k!=='q'&&onC()){SO.cf[k]=e.target.value;SO.cf.pg=0;soRender()}});
 main.addEventListener('input',e=>{if(onC()&&e.target.dataset&&e.target.dataset.cf==='q'){SO.cf.q=e.target.value;SO.cf.pg=0;const p=e.target.selectionStart;soRender();const el=document.querySelector('#soMain [data-cf=q]');if(el){el.focus();el.setSelectionRange(p,p)}}});
 /* close buttons */
@@ -5246,6 +5246,7 @@ const _ms=markEmpty;markEmpty=function(){const r=_ms.apply(this,arguments);try{s
 Object.assign(EN,{'ผู้แนะนำ':'Referred by','ลูกค้าแนะนำ':'Referral'});})();
 </script>
 <style>
+#vSO .soc-tpr{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}#vSO .soc-tpr>span{font-size:13px;color:var(--mu);margin-right:4px}#vSO .soc-tpr button{all:unset;cursor:pointer;height:32px;padding:0 12px;border-radius:10px;border:1px solid var(--bd);display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--tx);background:var(--card)}#vSO .soc-tpr i{width:8px;height:8px;border-radius:50%;background:var(--c)}#vSO .soc-tpr b{font-size:12px;color:var(--mu)}#vSO .soc-tpr .on{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 9%,var(--card))}
 .tp-pk{display:flex;gap:10px;margin-top:6px}.tp-pk label{flex:1;cursor:pointer}.tp-pk input{position:absolute;opacity:0;pointer-events:none}
 .tp-pk span{height:44px;border-radius:12px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px;color:var(--tx);background:var(--card);transition:.15s}
 .tp-pk span i{width:10px;height:10px;border-radius:50%;background:var(--c)}
