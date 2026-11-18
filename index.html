@@ -4837,7 +4837,7 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 #socd .soc-ph{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--bd);border-radius:14px;margin:4px 0 14px}
 #socd .soc-ph b{font-size:15px;display:block}
 #socd .soc-ph a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:12px;background:color-mix(in srgb,var(--ok) 12%,transparent);color:var(--ok);font-weight:600;text-decoration:none;white-space:nowrap}
-#socd .soc-rs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#socd .soc-rs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 #socd .soc-rs label{display:block}
 #socd .soc-rs input{position:absolute;opacity:0;pointer-events:none}
 #socd .soc-rs span{display:flex;align-items:center;justify-content:center;height:44px;border-radius:12px;border:1px solid var(--bd);cursor:pointer;font-size:14px;background:var(--card)}
@@ -4855,12 +4855,12 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 #soid tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
 #soid td.r,#soid th.r{text-align:right}
 #soid .soc-sc{max-height:220px;overflow:auto;border:1px solid var(--bd);border-radius:12px}
-@media(max-width:700px){#vSO .soc-t .soc-hm{display:none}#vSO .soc-t col.soc-hm{visibility:collapse;width:0!important}#soid .soc-gp{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){#socd .soc-rs{grid-template-columns:repeat(2,minmax(0,1fr))}#vSO .soc-t .soc-hm{display:none}#vSO .soc-t col.soc-hm{visibility:collapse;width:0!important}#soid .soc-gp{grid-template-columns:minmax(0,1fr)}}
 </style>
 <dialog id="socd"><form id="socf" method="dialog" novalidate><h3 style="margin:0 0 2px">บันทึกผลการโทร</h3><div class="sub" id="soc_m"></div>
 <div class="soc-ph"><div style="min-width:0"><b id="soc_n"></b><span class="sub" id="soc_a"></span></div><a id="soc_tel" href="#"></a></div>
-<div id="soc_og"></div><div class="f">ผลการโทร<b class="rq">*</b></div><div class="soc-rs" id="soc_rs" style="margin-top:6px"><label><input type="radio" name="res" value="ok"><span>ติดต่อได้</span></label><label><input type="radio" name="res" value="noans"><span>ไม่รับสาย</span></label><label><input type="radio" name="res" value="bad"><span>ติดต่อไม่ได้</span></label></div>
-<div class="g" style="margin-top:14px" id="soc_okw"><label class="f">สถานะ<b class="rq">*</b><select name="st"><option value="int">สนใจ</option><option value="cb">โทรกลับ</option><option value="no">ไม่สนใจ</option><option value="dnc">ขอไม่ให้ติดต่อ</option><option value="online">ลูกค้า Online</option></select></label><label class="f" id="soc_cbw">โทรกลับวันที่<input name="cb" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label></div>
+<div id="soc_og"></div><div class="f">ผลการโทร<b class="rq">*</b></div><div class="soc-rs" id="soc_rs" style="margin-top:6px"><label><input type="radio" name="res" value="ok"><span>ติดต่อได้</span></label><label><input type="radio" name="res" value="noans"><span>ไม่รับสาย</span></label><label><input type="radio" name="res" value="bad"><span>ติดต่อไม่ได้</span></label><label><input type="radio" name="res" value="online"><span>ลูกค้า Online</span></label></div>
+<div class="g" style="margin-top:14px" id="soc_okw"><label class="f">สถานะ<b class="rq">*</b><select name="st"><option value="int">สนใจ</option><option value="cb">โทรกลับ</option><option value="no">ไม่สนใจ</option><option value="dnc">ขอไม่ให้ติดต่อ</option></select></label><label class="f" id="soc_cbw">โทรกลับวันที่<input name="cb" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label></div>
 <label class="f" style="margin-top:12px">ผลการคุย<textarea name="note" rows="3" maxlength="600"></textarea></label>
 <div class="g" style="margin-top:12px"><label class="f" id="soc_tgw" style="flex-direction:row;align-items:center;gap:10px"><input type="checkbox" name="tg" style="width:18px;height:18px;margin:0">เพิ่มเข้ารายชื่อเป้าหมาย</label><label class="f hid" id="soc_asw">ผู้รับผิดชอบ<select name="as"></select></label></div>
 <div id="soc_hs" style="margin-top:12px"></div>
@@ -4937,14 +4937,14 @@ async function cOpen(id){const c=SO.calls.find(z=>String(z.id)===String(id));if(
  CUR=c;cf.reset();$('soc_n').textContent=c.company||'';$('soc_a').textContent=[c.contact,c.address,c.postal].filter(Boolean).join(' · ');
  $('soc_m').textContent=[GRP[c.grp]?TT(GRP[c.grp][0],GRP[c.grp][1]):'',c.last_buy?TT('ซื้อล่าสุด ','Last order ')+fmtD(c.last_buy):'',c.assignee?TT('ผู้รับผิดชอบ ','Assignee ')+c.assignee:''].filter(Boolean).join(' · ');
  const tel=$('soc_tel'),ph=String(c.phone||'').split(/[,\/]| or /i)[0].trim();tel.classList.toggle('hid',!ph);tel.href='tel:'+ph.replace(/[^\d+]/g,'');tel.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>'+E(c.phone||'');
- if(['int','cb','no','dnc','online'].includes(c.status)){cf.querySelector('input[value=ok]').checked=true;cf.st.value=c.status}
+ if(c.status==='online')cf.querySelector('input[value=online]').checked=true;else if(['int','cb','no','dnc'].includes(c.status)){cf.querySelector('input[value=ok]').checked=true;cf.st.value=c.status}
  {const d=c.data||{},kv=[[TT('วันที่ได้ Lead','Lead date'),d.date?fmtD(d.date):''],[TT('เซลล์เดิม','Previous sales'),[d.team_n,d.sales].filter(Boolean).join(' · ')],['Ads',d.ads],[TT('บริการที่ถาม','Service asked'),(d.svc||[]).join(', ')],[TT('ใบเสนอราคา','Quotation'),d.quo],[TT('เหตุผลที่ไม่สนใจ','Reason'),d.reason],[TT('โน้ตเซลล์เดิม','Previous notes'),d.note]].filter(x=>x[1]);
   $('soc_og').innerHTML=isOn(c)&&kv.length?`<div class="soc-og"><b>${E(TT('ข้อมูลจาก Lead Online','From the Online Lead'))}</b><dl>${kv.map(([k,v])=>`<dt>${E(k)}</dt><dd>${E(v)}</dd>`).join('')}</dl></div>`:''}
  cf.cb.value=c.callback_date?fmtD(c.callback_date):'';cf.note.value=c.note||'';
  $('soc_asw').classList.toggle('hid',!boss());if(boss()){const o=[...new Set([...salesFor('C'),...(c.assignee?[c.assignee]:[])])];cf.as.innerHTML='<option value=""></option>'+o.map(s=>`<option${s===c.assignee?' selected':''}>${E(s)}</option>`).join('')}
  syncC();$('soc_hs').innerHTML='';cd.showModal();
  const h=await sb.from('so_call_logs').select('*').eq('call_id',id).order('created_at',{ascending:false}).limit(30);const L=h.data||[];
- const rl={ok:TT('ติดต่อได้','Reached'),noans:TT('ไม่รับสาย','No answer'),bad:TT('ติดต่อไม่ได้','Unreachable')};
+ const rl={ok:TT('ติดต่อได้','Reached'),noans:TT('ไม่รับสาย','No answer'),bad:TT('ติดต่อไม่ได้','Unreachable'),online:TT('ลูกค้า Online','Online customer')};
  $('soc_hs').innerHTML=L.length?`<div class="f" style="margin-bottom:4px">${E(TT('ประวัติการโทร','Call history'))}</div>`+L.map(x=>`<div class="soc-hs"><span>${E(dt(x.created_at)+' · '+soHM(x.created_at)+' · '+(x.actor||''))}${x.note?`<span class="sub">${E(x.note)}</span>`:''}</span>${chip(x.status||'new').replace(/>[^<]*<\/span>$/,'>'+E(x.result==='ok'?TT((ST[x.status]||ST.new)[0],(ST[x.status]||ST.new)[1]):rl[x.result]||'')+'</span>')}</div>`).join(''):''}
 cf.addEventListener('submit',async e=>{e.preventDefault();const c=CUR;if(!c)return;const res=(cf.querySelector('input[name=res]:checked')||{}).value;
  if(!res){alert(TT('กรุณาเลือกผลการโทร','Please choose the call result'));return}
