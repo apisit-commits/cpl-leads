@@ -5278,7 +5278,7 @@ const key=()=>'cplNav:'+((profile&&(profile.id||profile.email||profile.name))||'
 function apply(){let o;try{o=JSON.parse(localStorage.getItem(key())||'null')}catch(e){o=null}if(!Array.isArray(o)||!o.length)return;
  const I=its();if(!I.length)return;const anc=I[I.length-1].nextSibling,m=new Map(I.map(e=>[e.id,e])),seq=o.map(id=>m.get(id)).filter(Boolean);I.forEach(e=>{if(!seq.includes(e))seq.push(e)});seq.forEach(e=>nav.insertBefore(e,anc))}
 function save(){try{localStorage.setItem(key(),JSON.stringify(its().map(e=>e.id)))}catch(e){}}
-const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);try{apply()}catch(e){}return r};try{apply()}catch(e){}
+const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);try{apply()}catch(e){}try{const cu=$('tCU'),off=!!profile&&profile.role==='sales'&&profile.team==='C';if(cu&&off)cu.classList.add('hid')}catch(e){}return r};try{apply()}catch(e){}
 let tm=null,st=null,dr=null,sup=false;
 const end=()=>{clearTimeout(tm);tm=null;st=null;if(dr){dr.classList.remove('nv-drag');nav.classList.remove('nv-on');dr=null;save();sup=true;setTimeout(()=>sup=false,350)}};
 nav.addEventListener('pointerdown',e=>{if(e.button!==0)return;const b=e.target.closest('nav.tabs>button[id]');if(!b)return;st={x:e.clientX,y:e.clientY,b,id:e.pointerId};
