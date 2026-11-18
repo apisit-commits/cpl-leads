@@ -4728,7 +4728,7 @@ if(typeof SO==='undefined'||!$('vSO'))return;
 const E=s=>esc(s==null?'':String(s)),D=x=>x&&x.data&&typeof x.data==='object'?x.data:{};
 const RES=[['int','สนใจ','var(--ok)','Interested'],['quote','ขอใบเสนอราคา','var(--wn)','Wants a quote'],['no','ยังไม่สนใจ','var(--er)','Not interested'],['miss','ไม่พบผู้ติดต่อ','var(--mu)','Contact not met']];
 const SVS=['เรือ','Air Cargo','Courier','รถ','พิธีการ'];
-const ST2={none:['ยังไม่ติดต่อ','var(--mu)'],contact:['ติดต่อแล้ว','var(--inf)'],quote:['Quotation ครั้งที่ 1','var(--wn)'],nego:['Quotation ครั้งที่ 2','#c26a00'],q3:['Quotation ครั้งที่ 3','#b45309'],closed:['ลูกค้าแล้ว','#7c5cd6'],lost:['ยังไม่สนใจ','var(--er)']};
+const ST2={none:['ยังไม่ติดต่อ','var(--mu)'],contact:['ติดต่อแล้ว','var(--inf)'],quote:['Quotation ครั้งที่ 1','var(--wn)'],nego:['Quotation ครั้งที่ 2','#c26a00'],q3:['Quotation ครั้งที่ 3','#b45309'],closed:['ปิดดีล','#7c5cd6'],lost:['ยังไม่สนใจ','var(--er)']};
 SO.hasData=null;SO.goal=null;SO.day=null;SO.f={area:'',ind:'',st:'',s:'',q:'',tp:''};SO.wk='';
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const dAdd=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return iso(d)};
@@ -5350,7 +5350,7 @@ nav.addEventListener('click',e=>{if(sup){e.preventDefault();e.stopImmediatePropa
 <script>
 (function(){const dg=$('soci');if(!dg)return;const E=s=>esc(s==null?'':String(s));{const x=document.createElement('button');x.type='button';x.className='dlgx';x.setAttribute('aria-label','ปิด');x.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';x.onclick=()=>dg.close();dg.prepend(x)}
 const nk=s=>(s||'').trim().toLowerCase(),dig=s=>String(s||'').replace(/\D/g,'').slice(-9);
-const STEPS=[['none','lead','ยังไม่ติดต่อ'],['contact','visit','ติดต่อแล้ว'],['quote','quote','Quotation ครั้งที่ 1'],['nego','nego','Quotation ครั้งที่ 2'],['q3','q3','Quotation ครั้งที่ 3'],['closed','closed','ลูกค้าแล้ว']];
+const STEPS=[['none','lead','ยังไม่ติดต่อ'],['contact','visit','ติดต่อแล้ว'],['quote','quote','Quotation ครั้งที่ 1'],['nego','nego','Quotation ครั้งที่ 2'],['q3','q3','Quotation ครั้งที่ 3'],['closed','closed','ปิดดีล']];
 const IC={call:['#11794a','<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>'],noans:['#c77700','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],note:['#0096d6','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'],add:['#7c5cd6','<path d="M12 5v14M5 12h14"/>'],stage:['#b45309','<path d="M4 12h12M12 6l6 6-6 6"/>'],online:['#f07d22','<path d="M4 12h12M12 6l6 6-6 6"/>']};
 const ico=k=>{const[c,p]=IC[k]||IC.note;return `<span class="sci-ic" style="--c:${c}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg></span>`};
 const dtm=iso=>{if(!iso)return'';const d=new Date(iso),p=n=>String(n).padStart(2,'0');return p(d.getDate())+'/'+p(d.getMonth()+1)+' · '+p(d.getHours())+':'+p(d.getMinutes())};
