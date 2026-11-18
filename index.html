@@ -789,6 +789,7 @@ async function saveLead(id,o){o={...o,fu:o.fu||null,date:o.date||today()};const 
  function lead(sel,o,i){const t=o.textContent.trim(),v=o.value;
   if(PER.includes(sel.id)){if(typeof perSet!=='function'||v==='c'||v==='all')return['',''];const A={value:''},B={value:''};try{perSet(v,A,B)}catch(e){}return['',A.value?dm(A.value)+(B.value&&B.value!==A.value?'–'+dm(B.value):''):'']}
   if(SAL.includes(sel.id)||sel.name==='sales'||sel.name==='owner'){if(!v)return['<i class="dd-av dd-all"></i>',''];const c=AVC[[...t].reduce((a,ch)=>a+ch.charCodeAt(0),0)%AVC.length];return[`<i class="dd-av" style="--c:${c}">${esc([...t][0]||'?')}</i>`,'']}
+  if(sel.name==='brand'||sel.dataset.f==='brand'){const u=t.toUpperCase(),c=!v&&/^[—-]?$/.test(t)?'':u.startsWith('CPLEX')?TC.CPLEx:u.startsWith('IMTH')?TC.IMTH:u.startsWith('CLMV')?TC.CLMV:u.startsWith('CPL')?TC['CPL-Inter']:'#94a3b8';return[c?`<i class="dd-dot" style="--c:${c}"></i>`:'','']}
   const tc=Object.keys(TC).find(k=>t===k||v===k);if(tc)return[`<i class="dd-dot" style="--c:${TC[tc]}"></i>`,''];
   if(typeof SC==='object'&&typeof dispSt==='function'){const k=SC[v]||SC[t];if(k&&SCC[k])return[`<i class="dd-dot" style="--c:${SCC[k]}"></i>`,'']}
   if(/^(dtm|cu_seg)$/.test(sel.id)&&!v)return['<i class="dd-dot" style="--c:#94a3b8"></i>',''];
