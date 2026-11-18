@@ -5195,13 +5195,18 @@ async function findLead(d){const x=d.data||{};let r=(x.lead_id&&rows.find(y=>y.i
  return null}
 function lists(){const u=k=>[...new Set(SO.deals.map(z=>(z.data||{})[k]).filter(Boolean))].map(a=>`<option value="${esc(a)}"></option>`).join('');const al=$('so2_al'),il=$('so2_il');if(al)al.innerHTML=u('area');if(il)il.innerHTML=u('ind')}
 const restore=()=>{if(SOF.on){if(!offS()&&SOF.prev)team=SOF.prev;SOF.on=false;SOF.deal=null}};
-const _of=openForm;openForm=function(id){if(!SOF.opening)restore();const r=_of.apply(this,arguments);const c=team==='C';['so_ar','so_in'].forEach(i=>{const e=$(i);if(e)e.classList.toggle('hid',!c)});if(c){['ch_wrap','ch2_wrap'].forEach(i=>{const e=$(i);if(e)e.classList.remove('hid')});const f=$('fm_');if(!f.querySelector('input[name=channel]:checked')){const x=[...f.querySelectorAll('input[name=channel]')].find(i=>i.value==='เยี่ยมลูกค้าโดยตรง');if(x){x.checked=true;x.dispatchEvent(new Event('change',{bubbles:true}))}}}return r};
+const _of=openForm;openForm=function(id){if(!SOF.opening)restore();SOF.del=null;{const b=document.querySelector('#dlg .lf-del');if(b)b.textContent=TT('ลบ Lead','Delete Lead')}const r=_of.apply(this,arguments);const c=team==='C';['so_ar','so_in'].forEach(i=>{const e=$(i);if(e)e.classList.toggle('hid',!c)});if(c){['ch_wrap','ch2_wrap'].forEach(i=>{const e=$(i);if(e)e.classList.remove('hid')});const f=$('fm_');if(!f.querySelector('input[name=channel]:checked')){const x=[...f.querySelectorAll('input[name=channel]')].find(i=>i.value==='เยี่ยมลูกค้าโดยตรง');if(x){x.checked=true;x.dispatchEvent(new Event('change',{bubbles:true}))}}}return r};
 window.soLeadOpen=async function(id){const d=id?fd(id):null,r=d?await findLead(d):null;
  if(!SOF.on)SOF.prev=team;SOF.on=true;SOF.sub=false;SOF.deal=d?d.id:null;team='C';lists();
  SOF.opening=true;try{openForm(r?r.id:undefined)}finally{SOF.opening=false}
  if(!r&&d){const f=$('fm_'),x=d.data||{},put=(k,v)=>{if(v&&f[k])f[k].value=v};put('name',d.company);put('d_p0',x.ph);put('d_area',x.area);put('d_ind',x.ind);put('note',x.note);put('d_fn',x.ct);
   if(d.sales){if(![...f.sales.options].some(o=>o.value===d.sales))f.sales.add(new Option(d.sales,d.sales));f.sales.value=d.sales}
-  if(SO_LAB[d.stage])f.status.value=SO_LAB[d.stage];f.dispatchEvent(new Event('input',{bubbles:true}))}};
+  if(SO_LAB[d.stage])f.status.value=SO_LAB[d.stage];f.dispatchEvent(new Event('input',{bubbles:true}));
+  SOF.del=d.id;setTimeout(()=>{const b=document.querySelector('#dlg .lf-del');if(b&&SOF.del===d.id&&!editId){b.textContent=TT('ลบรายชื่อนี้','Delete this target');b.classList.remove('hid')}},60)}};
+document.addEventListener('click',async e=>{const b=e.target.closest('#dlg .lf-del');if(!b||editId||!SOF.del)return;e.stopImmediatePropagation();const d=fd(SOF.del);if(!d)return;
+ if(!await ask(TT('ลบ '+d.company+' ออกจากรายชื่อเป้าหมาย?','Remove '+d.company+' from targets?'),{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ',oke:'Delete',danger:true}))return;
+ const{error}=await sb.from('so_deals').delete().eq('id',d.id);if(error)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));
+ SO.deals=SO.deals.filter(z=>z!==d);SOF.del=null;$('dlg').close();try{soRender()}catch(_){}},true);
 $('fm_').addEventListener('submit',()=>{if(SOF.on)SOF.sub=true},true);
 $('dlg').addEventListener('close',()=>setTimeout(()=>{if(SOF.on&&!SOF.sub&&!SOF.busy)restore()},0));
 const _sv=saveLead;saveLead=async function(id,o){if(!SOF.on||o.team&&o.team!=='C')return _sv.apply(this,arguments);
