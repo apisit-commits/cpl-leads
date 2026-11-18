@@ -5259,7 +5259,7 @@ Object.assign(EN,{'ผู้แนะนำ':'Referred by','ลูกค้า�
 <script>
 (function(){$('tp_pk').innerHTML=tpPick('d_temp');$('soc_tpk').innerHTML=tpPick('tp');if(!DK.includes('temp'))DK.push('temp');
 const f=$('fm_');
-const _of=openForm;openForm=function(){const r=_of.apply(this,arguments);const c=team==='C';$('tp_w').classList.remove('hid');{const q=$('tp_w').querySelector('.rq');if(q)q.classList.toggle('hid',!c)}const a=f.querySelector('input[name=d_temp]');if(a)a.required=c;return r};
+const _of=openForm;openForm=function(){const r=_of.apply(this,arguments);$('tp_w').classList.remove('hid');{const q=$('tp_w').querySelector('.rq');if(q)q.remove()}f.querySelectorAll('input[name=d_temp]').forEach(i=>i.required=false);return r};
 const _lo=window.soLeadOpen;window.soLeadOpen=async function(id){await _lo.apply(this,arguments);const d=id&&SO.deals.find(x=>String(x.id)===String(id)),t=d&&tpOf(d);if(t&&!f.querySelector('input[name=d_temp]:checked')){const i=f.querySelector(`input[name=d_temp][value=${t}]`);if(i){i.checked=true;i.dispatchEvent(new Event('change',{bubbles:true}))}}};
 const _sv=saveLead;saveLead=async function(id,o){const r=await _sv.apply(this,arguments);try{const t=(o.detail||{}).temp;if(t&&o.name){const d=SO.deals.find(z=>(z.company||'').trim().toLowerCase()===o.name.trim().toLowerCase());if(d&&tpOf(d)!==t&&SO.hasData!==false){const x={...(d.data||{}),temp:t};const{error}=await sb.from('so_deals').update({data:x}).eq('id',d.id);if(!error){d.data=x;if(!$('vSO').classList.contains('hid'))soRender()}}}}catch(e){}return r};
 $('soMain').addEventListener('click',e=>{const b=e.target.closest('[data-tpf]');if(!b)return;SO.f.tp=b.dataset.tpf;soRender()});
