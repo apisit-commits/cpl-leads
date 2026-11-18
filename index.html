@@ -703,8 +703,8 @@ function TR2(m){m=String(m);if(LANG!=='en')return m;return m.split('\n').map(l=>
 let WHO=null;
 function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '+(TEAMS[WHO.t]||''),sales_lead:'SALES HEAD',marketing:'MARKETING',ads:'ADS'};{const rl=(R[WHO.r]||String(WHO.r).toUpperCase());$('who').textContent=WHO.n+' · '+rl;$('wn').textContent=WHO.n||'';$('wr').textContent=rl;$('av').textContent=String(WHO.n||'?').trim().charAt(0).toUpperCase()}}
 const ST_Y='ปิดการขาย',ST_H='มีโอกาสเปลี่ยนใจ',ST_S='รอการตัดสินใจ',ST_N='ยังไม่สนใจบริการ';
-const SO_LAB={lead:'ยังไม่ติดต่อ',visit:'ติดต่อแล้ว',quote:'ส่ง Quotation ครั้งที่ 1',nego:'ส่ง Quotation ครั้งที่ 2',q3:'ส่ง Quotation ครั้งที่ 3',closed:'ปิดดีล',lost:'ปิดไม่สำเร็จ'};
-const SO_STAT={lead:ST_S,visit:ST_S,quote:ST_S,nego:ST_S,q3:ST_S,closed:ST_Y,lost:ST_N};
+const SO_LAB={lead:'ยังไม่ติดต่อ',visit:'ติดต่อแล้ว',qual:'ตรงความต้องการ',quote:'ส่ง Quotation ครั้งที่ 1',nego:'ส่ง Quotation ครั้งที่ 2',q3:'ส่ง Quotation ครั้งที่ 3',closed:'ปิดดีล',lost:'ปิดไม่สำเร็จ',dormant:'พักไว้'};
+const SO_STAT={lead:ST_S,visit:ST_S,qual:ST_S,quote:ST_S,nego:ST_S,q3:ST_S,closed:ST_Y,lost:ST_N,dormant:ST_S};
 const SO_KEY={'Lead ใหม่':'lead','นัดพบ / เยี่ยม':'visit','ส่ง Quotation':'quote','เจรจา':'nego',...Object.fromEntries(Object.entries(SO_LAB).map(([k,v])=>[v,k]))};
 const stv=s=>SO_KEY[s]?SO_STAT[SO_KEY[s]]:s;
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
@@ -4728,7 +4728,7 @@ if(typeof SO==='undefined'||!$('vSO'))return;
 const E=s=>esc(s==null?'':String(s)),D=x=>x&&x.data&&typeof x.data==='object'?x.data:{};
 const RES=[['int','สนใจ','var(--ok)','Interested'],['quote','ขอใบเสนอราคา','var(--wn)','Wants a quote'],['no','ยังไม่สนใจ','var(--er)','Not interested'],['miss','ไม่พบผู้ติดต่อ','var(--mu)','Contact not met']];
 const SVS=['เรือ','Air Cargo','Courier','รถ','พิธีการ'];
-const ST2={none:['ยังไม่ติดต่อ','var(--mu)'],contact:['ติดต่อแล้ว','var(--inf)'],quote:['Quotation ครั้งที่ 1','var(--wn)'],nego:['Quotation ครั้งที่ 2','#c26a00'],q3:['Quotation ครั้งที่ 3','#b45309'],closed:['ปิดดีล','#7c5cd6'],lost:['ยังไม่สนใจ','var(--er)']};
+const ST2={none:['ยังไม่ติดต่อ','var(--mu)'],contact:['ติดต่อแล้ว','var(--inf)'],qual:['ตรงความต้องการ','#0d8a6a'],quote:['Quotation ครั้งที่ 1','var(--wn)'],nego:['Quotation ครั้งที่ 2','#c26a00'],q3:['Quotation ครั้งที่ 3','#b45309'],closed:['ปิดดีล','#7c5cd6'],lost:['ไม่สำเร็จ','var(--er)'],dormant:['พักไว้','#8a9bb0']};
 SO.hasData=null;SO.goal=null;SO.day=null;SO.f={area:'',ind:'',st:'',s:'',q:'',tp:''};SO.wk='';
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const dAdd=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return iso(d)};
@@ -4741,7 +4741,7 @@ async function detect(){if(SO.hasData!==null)return;try{const r=await sb.from('s
 async function goalLoad(){try{const{data}=await sb.from('mk_items').select('id,data').eq('kind','so_goal');const g=(data||[]).find(x=>x.data&&x.data.team==='C');SO.goal=g?{id:g.id,...g.data}:{}}catch(e){SO.goal={}}}
 const _load=soLoad;soLoad=async function(){await Promise.all([_load(),detect(),SO.goal?null:goalLoad()])};
 const visOf=id=>SO.visits.filter(v=>String(v.deal_id)===String(id));
-function status(d){const st=d.stage||'lead';if(['closed','lost','quote','nego','q3'].includes(st))return st;if(st==='visit'||D(d).src==='call')return'contact';return'none'}
+function status(d){const st=d.stage||'lead';if(['closed','lost','quote','nego','q3','qual','dormant'].includes(st))return st;if(st==='visit'||D(d).src==='call')return'contact';return'none'}
 window.soStat=status;window.SO_ST2=ST2;
 function nextOf(d){return null;const up=visOf(d.id).filter(v=>!v.checked_in&&v.visit_date>=today()).sort((a,b)=>(a.visit_date+a.visit_time).localeCompare(b.visit_date+b.visit_time))[0];
  const dn=D(d).next;if(up&&(!dn||up.visit_date<=dn))return{d:up.visit_date,t:(up.visit_time||'').slice(0,5)};if(dn)return{d:dn,t:D(d).next_note||''};return null}
@@ -5293,149 +5293,218 @@ nav.addEventListener('click',e=>{if(sup){e.preventDefault();e.stopImmediatePropa
 })();
 </script>
 <dialog id="soci"><div class="sci">
-<aside class="sci-l"><div class="sci-hd"><span class="sci-av" id="sci_av"></span><div style="min-width:0;flex:1"><h2 id="sci_n"></h2><div class="sub" id="sci_s"></div></div></div>
-<div class="sci-tags" id="sci_tags"></div><div class="sci-tel" id="sci_tel"></div>
-<form id="sci_f" class="sci-f" novalidate autocomplete="off">
-<div><div class="sci-lb">ระดับลูกค้า</div><div class="sci-tp" id="sci_tp"></div></div>
-<label class="f">ชื่อลูกค้า<b class="rq">*</b><input name="n" maxlength="200"></label>
-<label class="f">เลขประจำตัวผู้เสียภาษี<input name="tax" inputmode="numeric" maxlength="13" placeholder="13 หลัก"></label>
-<label class="f" id="sci_phw">เบอร์โทรศัพท์<input name="ph" type="tel" maxlength="40"></label><label class="f">Channel<span class="sci-chs"><i id="sci_chi"></i><select name="ch"></select></span></label>
-<div class="sci-2"><label class="f">ผู้ติดต่อ<input name="ct" maxlength="120"></label><label class="f">อีเมล<input name="em" type="email" maxlength="120"></label></div>
-<label class="f">ประเภทธุรกิจ<input name="ind" maxlength="120" list="sci_il"></label>
-<label class="f hid" id="sci_refw">ผู้แนะนำ<input name="ref" maxlength="120"></label>
-<label class="f" id="sci_sw">เซลล์<select name="sl"></select></label>
-<datalist id="sci_al"></datalist><datalist id="sci_il"></datalist>
-</form><div id="sci_og"></div></aside>
-<section class="sci-r"><div class="sci-rh"><h3>สถานะการติดต่อ</h3><span class="sub" id="sci_up"></span></div>
-<div class="sci-step" id="sci_step"></div>
-<div class="sci-acts"><a class="btn" id="sci_call" href="#">โทร</a><button type="button" class="btn" id="sci_calc">+ คำนวณราคา</button><button type="button" class="btn" id="sci_nt">+ บันทึกการคุย</button><span style="flex:1"></span><button type="button" class="btn" id="sci_lost">ไม่สนใจแล้ว</button></div>
-<div class="sci-nw hid" id="sci_nw"><textarea id="sci_nx" rows="2" maxlength="600"></textarea><div class="acts"><button type="button" class="btn" id="sci_nc">ยกเลิก</button><button type="button" class="btn p" id="sci_ns">บันทึก</button></div></div>
-<div class="sci-rh"><b>ประวัติ</b><span class="seg" id="sci_seg"></span></div><div class="sci-tl" id="sci_tl"></div></section>
+<aside class="sci-l"><div class="sci-hd"><span class="sci-av" id="sci_av"></span><div style="min-width:0"><h2 id="sci_n"></h2><div class="sub" id="sci_s"></div></div></div>
+<div class="sci-tags" id="sci_tags"></div><nav class="sci-rail" id="sci_rail"></nav><dl class="sci-mt" id="sci_mt"></dl></aside>
+<section class="sci-r"><div class="sci-hb"><b id="sci_ttl"></b><div class="sci-tel hid" id="sci_tel"></div></div><div class="sci-b" id="sci_b"></div></section>
 <div class="sci-ft"><button type="button" class="btn sci-del" id="sci_del">ลบ</button><span style="flex:1"></span><button type="button" class="btn" id="sci_cx">ยกเลิก</button><button type="button" class="btn p" id="sci_sv">บันทึก</button></div></div></dialog>
 <style>
-#soci .hid{display:none!important}#soci .so2-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}#soci a.btn{color:var(--tx);display:inline-flex;align-items:center}#vSO .soDeal svg.chi{width:22px;height:22px;flex:none}
-#soci{width:min(1240px,calc(100vw - 32px));max-width:none;padding:0;border:0;border-radius:24px;overflow:visible}
-#soci .sci{display:grid;grid-template-columns:400px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;height:min(800px,calc(100vh - 48px));border-radius:24px;overflow:hidden;background:var(--card)}
-#soci .sci-l>*{flex:none}#soci .sci-l{background:color-mix(in srgb,var(--fld) 45%,var(--card));border-right:1px solid var(--bd);padding:24px;display:flex;flex-direction:column;gap:16px;overflow:auto}
-#soci .sci-r{padding:24px 28px;display:flex;flex-direction:column;gap:16px;overflow:auto;min-width:0}
-#soci .sci-hd{display:flex;gap:14px;align-items:center}#soci .sci-av{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#29a9e1,#0b6fb0);color:#fff;font-weight:700;font-size:19px;display:flex;align-items:center;justify-content:center;flex:none}
-#soci h2{margin:0;font-size:19px;line-height:1.35;word-break:break-word}#soci .sci-tags{display:flex;gap:6px;flex-wrap:wrap}
-#soci .sci-tel{position:relative}#soci .sci-phe{all:unset;cursor:pointer;position:absolute;right:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.16);color:#fff}#soci .sci-phe:hover{background:rgba(255,255,255,.28)}
-#soci .sci-tel{flex:none;height:46px;border-radius:14px;background:#127a45;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px;text-decoration:none}
-#soci .sci-lb{font-size:12.5px;color:var(--mu);margin-bottom:6px}
-#soci .sci-chm{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px 0 6px;border-radius:12px;border:1.5px solid var(--br);background:color-mix(in srgb,var(--br) 9%,var(--card));font-size:14px;font-weight:600;color:var(--br)}
-#soci .sci-cho{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#soci .sci-cho .o{opacity:.55;display:inline-flex}
-#soci .sci-tp{display:flex;gap:8px}#soci .sci-tp button{all:unset;flex:1;cursor:pointer;height:38px;border-radius:11px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;background:var(--card)}
-#soci .sci-tp i{width:9px;height:9px;border-radius:50%;background:var(--c)}#soci .sci-tp .on{border:1.5px solid var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 9%,var(--card))}
-#soci .sci-dl{margin:0;display:grid;grid-template-columns:104px minmax(0,1fr);row-gap:9px;font-size:13.5px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px 16px}#soci .sci-dl dt{color:var(--mu)}#soci .sci-dl dd{margin:0;font-weight:500;word-break:break-word}
-#soci .sci-og{border:1px solid color-mix(in srgb,var(--ac) 35%,var(--bd));background:color-mix(in srgb,var(--ac) 6%,var(--card));border-radius:16px;padding:14px 16px}
-#soci .sci-og .sci-dl{border:0;padding:0;background:none;font-size:13px;row-gap:6px;grid-template-columns:110px minmax(0,1fr)}
-#soci .sci-f{display:flex;flex-direction:column;gap:12px}#soci .sci-f .f{margin:0}#soci .sci-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}#soci .sci-2>.hid+label,#soci .sci-2>label:only-child{grid-column:1/-1}
-#soci .sci-ft{grid-column:1/-1;display:flex;gap:10px;align-items:center;padding:14px 24px;border-top:1px solid var(--bd);background:var(--card)}#soci .lf-phw{display:flex;gap:6px;min-width:0}#soci .lf-phw select{width:120px;flex:none}#soci .lf-phw input{flex:1;min-width:0}#soci .sci-chs{position:relative;display:block}#soci .sci-chs select{width:100%}#soci .sci-chs.ic select{padding-left:46px!important}#soci #sci_chi{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:flex;pointer-events:none;z-index:1}#soci #sci_chi svg{width:26px;height:26px}#soci .sci-del{color:var(--er);border-color:color-mix(in srgb,var(--er) 35%,var(--bd))}
-#soci .sci-rh{display:flex;align-items:center;justify-content:space-between;gap:12px}#soci .sci-rh h3{margin:0;font-size:17px}
+#soci .hid{display:none!important}
+#soci{width:min(1320px,calc(100vw - 32px));max-width:none;padding:0;border:0;border-radius:24px;overflow:visible}
+#soci .sci{display:grid;grid-template-columns:280px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;height:min(840px,calc(100vh - 40px));border-radius:24px;overflow:hidden;background:var(--card)}
+#soci .sci-l{background:color-mix(in srgb,var(--fld) 45%,var(--card));border-right:1px solid var(--bd);padding:22px 18px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+#soci .sci-l>*{flex:none}
+#soci .sci-hd{display:flex;gap:12px;align-items:center}#soci .sci-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#29a9e1,#0b6fb0);color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;flex:none}
+#soci h2{margin:0;font-size:16px;line-height:1.35;word-break:break-word}#soci .sci-tags{display:flex;gap:6px;flex-wrap:wrap}
+#soci .so2-chip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:11px;font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}#soci .so2-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+#soci .sci-rail{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+#soci .sci-rail button{all:unset;cursor:pointer;min-height:44px;border-radius:12px;display:flex;align-items:center;gap:11px;padding:0 12px;font-size:14px;color:var(--tx)}
+#soci .sci-rail button:hover{background:color-mix(in srgb,var(--br) 6%,transparent)}
+#soci .sci-rail i{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;color:var(--mu);flex:none;background:var(--card);box-sizing:border-box}
+#soci .sci-rail i.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+#soci .sci-rail .on{background:color-mix(in srgb,var(--br) 12%,transparent);color:var(--br);font-weight:700}#soci .sci-rail .on i{border-color:var(--br);color:var(--br);background:var(--card)}
+#soci .sci-rail em{margin-left:auto;font-style:normal;font-size:11px;font-weight:700;background:var(--fld);color:var(--mu);border-radius:999px;padding:1px 8px}
+#soci .sci-mt{margin:auto 0 0;display:grid;grid-template-columns:70px minmax(0,1fr);row-gap:6px;font-size:12.5px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}#soci .sci-mt dt{color:var(--mu)}#soci .sci-mt dd{margin:0;font-weight:500}
+#soci .sci-r{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+#soci .sci-hb{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--bd);min-height:42px}#soci .sci-hb>b{flex:1;font-size:17px}
+#soci .sci-tel{position:relative;height:42px;border-radius:12px;background:#127a45;color:#fff;display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;padding:0 52px 0 18px;white-space:nowrap}
+#soci .sci-phe{all:unset;cursor:pointer;position:absolute;right:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.16)}#soci .sci-phe:hover{background:rgba(255,255,255,.28)}
+#soci .sci-b{padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow:auto;min-height:0}
+#soci .sci-c{border:1px solid var(--bd);border-radius:16px;padding:16px 18px}#soci .sci-c>h4{margin:0 0 12px;font-size:14.5px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#soci .g2,#soci .g3,#soci .g4{display:grid;gap:12px}#soci .g2{grid-template-columns:repeat(2,minmax(0,1fr))}#soci .g3{grid-template-columns:repeat(3,minmax(0,1fr))}#soci .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+#soci .f{margin:0}#soci .f textarea{width:100%;box-sizing:border-box}
+#soci .sci-lb{font-size:12.5px;color:var(--mu);margin-bottom:6px;display:block}
+#soci .pl{display:flex;gap:6px;flex-wrap:wrap}#soci .pl button{all:unset;cursor:pointer;height:34px;padding:0 13px;border-radius:10px;border:1px solid var(--bd);display:inline-flex;align-items:center;gap:6px;font-size:13px;background:var(--card);box-sizing:border-box}
+#soci .pl button.on{border:1.5px solid var(--br);background:color-mix(in srgb,var(--br) 9%,var(--card));color:var(--br);font-weight:600}#soci .pl small{font-size:10.5px;color:#a35a00;background:#fff3e0;border-radius:6px;padding:1px 6px}
+#soci .sci-tp{display:flex;gap:8px;flex:1}#soci .sci-tp button{all:unset;flex:1;cursor:pointer;height:44px;border-radius:12px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;background:var(--card);box-sizing:border-box}
+#soci .sci-tp i{width:10px;height:10px;border-radius:50%;background:var(--c)}#soci .sci-tp .on{border:1.5px solid var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 9%,var(--card))}
+#soci .sci-sm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}#soci .sci-sm div{border:1px solid var(--bd);border-radius:14px;padding:10px 14px;min-width:0}#soci .sci-sm span{font-size:11.5px;color:var(--mu);font-weight:600}#soci .sci-sm b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #soci .sci-step{display:flex;align-items:flex-start}
-#soci .sci-step button{all:unset;cursor:pointer;flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;font-size:12px;color:var(--mu);text-align:center;padding:0 2px}
+#soci .sci-step button{all:unset;cursor:pointer;flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;font-size:11.5px;color:var(--mu);text-align:center;padding:0 2px}
 #soci .sci-step button::before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:3px;background:var(--bd)}#soci .sci-step button:first-child::before{display:none}
 #soci .sci-step button.d::before,#soci .sci-step button.c::before{background:var(--br)}
 #soci .sci-step b{width:28px;height:28px;border-radius:50%;background:var(--fld);display:flex;align-items:center;justify-content:center;font-size:12px;z-index:1;box-sizing:border-box}
 #soci .sci-step .d b{background:var(--br);color:#fff}#soci .sci-step .c b{background:var(--card);border:3px solid var(--br);color:var(--br)}#soci .sci-step .d,#soci .sci-step .c{color:var(--tx);font-weight:600}
-#soci .sci-step.lost .c b{border-color:var(--er);color:var(--er)}
-#soci .sci-acts{display:flex;gap:10px;flex-wrap:wrap}#soci .sci-acts .btn{text-decoration:none}
-#soci .sci-nw{display:flex;flex-direction:column;gap:8px}#soci .sci-nw textarea{width:100%;box-sizing:border-box}
-#soci .seg button{display:inline-flex;align-items:center;gap:6px}#soci .seg em{font-style:normal;font-size:11px;font-weight:700;border-radius:999px;padding:0 7px;background:rgba(11,34,64,.08)}
-#soci .sci-ti{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);align-items:start}
-#soci .sci-ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--c) 14%,var(--card));color:var(--c)}
-#soci .sci-ti b{font-size:14px;font-weight:600}#soci .sci-ti p{margin:3px 0 0;font-size:13px;color:var(--mu);word-break:break-word}#soci .sci-tm{font-size:12px;color:var(--mu);white-space:nowrap}
-@media(max-width:860px){#soci .sci-ft{position:sticky;bottom:0}#soci .sci{grid-template-columns:minmax(0,1fr);height:auto;max-height:calc(100vh - 32px);overflow:auto}#soci .sci-l,#soci .sci-r{overflow:visible}}
+#soci .sci-step.off{opacity:.55}
+#soci .sci-na{display:flex;align-items:center;gap:14px;background:color-mix(in srgb,var(--wn) 8%,var(--card));border:1px solid color-mix(in srgb,var(--wn) 30%,var(--bd));border-radius:14px;padding:12px 16px}
+#soci .sci-dt{width:48px;height:52px;border-radius:11px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;border:1px solid var(--bd)}#soci .sci-dt small{font-size:10.5px;color:var(--wn);font-weight:700}#soci .sci-dt b{font-size:19px;line-height:1}
+#soci .btn.sm{height:32px;font-size:12.5px;padding:0 11px}#soci .btn.dg.p{background:var(--er);border-color:var(--er);color:#fff;box-shadow:none}#soci .btn.sm.p:not(.dg){box-shadow:none}#soci .sci-del,#soci .btn.dg{color:var(--er);border-color:color-mix(in srgb,var(--er) 35%,var(--bd))}#soci a.btn{text-decoration:none;color:var(--tx);display:inline-flex;align-items:center}
+#soci .sci-ti{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd);align-items:start}
+#soci .sci-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--c) 14%,var(--card));color:var(--c)}
+#soci .sci-ti b{font-size:13.5px;font-weight:600}#soci .sci-ti p{margin:2px 0 0;font-size:12.5px;color:var(--mu);word-break:break-word}#soci .sci-tm{font-size:11.5px;color:var(--mu);white-space:nowrap}
+#soci .sci-rt{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:10px;align-items:end}#soci .sci-ar{height:42px;display:flex;align-items:center;justify-content:center;color:var(--br);font-size:20px;font-weight:700}
+#soci .sci-swl{display:inline-flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;margin-right:18px}#soci .sci-swl input{width:18px;height:18px}
+#soci .sci-ph{display:flex;gap:6px}#soci .sci-ph select{width:118px;flex:none}#soci .sci-ph input{flex:1;min-width:0}
+#soci .sci-chs{position:relative;display:block}#soci .sci-chs select{width:100%}#soci .sci-chs.ic select{padding-left:46px!important}#soci .sci-chs>i{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:flex;pointer-events:none;z-index:1}#soci .sci-chs>i svg{width:26px;height:26px}
+#soci .sci-ct{border:1px dashed var(--bd);border-radius:14px;padding:12px;position:relative}#soci .sci-ct+.sci-ct{margin-top:10px}#soci .sci-ctx{all:unset;cursor:pointer;position:absolute;right:10px;top:8px;color:var(--mu);font-size:16px}
+#soci .lnk{all:unset;cursor:pointer;color:var(--br);font-weight:600;font-size:13px}
+#soci table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}#soci th{font-weight:600;color:var(--mu);text-align:left;padding:9px 10px;border-bottom:1px solid var(--bd);white-space:nowrap;position:static}#soci td{padding:10px;border-bottom:1px solid var(--bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#soci tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
+#soci .sci-ft{grid-column:1/-1;display:flex;gap:10px;align-items:center;padding:14px 24px;border-top:1px solid var(--bd);background:var(--card)}
+#soci .em-f{outline:2px solid var(--er)}
+@media(max-width:860px){#soci .sci{grid-template-columns:minmax(0,1fr);height:auto;max-height:calc(100vh - 32px);overflow:auto}#soci .sci-l,#soci .sci-r,#soci .sci-b{overflow:visible}#soci .g3,#soci .g4,#soci .sci-sm{grid-template-columns:repeat(2,minmax(0,1fr))}#soci .sci-ft{position:sticky;bottom:0}}
 </style>
 <script>
-(function(){const dg=$('soci');if(!dg)return;const E=s=>esc(s==null?'':String(s));{const x=document.createElement('button');x.type='button';x.className='dlgx';x.setAttribute('aria-label','ปิด');x.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';x.onclick=()=>dg.close();dg.prepend(x)}
-const nk=s=>(s||'').trim().toLowerCase(),dig=s=>String(s||'').replace(/\D/g,'').slice(-9);
-const STEPS=[['none','lead','ยังไม่ติดต่อ'],['contact','visit','ติดต่อแล้ว'],['quote','quote','Quotation ครั้งที่ 1'],['nego','nego','Quotation ครั้งที่ 2'],['q3','q3','Quotation ครั้งที่ 3'],['closed','closed','ปิดดีล']];
-const IC={call:['#11794a','<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>'],noans:['#c77700','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],note:['#0096d6','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'],add:['#7c5cd6','<path d="M12 5v14M5 12h14"/>'],stage:['#b45309','<path d="M4 12h12M12 6l6 6-6 6"/>'],online:['#f07d22','<path d="M4 12h12M12 6l6 6-6 6"/>']};
-const ico=k=>{const[c,p]=IC[k]||IC.note;return `<span class="sci-ic" style="--c:${c}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg></span>`};
+(function(){const dg=$('soci');if(!dg)return;const E=s=>esc(s==null?'':String(s));
+{const x=document.createElement('button');x.type='button';x.className='dlgx';x.setAttribute('aria-label','ปิด');x.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';x.onclick=()=>dg.close();dg.prepend(x)}
+const nk=s=>(s||'').trim().toLowerCase(),dig=s=>String(s||'').replace(/\D/g,'').slice(-9),D=d=>d&&d.data&&typeof d.data==='object'?d.data:{},cp=o=>JSON.parse(JSON.stringify(o||{}));
+const STEPS=[['lead','ยังไม่ติดต่อ'],['visit','ติดต่อแล้ว'],['qual','ตรงความต้องการ'],['quote','Quotation ครั้งที่ 1'],['nego','ครั้งที่ 2'],['q3','ครั้งที่ 3'],['closed','ปิดดีล (Won)']];
+const SEC=[['ov','ภาพรวม'],['co','บริษัท & ผู้ติดต่อ'],['nd','ความต้องการขนส่ง'],['dl','คู่แข่ง, ใบเสนอราคา & ผลดีล']];
+const SRC=['Ads','Facebook','LINE OA','ลูกค้าแนะนำ','งานแสดงสินค้า','Tele sales','เยี่ยมลูกค้าโดยตรง'];
+const MODE=[['sea','ทางเรือ'],['air','ทางอากาศ'],['land','ทางบก'],['rail','รถไฟ',1]],CTR=["FCL 20'","FCL 40'","FCL 40'HC",'LCL','Reefer'],INC=['EXW','FOB','CIF','CFR','DAP','DDP'];
+const PROV=['Forwarder เดิม','FedEx','UPS','Aramex','DHL','ไม่มี'],PAIN=['ค่าบริการสูง','ติดต่อยาก','ช้า','เอกสารผิด','ของเสียหาย'],PAY=['เงินสด','โอนก่อนส่ง','เครดิต 7 วัน','เครดิต 15 วัน','เครดิต 30 วัน','เครดิต 60 วัน'];
+const LOST=['ราคาสูงกว่า','ใช้เจ้าเดิมต่อ','ไม่มีบริการที่ต้องการ','ติดต่อไม่ได้','ยกเลิกการส่ง','อื่นๆ'];
+const RES=[['ok','ติดต่อได้'],['noans','ไม่รับสาย'],['bad','ติดต่อไม่ได้']],NXT=['โทรติดตาม','ส่งใบเสนอราคา','ส่งข้อมูลเพิ่มเติม','นัดคุย','รอลูกค้าตอบกลับ'];
+const BTIME=['','เช้า 09:00–12:00','บ่าย 13:00–17:00','จ–ศ 10:00–12:00','หลัง 17:00','ทักก่อนโทร'];
+const IC={call:['#11794a','<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>'],noans:['#c77700','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],note:['#0096d6','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'],add:['#7c5cd6','<path d="M12 5v14M5 12h14"/>'],quote:['#c27100','<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/>'],online:['#f07d22','<path d="M4 12h12M12 6l6 6-6 6"/>']};
+const ico=k=>{const[c,p]=IC[k]||IC.note;return `<span class="sci-ic" style="--c:${c}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg></span>`};
 const dtm=iso=>{if(!iso)return'';const d=new Date(iso),p=n=>String(n).padStart(2,'0');return p(d.getDate())+'/'+p(d.getMonth()+1)+' · '+p(d.getHours())+':'+p(d.getMinutes())};
-let CUR=null,LEAD=null,TL=[],SEG='all',FT='',DIRTY=false,DIRTYPH=false;const F=()=>$('sci_f');try{window.__lfPh&&__lfPh($('sci_f').ph)}catch(_){}
-const chI=()=>{const v=F().ch.value;const h=v&&typeof chIcon==='function'&&typeof CHI==='object'&&CHI[v]?chIcon(v,26):'';$('sci_chi').innerHTML=h;F().ch.parentElement.classList.toggle('ic',!!h)};
 const boss=()=>profile&&['admin','sales_lead'].includes(profile.role);
-function fill(){const d=CUR,x=D(d),L=LEAD,dt=(L&&L.detail)||{},C=callsOf(d),f=F();
- f.n.value=d.company||'';f.ph.value=x.ph||dt.p0||dt.ph||(C[0]&&C[0].phone)||'';
- const cv=(L&&L.channel)||x.ch||'',lab=c=>(typeof CHN==='object'&&CHN[c])||c,ops=[...new Set([...(OPT.channel||[]),...(cv?[cv]:[])])];f.ch.innerHTML='<option value="">—</option>'+ops.map(c=>`<option value="${E(c)}"${c===cv?' selected':''}>${E(lab(c))}</option>`).join('');
- f.ct.value=x.ct||dt.ctn||dt.fn||(C[0]&&C[0].contact)||'';f.em.value=x.em||dt.em||(C[0]&&C[0].email)||'';f.ind.value=x.ind||dt.ind||'';f.ref.value=x.ref||dt.ref||'';f.tax.value=x.tax||dt.tax||'';FT=x.temp||dt.temp||'';
- const sl=[...new Set([...salesFor('C'),...(d.sales?[d.sales]:[])])];f.sl.innerHTML=sl.map(v=>`<option${v===(d.sales||soActor())?' selected':''}>${E(v)}</option>`).join('');$('sci_sw').classList.toggle('hid',!boss()||!d.id);
- const u=k=>[...new Set(SO.deals.map(z=>D(z)[k]).filter(Boolean))].map(a=>`<option value="${E(a)}"></option>`).join('');$('sci_il').innerHTML=u('ind');
- try{window.__lfPhSet&&__lfPhSet(f.ph)}catch(_){}DIRTYPH=false;$('sci_phw').classList.toggle('hid',!!(d.id&&f.ph.value.trim()));chI();$('sci_refw').classList.toggle('hid',f.ch.value!=='Referral');DIRTY=false}
-const D=d=>d&&d.data&&typeof d.data==='object'?d.data:{};
+let CUR=null,LEAD=null,S={},SEC_K='ov',NI=0,TL=[],SEG='all',BUSY=false;
 function callsOf(d){const x=D(d),ph=dig(x.ph);return(SO.calls||[]).filter(c=>(x.call_id&&String(c.id)===String(x.call_id))||nk(c.company)===nk(d.company)||(ph.length>=8&&dig(c.phone)===ph))}
 const onl=c=>c&&(c.src==='online'||c.batch==='online');
 async function findLead(d){const x=D(d);let r=(x.lead_id&&rows.find(y=>y.id===x.lead_id))||rows.filter(y=>y.team==='C'&&nk(y.name)===nk(d.company)).sort((a,b)=>b.id-a.id)[0];if(r)return r;
  try{let q=sb.from('leads').select(cols()).eq('team','C');q=x.lead_id?q.eq('id',x.lead_id):q.eq('name',d.company);const{data}=await q.order('id',{ascending:false}).limit(1);if(data&&data[0]){r=norm(data[0]);if(!rows.some(y=>y.id===r.id))rows.push(r);return r}}catch(e){}return null}
-function stepH(d){const st=window.soStat?soStat(d):'none',lost=st==='lost',ci=lost?-1:STEPS.findIndex(s=>s[0]===st);
- return STEPS.map(([k,stg,l],i)=>`<button type="button" data-stg="${stg}" class="${i<ci?'d':i===ci?'c':''}"><b>${i<ci?'✓':i+1}</b>${E(TT(l,l))}</button>`).join('')}
-function render(){const d=CUR;if(!d)return;const x=D(d),L=LEAD,dt=(L&&L.detail)||{},C=callsOf(d),oc=C.find(onl),st=window.soStat?soStat(d):'none',S2=window.SO_ST2||{};
- const nm=($('sci_f').n.value||d.company||'');$('sci_av').textContent=String(nm||'?').replace(/[^\p{L}\p{N}\s]/gu,' ').trim().split(/\s+/).slice(0,2).map(w=>[...w][0]||'').join('').toUpperCase()||'?';$('sci_n').textContent=nm||TT('Client ใหม่','New client');
- $('sci_s').textContent=$('sci_f').ind.value||'';
- const ch=(s,c)=>`<span class="so2-chip" style="--c:${c}">${E(s)}</span>`;
- $('sci_tags').innerHTML=ch('Offline Team','#7c5cd6')+(oc||x.online?ch(TT('จาก Online','From Online')+((oc&&oc.data&&oc.data.team_n)?' · '+oc.data.team_n:''),'#f07d22'):'')+(S2[st]?ch(S2[st][0],S2[st][1]):'');
- const ph=$('sci_f').ph.value.trim(),tel=ph?'tel:'+String(ph).split(/[,\/]/)[0].replace(/[^\d+]/g,''):'#';
- const t=$('sci_tel');t.classList.toggle('hid',!ph||!d.id||DIRTYPH);t.innerHTML='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+IC.call[1]+'</svg>'+E(ph)+'<button type="button" class="sci-phe" id="sci_phe" aria-label="แก้ไขเบอร์" title="แก้ไขเบอร์"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>';
- const cl=$('sci_call');cl.href=tel;cl.classList.toggle('hid',!ph);
- const tp=FT;$('sci_tp').innerHTML=Object.entries(TEMP).map(([k,[l,c]])=>`<button type="button" data-tp="${k}" class="${tp===k?'on':''}" style="--c:${c}"><i></i>${l}</button>`).join('');
- if(oc){const o=oc.data||{},ov=[[TT('วันที่ได้ Lead','Lead date'),o.date?fmtD(o.date):''],[TT('เซลล์เดิม','Previous sales'),[o.team_n,o.sales].filter(Boolean).join(' · ')],['Ads',o.ads],[TT('บริการที่ถาม','Service asked'),(o.svc||[]).join(', ')],[TT('ใบเสนอราคา','Quotation'),o.quo],[TT('เหตุผลเดิม','Previous reason'),o.reason],[TT('โน้ตเซลล์เดิม','Previous notes'),o.note]].filter(a=>a[1]);
-  $('sci_og').innerHTML=`<div class="sci-og"><div class="sci-rh" style="margin-bottom:10px"><b style="font-size:14px">${E(TT('ข้อมูลจาก Lead Online','From the Online Lead'))}</b>${o.lead_id&&profile&&['admin','sales_lead','marketing'].includes(profile.role)?`<button type="button" class="btn sm" id="sci_ol" data-id="${E(o.lead_id)}">${E(TT('เปิด Lead เดิม','Open original lead'))}</button>`:''}</div><dl class="sci-dl">${ov.map(([k,v])=>`<dt>${E(k)}</dt><dd>${E(v)}</dd>`).join('')}</dl></div>`}else $('sci_og').innerHTML='';
- const sp=$('sci_step');sp.innerHTML=stepH(d);sp.classList.toggle('lost',st==='lost');
- $('sci_up').textContent=[d.updated_at||d.created_at?fmtD((d.updated_at||d.created_at).slice(0,10)):'',d.sales].filter(Boolean).join(' · ');
- const nw=!d.id;['sci_lost','sci_nt','sci_del'].forEach(i=>$(i).classList.toggle('hid',nw));$('sci_lost').textContent=st==='lost'?TT('กลับมาสนใจ','Interested again'):TT('ไม่สนใจแล้ว','Not interested');
- $('sci_calc').classList.toggle('hid',nw);
- tlR()}
-function tlR(){const cnt=k=>TL.filter(t=>k==='all'||t.k===k).length,SG=[['all',TT('ทั้งหมด','All')],['call',TT('โทร','Calls')],['note',TT('บันทึก','Notes')]];if(TL.some(t=>t.k==='online'))SG.splice(1,0,['online','Online']);
- $('sci_seg').innerHTML=SG.map(([k,l])=>`<button type="button" data-sg="${k}" class="${SEG===k?'on':''}">${E(l)}<em>${cnt(k)}</em></button>`).join('');
- const L=TL.filter(t=>SEG==='all'||t.k===SEG);
- $('sci_tl').innerHTML=L.length?L.map(t=>`<div class="sci-ti">${ico(t.i)}<div><b>${t.h}</b>${t.p?`<p>${E(t.p)}</p>`:''}</div><span class="sci-tm">${E([dtm(t.at),t.by].filter(Boolean).join(' · '))}</span></div>`).join(''):`<div class="sub" style="padding:14px 0">${E(TT('ยังไม่มีประวัติ','No history yet'))}</div>`}
-async function loadTL(){const d=CUR,x=D(d),C=callsOf(d),T=[],SC=salesFor('C');
- (x.notes||[]).forEach(n=>T.push({k:'note',i:'note',h:E(TT('บันทึกการคุย','Note')),p:n.t,at:n.at,by:n.by}));
+/* state */
+function build(d){const x=cp(D(d)),L=LEAD,dt=(L&&L.detail)||{},C=callsOf(d);
+ const st={...x,name:d.company||'',stage:d.stage||'lead',sales:d.sales||soActor()};
+ if(!Array.isArray(st.contacts)||!st.contacts.length)st.contacts=[{n:x.ct||dt.ctn||dt.fn||(C[0]&&C[0].contact)||'',pos:'',ph:x.ph||dt.p0||dt.ph||(C[0]&&C[0].phone)||'',line:'',em:x.em||dt.em||(C[0]&&C[0].email)||'',time:''}];
+ st.ch=st.ch||(L&&L.channel)||'';st.ind=st.ind||dt.ind||'';st.tax=st.tax||dt.tax||'';st.temp=st.temp||dt.temp||'';
+ if(!st.src2)st.src2=C.length?'Tele sales':'';if(!Array.isArray(st.needs)||!st.needs.length)st.needs=[{dir:'Import'}];
+ st.comp=st.comp||{};st.res=st.res||{};st.calls=st.calls||[];return st}
+const pri=()=>S.contacts&&S.contacts[0]||{};
+const PH=v=>{const m=String(v||'').match(/^(\+\d{1,4})\s*(.*)$/);return m?[m[1],m[2]]:['+66',v||'']};
+function phW(path,v){const[c,n]=PH(v);let o='';try{o=DIAL.map(d=>`<option value="${d[0]}"${d[0]===c?' selected':''}>${d[0]} ${E(TT(d[1],d[2]))}</option>`).join('')}catch(_){o=`<option>${E(c)}</option>`}return `<div class="sci-ph" data-ph="${path}"><select aria-label="รหัสประเทศ">${o}</select><input type="tel" value="${E(n)}" maxlength="30"></div>`}
+const getP=p=>p.split('.').reduce((o,k)=>o==null?o:o[k],S),setP=(p,v)=>{const k=p.split('.'),l=k.pop();let o=S;k.forEach(a=>{if(o[a]==null)o[a]=/^\d+$/.test(a)?{}:{};o=o[a]});o[l]=v};
+const inp=(lab,p,o={})=>`<label class="f">${E(lab)}${o.rq?'<b class="rq">*</b>':''}<input data-k="${p}" value="${E(getP(p)||'')}"${o.ph?` placeholder="${E(o.ph)}"`:''}${o.t?` type="${o.t}"`:''}${o.im?` inputmode="${o.im}"`:''}${o.ml?` maxlength="${o.ml}"`:' maxlength="160"'}${o.list?` list="${o.list}"`:''}${o.dmy?' data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"':''}></label>`;
+const sel=(lab,p,ops)=>{const v=getP(p)||'';return `<label class="f">${E(lab)}<select data-k="${p}">${[...new Set([...ops,...(v&&!ops.includes(v)?[v]:[])])].map(o=>`<option value="${E(o)}"${o===v?' selected':''}>${E(o||'—')}</option>`).join('')}</select></label>`};
+const pills=(p,ops,multi)=>{const v=getP(p);return `<div class="pl" data-pl="${p}"${multi?' data-multi="1"':''}>${ops.map(o=>{const[k,l,ns]=Array.isArray(o)?o:[o,o];const on=multi?(v||[]).includes(k):v===k;return `<button type="button" data-v="${E(k)}" class="${on?'on':''}">${E(l)}${ns?' <small>ยังไม่มีบริการ</small>':''}</button>`}).join('')}</div>`};
+const chSel=()=>{const v=S.ch||'',lab=c=>(typeof CHN==='object'&&CHN[c])||c,ops=[...new Set([...(OPT.channel||[]),...(v?[v]:[])])],h=v&&typeof CHI==='object'&&CHI[v]?chIcon(v,26):'';return `<label class="f">Channel<span class="sci-chs${h?' ic':''}"><i>${h}</i><select data-k="ch"><option value="">—</option>${ops.map(c=>`<option value="${E(c)}"${c===v?' selected':''}>${E(lab(c))}</option>`).join('')}</select></span></label>`};
+/* sections */
+function secOV(){const d=CUR,p=pri(),n0=S.needs[0]||{},md=(MODE.find(m=>m[0]===n0.mode)||[])[1];
+ const ci=['none','lead'].includes(S.stage)?0:STEPS.findIndex(s=>s[0]===S.stage),off=['lost','dormant'].includes(S.stage);
+ const step=STEPS.map(([k,l],i)=>`<button type="button" data-stg="${k}" class="${!off&&i<ci?'d':!off&&i===ci?'c':''}"><b>${!off&&i<ci?'✓':i+1}</b>${E(l)}</button>`).join('');
+ const nx=S.next&&!S.next.done&&(S.next.t||S.next.d)?`<div class="sci-na">${S.next.d?(()=>{const t=new Date(S.next.d+'T00:00:00');return `<div class="sci-dt"><small>${TT(['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'][t.getDay()],['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getDay()])}</small><b>${t.getDate()}</b><small>${fmtD(S.next.d).slice(3,5)}</small></div>`})():''}<div style="flex:1;min-width:0"><span class="sub">${E(TT('สิ่งที่ต้องทำต่อ','Next action'))}</span><div style="font-size:14.5px;font-weight:600">${E(S.next.t||'')}</div></div><button type="button" class="btn sm" data-a="nxdone">${E(TT('เสร็จแล้ว','Done'))}</button></div>`:'';
+ const sm=[[TT('ผู้ติดต่อ','Contact'),[p.n,p.pos].filter(Boolean).join(' · ')],[TT('เส้นทาง','Route'),[n0.oc,n0.dc].filter(Boolean).join(' → ')+(n0.dir?' · '+n0.dir:'')],[TT('ขนส่ง','Mode'),[md,(n0.ctr||[]).join(', '),n0.fq?n0.fq+' '+TT('ครั้ง/','x/')+(n0.fqu||TT('เดือน','month')):''].filter(Boolean).join(' · ')],[TT('ที่มา','Source'),[S.src2,S.camp].filter(Boolean).join(' · ')]];
+ return `<div class="sci-c" style="display:flex;align-items:center;gap:18px;padding:14px 18px"><b style="font-size:14.5px;white-space:nowrap">${E(TT('ระดับลูกค้า','Customer level'))}</b><div class="sci-tp">${Object.entries(TEMP).map(([k,[l,c]])=>`<button type="button" data-tp="${k}" class="${S.temp===k?'on':''}" style="--c:${c}"><i></i>${l}</button>`).join('')}</div>${S.temp_by?`<span class="sub" style="white-space:nowrap">${E(TT('เปลี่ยนล่าสุด ','Changed ')+dtm(S.temp_at).split(' · ')[0]+' · '+S.temp_by)}</span>`:''}</div>
+<div class="sci-sm">${sm.map(([k,v])=>`<div><span>${E(k)}</span><b>${E(v||'—')}</b></div>`).join('')}</div>
+<div class="sci-c"><h4>${E(TT('สถานะดีล','Deal status'))}<span style="display:flex;gap:8px"><button type="button" class="btn sm${S.stage==='dormant'?' p':''}" data-stg="dormant">${E(TT('พักไว้ (Dormant)','Dormant'))}</button><button type="button" class="btn sm dg${S.stage==='lost'?' p':''}" data-stg="lost">${E(TT('ไม่สำเร็จ (Lost)','Lost'))}</button></span></h4><div class="sci-step${off?' off':''}">${step}</div></div>
+${nx}
+<div class="sci-c"><h4>${E(TT('บันทึกการโทร','Log a call'))}${d.id?'':`<span class="sub">${E(TT('บันทึก Client ก่อน','Save the client first'))}</span>`}</h4>
+<div class="g4" style="margin-bottom:12px"><label class="f">${E(TT('ผลการโทร','Result'))}<b class="rq">*</b><select id="sci_cr">${RES.map(([k,l])=>`<option value="${k}">${E(l)}</option>`).join('')}</select></label><label class="f">${E(TT('ระยะเวลา (นาที)','Duration (min)'))}<input id="sci_cm" inputmode="numeric" maxlength="4"></label><label class="f">${E(TT('สิ่งที่ต้องทำต่อ','Next action'))}<select id="sci_cn"><option value="">—</option>${NXT.map(o=>`<option>${E(o)}</option>`).join('')}</select></label><label class="f">${E(TT('ติดตามครั้งถัดไป','Follow-up date'))}<input id="sci_cd" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label></div>
+<div style="display:flex;gap:12px;align-items:flex-end"><label class="f" style="flex:1">${E(TT('หมายเหตุ','Note'))}<input id="sci_cnt" maxlength="400"></label><button type="button" class="btn p" data-a="call"${d.id?'':' disabled'}>+ ${E(TT('บันทึกการโทร','Log call'))}</button></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:14.5px">${E(TT('ประวัติ','History'))}</b><span class="pl" id="sci_seg"></span></div><div id="sci_tl"></div>`}
+function secCO(){return `<div class="sci-c"><h4>${E(TT('ข้อมูลบริษัท','Company'))}</h4>
+<div class="g2" style="margin-bottom:12px">${inp(TT('ชื่อบริษัท','Company name'),'name',{rq:1,ml:200})}${inp(TT('เลขประจำตัวผู้เสียภาษี','Tax ID'),'tax',{im:'numeric',ml:13,ph:'13 หลัก'})}</div>
+<div class="g2" style="margin-bottom:12px">${inp(TT('ประเภทธุรกิจ / อุตสาหกรรม','Business type / industry'),'ind',{list:'sci_il',ml:160})}${inp(TT('เว็บไซต์','Website'),'web',{ml:200})}</div>
+<label class="f">${E(TT('ที่อยู่','Address'))}<textarea data-k="addr" rows="2" maxlength="400">${E(S.addr||'')}</textarea></label><datalist id="sci_il">${[...new Set(SO.deals.map(z=>D(z).ind).filter(Boolean))].map(a=>`<option value="${E(a)}"></option>`).join('')}</datalist></div>
+<div class="sci-c"><h4>${E(TT('ผู้ติดต่อ','Contacts'))}<button type="button" class="lnk" data-a="addct">+ ${E(TT('เพิ่มผู้ติดต่อ','Add contact'))}</button></h4>${S.contacts.map((c,i)=>`<div class="sci-ct">${i?`<button type="button" class="sci-ctx" data-a="delct" data-i="${i}" aria-label="ลบ">✕</button>`:''}
+<div class="g3" style="margin-bottom:12px">${inp(TT('ชื่อผู้ติดต่อ','Name'),'contacts.'+i+'.n')}${inp(TT('ตำแหน่ง','Position'),'contacts.'+i+'.pos')}<label class="f">${E(TT('เบอร์โทร','Phone'))}${phW('contacts.'+i+'.ph',c.ph)}</label></div>
+<div class="g3">${inp('LINE ID','contacts.'+i+'.line')}${inp(TT('อีเมล','Email'),'contacts.'+i+'.em',{t:'email'})}${sel(TT('เวลาที่สะดวกให้โทรกลับ','Best time to call'),'contacts.'+i+'.time',BTIME)}</div></div>`).join('')}</div>
+<div class="sci-c"><h4>${E(TT('แหล่งที่มาของ Lead','Lead source'))}</h4><div style="margin-bottom:12px">${pills('src2',SRC)}</div>
+<div class="g3">${chSel()}${inp('Campaign','camp')}${inp(TT('ผู้แนะนำ / ชื่องาน','Referrer / event'),'ref')}</div></div>`}
+function secND(){const i=Math.min(NI,S.needs.length-1),n=S.needs[i],P='needs.'+i+'.';
+ const lab=(x,j)=>'#'+(j+1)+' '+([x.oc,x.dc].filter(Boolean).join(' → ')||TT('ใหม่','New'))+((MODE.find(m=>m[0]===x.mode)||[])[1]?' · '+MODE.find(m=>m[0]===x.mode)[1]:'');
+ return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div class="pl">${S.needs.map((x,j)=>`<button type="button" data-a="ni" data-i="${j}" class="${j===i?'on':''}">${E(lab(x,j))}</button>`).join('')}</div><span style="display:flex;gap:14px;white-space:nowrap">${S.needs.length>1?`<button type="button" class="lnk" style="color:var(--er)" data-a="delnd">${E(TT('ลบรายการนี้','Remove'))}</button>`:''}<button type="button" class="lnk" data-a="addnd">+ ${E(TT('เพิ่มความต้องการ','Add requirement'))}</button></span></div>
+<div class="sci-c"><h4>${E(TT('ทิศทาง & เส้นทาง','Direction & route'))}</h4><div style="margin-bottom:14px">${pills(P+'dir',['Import','Export','Cross-trade'])}</div>
+<div class="sci-rt"><div class="g2">${inp(TT('ประเทศ / เมืองต้นทาง','Origin country / city'),P+'oc')}${inp(TT('ท่าเรือ / สนามบิน','Port / airport'),P+'op')}</div><div class="sci-ar">→</div><div class="g2">${inp(TT('ประเทศ / เมืองปลายทาง','Destination country / city'),P+'dc')}${inp(TT('ท่าเรือ / สนามบิน','Port / airport'),P+'dp')}</div></div></div>
+<div class="g2" style="gap:16px;align-items:start"><div class="sci-c"><h4>${E(TT('รูปแบบการขนส่ง','Transport mode'))}</h4><div style="margin-bottom:12px">${pills(P+'mode',MODE)}</div>
+<span class="sci-lb">${E(TT('ประเภทตู้ / การจัดส่ง','Container / load'))}</span><div style="margin-bottom:12px">${pills(P+'ctr',CTR,1)}</div><span class="sci-lb">Incoterms</span>${pills(P+'inc',INC)}</div>
+<div class="sci-c"><h4>${E(TT('สินค้า & ปริมาณ','Cargo & volume'))}</h4><div class="g2" style="margin-bottom:12px">${inp(TT('ประเภทสินค้า','Commodity'),P+'com')}${inp('HS Code',P+'hs',{ml:20})}</div>
+<div style="margin-bottom:12px"><label class="sci-swl"><input type="checkbox" data-k="${P}dg"${n.dg?' checked':''}>${E(TT('สินค้าอันตราย (DG)','Dangerous goods (DG)'))}</label><label class="sci-swl"><input type="checkbox" data-k="${P}rf"${n.rf?' checked':''}>${E(TT('ต้องควบคุมอุณหภูมิ','Temperature controlled'))}</label></div>
+<div class="g3" style="margin-bottom:12px">${inp(TT('น้ำหนัก (กก.)','Weight (kg)'),P+'kg',{im:'decimal',ml:12})}${inp('CBM',P+'cbm',{im:'decimal',ml:10})}${inp(TT('จำนวนแพ็กเกจ','Packages'),P+'pk',{im:'numeric',ml:8})}</div>
+<div class="g2">${inp(TT('ความถี่การส่ง (ครั้ง)','Frequency (times)'),P+'fq',{im:'numeric',ml:4})}${sel(TT('ต่อ','Per'),P+'fqu',['สัปดาห์','เดือน','ไตรมาส','ปี'])}</div></div></div>`}
+function secDL(){const Q=((LEAD&&LEAD.detail&&LEAD.detail.quotes)||[]).slice().reverse(),QC={'เสนอแล้ว':'var(--inf)','ต่อรอง':'var(--wn)','ได้งาน':'var(--ok)','ไม่ได้งาน':'var(--er)'};
+ const r=S.res,won=S.stage==='closed',lost=S.stage==='lost';
+ return `<div class="sci-c"><h4>${E(TT('ใบเสนอราคา','Quotations'))}<span style="display:flex;gap:8px"><button type="button" class="btn sm${LEAD?'':' hid'}" data-a="calc">${E(TT('เปิดหน้าคำนวณราคา ↗','Open price calculator ↗'))}</button></span></h4>
+${Q.length?`<table><colgroup><col style="width:110px"><col><col style="width:120px"><col style="width:120px"><col style="width:120px"></colgroup><thead><tr><th>${E(TT('วันที่','Date'))}</th><th>${E(TT('บริการ / เส้นทาง','Service / route'))}</th><th>${E(TT('หมดอายุ','Expires'))}</th><th style="text-align:right">${E(TT('มูลค่า (฿)','Value (฿)'))}</th><th>${E(TT('สถานะ','Status'))}</th></tr></thead><tbody>${Q.map(q=>{const s=q.st||'เสนอแล้ว';return `<tr><td>${E(fmtD(q.t))}</td><td>${E([q.sv||q.m,q.country].filter(Boolean).join(' · '))}</td><td>${q.vd?E(fmtD(q.vd)):'—'}</td><td style="text-align:right">${N(q.tot||0)}</td><td><span class="so2-chip" style="--c:${QC[s]||'var(--inf)'}">${E(s)}</span></td></tr>`}).join('')}</tbody></table>`:`<div class="sub">${E(TT(LEAD?'ยังไม่มีใบเสนอราคา':'บันทึก Client ก่อนจึงสร้างใบเสนอราคาได้','No quotations yet'))}</div>`}</div>
+<div class="g2" style="gap:16px;align-items:start"><div class="sci-c"><h4>${E(TT('คู่แข่ง & เงื่อนไขการค้า','Competitors & terms'))}</h4><span class="sci-lb">${E(TT('ผู้ให้บริการปัจจุบัน','Current provider'))}</span><div style="margin-bottom:12px">${pills('comp.prov',PROV,1)}</div>
+<div class="g2" style="margin-bottom:12px">${inp(TT('ชื่อผู้ให้บริการ','Provider name'),'comp.pname')}${inp(TT('ราคาที่จ่ายอยู่','Current price'),'comp.price')}</div>
+<span class="sci-lb">${E(TT('ปัญหาที่เจอ','Pain points'))}</span><div style="margin-bottom:12px">${pills('comp.pain',PAIN,1)}</div>
+<div class="g2">${sel(TT('เงื่อนไขการชำระเงิน','Payment terms'),'comp.pay',['',...PAY])}${inp(TT('วงเงินเครดิต','Credit limit'),'comp.credit')}</div></div>
+<div class="sci-c"><h4>${E(TT('ผลดีล','Deal result'))}</h4><div class="pl" style="margin-bottom:14px">${[['closed',TT('ปิดได้ (Won)','Won')],['lost',TT('ไม่สำเร็จ (Lost)','Lost')],['dormant',TT('พักไว้ (Dormant)','Dormant')]].map(([k,l])=>`<button type="button" data-stg="${k}" class="${S.stage===k?'on':''}">${E(l)}</button>`).join('')}</div>
+<div class="g3" style="margin-bottom:12px;${won?'':'opacity:.45'}">${inp(TT('วันที่ปิด','Close date'),'res.won_at',{dmy:1})}${inp(TT('มูลค่าที่ปิดได้ (฿)','Won value (฿)'),'res.amt',{im:'decimal',ml:14})}${inp(TT('ส่งครั้งแรก','First shipment'),'res.first',{dmy:1})}</div>
+<div style="${lost?'':'opacity:.45'}">${sel(TT('เหตุผลที่ไม่สำเร็จ (Lost reason)','Lost reason'),'res.lost',['',...LOST])}</div></div></div>`}
+const SECF={ov:secOV,co:secCO,nd:secND,dl:secDL};
+const done=k=>k==='ov'?true:k==='co'?!!(S.name&&pri().n):k==='nd'?S.needs.some(n=>n.oc||n.dc||n.mode):!!(S.comp&&(S.comp.prov||[]).length||((LEAD&&LEAD.detail&&LEAD.detail.quotes)||[]).length);
+function side(){const d=CUR,S2=window.SO_ST2||{},stv=S.stage==='lead'?'none':S.stage==='visit'?'contact':S.stage,ch=(s,c)=>`<span class="so2-chip" style="--c:${c}">${E(s)}</span>`,oc=callsOf(d).find(onl);
+ const nm=S.name||'';$('sci_av').textContent=String(nm||'?').replace(/[^\p{L}\p{N}\s]/gu,' ').trim().split(/\s+/).slice(0,2).map(w=>[...w][0]||'').join('').toUpperCase()||'?';
+ $('sci_n').textContent=nm||TT('Client ใหม่','New client');$('sci_s').textContent=S.ind||'';
+ $('sci_tags').innerHTML=ch('Offline Team','#7c5cd6')+(oc||S.online?ch(TT('จาก Online','From Online'),'#f07d22'):'')+(S2[stv]?ch(S2[stv][0],S2[stv][1]):'')+(TEMP[S.temp]?ch(TEMP[S.temp][0],TEMP[S.temp][1]):'');
+ $('sci_rail').innerHTML=SEC.map(([k,l],i)=>{const n=k==='nd'?S.needs.filter(x=>x.oc||x.dc||x.mode).length:k==='dl'?((LEAD&&LEAD.detail&&LEAD.detail.quotes)||[]).length:0,ok=k!==SEC_K&&done(k)&&k!=='ov';return `<button type="button" data-sec="${k}" class="${k===SEC_K?'on':''}"><i class="${ok?'ok':''}">${ok?'✓':i+1}</i>${E(TT(l,l))}${n?`<em>${n}</em>`:''}</button>`}).join('');
+ $('sci_mt').innerHTML=`<dt>${E(TT('เซลล์','Sales'))}</dt><dd>${boss()&&d.id?`<select data-k="sales" style="height:30px;padding:0 8px;font-size:12.5px">${[...new Set([...salesFor('C'),S.sales])].map(v=>`<option${v===S.sales?' selected':''}>${E(v)}</option>`).join('')}</select>`:E(S.sales||'')}</dd><dt>${E(TT('อัปเดต','Updated'))}</dt><dd>${E(d.updated_at||d.created_at?fmtD((d.updated_at||d.created_at).slice(0,10)):'—')}</dd>`;
+ const ph=pri().ph,t=$('sci_tel');t.classList.toggle('hid',!ph);t.innerHTML=ph?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+IC.call[1]+'</svg>'+E(ph)+'<button type="button" class="sci-phe" data-a="edph" aria-label="แก้ไขเบอร์" title="แก้ไขเบอร์"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>':'';
+ $('sci_del').classList.toggle('hid',!d.id)}
+function body(){$('sci_ttl').textContent=TT(...(()=>{const s=SEC.find(x=>x[0]===SEC_K);return[s[1],s[1]]})());$('sci_b').innerHTML=SECF[SEC_K]();if(SEC_K==='ov')tlR();$('sci_b').scrollTop=0}
+function all(){side();body()}
+function tlR(){const seg=$('sci_seg'),tl=$('sci_tl');if(!seg||!tl)return;const cnt=k=>TL.filter(t=>k==='all'||t.k===k).length,SG=[['all',TT('ทั้งหมด','All')],['call',TT('โทร','Calls')],['quote',TT('ใบเสนอราคา','Quotes')],['note',TT('บันทึก','Notes')]];
+ seg.innerHTML=SG.map(([k,l])=>`<button type="button" data-sg="${k}" class="${SEG===k?'on':''}">${E(l)} ${cnt(k)}</button>`).join('');
+ const L=TL.filter(t=>SEG==='all'||t.k===SEG);tl.innerHTML=L.length?L.map(t=>`<div class="sci-ti">${ico(t.i)}<div><b>${t.h}</b>${t.p?`<p>${E(t.p)}</p>`:''}</div><span class="sci-tm">${E([dtm(t.at),t.by].filter(Boolean).join(' · '))}</span></div>`).join(''):`<div class="sub" style="padding:10px 0">${E(TT('ยังไม่มีประวัติ','No history yet'))}</div>`}
+async function loadTL(){const d=CUR;if(!d||!d.id){TL=[];tlR();return}const x=D(d),C=callsOf(d),T=[],SC=salesFor('C'),RS=Object.fromEntries(RES);
+ (x.calls||[]).forEach(c=>T.push({k:'call',i:c.res==='ok'?'call':'noans',h:E(TT('โทร · ','Call · ')+(RS[c.res]||'')+(c.min?' · '+c.min+TT(' นาที',' min'):'')),p:[c.note,c.next?TT('ต่อไป: ','Next: ')+c.next+(c.nd?' '+fmtD(c.nd):''):''].filter(Boolean).join(' · '),at:c.at,by:c.by}));
+ (x.notes||[]).forEach(n=>T.push({k:'note',i:'note',h:E(TT('บันทึก','Note')),p:n.t,at:n.at,by:n.by}));
+ ((LEAD&&LEAD.detail&&LEAD.detail.quotes)||[]).forEach(q=>T.push({k:'quote',i:'quote',h:E(TT('ใบเสนอราคา · ','Quotation · '))+'฿'+N(q.tot||0),p:[q.sv||q.m,q.country,q.vd?TT('หมดอายุ ','Expires ')+fmtD(q.vd):''].filter(Boolean).join(' · '),at:q.at||(q.t?q.t+'T09:00:00':''),by:q.by}));
  T.push({k:'note',i:'add',h:E(TT('เพิ่มเข้า Clients','Added to Clients')),p:x.src==='call'?TT('จาก Tele sales','From Tele sales'):'',at:d.created_at,by:d.sales});
- C.filter(onl).forEach(c=>{const o=c.data||{};T.push({k:'online',i:'online',h:E(TT('ส่งต่อจาก Online','Handed over from Online')),p:[o.team_n,o.sales,o.reason].filter(Boolean).join(' · '),at:c.created_at,by:TT('ระบบ','System')})});
- if(C.length){try{const{data}=await sb.from('so_call_logs').select('*').in('call_id',C.map(c=>c.id)).order('created_at',{ascending:false}).limit(60);const RS={ok:TT('ติดต่อได้','Reached'),noans:TT('ไม่รับสาย','No answer'),bad:TT('ติดต่อไม่ได้','Unreachable'),online:TT('ลูกค้า Online','Online customer')},SL={int:TT('สนใจ','Interested'),cb:TT('โทรกลับ','Call back'),no:TT('ไม่สนใจ','Not interested'),dnc:TT('ขอไม่ให้ติดต่อ','Do not call')};
-  (data||[]).filter(l=>!SC.length||SC.includes(l.actor)).forEach(l=>T.push({k:'call',i:l.result==='ok'?'call':'noans',h:E(TT('โทร · ','Call · ')+(RS[l.result]||''))+(l.result==='ok'&&SL[l.status]?' <span class="so2-chip" style="--c:var(--ok)">'+E(SL[l.status])+'</span>':''),p:l.note,at:l.created_at,by:l.actor}))}catch(e){}}
- (SO.acts||[]).filter(a=>(a.action_text||'').includes(d.company)&&SC.includes(a.actor_name)&&!/^เพิ่ม/.test(a.action_text||'')).forEach(a=>T.push({k:'note',i:'stage',h:E(a.action_text),at:a.created_at,by:a.actor_name}));
+ C.filter(onl).forEach(c=>{const o=c.data||{};T.push({k:'note',i:'online',h:E(TT('ส่งต่อจาก Online','Handed over from Online')),p:[o.team_n,o.sales,o.reason].filter(Boolean).join(' · '),at:c.created_at,by:TT('ระบบ','System')})});
+ if(C.length){try{const{data}=await sb.from('so_call_logs').select('*').in('call_id',C.map(c=>c.id)).order('created_at',{ascending:false}).limit(60);const SL={int:TT('สนใจ','Interested'),cb:TT('โทรกลับ','Call back'),no:TT('ไม่สนใจ','Not interested'),dnc:TT('ขอไม่ให้ติดต่อ','Do not call')},RL={ok:TT('ติดต่อได้','Reached'),noans:TT('ไม่รับสาย','No answer'),bad:TT('ติดต่อไม่ได้','Unreachable'),online:TT('ลูกค้า Online','Online customer')};
+  (data||[]).filter(l=>!SC.length||SC.includes(l.actor)).forEach(l=>T.push({k:'call',i:l.result==='ok'?'call':'noans',h:E('Tele sales · '+(RL[l.result]||''))+(l.result==='ok'&&SL[l.status]?' <span class="so2-chip" style="--c:var(--ok)">'+E(SL[l.status])+'</span>':''),p:l.note,at:l.created_at,by:l.actor}))}catch(e){}}
  TL=T.filter(t=>t.at).sort((a,b)=>(b.at||'').localeCompare(a.at||''));if(CUR===d)tlR()}
-window.soInfo=async function(id){const d=id?soDeal(id):{id:null,company:'',stage:'lead',sales:soActor(),data:{}};if(!d)return;CUR=d;LEAD=null;TL=[];SEG='all';$('sci_nw').classList.add('hid');fill();render();if(!dg.open)dg.showModal();if(!d.id){tlR();setTimeout(()=>F().n.focus(),50);return}LEAD=await findLead(d);if(CUR===d){if(!DIRTY)fill();render();loadTL()}};
+window.soInfo=async function(id){const d=id?soDeal(id):{id:null,company:'',stage:'lead',sales:soActor(),data:{}};if(!d)return;CUR=d;LEAD=null;SEC_K='ov';NI=0;TL=[];SEG='all';S=build(d);all();if(!dg.open)dg.showModal();
+ if(!d.id){setTimeout(()=>{SEC_K='co';all();const n=dg.querySelector('[data-k=name]');if(n)n.focus()},30);return}
+ LEAD=await findLead(d);if(CUR!==d)return;const fresh=build(d);['ch','ind','tax','temp'].forEach(k=>{if(!S[k]&&fresh[k])S[k]=fresh[k]});if(!pri().n&&fresh.contacts[0].n)S.contacts[0].n=fresh.contacts[0].n;if(!pri().ph&&fresh.contacts[0].ph)S.contacts[0].ph=fresh.contacts[0].ph;all();loadTL()};
 async function saveData(patch){const d=CUR;if(!d||!d.id)return false;const x={...D(d),...patch};const{error}=await sb.from('so_deals').update({data:x}).eq('id',d.id);if(error){alert(TT('บันทึกไม่สำเร็จ','Failed to save'));return false}d.data=x;return true}
-dg.addEventListener('click',async e=>{const d=CUR;if(!d)return;const b=e.target.closest('button');if(!b)return;
- if(b.dataset.tp){const v=FT===b.dataset.tp?'':b.dataset.tp;FT=v;if(!d.id){render();return}if(await saveData({temp:v})){if(LEAD){const dt={...(LEAD.detail||{}),temp:v};try{const{error}=await sb.from('leads').update({detail:dt}).eq('id',LEAD.id);if(!error)LEAD.detail=dt}catch(_){}}render();soRender()}return}
- if(b.dataset.stg){const to=b.dataset.stg;if(to!==d.stage){if(!d.id){d.stage=to;render();return}await soMove(d.id,to);render();loadTL()}return}
+/* input binding */
+dg.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(k){setP(k,t.type==='checkbox'?t.checked:t.value);if(/^needs\.\d+\.(oc|dc)$/.test(k)){const n=S.needs[+k.split('.')[1]],b=dg.querySelector('[data-a=ni].on');if(b&&n)b.textContent='#'+(+k.split('.')[1]+1)+' '+([n.oc,n.dc].filter(Boolean).join(' → ')||TT('ใหม่','New'))}if(k==='name'||k==='ind'||k.endsWith('.n'))side();return}const w=t.closest('[data-ph]');if(w){const[s,n]=w.querySelectorAll('select,input'),v=n.value.trim();setP(w.dataset.ph,!v?'':s.value==='+66'?v:s.value+' '+v.replace(/^0+/,''));side()}});
+dg.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(k){setP(k,t.type==='checkbox'?t.checked:t.value);if(k==='ch'){const w=t.closest('.sci-chs');if(w){const v=t.value,h=v&&typeof CHI==='object'&&CHI[v]?chIcon(v,26):'';w.querySelector('i').innerHTML=h;w.classList.toggle('ic',!!h)}}return}const w=t.closest('[data-ph]');if(w)w.querySelector('input').dispatchEvent(new Event('input',{bubbles:true}))});
+dg.addEventListener('click',async e=>{const d=CUR;if(!d)return;const b=e.target.closest('button');if(!b||!dg.contains(b))return;const a=b.dataset.a;
+ if(b.dataset.sec){SEC_K=b.dataset.sec;all();return}
+ if(b.closest('[data-pl]')&&b.dataset.v!=null){const w=b.closest('[data-pl]'),p=w.dataset.pl,v=b.dataset.v;if(w.dataset.multi){const l=[...(getP(p)||[])],i=l.indexOf(v);i<0?l.push(v):l.splice(i,1);setP(p,l)}else setP(p,getP(p)===v?'':v);
+  w.querySelectorAll('button').forEach(x=>{const on=w.dataset.multi?(getP(p)||[]).includes(x.dataset.v):getP(p)===x.dataset.v;x.classList.toggle('on',on)});side();return}
+ if(b.dataset.tp){const v=S.temp===b.dataset.tp?'':b.dataset.tp;S.temp=v;S.temp_at=new Date().toISOString();S.temp_by=soActor();if(d.id){if(await saveData({temp:v,temp_at:S.temp_at,temp_by:S.temp_by})){if(LEAD){const dt={...(LEAD.detail||{}),temp:v};try{const r=await sb.from('leads').update({detail:dt}).eq('id',LEAD.id);if(!r.error)LEAD.detail=dt}catch(_){}}soRender()}}all();return}
+ if(b.dataset.stg){const to=b.dataset.stg;S.stage=S.stage===to&&['lost','dormant','closed'].includes(to)?'visit':to;if(S.stage==='closed'&&!(S.res||{}).won_at){S.res=S.res||{};S.res.won_at=fmtD(today())}all();return}
  if(b.dataset.sg){SEG=b.dataset.sg;tlR();return}
- if(b.id==='sci_lost'){await soMove(d.id,d.stage==='lost'?'visit':'lost');render();return}
- if(b.id==='sci_nt'){$('sci_nw').classList.remove('hid');$('sci_nx').value='';$('sci_nx').focus();return}
- if(b.id==='sci_nc'){$('sci_nw').classList.add('hid');return}
- if(b.id==='sci_ns'){const t=$('sci_nx').value.trim();if(!t)return;const n=[{t,at:new Date().toISOString(),by:soActor()},...(D(d).notes||[])].slice(0,100);if(await saveData({notes:n})){$('sci_nw').classList.add('hid');if(d.stage==='lead'||!d.stage){await soMove(d.id,'visit')}render();loadTL()}return}
- if(b.id==='sci_calc'){if(LEAD)window.open(location.href.split('#')[0]+'#calc='+encodeURIComponent(LEAD.id),'_blank','noopener');return}
+ if(a==='ni'){NI=+b.dataset.i;body();return}
+ if(a==='addnd'){S.needs.push({dir:'Import'});NI=S.needs.length-1;all();return}
+ if(a==='delnd'){S.needs.splice(Math.min(NI,S.needs.length-1),1);NI=0;all();return}
+ if(a==='addct'){S.contacts.push({n:'',pos:'',ph:'',line:'',em:'',time:''});body();return}
+ if(a==='delct'){S.contacts.splice(+b.dataset.i,1);all();return}
+ if(a==='edph'){SEC_K='co';all();const w=dg.querySelector('[data-ph="contacts.0.ph"] input');if(w)w.focus();return}
+ if(a==='calc'){if(LEAD)window.open(location.href.split('#')[0]+'#calc='+encodeURIComponent(LEAD.id),'_blank','noopener');return}
+ if(a==='nxdone'){S.next={...(S.next||{}),done:true};if(d.id)await saveData({next:S.next});all();return}
+ if(a==='call'){if(!d.id)return;const res=$('sci_cr').value,min=$('sci_cm').value.trim(),nx=$('sci_cn').value,nd=d2i($('sci_cd').value.trim()),note=$('sci_cnt').value.trim();
+  if($('sci_cd').value.trim()&&!nd){alert(TT('กรุณากรอกวันที่แบบ dd/mm/yyyy','Please enter the date as dd/mm/yyyy'));return}
+  const c={at:new Date().toISOString(),by:soActor(),res,min:min?+min||min:'',next:nx,nd,note},calls=[c,...(D(d).calls||[])].slice(0,200),patch={calls};if(nx||nd)patch.next={t:nx,d:nd,done:false};
+  if(await saveData(patch)){S.calls=calls;if(patch.next)S.next=patch.next;if(res==='ok'&&(d.stage||'lead')==='lead'){await soMove(d.id,'visit');S.stage='visit'}all();loadTL();soRender()}return}
  if(b.id==='sci_sv'){await save();return}
  if(b.id==='sci_cx'){dg.close();return}
- if(b.id==='sci_phe'){$('sci_phw').classList.remove('hid');const n=F().ph._ph;(n?n[1]:F().ph).focus();return}
- if(b.id==='sci_ol'){dg.close();openForm(Number(b.dataset.id));return}
  if(b.id==='sci_del'){if(LEAD){dg.close();await del(LEAD.id);soRender();return}
   if(!await ask(TT('ลบ '+d.company+' ออกจาก Clients?','Remove '+d.company+' from Clients?'),{t:'ยืนยันการลบ',te:'Confirm delete',ok:'ลบ',oke:'Delete',danger:true}))return;
   const{error}=await sb.from('so_deals').delete().eq('id',d.id);if(error)return alert(TT('ลบไม่สำเร็จ','Failed to delete'));SO.deals=SO.deals.filter(z=>z!==d);dg.close();soRender()}});
-F().addEventListener('input',e=>{DIRTY=true;if(['n','ph','ind'].includes(e.target.name))render()});
-F().addEventListener('change',e=>{DIRTY=true;if(e.target.name==='ch'){chI();$('sci_refw').classList.toggle('hid',e.target.value!=='Referral')}});
-F().addEventListener('submit',e=>{e.preventDefault();save()});
-let BUSY=false;
-async function save(){const d=CUR,f=F();if(!d||BUSY)return;const nm=f.n.value.trim();if(!nm){f.n.classList.add('em-f');f.n.focus();return}f.n.classList.remove('em-f');
- const dup=SO.deals.find(z=>z!==d&&nk(z.company)===nk(nm));if(dup){alert(TT('มี '+nm+' อยู่ใน Clients แล้ว','"'+nm+'" is already in Clients'));return}
+async function save(){const d=CUR;if(!d||BUSY)return;const nm=(S.name||'').trim();
+ if(!nm){SEC_K='co';all();const n=dg.querySelector('[data-k=name]');if(n){n.classList.add('em-f');n.focus()}return}
+ if(S.stage==='lost'&&!(S.res||{}).lost){SEC_K='dl';all();const s=dg.querySelector('[data-k="res.lost"]');if(s){s.classList.add('em-f');s.focus()}alert(TT('กรุณาเลือกเหตุผลที่ไม่สำเร็จ','Please choose the lost reason'));return}
+ if(SO.deals.some(z=>z!==d&&nk(z.company)===nk(nm))){alert(TT('มี '+nm+' อยู่ใน Clients แล้ว','"'+nm+'" is already in Clients'));return}
  BUSY=true;$('sci_sv').disabled=true;try{
- const x0area=D(d).area||'',sales=!d.id?soActor():boss()?f.sl.value:(d.sales||soActor()),v=k=>f[k].value.trim();
- const x={...D(d),ph:v('ph'),ch:f.ch.value,temp:FT,ct:v('ct'),em:v('em'),area:x0area,ind:v('ind'),ref:f.ch.value==='Referral'?v('ref'):'',tax:v('tax')};
- if(!d.id){const r=await sb.from('so_deals').insert({team:'C',company:nm,stage:d.stage||'lead',sales,data:x}).select().single();if(r.error){alert(TT('บันทึกไม่สำเร็จ','Failed to save'));return}Object.assign(d,r.data);SO.deals.unshift(d);try{await soLog(`เพิ่ม Client: ${nm}`)}catch(_){}}
- else{const old=d.company,{error}=await sb.from('so_deals').update({company:nm,sales,data:x}).eq('id',d.id);if(error){alert(TT('บันทึกไม่สำเร็จ','Failed to save'));return}if(old!==nm&&LEAD){try{await sb.from('leads').update({name:nm}).eq('id',LEAD.id);LEAD.name=nm}catch(_){}}Object.assign(d,{company:nm,sales,data:x})}
- try{const L=LEAD,det={...((L&&L.detail)||{}),p0:x.ph,ctn:x.ct,em:x.em,area:x.area,ind:x.ind,ref:x.ref,tax:x.tax,temp:x.temp};
-  const o={name:nm,sales,status:SO_LAB[d.stage||'lead'],channel:x.ch,detail:det,team:'C'};if(!L){o.date=today();o.svc=[]}
+ const p=pri(),sales=!d.id?soActor():(S.sales||d.sales||soActor()),{name,stage,sales:_s,...rest}=S;
+ const x={...D(d),...rest,ph:p.ph||'',ct:p.n||'',em:p.em||'',ref:S.ref||''};const res=x.res||{};if(res.won_at&&!/^\d{4}-/.test(res.won_at))res.won_at=d2i(res.won_at)||res.won_at;if(res.first&&!/^\d{4}-/.test(res.first))res.first=d2i(res.first)||res.first;
+ const st=S.stage||'lead',closed=['closed','lost'].includes(st);
+ if(!d.id){const r=await sb.from('so_deals').insert({team:'C',company:nm,stage:st,sales,data:x,closed_at:closed?new Date().toISOString():null}).select().single();if(r.error){alert(TT('บันทึกไม่สำเร็จ','Failed to save'));return}Object.assign(d,r.data);SO.deals.unshift(d);try{await soLog(`เพิ่ม Client: ${nm}`)}catch(_){}}
+ else{const old=d.company,patch={company:nm,sales,data:x};if(st!==d.stage){patch.stage=st;patch.closed_at=closed?new Date().toISOString():null}const{error}=await sb.from('so_deals').update(patch).eq('id',d.id);if(error){alert(TT('บันทึกไม่สำเร็จ','Failed to save'));return}if(old!==nm&&LEAD){try{await sb.from('leads').update({name:nm}).eq('id',LEAD.id);LEAD.name=nm}catch(_){}}Object.assign(d,patch)}
+ try{const L=LEAD,det={...((L&&L.detail)||{}),p0:x.ph,ctn:x.ct,em:x.em,ind:x.ind,ref:x.ref,tax:x.tax,temp:x.temp};
+  const o={name:nm,sales,status:SO_LAB[st]||SO_LAB.lead,channel:x.ch||'',detail:det,team:'C'};if(st==='closed'){if(res.amt)o.deal_amt=+String(res.amt).replace(/[^\d.]/g,'')||null;if(res.won_at)o.deal_date=res.won_at}if(st==='lost'&&res.lost)o.reason=res.lost;if(!L){o.date=today();o.svc=[]}
   await saveLead(L?L.id:null,o);LEAD=L?rows.find(y=>y.id===L.id)||L:rows.filter(y=>y.team==='C'&&nk(y.name)===nk(nm)).sort((a,b)=>b.id-a.id)[0]||null;
   if(LEAD&&D(d).lead_id!==LEAD.id)await saveData({lead_id:LEAD.id})}catch(_){}
- DIRTY=false;soRender();dg.close();window.toast&&toast(TT('บันทึกแล้ว','Saved'))}finally{BUSY=false;$('sci_sv').disabled=false}}
+ soRender();dg.close();window.toast&&toast(TT('บันทึกแล้ว','Saved'))}finally{BUSY=false;$('sci_sv').disabled=false}}
 dg.addEventListener('close',()=>{CUR=null});
-Object.assign(EN,{'สถานะการติดต่อ':'Contact status','ประวัติ':'History','แก้ไขข้อมูล':'Edit details','ระดับลูกค้า':'Customer level','ติดต่อแล้ว':'Contacted','ยังไม่ติดต่อ':'Not contacted'});
+Object.assign(EN,{'ภาพรวม':'Overview','บริษัท & ผู้ติดต่อ':'Company & contacts','ความต้องการขนส่ง':'Shipping needs','คู่แข่ง, ใบเสนอราคา & ผลดีล':'Competitors, quotes & result','ยังไม่ติดต่อ':'Not contacted','ติดต่อแล้ว':'Contacted','ตรงความต้องการ':'Qualified'});
 })();
 </script>
 <script>
