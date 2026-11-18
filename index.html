@@ -1041,7 +1041,7 @@ document.addEventListener('input',e=>{const t=e.target;if(t.matches&&t.matches('
 $('dp').onchange=preset;$('dtm').innerHTML='<option value="">ทุกทีม</option>'+Object.keys(TEAMS).map(k=>`<option value="${k}">${TEAMS[k]}</option>`).join('');$('dtm').onchange=renderDash;['d1','d2'].forEach(i=>$(i).addEventListener('input',()=>{$('dp').value='c';dashLoad()}));PER_OPTS.length&&['dp','lp','kp','fop','pp','cu_p'].forEach(id=>{$(id).innerHTML=PER_OPTS.map(v=>'<option value="'+v+'"></option>').join('');$(id).value='30'});$('pp').value='y';perSet('y',$('p1'),$('p2'));$('cu_p').value='all';presetSet();perSet('30',$('lf'),$('lt'));perSet('30',$('k1'),$('k2'));fLabels();$('lp').onchange=()=>{perSet($('lp').value,$('lf'),$('lt'));covLoad($('lf').value,render)};['lf','lt'].forEach(i=>$(i).addEventListener('input',()=>{$('lp').value='c'}));$('kp').onchange=()=>{perSet($('kp').value,$('k1'),$('k2'));covLoad($('k1').value,renderFu)};['k1','k2'].forEach(i=>$(i).addEventListener('input',()=>{$('kp').value='c';covLoad($('k1').value,renderFu)}));
  start();
 }
-function buildSeg(){$('seg').innerHTML=teamsVisible().filter(k=>k!=='C'||canSO()||(profile&&profile.role==='sales_lead')).map(k=>`<button class="${k===team?'on':''}" onclick="setTeam('${k}')">${k==='C'?'Offline':TEAMS[k]}<em>${rows.filter(r=>r.team===k).length}</em></button>`).join('')}
+function buildSeg(){if(team==='C'&&!(profile&&profile.role==='sales'&&profile.team==='C')){const f=teamsVisible().find(k=>k!=='C');if(f)team=f}$('seg').innerHTML=teamsVisible().filter(k=>k!=='C').map(k=>`<button class="${k===team?'on':''}" onclick="setTeam('${k}')">${k==='C'?'Offline':TEAMS[k]}<em>${rows.filter(r=>r.team===k).length}</em></button>`).join('')}
 function setTeam(k){team=k;setSales();$('fa').value='';render()}
 let SALL=[];
 async function loadSalesAll(){try{let o=[],i=0;for(;;){const{data,error}=await sb.from('leads').select('sales,team').range(i,i+999);if(error||!data)return;o=o.concat(data);if(data.length<1000)break;i+=1000}SALL=[...new Set(o.filter(x=>x.sales).map(x=>x.team+'\u0001'+x.sales))].map(x=>x.split('\u0001'));const v=$('fa').value;setSales();$('fa').value=v}catch(e){}}
@@ -5163,6 +5163,11 @@ Object.assign(EN,{'รายชื่อโทร':'Call list','บันทึ�
   sel.addEventListener('change',()=>{D.set.call(el,sel.value);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}))});
   new MutationObserver(()=>sel.classList.toggle('hid',el.classList.contains('hid'))).observe(el,{attributes:true,attributeFilter:['class']})};
  const run=()=>document.querySelectorAll('input[type=month]:not([data-mfix])').forEach(fix);run();new MutationObserver(run).observe(document.body,{childList:true,subtree:true})})();
+</script>
+<script>
+/* Offline Team: no Lead tab (they add customers from รายชื่อเป้าหมาย) */
+(function(){const off=()=>!!profile&&profile.role==='sales'&&profile.team==='C';const _a=applyRoleUI;applyRoleUI=function(p){_a(p);if(off()){$('tL').classList.add('hid');if(!$('vL').classList.contains('hid'))tab('N')}};
+ if(typeof profile!=='undefined'&&profile&&off()){$('tL').classList.add('hid')}})();
 </script>
 </body>
 </html>
