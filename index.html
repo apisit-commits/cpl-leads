@@ -4603,8 +4603,8 @@ Object.assign(EN,{'เงื่อนไขในใบเสนอราคา'
 #vSO .so2-t td{padding:10px;border-bottom:1px solid var(--bd);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #vSO .so2-t tbody tr{cursor:pointer}
 #vSO .so2-t tbody tr:hover td{background:rgba(0,150,214,.05)}
-#vSO .so2-chip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:11px;font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
-#vSO .so2-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+#vSO .so2-chip,#socd .so2-chip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:11px;font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+#vSO .so2-chip::before,#socd .so2-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
 #vSO .so2-fn{display:flex;flex-direction:column;gap:9px}
 #vSO .so2-fn>div{display:flex;align-items:center;gap:10px}
 #vSO .so2-fn span{width:120px;font-size:12.5px;color:var(--mu);flex:none}
@@ -4822,28 +4822,86 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 })();
 </script>
 <style>
-#vSO .soc-pr{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
-#vSO .soc-pr .h{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:8px}
-#vSO .soc-pr .h span{color:var(--mu);white-space:nowrap}
-#vSO .soc-pr i{display:block;height:8px;border-radius:999px;background:var(--fld);overflow:hidden}
-#vSO .soc-pr i em{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--lt,#52bdec),var(--pr))}
+#vSO .soc-sp,#vSO .soc-pr{margin-bottom:16px}
+#vSO .soc-sh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+#vSO .soc-sh h3{margin:0;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+#vSO .soc-sh h3::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ac)}
+#vSO .soc-sh>span{font-size:13px;color:var(--mu)}#vSO .soc-sh>span b{color:var(--tx)}
+#vSO .soc-bar{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--fld)}
+#vSO .soc-bar i{display:block;height:100%}
+#vSO .soc-ss{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin-top:14px}
+#vSO .soc-s{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;transition:border-color .15s}
+#vSO .soc-s:hover{border-color:var(--pr)}
+#vSO .soc-s span{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);white-space:nowrap}
+#vSO .soc-s span i,#vSO .soc-lg i{width:10px;height:10px;border-radius:999px;flex:none}
+#vSO .soc-s b{font-size:22px;font-weight:700;color:var(--tx)}
+#vSO .soc-s em{font-style:normal;font-size:12px;color:var(--mu)}
+#vSO .soc-s.on{border:2px solid var(--pr);padding:11px 13px;background:color-mix(in srgb,var(--pr) 6%,var(--card))}
+#vSO .soc-lg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mu)}#vSO .soc-lg span{display:inline-flex;align-items:center;gap:6px}
+#vSO .soc-pp{display:grid;grid-template-columns:160px minmax(0,1fr) 120px;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--bd);font-size:14px}
+#vSO .soc-pp span{font-size:13px;color:var(--mu);text-align:right;white-space:nowrap}
+#vSO .so2-hd .so2-r{display:flex;gap:8px}
 #vSO .soc-t td .sub{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis}
 #vSO .soc-t tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
 #vSO .soc-t .btn{height:32px;padding:0 12px}
 #vSO .soc-t th{vertical-align:middle}#vSO .soc-t td{vertical-align:middle}
 #vSO .soc-pg{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 2px 0;font-size:13px;color:var(--mu)}
 #vSO .soc-pg .btn{height:32px}
-#socd,#soid{width:min(640px,94vw)}
-#socd .soc-ph{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--bd);border-radius:14px;margin:4px 0 14px}
-#socd .soc-ph b{font-size:15px;display:block}
-#socd .soc-ph a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:12px;background:color-mix(in srgb,var(--ok) 12%,transparent);color:var(--ok);font-weight:600;text-decoration:none;white-space:nowrap}
-#socd .soc-rs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-#socd .soc-rs label{display:block}
+#socs{width:min(680px,94vw)}
+#socs .socs-in{padding:24px;display:flex;flex-direction:column;gap:16px;max-height:92vh;overflow-y:auto;box-sizing:border-box}
+#socs .socs-nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#socs .socs-ib{width:40px;padding:0;justify-content:center}
+#socs #socs_d{width:140px;text-align:center}
+#socs .socs-k{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#socs .socs-k div{border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+#socs .socs-k b{display:block;font-size:22px}
+#socs .socs-k span{font-size:12px;color:var(--mu)}
+#socs h4{margin:0 0 6px;font-size:14px;display:flex;align-items:center;gap:8px}
+#socs h4::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ac)}
+#socs .socs-r{display:grid;grid-template-columns:140px minmax(0,1fr) 44px;gap:12px;align-items:center;font-size:14px;padding:5px 0}
+#socs .socs-r span{display:flex;align-items:center;gap:8px;white-space:nowrap}
+#socs .socs-r span i{width:10px;height:10px;border-radius:999px}
+#socs .socs-r em{font-style:normal;text-align:right;font-weight:600}
+#socs .socs-r div{height:10px;border-radius:999px;background:var(--fld);overflow:hidden}
+#socs .socs-r div i{display:block;height:100%;border-radius:999px}
+#socs table{width:100%!important;min-width:0!important;table-layout:fixed;border-collapse:collapse;font-size:13px}#socs th:first-child,#socs td:first-child{width:34%}
+#socs th{text-align:left;font-weight:600;color:var(--mu);white-space:nowrap;padding:9px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+#socs td{padding:9px 10px;border-bottom:1px solid var(--bd);white-space:nowrap}
+#socs tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
+#socs .r{text-align:right}
+@media(max-width:700px){#socs .socs-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
+#soid{width:min(640px,94vw)}
+#socd,#soid,#socs{overflow:visible}
+#socd{width:min(900px,94vw);padding:0}
+#socd form{margin:0;padding:0;max-height:92vh;overflow-y:auto;overflow-x:hidden;border-radius:inherit}
+#socd .soc-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#socd .soc-l{background:color-mix(in srgb,var(--fld) 45%,var(--card));border-right:1px solid var(--bd);padding:24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+#socd .soc-r{padding:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+#socd .soc-r .g{margin:0}
+#socd .soc-hd{display:flex;gap:14px;align-items:center}
+#socd .soc-hd b{display:block;font-size:18px;overflow-wrap:anywhere}
+#socd .soc-hd .sub{display:block;font-size:13px;overflow-wrap:anywhere}
+#socd .soc-av{width:52px;height:52px;border-radius:999px;flex:none;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--lt,#52bdec),var(--pr))}
+#socd .soc-tel:focus:not(:focus-visible){outline:none}#socd .soc-tel{border:0;box-shadow:none;display:flex;align-items:center;justify-content:center;gap:10px;height:48px;border-radius:12px;background:var(--ok);color:#fff;font-weight:600;font-size:16px;text-decoration:none}
+#socd .soc-tags{display:flex;flex-wrap:wrap;gap:6px}
+#socd .soc-rs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#socd .soc-rs label{display:block;position:relative}
 #socd .soc-rs input{position:absolute;opacity:0;pointer-events:none}
-#socd .soc-rs span{display:flex;align-items:center;justify-content:center;height:44px;border-radius:12px;border:1px solid var(--bd);cursor:pointer;font-size:14px;background:var(--card)}
-#socd .soc-rs input:checked+span{border:2px solid var(--pr);color:var(--pr);font-weight:600;background:color-mix(in srgb,var(--pr) 8%,transparent)}
-#socd .soc-og{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:14px}#socd .soc-og b{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px}#socd .soc-og b::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ac)}#socd .soc-og dl{display:grid;grid-template-columns:130px minmax(0,1fr);gap:6px 12px;margin:0;font-size:13px}#socd .soc-og dt{color:var(--mu)}#socd .soc-og dd{margin:0;overflow-wrap:anywhere}
-#socd .soc-hs{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--bd);font-size:13px}
+#socd .soc-rs span{display:flex;align-items:center;gap:10px;height:52px;padding:0 12px;border-radius:12px;border:1px solid var(--bd);cursor:pointer;font-size:14px;background:var(--card)}
+#socd .soc-rs span i{width:30px;height:30px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex:none}
+#socd .r-ok i{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+#socd .r-noans i{background:color-mix(in srgb,#f0a23a 18%,transparent);color:var(--wn)}
+#socd .r-bad i{background:color-mix(in srgb,var(--er) 14%,transparent);color:var(--er)}
+#socd .r-online i{background:color-mix(in srgb,#7c5cd6 16%,transparent);color:#5b3fc4}
+#socd .soc-rs input:checked+span{border:2px solid var(--pr);padding:0 11px;color:var(--pr);font-weight:600;background:color-mix(in srgb,var(--pr) 7%,var(--card))}
+#socd .soc-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--bd);border-radius:12px;font-size:14px;cursor:pointer;position:relative}
+#socd .soc-sw input{position:absolute;opacity:0;pointer-events:none}
+#socd .soc-sw i{width:40px;height:24px;border-radius:999px;background:var(--bd);position:relative;flex:none;transition:background .15s}
+#socd .soc-sw i::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:999px;background:#fff;transition:left .15s}
+#socd .soc-sw input:checked+i{background:var(--pr)}#socd .soc-sw input:checked+i::after{left:19px}
+@media(max-width:760px){#socd .soc-g{grid-template-columns:minmax(0,1fr)}#socd .soc-l{border-right:0;border-bottom:1px solid var(--bd)}}
+#socd .soc-og{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;background:var(--card)}#socd .soc-og b{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px}#socd .soc-og b::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ac)}#socd .soc-og dl{display:grid;grid-template-columns:130px minmax(0,1fr);gap:6px 12px;margin:0;font-size:13px}#socd .soc-og dt{color:var(--mu)}#socd .soc-og dd{margin:0;overflow-wrap:anywhere}
+#socd .soc-hs{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--bd);font-size:13px}#socd .soc-hs:first-of-type{border-top:0}
 #socd .soc-hs .sub{display:block;font-size:12px}
 #soid .soc-gp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
 #soid .soc-gp div{border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
@@ -4855,16 +4913,22 @@ Object.assign(EN,{'แผนวันนี้':'Today','รายชื่อ�
 #soid tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--fld) 45%,transparent)}
 #soid td.r,#soid th.r{text-align:right}
 #soid .soc-sc{max-height:220px;overflow:auto;border:1px solid var(--bd);border-radius:12px}
-@media(max-width:700px){#socd .soc-rs{grid-template-columns:repeat(2,minmax(0,1fr))}#vSO .soc-t .soc-hm{display:none}#vSO .soc-t col.soc-hm{visibility:collapse;width:0!important}#soid .soc-gp{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){#vSO .soc-t .soc-hm{display:none}#vSO .soc-t col.soc-hm{visibility:collapse;width:0!important}#soid .soc-gp{grid-template-columns:minmax(0,1fr)}}
 </style>
-<dialog id="socd"><form id="socf" method="dialog" novalidate><h3 style="margin:0 0 2px">บันทึกผลการโทร</h3><div class="sub" id="soc_m"></div>
-<div class="soc-ph"><div style="min-width:0"><b id="soc_n"></b><span class="sub" id="soc_a"></span></div><a id="soc_tel" href="#"></a></div>
-<div id="soc_og"></div><div class="f">ผลการโทร<b class="rq">*</b></div><div class="soc-rs" id="soc_rs" style="margin-top:6px"><label><input type="radio" name="res" value="ok"><span>ติดต่อได้</span></label><label><input type="radio" name="res" value="noans"><span>ไม่รับสาย</span></label><label><input type="radio" name="res" value="bad"><span>ติดต่อไม่ได้</span></label><label><input type="radio" name="res" value="online"><span>ลูกค้า Online</span></label></div>
-<div class="g" style="margin-top:14px" id="soc_okw"><label class="f">สถานะ<b class="rq">*</b><select name="st"><option value="int">สนใจ</option><option value="cb">โทรกลับ</option><option value="no">ไม่สนใจ</option><option value="dnc">ขอไม่ให้ติดต่อ</option></select></label><label class="f" id="soc_cbw">โทรกลับวันที่<input name="cb" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label></div>
-<label class="f" style="margin-top:12px">ผลการคุย<textarea name="note" rows="3" maxlength="600"></textarea></label>
-<div class="g" style="margin-top:12px"><label class="f" id="soc_tgw" style="flex-direction:row;align-items:center;gap:10px"><input type="checkbox" name="tg" style="width:18px;height:18px;margin:0">เพิ่มเข้ารายชื่อเป้าหมาย</label><label class="f hid" id="soc_asw">ผู้รับผิดชอบ<select name="as"></select></label></div>
-<div id="soc_hs" style="margin-top:12px"></div>
-<div class="acts"><button type="button" class="btn" id="soc_x">ยกเลิก</button><button type="submit" class="btn p">บันทึก</button></div></form></dialog>
+<dialog id="socd"><form id="socf" method="dialog" novalidate><div class="soc-g"><aside class="soc-l">
+<div class="soc-hd"><span class="soc-av" id="soc_av"></span><div style="min-width:0"><b id="soc_n"></b><span class="sub" id="soc_a"></span></div></div>
+<a id="soc_tel" class="soc-tel" href="#"></a><div class="soc-tags" id="soc_tags"></div><div class="sub" id="soc_m"></div>
+<div id="soc_og"></div><div id="soc_hs"></div></aside>
+<div class="soc-r"><h3 style="margin:0">บันทึกผลการโทร</h3>
+<div><div class="f" style="margin-bottom:6px">ผลการโทร<b class="rq">*</b></div><div class="soc-rs" id="soc_rs"><label class="r-ok"><input type="radio" name="res" value="ok"><span><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>ติดต่อได้</span></label><label class="r-noans"><input type="radio" name="res" value="noans"><span><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i>ไม่รับสาย</span></label><label class="r-bad"><input type="radio" name="res" value="bad"><span><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></i>ติดต่อไม่ได้</span></label><label class="r-online"><input type="radio" name="res" value="online"><span><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="4"/><path d="M3 21v-1a6 6 0 0 1 12 0v1M16 11l2 2 4-4"/></svg></i>ลูกค้า Online</span></label></div></div>
+<div class="g" id="soc_okw"><label class="f">สถานะ<b class="rq">*</b><select name="st"><option value="int">สนใจ</option><option value="cb">โทรกลับ</option><option value="no">ไม่สนใจ</option><option value="dnc">ขอไม่ให้ติดต่อ</option></select></label><label class="f" id="soc_cbw">โทรกลับวันที่<input name="cb" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10"></label></div>
+<label class="f">ผลการคุย<textarea name="note" rows="3" maxlength="600"></textarea></label>
+<label class="soc-sw" id="soc_tgw"><span>เพิ่มเข้ารายชื่อเป้าหมาย</span><input type="checkbox" name="tg" role="switch"><i></i></label>
+<label class="f hid" id="soc_asw">ผู้รับผิดชอบ<select name="as"></select></label>
+<div class="acts" style="margin-top:auto"><button type="button" class="btn" id="soc_x">ยกเลิก</button><button type="submit" class="btn p">บันทึก</button></div></div></div></form></dialog>
+<dialog id="socs"><div class="socs-in"><h3 style="margin:0">สรุปการโทร</h3>
+<div class="socs-nav"><button type="button" class="btn socs-ib" data-sd="-1" aria-label="วันก่อนหน้า"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><input id="socs_d" type="text" data-dmy placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" aria-label="วันที่"><button type="button" class="btn socs-ib" data-sd="1" aria-label="วันถัดไป"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><span style="flex:1"></span><div class="seg socs-src" role="group" aria-label="ที่มา"><button type="button" data-ss="" class="on">ทั้งหมด</button><button type="button" data-ss="C">รายชื่อโทร</button><button type="button" data-ss="O">ส่งต่อจาก Online</button></div></div>
+<div id="socs_b"></div></div></dialog>
 <dialog id="soid"><form id="soif" method="dialog" novalidate><h3 style="margin:0 0 12px">นำเข้ารายชื่อโทร</h3>
 <label class="f">ไฟล์ Excel<b class="rq">*</b><input name="file" type="file" accept=".xlsx,.xls,.csv"></label>
 <div id="soi_r"></div>
@@ -4875,6 +4939,7 @@ if(typeof SO==='undefined'||!$('vSO'))return;
 const E=s=>esc(s==null?'':String(s)),NF=v=>Math.round(+v||0).toLocaleString('en-US'),TM='C',LOCK=15*60e3,PS=50;
 const ST={new:['ยังไม่โทร','Not called','var(--mu)'],noans:['ไม่รับสาย','No answer','var(--wn)'],cb:['โทรกลับ','Call back','var(--inf)'],int:['สนใจ','Interested','var(--ok)'],no:['ไม่สนใจ','Not interested','var(--gy,#4a5b6e)'],bad:['ติดต่อไม่ได้','Unreachable','var(--er)'],dnc:['ขอไม่ให้ติดต่อ','Do not call','var(--er)'],online:['ลูกค้า Online','Online customer','#7c5cd6']};
 const GRP={th:['ลูกค้าไทย','Thai'],intl:['ลูกค้าต่างประเทศ','Overseas'],na:['ไม่ระบุประเทศ','No country']};
+const SK=['new','noans','cb','int','no','bad','dnc','online'],SC={new:'#b8c4d2',noans:'#f0a23a',cb:'var(--pr)',int:'#2fb170',no:'#62768c',bad:'#e03131',dnc:'#7a1f17',online:'#7c5cd6'};
 const CLOSED=['no','bad','dnc'],onC=()=>SO.page==='C'||SO.page==='O',isOn=c=>c.src==='online'||c.batch==='online';
 SO.calls=[];SO.callsOk=null;SO.cfs={};Object.defineProperty(SO,'cf',{configurable:true,get(){const k=SO.page==='O'?'O':'C';return SO.cfs[k]||(SO.cfs[k]={st:'open',who:'',grp:'',q:'',pg:0})}});
 const me=()=>soActor();
@@ -4889,17 +4954,19 @@ function callsV(){
  const base=SO.calls.filter(c=>(SO.page==='O'?isOn(c):!isOn(c))&&(!who||who==='*'||c.assignee===who));
  const live=base.filter(c=>c.status!=='online');
  const n=k=>live.filter(c=>c.status===k).length,cbDue=live.filter(c=>c.status==='cb'&&c.callback_date&&c.callback_date<=td).length,doneToday=live.filter(c=>(c.last_call_at||'').slice(0,10)===td).length;
- const stats=[[TT('รายชื่อโทร','Call list'),live.length],[TT('ยังไม่โทร','Not called'),n('new')],[TT('ต้องโทรกลับวันนี้','Call back today'),cbDue],[TT('สนใจ','Interested'),n('int')],[TT('โทรแล้ววันนี้','Called today'),doneToday]].map(([a,b])=>`<div class="st"><b>${NF(b)}</b><span>${E(a)}</span></div>`).join('');
+ const cnt=k=>base.filter(c=>c.status===k).length,tot=base.length,pc2=v=>tot?Math.round(v/tot*100)+'%':'0%';
+ const sbar=L=>`<div class="soc-bar">${SK.map(k=>{const v=L.filter(c=>c.status===k).length;return v?`<i style="flex:${v};background:${SC[k]}" title="${E(TT(ST[k][0],ST[k][1])+' '+v)}"></i>`:''}).join('')}</div>`;
+ const stats=`<div class="so2-p soc-sp"><div class="soc-sh"><h3>${E(TT('สถานะทั้งหมด','All statuses'))}</h3><span>${E(TT('ทั้งหมด ','Total '))}<b>${NF(tot)}</b>${E(TT(' รายชื่อ',''))}</span></div>${sbar(base)}<div class="soc-ss">${SK.map(k=>`<button type="button" class="soc-s${f.st===k?' on':''}" data-ca="st" data-k="${k}"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><b>${NF(cnt(k))}</b><em>${k==='cb'?E(TT('วันนี้ ','Today '))+NF(cbDue):pc2(cnt(k))}</em></button>`).join('')}</div></div>`;
  const ppl=[...new Set(SO.calls.filter(c=>SO.page==='O'?isOn(c):!isOn(c)).map(c=>c.assignee).filter(Boolean))].sort();
- const prog=ppl.map(p=>{const L=SO.calls.filter(c=>(SO.page==='O'?isOn(c):!isOn(c))&&c.assignee===p&&c.status!=='online'),d=L.filter(c=>c.status!=='new').length,pc=L.length?Math.round(d/L.length*100):0;
-  return `<div><div class="h"><b>${E(p)}</b><span>${E(TT('โทรแล้ว ','Called '))}${NF(d)} / ${NF(L.length)}</span></div><i><em style="width:${pc}%"></em></i></div>`}).join('');
+ const prog=ppl.map(p=>{const L=SO.calls.filter(c=>(SO.page==='O'?isOn(c):!isOn(c))&&c.assignee===p),d=L.filter(c=>c.status!=='new').length;
+  return `<div class="soc-pp"><b>${E(p)}</b>${sbar(L)}<span>${E(TT('โทรแล้ว ','Called '))}${NF(d)} / ${NF(L.length)}</span></div>`}).join('');
  const ms=c=>{const s=f.st;if(s==='open')return c.status!=='online'&&!CLOSED.includes(c.status);if(s==='closed')return CLOSED.includes(c.status);if(s==='cb')return c.status==='cb';return c.status===s};
  const q=f.q.trim().toLowerCase(),qd=q.replace(/\D/g,'');
  const L=base.filter(c=>ms(c)&&(!f.grp||c.grp===f.grp)&&(!q||[c.company,c.contact,c.country,c.email].join(' ').toLowerCase().includes(q)||(qd.length>=4&&String(c.phone||'').replace(/\D/g,'').includes(qd))))
   .sort((a,b)=>{const K=x=>x.status==='cb'?(x.callback_date||'8'):x.status==='new'?'8':x.status==='noans'?'9':'A',ka=K(a),kb=K(b);return ka.localeCompare(kb)||(b.last_buy||'').localeCompare(a.last_buy||'')});
  const pages=Math.max(1,Math.ceil(L.length/PS));if(f.pg>=pages)f.pg=pages-1;const P=L.slice(f.pg*PS,f.pg*PS+PS);
  const sel=(k,lab,opts)=>`<select data-cf="${k}" aria-label="${E(lab)}">${opts.map(([v,t])=>`<option value="${E(v)}"${f[k]===v?' selected':''}>${E(t)}</option>`).join('')}</select>`;
- const stO=[['open',TT('รอโทร','To call')],['new',TT(ST.new[0],ST.new[1])],['cb',TT(ST.cb[0],ST.cb[1])],['noans',TT(ST.noans[0],ST.noans[1])],['int',TT(ST.int[0],ST.int[1])],['closed',TT('ปิดรายการ','Closed')],['online',TT(ST.online[0],ST.online[1])]];
+ const stO=[['open',TT('รอโทร','To call')],['new',TT(ST.new[0],ST.new[1])],['cb',TT(ST.cb[0],ST.cb[1])],['noans',TT(ST.noans[0],ST.noans[1])],['int',TT(ST.int[0],ST.int[1])],['no',TT(ST.no[0],ST.no[1])],['bad',TT(ST.bad[0],ST.bad[1])],['dnc',TT(ST.dnc[0],ST.dnc[1])],['closed',TT('ปิดรายการ','Closed')],['online',TT(ST.online[0],ST.online[1])]];
  const whoO=mine?[['',TT('ของฉัน','Mine')],['*',TT('ทั้งทีม','Whole team')]]:[['',TT('ทุกคน','Everyone')]];
  const flt=`<div class="so2-f"><input data-cf="q" value="${E(f.q)}" placeholder="${E(TT('ค้นหาชื่อ / เบอร์ / ประเทศ','Search name / phone / country'))}">${sel('st',TT('สถานะ','Status'),stO)}${sel('who',TT('ผู้รับผิดชอบ','Assignee'),whoO.concat(ppl.map(p=>[p,p])))}${sel('grp',TT('กลุ่ม','Group'),[['',TT('ทุกกลุ่ม','All groups')]].concat(Object.entries(GRP).map(([k,v])=>[k,TT(v[0],v[1])])))}</div>`;
  const row=c=>{const lk=locked(c),cl=c.status==='online'||CLOSED.includes(c.status);
@@ -4909,19 +4976,20 @@ function callsV(){
   return `<tr data-cid="${E(c.id)}"><td>${E(c.company)}<span class="sub">${og}${E(c.contact||'')}</span></td><td>${c.phone?E(c.phone):`<span class="sub">${E(TT('ไม่มีเบอร์','No phone'))}</span>`}</td><td class="soc-hm">${E(c.country||'')}</td><td class="soc-hm">${c.last_buy?fmtD(c.last_buy):''}</td><td>${stt}</td><td class="soc-hm">${E(c.assignee||'')}</td><td class="soc-hm">${c.last_call_at?E(dt(c.last_call_at)+(c.last_call_by?' · '+c.last_call_by.split(' ')[0]:'')):''}</td><td style="text-align:right">${act}</td></tr>`};
  const tbl=`<div><table class="so2-t soc-t"><colgroup><col><col style="width:150px"><col class="soc-hm" style="width:110px"><col class="soc-hm" style="width:100px"><col style="width:170px"><col class="soc-hm" style="width:150px"><col class="soc-hm" style="width:140px"><col style="width:110px"></colgroup><thead><tr><th>${TT('ลูกค้า','Customer')}</th><th>${TT('เบอร์โทร','Phone')}</th><th class="soc-hm">${TT('ประเทศ','Country')}</th><th class="soc-hm">${TT('ซื้อล่าสุด','Last order')}</th><th>${TT('สถานะ','Status')}</th><th class="soc-hm">${TT('ผู้รับผิดชอบ','Assignee')}</th><th class="soc-hm">${TT('โทรล่าสุด','Last call')}</th><th></th></tr></thead><tbody>${P.length?P.map(row).join(''):`<tr><td colspan="8" class="sub" style="text-align:center;padding:24px;cursor:default">${E(TT('ยังไม่มีข้อมูล','No data yet'))}</td></tr>`}</tbody></table></div>
 <div class="soc-pg"><span>${L.length?NF(f.pg*PS+1)+'–'+NF(f.pg*PS+P.length)+' '+TT('จาก','of')+' '+NF(L.length):''}</span><span style="display:flex;gap:6px"><button type="button" class="btn" data-ca="pg" data-n="-1"${f.pg?'':' disabled'}>${E(TT('ก่อนหน้า','Prev'))}</button><button type="button" class="btn" data-ca="pg" data-n="1"${f.pg<pages-1?'':' disabled'}>${E(TT('ถัดไป','Next'))}</button></span></div>`;
- const hd=boss()&&SO.page==='C'?`<div class="so2-hd"><span class="so2-r"><button type="button" class="btn p" data-ca="imp">${E(TT('นำเข้าไฟล์','Import file'))}</button></span></div>`:'';
- return hd+`<div class="stats">${stats}</div>${prog?`<div class="so2-p soc-pr" style="margin-bottom:16px">${prog}</div>`:''}<div class="so2-p">${flt}${tbl}</div>`}
+ const lg=`<div class="soc-lg">${SK.filter(k=>k!=='dnc').map(k=>`<span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span>`).join('')}</div>`;
+ const hd=`<div class="so2-hd"><span class="so2-r">${boss()&&SO.page==='C'?`<button type="button" class="btn" data-ca="imp">${E(TT('นำเข้าไฟล์','Import file'))}</button>`:''}<button type="button" class="btn p" data-ca="sum">${E(TT('สรุปการโทรวันนี้','Today\'s call summary'))}</button></span></div>`;
+ return hd+stats+(prog?`<div class="so2-p soc-pr"><div class="soc-sh"><h3>${E(TT('ความคืบหน้าแต่ละคน','Progress by person'))}</h3>${lg}</div>${prog}</div>`:'')+`<div class="so2-p">${flt}${tbl}</div>`}
 /* nav + view */
 const nav=document.querySelector('#vSO .soNav');if(nav&&!nav.querySelector('[data-so="C"]')){const v=nav.querySelector('[data-so="V"]'),b=document.createElement('button');b.type='button';b.dataset.so='C';b.textContent=TT('รายชื่อโทร','Call list');if(v)v.after(b);else nav.prepend(b);const o=document.createElement('button');o.type='button';o.dataset.so='O';o.textContent=TT('ส่งต่อจาก Online','From Online');b.after(o)}
 const _r=soRender;soRender=function(){if(!onC())return _r();const m=$('soMain');if(!m)return;document.querySelectorAll('#vSO [data-so]').forEach(b=>b.classList.toggle('on',b.dataset.so===SO.page));m.innerHTML=callsV()};
 const main=$('soMain');
 main.addEventListener('click',e=>{if(!onC())return;const t=e.target.closest('[data-ca]');if(!t){const tr=e.target.closest('.soc-t tr[data-cid]');if(tr&&!tr.querySelector('button[disabled]'))cOpen(tr.dataset.cid);return}const a=t.dataset.ca;
- if(a==='pg'){SO.cf.pg=Math.max(0,SO.cf.pg+ +t.dataset.n);soRender()}else if(a==='open')cOpen(t.dataset.id);else if(a==='imp')iOpen()});
+ if(a==='pg'){SO.cf.pg=Math.max(0,SO.cf.pg+ +t.dataset.n);soRender()}else if(a==='open')cOpen(t.dataset.id);else if(a==='imp')iOpen();else if(a==='sum')sOpen();else if(a==='st'){const f=SO.cf;f.st=f.st===t.dataset.k?'open':t.dataset.k;f.pg=0;soRender()}});
 main.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.cf;if(k&&k!=='q'&&onC()){SO.cf[k]=e.target.value;SO.cf.pg=0;soRender()}});
 main.addEventListener('input',e=>{if(onC()&&e.target.dataset&&e.target.dataset.cf==='q'){SO.cf.q=e.target.value;SO.cf.pg=0;const p=e.target.selectionStart;soRender();const el=document.querySelector('#soMain [data-cf=q]');if(el){el.focus();el.setSelectionRange(p,p)}}});
 /* close buttons */
 const X='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-['socd','soid'].forEach(id=>{const d=$(id);if(!d||d.querySelector(':scope>.dlgx'))return;const b=document.createElement('button');b.type='button';b.className='dlgx';b.title=b.ariaLabel=TT('ปิด','Close');b.innerHTML=X;b.onclick=()=>d.close();d.append(b)});
+['socd','soid','socs'].forEach(id=>{const d=$(id);if(!d||d.querySelector(':scope>.dlgx'))return;const b=document.createElement('button');b.type='button';b.className='dlgx';b.title=b.ariaLabel=TT('ปิด','Close');b.innerHTML=X;b.onclick=()=>d.close();d.append(b)});
 /* call dialog */
 const cf=$('socf'),cd=$('socd');let CUR=null;
 const syncC=()=>{const r=(cf.querySelector('input[name=res]:checked')||{}).value,st=cf.st.value;$('soc_okw').classList.toggle('hid',r!=='ok');$('soc_cbw').classList.toggle('hid',st!=='cb');$('soc_tgw').classList.toggle('hid',!(r==='ok'&&st==='int'))};
@@ -4934,8 +5002,9 @@ async function cOpen(id){const c=SO.calls.find(z=>String(z.id)===String(id));if(
  if(locked(c)){alert(TT('กำลังโทรโดย ','On a call by ')+c.calling_by);soRender();return}
  const cl=c.status==='online'||CLOSED.includes(c.status);
  if(!cl){const now=new Date().toISOString(),u=await sb.from('so_calls').update({calling_by:me(),calling_at:now}).eq('id',id);if(!u.error){c.calling_by=me();c.calling_at=now}}
- CUR=c;cf.reset();$('soc_n').textContent=c.company||'';$('soc_a').textContent=[c.contact,c.address,c.postal].filter(Boolean).join(' · ');
- $('soc_m').textContent=[GRP[c.grp]?TT(GRP[c.grp][0],GRP[c.grp][1]):'',c.last_buy?TT('ซื้อล่าสุด ','Last order ')+fmtD(c.last_buy):'',c.assignee?TT('ผู้รับผิดชอบ ','Assignee ')+c.assignee:''].filter(Boolean).join(' · ');
+ CUR=c;cf.reset();$('soc_n').textContent=c.company||'';$('soc_av').textContent=String(c.company||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+ $('soc_tags').innerHTML=(isOn(c)?`<span class="so2-chip" style="--c:var(--ac)">${E(TT('จาก Online','From Online')+((c.data||{}).sales?' · '+c.data.sales:''))}</span>`:'')+(c.assignee?`<span class="so2-chip" style="--c:var(--inf)">${E(TT('ผู้รับผิดชอบ ','Assignee ')+c.assignee)}</span>`:'')+chip(c.status||'new');$('soc_a').textContent=[c.contact,c.address,c.postal].filter(Boolean).join(' · ');
+ $('soc_m').textContent=[c.country||'',GRP[c.grp]&&c.grp!=='na'?TT(GRP[c.grp][0],GRP[c.grp][1]):'',c.last_buy?TT('ซื้อล่าสุด ','Last order ')+fmtD(c.last_buy):''].filter(Boolean).join(' · ');
  const tel=$('soc_tel'),ph=String(c.phone||'').split(/[,\/]| or /i)[0].trim();tel.classList.toggle('hid',!ph);tel.href='tel:'+ph.replace(/[^\d+]/g,'');tel.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>'+E(c.phone||'');
  if(c.status==='online')cf.querySelector('input[value=online]').checked=true;else if(['int','cb','no','dnc'].includes(c.status)){cf.querySelector('input[value=ok]').checked=true;cf.st.value=c.status}
  {const d=c.data||{},kv=[[TT('วันที่ได้ Lead','Lead date'),d.date?fmtD(d.date):''],[TT('เซลล์เดิม','Previous sales'),[d.team_n,d.sales].filter(Boolean).join(' · ')],['Ads',d.ads],[TT('บริการที่ถาม','Service asked'),(d.svc||[]).join(', ')],[TT('ใบเสนอราคา','Quotation'),d.quo],[TT('เหตุผลที่ไม่สนใจ','Reason'),d.reason],[TT('โน้ตเซลล์เดิม','Previous notes'),d.note]].filter(x=>x[1]);
@@ -4945,7 +5014,7 @@ async function cOpen(id){const c=SO.calls.find(z=>String(z.id)===String(id));if(
  syncC();$('soc_hs').innerHTML='';cd.showModal();
  const h=await sb.from('so_call_logs').select('*').eq('call_id',id).order('created_at',{ascending:false}).limit(30);const L=h.data||[];
  const rl={ok:TT('ติดต่อได้','Reached'),noans:TT('ไม่รับสาย','No answer'),bad:TT('ติดต่อไม่ได้','Unreachable'),online:TT('ลูกค้า Online','Online customer')};
- $('soc_hs').innerHTML=L.length?`<div class="f" style="margin-bottom:4px">${E(TT('ประวัติการโทร','Call history'))}</div>`+L.map(x=>`<div class="soc-hs"><span>${E(dt(x.created_at)+' · '+soHM(x.created_at)+' · '+(x.actor||''))}${x.note?`<span class="sub">${E(x.note)}</span>`:''}</span>${chip(x.status||'new').replace(/>[^<]*<\/span>$/,'>'+E(x.result==='ok'?TT((ST[x.status]||ST.new)[0],(ST[x.status]||ST.new)[1]):rl[x.result]||'')+'</span>')}</div>`).join(''):''}
+ $('soc_hs').innerHTML=L.length?`<div class="f" style="margin:2px 0 4px;font-weight:600">${E(TT('ประวัติการโทร','Call history'))}</div>`+L.map(x=>`<div class="soc-hs"><span>${E(dt(x.created_at)+' · '+soHM(x.created_at)+' · '+(x.actor||''))}${x.note?`<span class="sub">${E(x.note)}</span>`:''}</span>${chip(x.status||'new').replace(/>[^<]*<\/span>$/,'>'+E(x.result==='ok'?TT((ST[x.status]||ST.new)[0],(ST[x.status]||ST.new)[1]):rl[x.result]||'')+'</span>')}</div>`).join(''):''}
 cf.addEventListener('submit',async e=>{e.preventDefault();const c=CUR;if(!c)return;const res=(cf.querySelector('input[name=res]:checked')||{}).value;
  if(!res){alert(TT('กรุณาเลือกผลการโทร','Please choose the call result'));return}
  let st=res==='ok'?cf.st.value:res,cb=null;const at=(+c.attempts||0)+(res==='noans'?1:0);if(res==='noans'&&at>=3)st='bad';
@@ -4977,6 +5046,24 @@ async function syncOnline(){const cut=new Date(Date.now()-30*864e5).toISOString(
   for(const c of open){const pk=new Set(phs(c.phone)),sd=(c.data||{}).date||'',hit=R.find(x=>x.id!==(c.src_lead||(c.data||{}).lead_id)&&(x.date||'')>sd&&phs(ph(x)).some(k=>pk.has(k)));
    if(hit){const m=TT('ทักกลับมา · ','Came back · ')+[tn(hit.team),hit.sales].filter(Boolean).join(' · ');const u=await sb.from('so_calls').update({status:'online',matched:m}).eq('id',c.id);if(!u.error)back++}}}
  return ins.length+back}
+/* daily summary */
+const SUM={d:null,src:''};
+function sOpen(){SUM.d=today();SUM.src=SO.page==='O'?'O':'C';$('socs_d').value=fmtD(SUM.d);document.querySelectorAll('#socs [data-ss]').forEach(b=>b.classList.toggle('on',b.dataset.ss===SUM.src));$('socs').showModal();sLoad()}
+const shiftD=(iso,n)=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+$('socs').addEventListener('click',e=>{const a=e.target.closest('[data-sd]'),b=e.target.closest('[data-ss]');if(a){SUM.d=shiftD(SUM.d,+a.dataset.sd);$('socs_d').value=fmtD(SUM.d);sLoad()}else if(b){SUM.src=b.dataset.ss;document.querySelectorAll('#socs [data-ss]').forEach(x=>x.classList.toggle('on',x===b));sLoad()}});
+$('socs_d').addEventListener('change',()=>{const v=d2i($('socs_d').value.trim());if(v){SUM.d=v;sLoad()}});
+async function sLoad(){const box=$('socs_b');box.innerHTML=`<div class="sub" style="padding:12px 0">${E(TT('กำลังโหลด…','Loading…'))}</div>`;const d=SUM.d;
+ const st=new Date(d+'T00:00:00').toISOString(),en=new Date(shiftD(d,1)+'T00:00:00').toISOString();
+ const ids=new Map(SO.calls.map(c=>[String(c.id),c]));
+ const L=(await pg2(()=>sb.from('so_call_logs').select('*').gte('created_at',st).lt('created_at',en).order('created_at'))).filter(x=>{const c=ids.get(String(x.call_id));return c&&(!SUM.src||(SUM.src==='O'?isOn(c):!isOn(c)))});
+ if(d!==SUM.d)return;
+ const last=new Map(),by=new Map();L.forEach(x=>{last.set(x.call_id,x);const a=x.actor||'-';if(!by.has(a))by.set(a,new Map());by.get(a).set(x.call_id,x)});
+ const fin=[...last.values()],nCall=fin.length,reach=fin.filter(x=>x.result==='ok').length,cntS=k=>fin.filter(x=>(x.result==='ok'?x.status:x.result)===k).length;
+ const RK=['noans','cb','int','no','bad','dnc','online'],mx=Math.max(1,...RK.map(cntS));
+ const kp=[[NF(nCall),TT('เบอร์ที่โทร','Numbers called'),''],[NF(reach),TT('ติดต่อได้','Reached')+(nCall?' · '+Math.round(reach/nCall*100)+'%':''),'var(--ok)'],[NF(cntS('int')),TT('สนใจ','Interested'),'var(--pr)'],[NF(cntS('cb')),TT('โทรกลับ','Call back'),'']];
+ box.innerHTML=`<div class="socs-k">${kp.map(([v,l,c])=>`<div><b${c?` style="color:${c}"`:''}>${v}</b><span>${E(l)}</span></div>`).join('')}</div>
+<div style="margin-top:16px"><h4>${E(TT('ผลการโทร','Call results'))}</h4>${RK.map(k=>{const v=cntS(k);return `<div class="socs-r"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><div><i style="width:${v/mx*100}%;background:${SC[k]}"></i></div><em>${NF(v)}</em></div>`}).join('')}</div>
+<div style="margin-top:16px"><h4>${E(TT('แยกตามคน','By person'))}</h4><table><thead><tr><th>${E(TT('ผู้โทร','Caller'))}</th><th class="r">${E(TT('โทร','Called'))}</th><th class="r">${E(TT('ติดต่อได้','Reached'))}</th><th class="r">${E(TT('สนใจ','Interested'))}</th><th class="r">${E(TT('โทรกลับ','Call back'))}</th></tr></thead><tbody>${by.size?[...by.entries()].sort((a,b)=>b[1].size-a[1].size).map(([a,m])=>{const v=[...m.values()];return `<tr><td>${E(a)}</td><td class="r">${NF(v.length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='int').length)}</td><td class="r">${NF(v.filter(x=>x.result==='ok'&&x.status==='cb').length)}</td></tr>`}).join(''):`<tr><td colspan="5" class="sub" style="text-align:center;padding:18px">${E(TT('ไม่มีการโทรในวันนี้','No calls on this day'))}</td></tr>`}</tbody></table></div>`}
 /* import */
 const iff=$('soif'),idg=$('soid');let IMP=null;
 $('soi_x').onclick=()=>idg.close();
@@ -5019,7 +5106,7 @@ iff.addEventListener('submit',async e=>{e.preventDefault();if(!IMP)return;const 
  const batch=(IMP.name||'').slice(0,80),all=IMP.ok.concat(IMP.on).map(r=>({team:TM,company:r.company,contact:r.contact,phone:r.phone,email:r.email,address:r.address,postal:r.postal,country:r.country,grp:r.grp,last_buy:r.last_buy,assignee:r.status==='online'?null:r.assignee||null,status:r.status,matched:r.matched||null,batch}));
  for(let i=0;i<all.length;i+=500){const{error}=await sb.from('so_calls').insert(all.slice(i,i+500));if(error){b.disabled=false;alert(TT('นำเข้าไม่สำเร็จ: ','Import failed: ')+error.message);await callsLoad();soRender();return}}
  await soLog(`นำเข้ารายชื่อโทร ${NF(IMP.ok.length)} รายชื่อ`);idg.close();await callsLoad();SO.cf.pg=0;if(onC())soRender()});
-Object.assign(EN,{'รายชื่อโทร':'Call list','บันทึกผลการโทร':'Log call','ผลการโทร':'Call result','ติดต่อได้':'Reached','ไม่รับสาย':'No answer','ติดต่อไม่ได้':'Unreachable','โทรกลับ':'Call back','ไม่สนใจ':'Not interested','ขอไม่ให้ติดต่อ':'Do not call','ลูกค้า Online':'Online customer','โทรกลับวันที่':'Call-back date','ผลการคุย':'Notes','เพิ่มเข้ารายชื่อเป้าหมาย':'Add to targets','ผู้รับผิดชอบ':'Assignee','นำเข้ารายชื่อโทร':'Import call list','ไฟล์ Excel':'Excel file','นำเข้า':'Import'});
+Object.assign(EN,{'รายชื่อโทร':'Call list','บันทึกผลการโทร':'Log call','ผลการโทร':'Call result','ติดต่อได้':'Reached','ไม่รับสาย':'No answer','ติดต่อไม่ได้':'Unreachable','โทรกลับ':'Call back','ไม่สนใจ':'Not interested','ขอไม่ให้ติดต่อ':'Do not call','ลูกค้า Online':'Online customer','โทรกลับวันที่':'Call-back date','ผลการคุย':'Notes','เพิ่มเข้ารายชื่อเป้าหมาย':'Add to targets','ผู้รับผิดชอบ':'Assignee','นำเข้ารายชื่อโทร':'Import call list','ไฟล์ Excel':'Excel file','นำเข้า':'Import','สรุปการโทร':'Call summary','ทั้งหมด':'All','ส่งต่อจาก Online':'From Online'});
 })();
 </script>
 </body>
