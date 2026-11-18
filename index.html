@@ -4948,6 +4948,7 @@ if(typeof SO==='undefined'||!$('vSO'))return;
 const E=s=>esc(s==null?'':String(s)),NF=v=>Math.round(+v||0).toLocaleString('en-US'),TM='C',LOCK=15*60e3,PS=50;
 const ST={new:['ยังไม่โทร','Not called','var(--mu)'],noans:['ไม่รับสาย','No answer','var(--wn)'],cb:['โทรกลับ','Call back','var(--inf)'],int:['สนใจ','Interested','var(--ok)'],no:['ไม่สนใจ','Not interested','var(--gy,#4a5b6e)'],bad:['ติดต่อไม่ได้','Unreachable','var(--er)'],dnc:['ขอไม่ให้ติดต่อ','Do not call','var(--er)'],online:['ลูกค้า Online','Online customer','#7c5cd6']};
 const GRP={th:['ลูกค้าไทย','Thai'],intl:['ลูกค้าต่างประเทศ','Overseas'],na:['ไม่ระบุประเทศ','No country']};
+const hasPh=c=>String(c.phone||'').replace(/\D/g,'').length>=6,isCaller=()=>!!profile&&profile.role==='sales'&&salesFor('C').includes(me());
 const SK=['new','noans','cb','int','no','bad','dnc','online'],SC={new:'#b8c4d2',noans:'#f0a23a',cb:'var(--pr)',int:'#2fb170',no:'#62768c',bad:'#e03131',dnc:'#7a1f17',online:'#7c5cd6'};
 const CLOSED=['no','bad','dnc'],onC=()=>SO.page==='C'||SO.page==='O',isOn=c=>c.src==='online'||c.batch==='online';
 SO.calls=[];SO.callsOk=null;SO.cfs={};Object.defineProperty(SO,'cf',{configurable:true,get(){const k=SO.page==='O'?'O':'C';return SO.cfs[k]||(SO.cfs[k]={st:'open',who:'',grp:'',q:'',pg:0})}});
@@ -4961,14 +4962,14 @@ async function callsLoad(){let o=[],i=0;for(;;){const{data,error}=await sb.from(
 function callsV(){
  if(SO.callsOk===null){callsLoad().then(()=>{if(onC())soRender()});return `<div class="so2-p"><div class="so2-emp">${E(TT('กำลังโหลด…','Loading…'))}</div></div>`}
  const f=SO.cf,td=today(),mine=!seeAll(),who=mine?me():f.who;
- const base=SO.calls.filter(c=>(SO.page==='O'?isOn(c):!isOn(c))&&(!who||who==='*'||c.assignee===who));
+ const base=SO.calls.filter(c=>hasPh(c)&&(SO.page==='O'?isOn(c):!isOn(c))&&(!who||who==='*'||c.assignee===who));
  const live=base.filter(c=>c.status!=='online');
  const n=k=>live.filter(c=>c.status===k).length,cbDue=live.filter(c=>c.status==='cb'&&c.callback_date&&c.callback_date<=td).length,doneToday=live.filter(c=>(c.last_call_at||'').slice(0,10)===td).length;
  const cnt=k=>base.filter(c=>c.status===k).length,tot=base.length,pc2=v=>tot?Math.round(v/tot*100)+'%':'0%';
  const sbar=L=>`<div class="soc-bar">${SK.map(k=>{const v=L.filter(c=>c.status===k).length;return v?`<i style="flex:${v};background:${SC[k]}" title="${E(TT(ST[k][0],ST[k][1])+' '+v)}"></i>`:''}).join('')}</div>`;
  const stats=`<div class="so2-p soc-sp"><div class="soc-sh"><h3>${E(TT('สถานะทั้งหมด','All statuses'))}</h3><span>${E(TT('ทั้งหมด ','Total '))}<b>${NF(tot)}</b>${E(TT(' รายชื่อ',''))}</span></div>${sbar(base)}<div class="soc-ss">${SK.map(k=>`<button type="button" class="soc-s${f.st===k?' on':''}" data-ca="st" data-k="${k}"><span><i style="background:${SC[k]}"></i>${E(TT(ST[k][0],ST[k][1]))}</span><b>${NF(cnt(k))}</b><em>${k==='cb'?E(TT('วันนี้ ','Today '))+NF(cbDue):pc2(cnt(k))}</em></button>`).join('')}</div></div>`;
  const ppl=mine?[me()]:[...new Set(SO.calls.filter(c=>SO.page==='O'?isOn(c):!isOn(c)).map(c=>c.assignee).filter(Boolean))].sort();
- const prog=ppl.map(p=>{const L=SO.calls.filter(c=>(SO.page==='O'?isOn(c):!isOn(c))&&c.assignee===p),d=L.filter(c=>c.status!=='new').length;
+ const prog=ppl.map(p=>{const L=SO.calls.filter(c=>hasPh(c)&&(SO.page==='O'?isOn(c):!isOn(c))&&c.assignee===p),d=L.filter(c=>c.status!=='new').length;
   return `<div class="soc-pp"><b>${E(p)}</b>${sbar(L)}<span>${E(TT('โทรแล้ว ','Called '))}${NF(d)} / ${NF(L.length)}</span></div>`}).join('');
  const ms=c=>{const s=f.st;if(s==='open')return c.status!=='online'&&!CLOSED.includes(c.status);if(s==='closed')return CLOSED.includes(c.status);if(s==='cb')return c.status==='cb';return c.status===s};
  const q=f.q.trim().toLowerCase(),qd=q.replace(/\D/g,'');
@@ -5011,7 +5012,7 @@ async function cOpen(id){const c=SO.calls.find(z=>String(z.id)===String(id));if(
  const r=await sb.from('so_calls').select('calling_by,calling_at').eq('id',id).single();if(r.data)Object.assign(c,r.data);
  if(locked(c)){alert(TT('กำลังโทรโดย ','On a call by ')+c.calling_by);soRender();return}
  const cl=c.status==='online'||CLOSED.includes(c.status);
- if(!cl){const now=new Date().toISOString(),u=await sb.from('so_calls').update({calling_by:me(),calling_at:now}).eq('id',id);if(!u.error){c.calling_by=me();c.calling_at=now}}
+ if(!cl&&isCaller()){const now=new Date().toISOString(),u=await sb.from('so_calls').update({calling_by:me(),calling_at:now}).eq('id',id);if(!u.error){c.calling_by=me();c.calling_at=now}}
  CUR=c;cf.reset();$('soc_n').textContent=c.company||'';$('soc_av').textContent=String(c.company||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
  $('soc_tags').innerHTML=(isOn(c)?`<span class="so2-chip" style="--c:var(--ac)">${E(TT('จาก Online','From Online')+((c.data||{}).sales?' · '+c.data.sales:''))}</span>`:'')+(c.assignee?`<span class="so2-chip" style="--c:var(--inf)">${E(TT('ผู้รับผิดชอบ ','Assignee ')+c.assignee)}</span>`:'')+chip(c.status||'new');$('soc_a').textContent=[c.contact,c.address,c.postal].filter(Boolean).join(' · ');
  $('soc_m').textContent=[c.country||'',GRP[c.grp]&&c.grp!=='na'?TT(GRP[c.grp][0],GRP[c.grp][1]):'',c.last_buy?TT('ซื้อล่าสุด ','Last order ')+fmtD(c.last_buy):''].filter(Boolean).join(' · ');
@@ -5030,10 +5031,10 @@ cf.addEventListener('submit',async e=>{e.preventDefault();const c=CUR;if(!c)retu
  let st=res==='ok'?cf.st.value:res,cb=null;const at=(+c.attempts||0)+(res==='noans'?1:0);if(res==='noans'&&at>=3)st='bad';
  if(st==='cb'){cb=d2i(cf.cb.value.trim());if(!cb){alert(TT('กรุณากรอกวันที่โทรกลับ (dd/mm/yyyy)','Please enter the call-back date (dd/mm/yyyy)'));cf.cb.focus();return}}
  const now=new Date().toISOString(),note=cf.note.value.trim();
- const patch={status:st,attempts:at,last_call_at:now,last_call_by:me(),callback_date:cb,note:note||null,calling_by:null,calling_at:null};
+ const call=isCaller(),patch=call?{status:st,attempts:at,last_call_at:now,last_call_by:me(),callback_date:cb,note:note||null,calling_by:null,calling_at:null}:{status:st,callback_date:cb,note:note||null,calling_by:null,calling_at:null};
  if(boss()&&cf.as.value!==(c.assignee||''))patch.assignee=cf.as.value||null;
  const{error}=await sb.from('so_calls').update(patch).eq('id',c.id);if(error)return alert(TT('บันทึกไม่สำเร็จ','Failed to save'));Object.assign(c,patch);
- try{await sb.from('so_call_logs').insert({call_id:c.id,actor:me(),result:res,status:st,note:note||null})}catch(x){}
+ if(call)try{await sb.from('so_call_logs').insert({call_id:c.id,actor:me(),result:res,status:st,note:note||null})}catch(x){}
  if(st==='int'&&cf.tg.checked&&!SO.deals.some(z=>(z.company||'').trim().toLowerCase()===String(c.company||'').trim().toLowerCase())){
   const row={team:TM,company:c.company,stage:'lead',sales:c.assignee||me()};if(SO.hasData)row.data={ct:c.contact||'',ph:c.phone||'',note,src:'call'};
   const r=await sb.from('so_deals').insert(row).select().single();if(!r.error&&r.data){SO.deals.unshift(r.data);await soLog(`เพิ่มรายชื่อเป้าหมายจากการโทร: ${c.company}`)}}
@@ -5067,7 +5068,7 @@ $('socs').addEventListener('change',e=>{if(e.target.id==='socs_d'){const v=d2i(e
 async function sLoad(){const box=$('socs_b');box.innerHTML=`<div class="sub" style="padding:12px 0">${E(TT('กำลังโหลด…','Loading…'))}</div>`;const d=SUM.d;
  const st=new Date(d+'T00:00:00').toISOString(),en=new Date(shiftD(d,1)+'T00:00:00').toISOString();
  const ids=new Map(SO.calls.map(c=>[String(c.id),c]));
- const L=(await pg2(()=>sb.from('so_call_logs').select('*').gte('created_at',st).lt('created_at',en).order('created_at'))).filter(x=>{const c=ids.get(String(x.call_id));return c&&(seeAll()||x.actor===me())&&(!SUM.src||(SUM.src==='O'?isOn(c):!isOn(c)))});
+ const L=(await pg2(()=>sb.from('so_call_logs').select('*').gte('created_at',st).lt('created_at',en).order('created_at'))).filter(x=>{const c=ids.get(String(x.call_id));return c&&salesFor('C').includes(x.actor)&&(seeAll()||x.actor===me())&&(!SUM.src||(SUM.src==='O'?isOn(c):!isOn(c)))});
  if(d!==SUM.d)return;SUM.L=L;sRender()}
 const sKpi=L=>{const last=new Map();L.forEach(x=>last.set(x.call_id,x));const fin=[...last.values()],n=fin.length,r=fin.filter(x=>x.result==='ok').length,c=k=>fin.filter(x=>x.result==='ok'&&x.status===k).length;
  return {fin,html:`<div class="socs-k">${[[NF(n),TT('เบอร์ที่โทร','Numbers called'),''],[NF(r),TT('ติดต่อได้','Reached')+(n?' · '+Math.round(r/n*100)+'%':''),'var(--ok)'],[NF(c('int')),TT('สนใจ','Interested'),'var(--pr)'],[NF(c('cb')),TT('โทรกลับ','Call back'),'']].map(([v,l,cl])=>`<div><b${cl?` style="color:${cl}"`:''}>${v}</b><span>${E(l)}</span></div>`).join('')}</div>`}};
@@ -5106,14 +5107,14 @@ function parse(wb){const out=[];wb.SheetNames.forEach(sn=>{const a=XLSX.utils.sh
 iff.file.addEventListener('change',async()=>{const fl=iff.file.files[0];$('soi_go').disabled=true;IMP=null;if(!fl)return;$('soi_r').innerHTML=`<div class="sub" style="margin-top:12px">${E(TT('กำลังตรวจสอบ…','Checking…'))}</div>`;
  try{const wb=XLSX.read(await fl.arrayBuffer(),{type:'array',cellDates:true});const rows=parse(wb);if(!rows.length){$('soi_r').innerHTML=`<div class="sub" style="margin-top:12px;color:var(--er)">${E(TT('ไม่พบรายชื่อในไฟล์','No names found in the file'))}</div>`;return}
   if(SO.callsOk!==true)await callsLoad();const have=new Set(SO.calls.map(c=>nk(c.company)+'|'+(phs(c.phone)[0]||'')));
-  const{P,K}=await onlineIdx();const seen=new Set();let dup=0;const ok=[],on=[];
+  const{P,K}=await onlineIdx();const seen=new Set();let dup=0,np=0;const ok=[],on=[];
   rows.forEach(r=>{const key=nk(r.company)+'|'+(phs(r.phone)[0]||'');if(have.has(key)||seen.has(key)){dup++;return}seen.add(key);
    const hit=phs(r.phone).map(x=>P.get(x)).find(x=>x!==undefined);const m=hit!==undefined?hit:K.get(nk(r.company));
-   if(m!==undefined){r.status='online';r.matched=m||TT('ลูกค้า Online','Online customer');on.push(r)}else{r.status=r.phone?'new':'bad';ok.push(r)}});
-  IMP={ok,on,dup,name:fl.name};iRender()}catch(x){$('soi_r').innerHTML=`<div class="sub" style="margin-top:12px;color:var(--er)">${E(TT('อ่านไฟล์ไม่สำเร็จ','Could not read the file'))}</div>`}});
-function iRender(){const I=IMP,ppl=salesFor('C'),nop=I.ok.filter(r=>!r.phone).length;
+   if(m!==undefined){r.status='online';r.matched=m||TT('ลูกค้า Online','Online customer');on.push(r)}else if(r.phone&&String(r.phone).replace(/\D/g,'').length>=6){r.status='new';ok.push(r)}else np++});
+  IMP={ok,on,dup,np,name:fl.name};iRender()}catch(x){$('soi_r').innerHTML=`<div class="sub" style="margin-top:12px;color:var(--er)">${E(TT('อ่านไฟล์ไม่สำเร็จ','Could not read the file'))}</div>`}});
+function iRender(){const I=IMP,ppl=salesFor('C'),nop=I.np||0;
  const g=k=>I.ok.filter(r=>r.grp===k).length;
- $('soi_r').innerHTML=`<div class="soc-gp"><div><b>${NF(I.ok.length-nop)}</b><span>${E(TT('พร้อมโทร','Ready to call'))}</span></div><div><b>${NF(I.on.length)}</b><span>${E(TT('ลูกค้า Online · ตัดออก','Online customers · removed'))}</span></div><div><b>${NF(nop)}</b><span>${E(TT('ไม่มีเบอร์โทร','No phone'))}</span></div></div>
+ $('soi_r').innerHTML=`<div class="soc-gp"><div><b>${NF(I.ok.length)}</b><span>${E(TT('พร้อมโทร','Ready to call'))}</span></div><div><b>${NF(I.on.length)}</b><span>${E(TT('ลูกค้า Online · ตัดออก','Online customers · removed'))}</span></div><div><b>${NF(nop)}</b><span>${E(TT('ไม่มีเบอร์โทร · ไม่นำเข้า','No phone · skipped'))}</span></div></div>
 ${I.dup?`<div class="sub" style="margin:-4px 0 12px">${E(TT('มีอยู่แล้วหรือซ้ำในไฟล์ ','Already listed or duplicated ')+NF(I.dup)+TT(' รายชื่อ',' names'))}</div>`:''}
 ${I.on.length?`<div class="f" style="margin-bottom:6px">${E(TT('ลูกค้า Online ที่ตัดออก','Online customers removed'))}</div><div class="soc-sc"><table><thead><tr><th>${TT('ลูกค้า','Customer')}</th><th>${TT('เบอร์โทร','Phone')}</th><th>${TT('เซลล์ที่ดูแล','Owner')}</th></tr></thead><tbody>${I.on.map(r=>`<tr><td>${E(r.company)}</td><td>${E(r.phone||'')}</td><td>${E(r.matched)}</td></tr>`).join('')}</tbody></table></div>`:''}
 <div class="f" style="margin:14px 0 6px">${E(TT('แบ่งผู้โทร','Assign callers'))}</div><table><thead><tr><th>${TT('ผู้รับผิดชอบ','Assignee')}</th>${Object.entries(GRP).map(([k,v])=>`<th class="r">${E(TT(v[0],v[1]))}</th>`).join('')}<th class="r">${TT('รวม','Total')}</th></tr></thead><tbody id="soi_as">${ppl.map(p=>`<tr><td><label style="display:flex;align-items:center;gap:10px"><input type="checkbox" data-p="${E(p)}" checked style="width:18px;height:18px;margin:0">${E(p)}</label></td>${Object.keys(GRP).map(k=>`<td class="r" data-g="${k}"></td>`).join('')}<td class="r"><b data-t></b></td></tr>`).join('')}</tbody></table>`;
