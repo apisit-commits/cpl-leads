@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CPL Group · Lead Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#ffffff;--card:#fff;--tx:#0e2238;--mu:#62768c;--bd:#e0e8f0;--pr:#0082c0;--prt:#fff;--ac:#f07d22;--br:#0096d6;--lt:#52bdec;--nv:#0b2240;--ok:#11794a;--okb:#dff4ea;--wn:#a35a00;--wnb:#ffeedb;--er:#b42318;--erb:#fde6e3;--inf:#0072ac;--infb:#e0f3fc;--gy:#4a5b6e;--gyb:#e9eef3;--sh:0 1px 2px rgba(11,34,64,.05),0 4px 14px rgba(11,34,64,.05);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -2352,7 +2352,7 @@ html:not([data-theme=dark]) .tabs button.on{text-shadow:none}
 html:not([data-theme=dark]) .tabs button:hover{background:rgba(255,255,255,.14);color:#fff}
 html:not([data-theme=dark]) .tabs button.on{background:#fff;color:#0a5a9c;box-shadow:0 6px 16px rgba(0,0,0,.2)}
 html:not([data-theme=dark]) .tabs .navsep{background:rgba(255,255,255,.28)}
-html:not([data-theme=dark]) .tabs #acct{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28);color:#fff;backdrop-filter:blur(6px)}
+html:not([data-theme=dark]) .tabs #acct{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28);color:#fff;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 html:not([data-theme=dark]) .tabs #acct em{color:rgba(255,255,255,.75)}
 html:not([data-theme=dark]) .tabs #acct .av{background:#fff;color:#0a5a9c}
 html:not([data-theme=dark]) .tabs .sbr .btn{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff}
@@ -2755,6 +2755,16 @@ select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appear
 select::-ms-expand{display:none}
 select:where(:not([multiple]):not([size])){padding-left:12px}
 #vSO .so2-f select{padding-left:12px}
+
+/* same look on Mac and Windows (Windows is the reference) */
+input[type=search]{-webkit-appearance:none;appearance:none}
+input[type=search]::-webkit-search-decoration{-webkit-appearance:none}
+*{scrollbar-width:thin;scrollbar-color:#b9c6d4 transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c4cfdb;border-radius:999px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:#9fb0c2;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-corner{background:transparent}
 </style>
 <script>
 (function(){
@@ -4084,7 +4094,7 @@ const docName=f=>(TT(KN[f.kind][0],KN[f.kind][1])+' '+(f.company||f.id)).replace
 async function docFrame(f,libs){try{await FO.imgP}catch(e){}
  const fr=document.createElement('iframe');fr.style.cssText='position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0';document.body.append(fr);
  const sc=libs?'<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>':'';
- const d=fr.contentDocument;d.open();d.write(`<!doctype html><html lang="${LANG}"><head><meta charset="utf-8"><title>${H(docName(f))}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet"><style>${DOC_CSS}</style>${sc}</head><body>${docBody(f)}</body></html>`);d.close();
+ const d=fr.contentDocument;d.open();d.write(`<!doctype html><html lang="${LANG}"><head><meta charset="utf-8"><title>${H(docName(f))}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet"><style>${DOC_CSS}</style>${sc}</head><body>${docBody(f)}</body></html>`);d.close();
  await new Promise(r=>{if(d.readyState==='complete')r();else fr.addEventListener('load',r,{once:true});setTimeout(r,8000)});
  try{await Promise.race([d.fonts.ready,new Promise(r=>setTimeout(r,2000))])}catch(e){}
  await Promise.all([...d.images].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r;setTimeout(r,3000)})));return fr}
@@ -5138,6 +5148,21 @@ iff.addEventListener('submit',async e=>{e.preventDefault();if(!IMP)return;const 
  await soLog(`นำเข้ารายชื่อโทร ${NF(IMP.ok.length)} รายชื่อ`);idg.close();await callsLoad();SO.cf.pg=0;if(onC())soRender()});
 Object.assign(EN,{'รายชื่อโทร':'Call list','บันทึกผลการโทร':'Log call','ผลการโทร':'Call result','ติดต่อได้':'Reached','ไม่รับสาย':'No answer','ติดต่อไม่ได้':'Unreachable','โทรกลับ':'Call back','ไม่สนใจ':'Not interested','ขอไม่ให้ติดต่อ':'Do not call','ลูกค้า Online':'Online customer','โทรกลับวันที่':'Call-back date','ผลการคุย':'Notes','เพิ่มเข้ารายชื่อเป้าหมาย':'Add to targets','ผู้รับผิดชอบ':'Assignee','นำเข้ารายชื่อโทร':'Import call list','ไฟล์ Excel':'Excel file','นำเข้า':'Import','สรุปการโทร':'Call summary','ทั้งหมด':'All','ส่งต่อจาก Online':'From Online'});
 })();
+</script>
+<script>
+/* month picker for Safari (no native type=month): a select that keeps the input's value */
+(function(){const t=document.createElement('input');t.setAttribute('type','month');if(t.type==='month')return;
+ const TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+ const opts=()=>{const now=new Date(),o=['<option value=""></option>'];for(let k=12;k>=-48;k--){const d=new Date(now.getFullYear(),now.getMonth()+k,1),v=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');o.push(`<option value="${v}">${TH[d.getMonth()]} ${d.getFullYear()}</option>`)}return o.join('')};
+ const D=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+ const fix=el=>{if(el.dataset.mfix)return;el.dataset.mfix=1;const sel=document.createElement('select');sel.innerHTML=opts();sel.className=el.className;
+  el.style.display='none';el.after(sel);
+  const put=v=>{if(v&&![...sel.options].some(o=>o.value===v)){const[y,m]=v.split('-');sel.insertAdjacentHTML('beforeend',`<option value="${v}">${TH[+m-1]||m} ${y}</option>`)}sel.value=v||''};
+  Object.defineProperty(el,'value',{configurable:true,get(){return D.get.call(el)},set(v){D.set.call(el,v);put(v)}});
+  put(D.get.call(el));
+  sel.addEventListener('change',()=>{D.set.call(el,sel.value);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}))});
+  new MutationObserver(()=>sel.classList.toggle('hid',el.classList.contains('hid'))).observe(el,{attributes:true,attributeFilter:['class']})};
+ const run=()=>document.querySelectorAll('input[type=month]:not([data-mfix])').forEach(fix);run();new MutationObserver(run).observe(document.body,{childList:true,subtree:true})})();
 </script>
 </body>
 </html>
