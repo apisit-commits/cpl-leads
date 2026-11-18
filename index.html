@@ -645,7 +645,7 @@ html[data-theme=dark] #dlg.lf2 .lf-sc{background:var(--bg)}
     <label class="f">เบอร์โทรศัพท์<input name="d_p0" type="tel" autocomplete="off"></label>
     <label class="f">เลขประจำตัวผู้เสียภาษี<input name="d_tax" inputmode="numeric" maxlength="13" placeholder="13 หลัก"></label>
   </div>
-  <div style="margin-top:12px" id="ch_wrap"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div></div><div style="margin-top:10px" id="ch2_wrap"><div class="sub" style="margin-bottom:4px">ช่องทางอื่นที่ลูกค้าทักมาด้วย</div><div class="chips pico" id="ch2"></div></div></fieldset>
+  <div style="margin-top:12px" id="ch_wrap"><div class="sub" style="margin-bottom:4px">ช่องทาง<b class="rq">*</b></div><div class="chips" id="ch"></div><label class="f hid" id="ref_w" style="margin-top:12px;max-width:420px">ผู้แนะนำ<b class="rq">*</b><input name="d_ref" maxlength="120" autocomplete="off"></label></div><div style="margin-top:10px" id="ch2_wrap"><div class="sub" style="margin-bottom:4px">ช่องทางอื่นที่ลูกค้าทักมาด้วย</div><div class="chips pico" id="ch2"></div></div></fieldset>
   <fieldset><legend>รายละเอียดงาน (แทนการพิมพ์ยาว)</legend><div id="ints"></div><button type="button" class="btn sm" id="intadd">+ เพิ่มบริการที่สนใจ</button>
   <label class="f" style="margin-top:12px">หมายเหตุเพิ่มเติม (ถ้ามี)<input name="note"></label></fieldset>
   <fieldset id="cgb"><legend>สินค้า</legend><div class="sub" style="margin:0 0 6px">ประเภทสินค้า · ขนาด/น้ำหนัก</div><div id="cgf"></div></fieldset>
@@ -709,7 +709,7 @@ const SO_KEY=Object.fromEntries(Object.entries(SO_LAB).map(([k,v])=>[v,k]));
 const stv=s=>SO_KEY[s]?SO_STAT[SO_KEY[s]]:s;
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
 const OPT={
- channel:['Messenger','Messenger Private','LINE','LINE Private','IG','TikTok','WhatsApp','Call in','Website','Email','เยี่ยมลูกค้าโดยตรง'],
+ channel:['Messenger','Messenger Private','LINE','LINE Private','IG','TikTok','WhatsApp','Call in','Website','Email','Referral','เยี่ยมลูกค้าโดยตรง'],
  dir:['นำเข้า','ส่งออก'],
  svc:['Air','Sea','Truck'],
  status:[ST_S,ST_Y,ST_N],
@@ -853,7 +853,7 @@ const SECS=[s1,chs,sInt,sCg,dd,sFu,sDl];
 SECS.forEach(s=>{s.classList.add('lf-sec');if(s.tagName==='FIELDSET'){const l=s.querySelector(':scope>legend');l.prepend(mk('span','lf-n'))}});
 const tl=s=>s===dd?'ข้อมูลเพิ่มเติม':s===sDl?'ปิดงาน':[...s.querySelector(':scope>legend').childNodes].filter(n=>n.nodeType===3).map(n=>n.nodeValue).join('').trim();
 /* channel chips with names */
-const CHN={'Messenger':'Messenger','Messenger Private':'Messenger ส่วนตัว','LINE':'LINE','LINE Private':'LINE ส่วนตัว','IG':'Instagram','TikTok':'TikTok','WhatsApp':'WhatsApp','Call in':'โทรเข้า','Website':'เว็บไซต์','Email':'อีเมล'};
+const CHN={'Messenger':'Messenger','Messenger Private':'Messenger ส่วนตัว','LINE':'LINE','LINE Private':'LINE ส่วนตัว','IG':'Instagram','TikTok':'TikTok','WhatsApp':'WhatsApp','Call in':'โทรเข้า','Website':'เว็บไซต์','Email':'อีเมล','Referral':'ลูกค้าแนะนำ'};
 function chDeco(){['ch','ch2'].forEach(id=>$(id).querySelectorAll('label').forEach(l=>{const i=l.querySelector('input'),sp=l.querySelector('span');if(!sp||sp.dataset.lf)return;sp.dataset.lf='1';const v=i.value;
  if(!sp.querySelector('svg.chi')){const t=sp.textContent.trim();sp.innerHTML=PIN+'<em class="chn"></em>';sp.querySelector('.chn').textContent=t;l.title=t}else{const e=mk('em','chn');e.textContent=CHN[v]||v;sp.append(e);l.title=CHN[v]||v}
  if(id==='ch')sp.insertAdjacentHTML('beforeend',CK)}))}
@@ -1240,7 +1240,7 @@ function openForm(id){
  if(r.channel)f.channel.value=r.channel;
  intsRender(intsFrom(r));
  cgRender('cgf',(r.cargo&&r.cargo.items)||[]);
- {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'&&k!=='p0'&&k!=='tax'&&k!=='ch2'&&k!=='deals'&&k!=='area'&&k!=='ind'));['d_ph','d_ctt'].forEach(n=>{delete f[n].dataset.t;delete f[n].dataset.sy});f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d);dlRender(d.deals)}
+ {const d=r.detail||{};DK.forEach(k=>f['d_'+k].value=d[k]||'');f.d_sd.value=fmtD(d.sd);f.date.value=fmtD(r.date);f.fu.value=fmtD(r.fu);$('dd').open=!!(r.detail&&Object.keys(r.detail).some(k=>k!=='ints'&&k!=='p0'&&k!=='tax'&&k!=='ch2'&&k!=='deals'&&k!=='ref'&&k!=='area'&&k!=='ind'));['d_ph','d_ctt'].forEach(n=>{delete f[n].dataset.t;delete f[n].dataset.sy});f.deal_amt.value=fmtIn(r.deal_amt);f.deal_date.value=fmtD(r.deal_date);togCt();fillDial();cmSet(d);dlRender(d.deals)}
  f.querySelectorAll('input[name=channel]').forEach(i=>i.checked=i.value===r.channel);{const x=(r.detail&&r.detail.ch2)||[];f.querySelectorAll('input[name=ch2]').forEach(i=>i.checked=x.includes(i.value));ch2Sync()}
  {const bl=f.brand.closest('label.f');if(team==='B'){if(![...f.brand.options].some(o=>o.value==='CPLEx'))f.brand.add(new Option('CPLEx','CPLEx'));f.brand.value='CPLEx';bl.classList.add('hid')}else bl.classList.remove('hid')}
  {const off=team==='C';$('ads_wrap').classList.toggle('hid',off);$('ch_wrap').classList.toggle('hid',off);$('ch2_wrap').classList.toggle('hid',off);f.fu_status.closest('label.f').classList.toggle('hid',off)}
@@ -1324,6 +1324,7 @@ Website:['#0096d6','<circle cx="12" cy="12" r="6" stroke="#fff" stroke-width="1.
 'Facebook Post':['#1877f2','<path d="M13.500 19v-6h2l.4-2.400h-2.400V9.200c0-.7.3-1.200 1.300-1.200h1.200V5.900c-.2 0-1-.1-1.800-.1-1.800 0-3 1.100-3 3.100v1.700H9v2.400h2.200v6z" fill="#fff"/>'],
 'Lemon8':['#fde047','<ellipse cx="12" cy="12" rx="6.200" ry="4.600" fill="#1f1f1f" transform="rotate(-30 12 12)"/><path d="M9.200 14.800l5.600-5.600" stroke="#fde047" stroke-width="1.200" stroke-linecap="round"/>'],
 'Facebook Reel':['#0a4fb3','<rect x="5.500" y="6.500" width="13" height="11" rx="2.500" stroke="#fff" stroke-width="1.500" fill="none"/><path d="M10.500 9.600l4 2.400-4 2.400z" fill="#fff"/>'],
+Referral:['#db2777','<circle cx="9.5" cy="9.5" r="2.300" fill="#fff"/><path d="M5.500 17c.3-2.400 1.900-3.800 4-3.800s3.700 1.400 4 3.800z" fill="#fff"/><circle cx="15.300" cy="8.800" r="1.900" fill="#fff" opacity=".85"/><path d="M14.600 12.600c1.900-.2 3.500 1 3.900 3.400h-3.300" fill="#fff" opacity=".85"/>'],
 Email:['#f59e0b','<rect x="6" y="8" width="12" height="8.500" rx="1.500" stroke="#fff" fill="none" stroke-width="1.500"/><path d="M6.500 9l5.500 4.500L17.500 9" stroke="#fff" fill="none" stroke-width="1.500"/>']};
 let IGN=0;const chIcon=(v,sz)=>{if(!v)return '';const c=CHI[v];if(!c)return esc(v);const gid='igg'+(++IGN),z=sz||24;return `<svg class="chi" viewBox="0 0 24 24" width="${z}" height="${z}" role="img" aria-label="${v}"><title>${v}</title>${v==='IG'?'<defs><linearGradient id="'+gid+'" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".4" stop-color="#fa7e1e"/><stop offset=".7" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs>':''}<rect width="24" height="24" rx="6" fill="${v==='IG'?'url(#'+gid+')':c[0]}"/>${c[1]}</svg>`};
 const fmtD=d=>/^\d{4}-\d{2}-\d{2}/.test(d||'')?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):(d||'');
@@ -5226,6 +5227,15 @@ const _dl=del;del=async function(id){const r=rows.find(y=>y.id===id),ds=r&&r.tea
  if(ds.length&&!rows.some(y=>y.id===id)){for(const z of ds){const{error}=await sb.from('so_deals').delete().eq('id',z.id);if(!error)SO.deals=SO.deals.filter(q=>q!==z)}try{if(!$('vSO').classList.contains('hid'))soRender()}catch(e){}}};
 Object.assign(EN,{'พื้นที่':'Area','ประเภทธุรกิจ':'Industry'});
 })();
+</script>
+<script>
+/* Referral channel: referrer field */
+(function(){if(!DK.includes('ref'))DK.push('ref');const f=$('fm_'),w=$('ref_w');
+const sync=()=>{const m=(f.querySelector('input[name=channel]:checked')||{}).value==='Referral',o=[...f.querySelectorAll('input[name=ch2]:checked')].some(i=>i.value==='Referral');const on=m||o;w.classList.toggle('hid',!on);f.d_ref.required=m;const rq=w.querySelector('.rq');if(rq)rq.classList.toggle('hid',!m);f.d_ref.classList.toggle('em-f',m&&!f.d_ref.value.trim())};
+f.addEventListener('change',e=>{if(e.target&&(e.target.name==='channel'||e.target.name==='ch2'))sync()});f.d_ref.addEventListener('input',sync);
+new MutationObserver(()=>{if($('dlg').open)setTimeout(sync,0)}).observe($('dlg'),{attributes:true,attributeFilter:['open']});
+const _ms=markEmpty;markEmpty=function(){const r=_ms.apply(this,arguments);try{sync()}catch(e){}return r};
+Object.assign(EN,{'ผู้แนะนำ':'Referred by','ลูกค้าแนะนำ':'Referral'});})();
 </script>
 </body>
 </html>
