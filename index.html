@@ -6037,7 +6037,7 @@ function clOpen(id,term){CL.les=id;CL.qz=null;CL.st.last=id;clSave();clRender();
 (function(){const nav=document.querySelector('nav.tabs'),tN=$('tN');if(!nav||!tN)return;
  const bt=document.createElement('button');bt.id='tCL';bt.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>Classroom';tN.after(bt);
  const vw=document.createElement('div');vw.id='vCL';vw.className='hid clmain';const ref=$('vN');ref.parentNode.insertBefore(vw,ref);
- const V=['vN','vF','vW','vL','vD','vC','vCU','vPT','vSO','vRS','vS','vFO'];
+ const V=['vN','vF','vW','vL','vD','vC','vCU','vPT','vSO','vRS','vS','vFO','vOF'];
  const _t=tab;tab=function(k){if(k==='CL'){V.forEach(x=>{const e=$(x);if(e)e.classList.add('hid')});nav.querySelectorAll('button.on').forEach(b=>b.classList.remove('on'));const f=$('fnb');if(f)f.classList.add('hid');bt.classList.add('on');vw.classList.remove('hid');clLoad();clRender();return}
   vw.classList.add('hid');bt.classList.remove('on');return _t(k)};
  bt.onclick=()=>tab('CL');
@@ -6084,6 +6084,148 @@ html.scl nav.tabs,html.scl nav.tabs *{animation-play-state:paused!important}
 <script>
 (function(){const h=document.documentElement;let t=0,on=false;const f=()=>{if(!on){on=true;h.classList.add('scl')}clearTimeout(t);t=setTimeout(()=>{on=false;h.classList.remove('scl')},160)};
 addEventListener('scroll',f,{passive:true,capture:true});addEventListener('wheel',f,{passive:true});addEventListener('touchmove',f,{passive:true});})();
+</script>
+<style>
+#vOF{display:flex;flex-direction:column;gap:14px}#vOF.hid{display:none}
+.oftop{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.oftop .btn{margin-left:auto}
+.ofgrid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start}@media(max-width:1100px){.ofgrid{grid-template-columns:1fr}}
+.ofmap{display:flex;flex-direction:column;gap:12px;min-width:0}.ofsvg{display:block;width:100%;height:auto;border-radius:14px;border:4px solid #0e2238;background:#1f2a4d}
+.ofp:hover{filter:brightness(1.08)}.ofhs{cursor:pointer}.ofhs:hover circle{filter:brightness(1.15)}
+.ofbr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}@media(max-width:760px){.ofbr{grid-template-columns:1fr}}
+.ofbc{background:#fffdf7;border:3px solid #0e2238;box-shadow:3px 3px 0 #0e2238;overflow:hidden;color:#0e2238}.ofbh{color:#fff;font-weight:700;font-size:13px;padding:6px 10px;display:flex;align-items:center}.ofbh em{margin-left:auto;font-style:normal;background:rgba(255,255,255,.25);padding:0 7px;border-radius:8px;font-size:12px}.ofbc svg{display:block;width:100%;height:auto;background:#d7f0c4}.ofbl{padding:6px 10px;font-size:12.5px;display:flex;flex-direction:column;gap:2px}
+.ofsd{display:flex;flex-direction:column;gap:12px}.ofc{margin:0}.ofc h3{display:flex;align-items:center;gap:8px}.ofem{margin-left:auto;font-style:normal;font-size:11.5px;background:#f08a24;color:#fff;padding:1px 8px;border-radius:9px}
+.ofloc{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.ofloc button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:6px 10px;font:inherit;font-size:12.5px;cursor:pointer}.ofloc button.on{background:var(--pr);border-color:var(--pr);color:#fff;font-weight:600}
+.ofnote{display:flex;gap:8px}.ofnote input{flex:1;min-width:0}
+.ofrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--bd);font-size:13px;cursor:pointer}.ofrow:first-of-type{border-top:0}.ofav{width:28px;height:28px;border-radius:8px;color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}.ofrt{flex:1;min-width:0;display:flex;flex-direction:column}.ofrt>.sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.offl{font-size:11px;font-weight:700;background:#0e2238;color:#fff;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.ofpb{background:var(--fld);border-radius:12px;padding:10px 12px;font-size:14px}.ofmx{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.ofmx div{background:var(--fld);border-radius:12px;padding:8px 10px}.ofmx b{display:block;font-size:16px}.ofmx span{font-size:11.5px;color:var(--mu)}
+#ofd{overflow:visible}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<script>
+/* ===== Office (isometric pixel map) ===== */
+const OF={cfg:{seats:{},cars:{}},st:{},calls:[],cls:[],prof:[],loaded:false,edit:false,view:'all',t:null};
+const OFS=19,OFC=Math.cos(Math.PI/6),OW=9,OD=18,OZ={3:34,2:17,1:0};
+const ofE=s=>esc(s==null?'':s);
+let OFPT=[];
+function ofP(x,y,z){const p=[(x-y)*OFC*OFS,(x+y)*0.5*OFS-z*OFS];OFPT.push(p);return p}
+const ofPoly=(pts,f,s='#0e2238',w=1.5)=>`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="${f}" stroke="${s}" stroke-width="${w}" stroke-linejoin="round"/>`;
+function ofSh(c,f){c=c.replace('#','');const v=[0,2,4].map(i=>parseInt(c.slice(i,i+2),16));return '#'+v.map(x=>Math.max(0,Math.min(255,Math.round(x*f))).toString(16).padStart(2,'0')).join('')}
+function ofBox(x,y,z,w,d,h,c,top,sw){sw=sw||1.5;const t=[ofP(x,y,z+h),ofP(x+w,y,z+h),ofP(x+w,y+d,z+h),ofP(x,y+d,z+h)],fx=[ofP(x+w,y,z),ofP(x+w,y+d,z),ofP(x+w,y+d,z+h),ofP(x+w,y,z+h)],fy=[ofP(x,y+d,z),ofP(x+w,y+d,z),ofP(x+w,y+d,z+h),ofP(x,y+d,z+h)];return ofPoly(fx,ofSh(c,.78),'#0e2238',sw)+ofPoly(fy,ofSh(c,.9),'#0e2238',sw)+ofPoly(t,top||c,'#0e2238',sw)}
+const ofR=(x,y,w,h,c,ex)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"${ex||''}/>`;
+function ofSprite(x,y,shirt,sit){const U=4,m=["..HHHH..",".HHHHHH.",".HSSSSH.",".SESSES.",".SSSSSS.","..SSSS..",".TTTTTT.","TTTTTTTT","S.TTTT.S"].concat(sit?["..PPPP..",".PPPPPP.","........"]:["..PPPP..","..P..P..",".BB..BB."]),col={H:'#2b2233',S:'#f2c39b',E:'#1b1b28',T:shirt,P:'#33415c',B:'#1b1b28'};let o='';m.forEach((row,j)=>[...row].forEach((ch,i)=>{if(ch!=='.')o+=ofR(x+i*U,y+j*U,U,U,col[ch])}));return o}
+function ofBub(cx,y,t,bg){const w=t.length*6.4+16,x=cx-w/2;return ofR(x,y-22,w,20,'#0e2238')+ofR(x+2,y-20,w-4,16,bg||'#fff')+ofR(cx-4,y-2,8,4,'#0e2238')+ofR(cx-2,y-2,4,2,bg||'#fff')+`<text x="${cx}" y="${y-8}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0e2238">${ofE(t)}</text>`}
+function ofTag(cx,y,t,c){const w=t.length*6+12;return ofR(cx-w/2,y,w,13,c)+`<text x="${cx}" y="${y+10}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff" font-family="Silkscreen,monospace">${ofE(t)}</text>`}
+function ofPerson(x,y,z,nm,c,bub,bbg,sit,up,cls,dim){let [sx,sy]=ofP(x,y,z);sx-=16;sy-=48;up=up||0;return `<g class="ofp${cls?' '+cls:''}" data-ofn="${ofE(nm)}" style="cursor:pointer${dim?';opacity:.45':''}">`+ofSprite(sx,sy,c,sit)+ofTag(sx+16,sy+50,String(nm).slice(0,10),c)+(bub?(up?ofR(sx+15,sy-4-up,2,up,'#0e2238'):'')+ofBub(sx+16,sy-4-up,bub,bbg):'')+'</g>'}
+const ofDesk=(x,y,z,c)=>ofBox(x,y,z,1.6,0.9,0.75,c||'#b07a4a')+ofBox(x+0.5,y+0.1,z+0.75,0.6,0.15,0.5,'#33415c','#7fd3ff');
+const ofHead=(x,y,z,c)=>ofBox(x,y,z,2.2,1.0,0.8,c)+ofBox(x+0.7,y+0.1,z+0.8,0.7,0.15,0.55,'#33415c','#7fd3ff')+ofBox(x+0.85,y+1.1,z,0.6,0.6,0.7,ofSh(c,.8));
+const ofChair=(x,y,z,c)=>ofBox(x,y,z,0.5,0.5,0.45,c||'#5c6f86');
+const ofPlant=(x,y,z)=>ofBox(x,y,z,0.5,0.5,0.4,'#c26a3d')+ofBox(x-0.1,y-0.1,z+0.4,0.7,0.7,0.6,'#2f9e44','#40c057');
+function ofStair(x,y,z){let o='';for(let k=0;k<6;k++)o+=ofBox(x,y+k*0.6,z,1.6,0.6,(6-k)*0.4,'#a07a55',null,1);return o}
+const ofPwall=(y,z,a,b)=>ofBox(0,y-0.15,z,a,0.3,2.2,'#cbbca6',null,1.2)+ofBox(b,y-0.15,z,OW-b,0.3,2.2,'#cbbca6',null,1.2);
+const ofRug=(x,y,z,w,d,c)=>ofPoly([ofP(x,y,z+.01),ofP(x+w,y,z+.01),ofP(x+w,y+d,z+.01),ofP(x,y+d,z+.01)],c,'#00000030',1);
+const ofWin=(a,b,z)=>ofPoly([ofP(a,-0.31,z+.9),ofP(b,-0.31,z+.9),ofP(b,-0.31,z+2.1),ofP(a,-0.31,z+2.1)],'#bfe6ff');
+const ofWinL=(a,b,z)=>ofPoly([ofP(-0.31,a,z+.9),ofP(-0.31,b,z+.9),ofP(-0.31,b,z+2.1),ofP(-0.31,a,z+2.1)],'#bfe6ff');
+function ofLbl(x,y,z,t,c){const [sx,sy]=ofP(x,y,z),w=t.length*7.2+16;return ofR(sx+6,sy-11,w,20,'#0e2238')+ofR(sx+8,sy-9,w-4,16,c)+`<text x="${sx+6+w/2}" y="${sy+3}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${ofE(t)}</text>`}
+function ofFloor(z,base,lab,col){let o=ofPoly([ofP(.4,.4,z-1.6),ofP(OW+.8,.4,z-1.6),ofP(OW+.8,OD+.8,z-1.6),ofP(.4,OD+.8,z-1.6)],'#00000033','none',0)+ofBox(0,0,z-0.4,OW,OD,0.4,'#7a5a3a',base);for(let i=0;i<OW;i++)for(let j=0;j<OD;j++)if((i+j)%2===0)o+=ofPoly([ofP(i,j,z),ofP(i+1,j,z),ofP(i+1,j+1,z),ofP(i,j+1,z)],'#ffffff18','#00000022',1);
+ o+=ofBox(-0.3,0,z,0.3,OD,2.6,'#d9cbb8',null,1.2)+ofBox(0,-0.3,z,OW,0.3,2.6,'#e6dccd',null,1.2);const [sx,sy]=ofP(-0.3,OD,z);return o+ofR(sx-74,sy-8,46,22,col)+`<text x="${sx-51}" y="${sy+7}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Silkscreen,monospace">${lab}</text>`}
+/* seats: id, floor, desk xy, person xy, kind, label, color */
+const OFSEAT=[['ceoa',3,0.8,13.4,1.4,14.3,'d','ผู้ช่วย CEO','#495057'],['acc1',3,0.6,7.0,1.2,7.9,'d','บัญชี','#2f9e44'],['acc2',3,3.4,7.0,4.0,7.9,'d','บัญชี','#2f9e44'],['acch',3,5.8,7.4,6.6,8.5,'h','หัวหน้าบัญชี','#1b6b3a'],
+ ['hr1',3,0.6,0.8,1.2,1.7,'d','HR','#7048e8'],['hr2',3,3.4,0.8,4.0,1.7,'d','HR','#7048e8'],['hr3',3,0.6,3.4,1.2,4.3,'d','HR','#7048e8'],['hrh',3,5.8,1.2,6.6,2.3,'h','หัวหน้า HR','#5f3dc4'],
+ ['s1',2,0.6,10.4,1.2,11.3,'d','Sales','#0096d6'],['s2',2,3.4,10.4,4.0,11.3,'d','Sales','#0096d6'],['s3',2,0.6,13.2,1.2,14.1,'d','Sales','#0096d6'],['sa',2,3.4,13.2,4.0,14.1,'d','ผู้ช่วยเซลล์','#74c0fc'],['sh',2,1.6,16.4,2.6,17.4,'h','หัวหน้าเซลล์','#c0392b'],
+ ['b1',2,0.6,1.0,1.2,1.9,'d','Booking','#1c7ed6'],['b2',2,3.4,1.0,4.0,1.9,'d','Booking','#1c7ed6'],['b3',2,0.6,4.0,1.2,4.9,'d','Booking','#1c7ed6'],['b4',2,3.4,4.0,4.0,4.9,'d','Booking','#1c7ed6'],['bh',2,6.0,2.4,7.0,3.3,'h','หัวหน้า Booking','#1864ab']];
+const OFLOC={desk:['💺','ที่โต๊ะ'],meet:['🗣️','ประชุม'],eat:['🍱','ทานข้าว'],brk:['☕','พักเบรก'],out:['🚗','ออกพบลูกค้า'],zimp:['🏢','ZIMPLIGITAL'],ff:['📦','FullFeel Warehouse'],cc:['🏬','CPLEx Chatuchak'],leave:['🌴','ลา / ไม่อยู่']};
+const OFZONE={meet:[[1.4,12.7],[2.3,12.6],[3.2,12.7],[4.1,12.6],[1.6,15.4],[2.6,15.5],[3.6,15.4],[4.6,15.5],[5.2,13.6]],eat:[[1.3,7.0],[2.4,7.0],[3.5,7.0],[4.7,7.0],[5.8,7.0],[1.8,9.6],[3.0,9.6],[4.3,9.6],[5.5,9.6]],brk:[[0.9,2.4],[0.9,3.2],[0.9,4.0],[0.9,4.8],[4.5,1.9],[4.5,2.8],[4.5,3.7],[2.8,2.3],[7.4,5.4]]};
+const OFBR=[['zimp','Office ZIMPLIGITAL','#5f3dc4'],['ff','FullFeel Warehouse','#0ca678'],['cc','CPLEx Chatuchak','#f08a24']];
+const ofToday=()=>today();
+const ofMine=()=>OF.st[String(profile.id)]||null;
+function ofStOf(nm){const v=Object.values(OF.st).find(x=>x.name===nm);if(!v)return null;if(String(v.updated_at||'').slice(0,10)!==ofToday())return null;return v}
+function ofColor(nm){const s=OFSEAT.find(x=>OF.cfg.seats[x[0]]===nm);if(s)return s[8];const p=OF.prof.find(x=>x.name===nm);const r=p&&p.role;return r==='marketing'?'#e8590c':r==='zimp'?'#f5b400':r==='ceo'?'#0b4d8c':p&&p.team==='C'?'#7c5cd6':p&&p.team==='B'?'#f08a24':'#0096d6'}
+function ofAuto(nm){const now=Date.now(),H=3*36e5;const c=OF.calls.filter(x=>x.actor===nm);if(c.length&&now-Date.parse(c[0].created_at)<H)return '📞 โทรลูกค้า '+c.length+' สายวันนี้';
+ try{if(typeof MK==='object'&&MK.items){const it=MK.items.filter(x=>x._by===nm&&x._at&&now-Date.parse(x._at)<H).sort((a,b)=>String(b._at).localeCompare(String(a._at)))[0];if(it){const t=it.list||it.title||it.topic||'';return (it.kind==='approval'?'🎨 ':it.kind==='post'?'📅 ':'📝 ')+String(t).slice(0,22)}}}catch(_){}
+ const cl=OF.cls.find(x=>x.name===nm);if(cl&&now-Date.parse(cl.updated_at)<36e5)return '🎓 เรียน Classroom';return ''}
+function ofBubble(nm){const s=ofStOf(nm);if(s&&s.note)return (s.loc&&s.loc!=='desk'&&OFLOC[s.loc]?OFLOC[s.loc][0]:'💬')+' '+s.note;if(s&&s.loc&&s.loc!=='desk')return OFLOC[s.loc][0]+' '+OFLOC[s.loc][1];return ofAuto(nm)}
+const ofLoc=nm=>{const s=ofStOf(nm);return s&&s.loc?s.loc:'desk'};
+function ofScene(){OFPT=[];const Z3=OZ[3],Z2=OZ[2],Z1=OZ[1],S=OF.cfg.seats||{},ppl={1:[],2:[],3:[]},used={meet:0,eat:0,brk:0};let g='';
+ const seated=OFSEAT.filter(s=>S[s[0]]);
+ seated.forEach(s=>{const nm=S[s[0]],lc=ofLoc(nm);if(lc==='desk')ppl[s[1]].push([s[4],s[5],OZ[s[1]],nm,s[8],ofBubble(nm),true]);else if(OFZONE[lc]){const p=OFZONE[lc][used[lc]++%9];ppl[1].push([p[0],p[1],Z1,nm,s[8],ofBubble(nm),lc==='brk'&&p[0]<1])}});
+ Object.values(OF.st).filter(v=>String(v.updated_at||'').slice(0,10)===ofToday()&&OFZONE[v.loc]&&!seated.some(s=>S[s[0]]===v.name)).forEach(v=>{const p=OFZONE[v.loc][used[v.loc]++%9];ppl[1].push([p[0],p[1],Z1,v.name,ofColor(v.name),ofBubble(v.name),false])});
+ const away=s=>{const nm=S[s[0]],lc=ofLoc(nm);if(lc==='desk'||OFZONE[lc])return '';const [sx,sy]=ofP(s[4],s[5],OZ[s[1]]+1.3);return ofBub(sx,sy,'📍 '+nm+' · '+(OFLOC[lc]||['',''])[1],'#fff3e3')};
+ const edit=s=>{if(!OF.edit)return '';const [sx,sy]=ofP(s[4],s[5],OZ[s[1]]+0.4);return `<g class="ofhs" data-ofseat="${s[0]}"><circle cx="${sx}" cy="${sy}" r="13" fill="${S[s[0]]?'#2f9e44':'#f08a24'}" stroke="#fff" stroke-width="3"/><text x="${sx}" y="${sy+4}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${S[s[0]]?'✎':'+'}</text></g>`};
+ const desks=fl=>OFSEAT.filter(s=>s[1]===fl).map(s=>(s[6]==='h'?ofHead(s[2],s[3],OZ[fl],s[8]):ofDesk(s[2],s[3],OZ[fl],s[8])+ofChair(s[2]+0.55,s[3]+1.0,OZ[fl]))).join('');
+ const peo=fl=>ppl[fl].sort((a,b)=>(a[0]+a[1])-(b[0]+b[1])).map((p,i)=>ofPerson(p[0],p[1],p[2],p[3],p[4],p[5],'#fff',p[6],p[5]&&i%2?22:0)).join('');
+const RG={};let _i=OFPT.length;
+ // F3
+ let f3=ofFloor(Z3,'#f3e6d6','3F','#7048e8')+ofWin(1,3.4,Z3)+ofWin(5.4,7.8,Z3)+ofWinL(7,11,Z3)+ofWinL(1,5,Z3)+ofPwall(6,Z3,3.6,5.1)+ofPwall(12,Z3,3.6,5.1)+ofRug(0.4,12.4,Z3,6,5.2,'#e9dcc6')+ofStair(7,12.6,Z3)+ofPlant(0.5,17,Z3)+ofPlant(6.2,17,Z3)+desks(3)+ofBox(7.4,10.2,Z3,1.2,1.2,1.6,'#868e96','#adb5bd')+ofBox(7.6,3.6,Z3,1.0,1.8,2,'#6c7a89','#adb5bd')+ofPlant(3.6,4.4,Z3)
+  +ofLbl(OW+0.4,15,Z3,'🚪 ทางเข้า · ผู้ช่วย CEO','#33415c')+ofLbl(OW+0.4,9,Z3,'💰 บัญชี / การเงิน','#1b6b3a')+ofLbl(OW+0.4,3,Z3,'🧑‍💼 ห้อง HR','#7048e8');
+RG.f3=[_i,OFPT.length];_i=OFPT.length;
+ let f2=ofFloor(Z2,'#e4eef9','2F','#0082c0')+ofWin(1,3.4,Z2)+ofWin(5.4,7.8,Z2)+ofWinL(2,6,Z2)+ofWinL(11,15,Z2)+ofStair(7,12.6,Z2)+ofBox(0.2,8.6,Z2,6.6,0.15,0.9,'#b8c9dc',null,1)+ofPlant(7.4,8.2,Z2)+desks(2)
+  +ofLbl(OW+0.4,14,Z2,'💼 Sales · ผู้ช่วยเซลล์ · หัวหน้าเซลล์','#0096d6')+ofLbl(OW+0.4,4,Z2,'📦 Booking · หัวหน้า Booking','#0082c0');
+RG.f2=[_i,OFPT.length];_i=OFPT.length;
+ let f1=ofFloor(Z1,'#eef6e6','1F','#2f9e44')+ofWin(1,3.4,Z1)+ofWinL(7,11,Z1)+ofPwall(12,Z1,5.5,7)+ofBox(0,5.9,Z1,9,0.2,0.3,'#c7b39b',null,1)+ofStair(7,12.6,Z1)+ofRug(0.6,12.4,Z1,5.4,4.6,'#dfe8f2')+ofRug(0.2,1.6,Z1,4.6,4,'#f7d9c4')+ofBox(1,13.2,Z1,4,1.6,0.75,'#ffffff');
+ for(let k=0;k<5;k++)f1+=ofChair(0.9+k*0.85,12.5,Z1);for(let k=0;k<4;k++)f1+=ofChair(1.2+k*0.95,14.9,Z1);
+ f1+=ofBox(0.1,13.2,Z1+0.9,0.15,1.6,1.1,'#0e2238','#e6f2fb')+ofBox(1,7.6,Z1,5.2,1.4,0.75,'#c08552');for(let k=0;k<5;k++)f1+=ofChair(0.9+k*1.15,6.9,Z1,'#c27100');for(let k=0;k<4;k++)f1+=ofChair(1.4+k*1.25,9.1,Z1,'#c27100');
+ f1+=ofBox(6.6,0.3,Z1,2.1,4.4,0.95,'#dee2e6','#868e96')+ofBox(7.4,0.4,Z1+0.95,0.8,0.8,0.45,'#adb5bd')+ofBox(0.3,0.2,Z1,1.0,1.0,2.4,'#e9ecef','#ced4da')+ofBox(0.4,2,Z1,1.0,3.6,0.5,'#e8590c','#ffa94d')+ofBox(0.4,2,Z1+0.5,0.35,3.6,0.6,'#c2410c')+ofBox(2.2,3,Z1,1.4,1.6,0.4,'#b07a4a');for(let k=0;k<4;k++)f1+=ofChair(4.2,1.8+k*0.9,Z1,'#868e96');
+ f1+=ofBox(4.4,17.85,Z1,1.2,0.15,2.0,'#8a5a32','#8a5a32')+ofPlant(6.2,17.2,Z1)+ofLbl(OW+0.4,15,Z1,'🗣️ ห้องประชุม · 9 ที่นั่ง','#33415c')+ofLbl(OW+0.4,9,Z1,'🍱 โต๊ะทานอาหาร · 9 ที่นั่ง','#c27100')+ofLbl(OW+0.4,3,Z1,'🍳 ครัว · โซฟา + 9 ที่นั่ง','#a5281b');
+RG.f1=[_i,OFPT.length];_i=OFPT.length;
+ // parking
+ let pk=ofPoly([ofP(-1.5,18.4,Z1-.4),ofP(10.5,18.4,Z1-.4),ofP(10.5,27,Z1-.4),ofP(-1.5,27,Z1-.4)],'#c9cfd6','#868e96',2)+ofPoly([ofP(-1.5,27,Z1-.4),ofP(10.5,27,Z1-.4),ofP(10.5,30,Z1-.4),ofP(-1.5,30,Z1-.4)],'#495057','#343a40',1);
+ for(let k=0;k<6;k++)pk+=ofPoly([ofP(-1+k*2,28.4,Z1-.39),ofP(-.2+k*2,28.4,Z1-.39),ofP(-.2+k*2,28.6,Z1-.39),ofP(-1+k*2,28.6,Z1-.39)],'#f8f9fa','none',0);
+ const tree=(x,y)=>ofBox(x,y,Z1-.4,.4,.4,.9,'#8a5a32')+ofBox(x-.5,y-.5,Z1+.5,1.4,1.4,1.2,'#2f9e44','#51cf66');pk+=tree(11.4,19)+tree(11.4,23)+tree(-2.6,25.5);
+ const parked=o=>{if(!o)return false;const l=ofLoc(o);return !['out','zimp','ff','cc','leave'].includes(l)};
+ const tagO=(x,y,z,t,c)=>{const [sx,sy]=ofP(x,y,z),w=t.length*5.6+10;return ofR(sx-w/2,sy-9,w,13,c)+`<text x="${sx}" y="${sy+1}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff" font-family="Silkscreen,monospace">${ofE(t)}</text>`};
+ const C=OF.cfg.cars||{};let tags='';
+ [['cl',-1.1],['cr',8]].forEach(([id,x])=>{const v=C[id],y=19.6;if(v&&v.owner&&parked(v.owner)){const c=v.color||ofColor(v.owner);pk+=ofBox(x,y,Z1-.4,2.2,4.4,.6,c)+ofBox(x+.3,y+1.1,Z1+.2,1.6,2.2,.55,ofSh(c,1.1),'#a5dcff');tags+=tagO(x+1.1,y+2.2,Z1+1.6,v.owner.slice(0,10),c)}else pk+=ofPoly([ofP(x,y,Z1-.38),ofP(x+2.2,y,Z1-.38),ofP(x+2.2,y+4.4,Z1-.38),ofP(x,y+4.4,Z1-.38)],'none','#ffffff',2);
+  if(OF.edit){const [sx,sy]=ofP(x+1.1,y+2.2,Z1);tags+=`<g class="ofhs" data-ofcar="${id}"><circle cx="${sx}" cy="${sy}" r="13" fill="${v&&v.owner?'#2f9e44':'#f08a24'}" stroke="#fff" stroke-width="3"/><text x="${sx}" y="${sy+4}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${v&&v.owner?'✎':'+'}</text></g>`}});
+ for(let row=0;row<3;row++)for(let col=0;col<4;col++){const id='m'+(row*4+col+1),v=C[id],x=1.6+col*1.45,y=19.3+row*2.15;
+  if(v&&v.owner&&parked(v.owner)){const c=v.color||ofColor(v.owner);pk+=ofBox(x+.15,y,Z1-.4,.4,1.5,.5,c)+ofBox(x+.1,y+.2,Z1+.1,.5,.25,.35,'#1b1b28');tags+=tagO(x+.35,y+.6,Z1+1.0,v.owner.slice(0,8),c)}else pk+=ofPoly([ofP(x,y,Z1-.38),ofP(x+.7,y,Z1-.38),ofP(x+.7,y+1.5,Z1-.38),ofP(x,y+1.5,Z1-.38)],'none','#868e96',1.5);
+  if(OF.edit){const [sx,sy]=ofP(x+.35,y+.75,Z1);tags+=`<g class="ofhs" data-ofcar="${id}"><circle cx="${sx}" cy="${sy}" r="10" fill="${v&&v.owner?'#2f9e44':'#f08a24'}" stroke="#fff" stroke-width="2"/><text x="${sx}" y="${sy+4}" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">${v&&v.owner?'✎':'+'}</text></g>`}}
+ pk+=tags+ofLbl(10.6,25.5,Z1,'🅿️ ลานจอด','#33415c');
+ Object.values(OF.st).filter(v=>String(v.updated_at||'').slice(0,10)===ofToday()&&v.loc==='out').forEach((v,i)=>{pk+=ofPerson(0.4+i*1.2,26.2,Z1,v.name,ofColor(v.name),ofBubble(v.name),'#fff3e3',false,i%2?22:0)});
+RG.pk=[_i,OFPT.length];
+ const awayAll=fl=>OFSEAT.filter(s=>s[1]===fl&&S[s[0]]).map(away).join('')+OFSEAT.filter(s=>s[1]===fl).map(edit).join('');
+ const guides=(za,zb)=>[[0,OD],[OW,OD],[OW,0]].map(([x,y])=>{const a=ofP(x,y,za-.4),b=ofP(x,y,zb);return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#ffffff40" stroke-width="2" stroke-dasharray="4 6"/>`}).join('');
+ const V=OF.view,show=k=>V==='all'||V===k;
+ const parts=[],use=[];const sub=(k,fn)=>{const a=OFPT.length,o=fn();use.push(RG[k],[a,OFPT.length]);return o};if(show('3'))parts.push(sub('f3',()=>f3+peo(3)+awayAll(3)));if(show('2'))parts.push(sub('f2',()=>f2+peo(2)+awayAll(2)));if(show('1')||show('p'))parts.push((show('1')?sub('f1',()=>f1+peo(1)):'')+(show('p')||V==='all'?sub('pk',()=>pk):''));
+ g=(V==='all'?guides(Z2,Z1)+guides(Z3,Z2):'')+parts.reverse().join('');
+ const PT=use.flatMap(([a,b])=>OFPT.slice(a,b)),xs=PT.map(p=>p[0]),ys=PT.map(p=>p[1]),x0=Math.min(...xs)-90,x1=Math.max(...xs)+(V==='p'?60:240),y0=Math.min(...ys)-120,y1=Math.max(...ys)+30;
+ return `<svg viewBox="${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1-x0).toFixed(0)} ${(y1-y0).toFixed(0)}" class="ofsvg" shape-rendering="crispEdges"><defs><linearGradient id="ofbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3f7a"/><stop offset="1" stop-color="#121a36"/></linearGradient></defs><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" fill="url(#ofbg)"/>${[...Array(60)].map((_,i)=>`<rect x="${(x0+(i*137)%(x1-x0)).toFixed(0)}" y="${(y0+(i*71)%(y1-y0)).toFixed(0)}" width="3" height="3" fill="#ffffff44"/>`).join('')}${g}</svg>`}
+function ofBranches(){return `<div class="ofbr">${OFBR.map(([k,n,c])=>{const L=Object.values(OF.st).filter(v=>String(v.updated_at||'').slice(0,10)===ofToday()&&v.loc===k);return `<div class="ofbc"><div class="ofbh" style="background:${c}">📍 ${ofE(n)}<em>${L.length}</em></div><svg viewBox="0 0 320 120" shape-rendering="crispEdges">${k==='ff'?ofR(10,40,150,70,'#868e96')+ofR(0,30,170,14,'#495057')+ofR(50,62,70,48,'#ced4da'):k==='zimp'?ofR(20,14,130,96,'#5f3dc4')+[...Array(12)].map((_,i)=>ofR(32+(i%4)*28,24+Math.floor(i/4)*24,18,14,'#d0bfff')).join('')+ofR(72,88,26,22,'#0e2238'):ofR(10,50,150,60,'#f08a24')+ofR(0,38,170,16,'#c2410c')+[...Array(9)].map((_,i)=>ofR(i*20,38,10,16,'#fff')).join('')+ofR(20,68,60,42,'#a5dcff')+ofR(100,68,40,42,'#8a5a32')}${L.slice(0,3).map((v,i)=>{const x=180+i*46;return `<g class="ofp" data-ofn="${ofE(v.name)}" style="cursor:pointer">${ofSprite(x,56,ofColor(v.name),false)}${ofTag(x+16,104,v.name.slice(0,8),ofColor(v.name))}</g>`}).join('')}</svg>${L.length?`<div class="ofbl">${L.map(v=>`<span>${ofE(v.name)}${v.note?' · '+ofE(v.note):''}</span>`).join('')}</div>`:'<div class="ofbl sub">—</div>'}</div>`}).join('')}</div>`}
+function ofSide(){const me=ofMine(),ml=me&&String(me.updated_at||'').slice(0,10)===ofToday()?me.loc:'desk',S=OF.cfg.seats||{},C=OF.cfg.cars||{};
+ const names0=[...new Set([...Object.values(S),...Object.values(OF.st).filter(v=>String(v.updated_at||'').slice(0,10)===ofToday()).map(v=>v.name)])].filter(Boolean),names=names0.filter(n=>ofBubble(n)).concat(names0.filter(n=>!ofBubble(n)));
+ const fl=nm=>{const l=ofLoc(nm);if(OFZONE[l])return '1F';if(l!=='desk')return (OFLOC[l]||['',''])[1];const s=OFSEAT.find(x=>S[x[0]]===nm);return s?s[1]+'F':'—'};
+ const role=nm=>{const s=OFSEAT.find(x=>S[x[0]]===nm);return s?s[7]:''};
+ const cars=Object.entries(C).filter(([,v])=>v&&v.owner).sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}));
+ return `<div class="ofsd"><div class="pn ofc"><h3>${TT('สถานะของฉัน','My status')}</h3><div class="ofloc">${Object.entries(OFLOC).map(([k,[e,t]])=>`<button type="button" class="${ml===k?'on':''}" data-ofl="${k}">${e} ${t}</button>`).join('')}</div><div class="ofnote"><input id="of_note" maxlength="40" value="${ofE(me&&String(me.updated_at||'').slice(0,10)===ofToday()?me.note||'':'')}" placeholder="${TT('กำลังทำอะไร','What are you doing')}"><button type="button" class="btn p" data-ofsv="1">${TT('บันทึก','Save')}</button></div></div>
+ <div class="pn ofc"><h3>${TT('ตอนนี้ใครทำอะไร','Who is doing what')} <em class="ofem">${names.length}</em></h3>${names.map(nm=>{const b=ofBubble(nm);return `<div class="ofrow" data-ofn="${ofE(nm)}"><span class="ofav" style="background:${ofColor(nm)}">${ofE(nm.slice(0,1))}</span><div class="ofrt"><b>${ofE(nm)}${role(nm)?` <span class="sub">· ${ofE(role(nm))}</span>`:''}</b><span class="sub">${ofE(b||'—')}</span></div><span class="offl">${ofE(fl(nm))}</span></div>`}).join('')||'<div class="sub">—</div>'}</div>
+ <div class="pn ofc"><h3>${TT('ลานจอด · รถใคร','Parking')} <em class="ofem">${cars.filter(([,v])=>!['out','zimp','ff','cc','leave'].includes(ofLoc(v.owner))).length}/14</em></h3>${cars.map(([id,v])=>{const p=!['out','zimp','ff','cc','leave'].includes(ofLoc(v.owner));return `<div class="ofrow"><span class="ofav" style="background:${v.color||ofColor(v.owner)}">${id[0]==='m'?'🛵':'🚗'}</span><div class="ofrt"><b>${ofE(v.owner)}</b><span class="sub">${ofE(v.plate||'')}</span></div><span class="offl">${p?(id==='cl'?TT('ซ้าย','Left'):id==='cr'?TT('ขวา','Right'):TT('แถว ','Row ')+Math.ceil(+id.slice(1)/4)):TT('ไม่ได้จอด','Away')}</span></div>`}).join('')||'<div class="sub">—</div>'}</div></div>`}
+function ofRender(){const v=$('vOF');if(!v||v.classList.contains('hid'))return;const adm=!!profile&&profile.role==='admin';
+ const tabs=[['all',TT('ทั้งตึก','Whole building')],['3','3F'],['2','2F'],['1','1F'],['p',TT('ลานจอด','Parking')]];
+ v.innerHTML=`<div class="oftop"><div class="seg" style="margin:0">${tabs.map(([k,t])=>`<button type="button" data-ofv="${k}" class="${OF.view===k?'on':''}">${t}</button>`).join('')}</div>${adm?`<button type="button" class="btn${OF.edit?' p':''}" data-ofed="1">${OF.edit?TT('เสร็จสิ้น','Done'):TT('จัดที่นั่ง & ที่จอด','Seats & parking')}</button>`:''}</div><div class="ofgrid"><div class="ofmap">${ofScene()}${ofBranches()}</div>${ofSide()}</div>`}
+async function ofLoad(){const d0=ofToday()+'T00:00:00';const [c,s,k,cl,pr]=await Promise.all([sb.from('office_cfg').select('data').eq('id',1).maybeSingle(),sb.from('office_status').select('*'),sb.from('so_call_logs').select('actor,created_at').gte('created_at',new Date(d0).toISOString()).order('created_at',{ascending:false}).limit(500),sb.from('cls_state').select('name,updated_at'),OF.prof.length?{data:OF.prof}:sb.from('profiles').select('id,name,role,team')].map(p=>Promise.resolve(p).catch(e=>({error:e}))));
+ if(c&&c.data&&c.data.data)OF.cfg=Object.assign({seats:{},cars:{}},c.data.data);OF.st={};((s&&s.data)||[]).forEach(r=>OF.st[String(r.user_id)]=r);OF.calls=(k&&k.data)||[];OF.cls=(cl&&cl.data)||[];if(pr&&pr.data)OF.prof=pr.data;OF.loaded=true;ofRender()}
+async function ofSaveCfg(){const{error}=await sb.from('office_cfg').upsert({id:1,data:OF.cfg,updated_at:new Date().toISOString()});if(error)alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message);ofRender()}
+async function ofSetMe(patch){const cur=ofMine()||{},td=String(cur.updated_at||'').slice(0,10)===ofToday();const row={user_id:String(profile.id),name:profile.name||'',loc:td?cur.loc||'desk':'desk',note:td?cur.note||'':'',...patch,updated_at:new Date().toISOString()};OF.st[row.user_id]=row;ofRender();const{error}=await sb.from('office_status').upsert(row,{onConflict:'user_id'});if(error)alert(TT('บันทึกไม่สำเร็จ: ','Save failed: ')+error.message)}
+function ofEditDlg(kind,id){const d=$('ofd'),isCar=kind==='car',S=OF.cfg.seats,C=OF.cfg.cars,cur=isCar?(C[id]||{}):{owner:S[id]||''},seat=OFSEAT.find(x=>x[0]===id),names=[...new Set(OF.prof.map(p=>p.name).filter(Boolean))].sort();
+ $('ofdc').innerHTML=`<h3 style="margin:0 0 12px">${isCar?(id==='cl'?TT('ที่จอดรถเก๋ง · ซ้าย','Car · left'):id==='cr'?TT('ที่จอดรถเก๋ง · ขวา','Car · right'):TT('ที่จอดมอเตอร์ไซค์ ','Motorbike ')+id.slice(1)):seat[1]+'F · '+seat[7]}</h3><label class="f">${isCar?TT('เจ้าของ','Owner'):TT('ผู้นั่ง','Person')}<select id="ofd_o"><option value="">—</option>${names.map(n=>`<option${n===cur.owner?' selected':''}>${ofE(n)}</option>`).join('')}</select></label>${isCar?`<label class="f">${TT('ทะเบียน / รุ่น','Plate / model')}<input id="ofd_p" value="${ofE(cur.plate||'')}"></label><label class="f">${TT('สีรถ','Color')}<input id="ofd_c" type="color" value="${cur.color||'#0096d6'}"></label>`:''}<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn" id="ofd_x">${TT('ยกเลิก','Cancel')}</button><button type="button" class="btn p" id="ofd_s">${TT('บันทึก','Save')}</button></div>`;
+ $('ofd_x').onclick=()=>d.close();$('ofd_s').onclick=()=>{const o=$('ofd_o').value;if(isCar){if(o)C[id]={owner:o,plate:$('ofd_p').value.trim(),color:$('ofd_c').value};else delete C[id]}else{if(o){Object.keys(S).forEach(k=>{if(S[k]===o)delete S[k]});S[id]=o}else delete S[id]}d.close();ofSaveCfg()};d.showModal()}
+function ofPopup(nm){const d=$('ofd'),s=ofStOf(nm),seat=OFSEAT.find(x=>OF.cfg.seats[x[0]]===nm),car=Object.entries(OF.cfg.cars||{}).find(([,v])=>v&&v.owner===nm),b=ofBubble(nm),calls=OF.calls.filter(x=>x.actor===nm).length;
+ $('ofdc').innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span class="ofav" style="background:${ofColor(nm)};width:42px;height:42px;font-size:16px">${ofE(nm.slice(0,1))}</span><div style="flex:1"><b style="font-size:17px">${ofE(nm)}</b><div class="sub">${seat?ofE(seat[7])+' · '+seat[1]+'F':''}</div></div><span class="offl">${ofE((OFLOC[ofLoc(nm)]||['',''])[1])}</span></div><div class="ofpb">${ofE(b||'—')}</div><div class="ofmx"><div><b>${calls}</b><span>${TT('สายที่โทรวันนี้','Calls today')}</span></div><div><b>${s?ofE(String(s.updated_at).slice(11,16)):'—'}</b><span>${TT('อัปเดตสถานะ','Status updated')}</span></div><div><b>${car?(car[0][0]==='m'?'🛵':'🚗'):'—'}</b><span>${car?ofE(car[1].plate||''):TT('ไม่มีรถ','No vehicle')}</span></div></div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button type="button" class="btn" id="ofd_x">${TT('ปิด','Close')}</button></div>`;
+ $('ofd_x').onclick=()=>d.close();d.showModal()}
+(function(){const nav=document.querySelector('nav.tabs'),tN=$('tN');if(!nav||!tN)return;
+ const bt=document.createElement('button');bt.id='tOF';bt.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5"/><path d="M9 10h.01M15 10h.01"/></svg>'+TT('ออฟฟิศ','Office');tN.after(bt);
+ const vw=document.createElement('div');vw.id='vOF';vw.className='hid';const ref=$('vN');ref.parentNode.insertBefore(vw,ref);
+ const dl=document.createElement('dialog');dl.id='ofd';dl.style.width='min(420px,94vw)';dl.innerHTML='<div id="ofdc" style="padding:18px 20px"></div>';document.body.appendChild(dl);
+ const V=['vN','vF','vW','vL','vD','vC','vCU','vPT','vSO','vRS','vS','vFO','vCL'];
+ const _t=tab;tab=function(k){if(k==='OF'){V.forEach(x=>{const e=$(x);if(e)e.classList.add('hid')});nav.querySelectorAll('button.on').forEach(b=>b.classList.remove('on'));const f=$('fnb');if(f)f.classList.add('hid');bt.classList.add('on');vw.classList.remove('hid');ofRender();ofLoad();clearInterval(OF.t);OF.t=setInterval(()=>{if(!document.hidden&&!vw.classList.contains('hid'))ofLoad()},60000);return}
+  vw.classList.add('hid');bt.classList.remove('on');clearInterval(OF.t);return _t(k)};
+ bt.onclick=()=>tab('OF');
+ const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);try{bt.classList.toggle('hid',!profile)}catch(_){}return r};
+ vw.addEventListener('click',e=>{const t=e.target.closest('[data-ofv],[data-ofed],[data-ofseat],[data-ofcar],[data-ofl],[data-ofsv],[data-ofn]');if(!t)return;const d=t.dataset;
+  if(d.ofv){OF.view=d.ofv;ofRender()}else if(d.ofed){OF.edit=!OF.edit;ofRender()}else if(d.ofseat)ofEditDlg('seat',d.ofseat);else if(d.ofcar)ofEditDlg('car',d.ofcar);
+  else if(d.ofl)ofSetMe({loc:d.ofl,note:d.ofl==='desk'?($('of_note')||{}).value||'':''});else if(d.ofsv)ofSetMe({note:(($('of_note')||{}).value||'').trim()});else if(d.ofn&&!OF.edit)ofPopup(d.ofn)});
+ vw.addEventListener('keydown',e=>{if(e.target.id==='of_note'&&e.key==='Enter'){e.preventDefault();ofSetMe({note:e.target.value.trim()})}});
+})();
+
 </script>
 </body>
 </html>
