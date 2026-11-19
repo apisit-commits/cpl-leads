@@ -1488,7 +1488,7 @@ function myFu(){const who=seeAll()?($('fsel').value||''):(profile&&profile.name)
 function fuBadge(){const b=$('fdot');if(!profile||!['sales','sales_lead','keyer'].includes(profile.role)){b.classList.add('hid');if(profile&&!$('vF').classList.contains('hid'))renderFu();return}const t=today(),n=profile.role==='keyer'?kyList().length:myFu().filter(x=>x.due<=t).length;b.textContent=n>99?'99+':n;b.classList.toggle('hid',!n);if(!$('vF').classList.contains('hid'))renderFu()}
 const KYF=[['date','วันที่','Date'],['ads','Ads','Ads'],['name','ลูกค้า','Customer'],['channel','ช่องทาง','Channel'],['status','สถานะ','Status'],['reason','เหตุผลที่ยังไม่สนใจ','Reason'],['sales','เซลล์','Sales'],['brand','แบรนด์','Brand'],['deal_date','วันที่ปิดการขาย','Closed date'],['deal_amt','ยอดที่ปิดได้','Closed amount']];
 const kyMiss=r=>KYF.filter(([k])=>k==='deal_date'?(typeof DEAL_OK==='undefined'||DEAL_OK)&&closedR(r)&&!String(r.deal_date||'').trim():k==='deal_amt'?(typeof DEAL_OK==='undefined'||DEAL_OK)&&closedR(r)&&!(+r.deal_amt>0):k==='reason'?effS(r)===ST_N&&!String(r.reason||'').trim():k==='brand'&&r.team==='B'?false:!String(r[k]||'').trim());
-const kyTeams=()=>profile&&profile.role==='admin'?Object.keys(TEAMS):['A'];
+const kyTeams=()=>profile&&profile.role==='admin'?Object.keys(TEAMS).filter(t=>t!=='C'):['A'];
 const inKr=r=>{const a=$('k1').value,b=$('k2').value,d=r.date||'';return (!a||d>=a)&&(!b||d<=b)};
 const kyScope=()=>rows.filter(r=>kyTeams().includes(r.team)&&inKr(r));
 const kyList=()=>kyScope().map(r=>({r,m:kyMiss(r)})).filter(x=>x.m.length).sort((a,b)=>(b.r.date||'').localeCompare(a.r.date||''));
