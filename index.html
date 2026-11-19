@@ -4010,7 +4010,7 @@ function renderInbox(){const[k,b]=FO.view,hs=!!profile&&profile.role==='sales';
  const{base,L}=inbList();
  $('fo_tabs').innerHTML=[['all',TT('ทั้งหมด','All'),base.length],['new',TT('ยังไม่เปิด','Not opened'),base.filter(isNew).length],['sent',TT('รอลูกค้ากรอก','Awaiting customer'),base.filter(f=>f.status==='sent').length]].map(([t,l,n])=>`<button type="button" class="${FO.tab===t?'on':''}" data-fot="${t}">${l}<em${t==='new'&&n?' class="fo-emr"':''}>${N(n)}</em></button>`).join('');
  const S=L.slice(0,FO.lim);
- $('fo_items').innerHTML=S.map(f=>{const nw=isNew(f),c=(f.prefill||{}).contact;return `<button type="button" class="fo-it${FO.sel===f.id?' on':''}${nw?' nw':''}" data-foi="${f.id}"><i class="fo-dot"></i><span class="fo-ib"><span class="fo-i1"><b>${H(f.company||TT('รอลูกค้ากรอก','Awaiting customer'))}</b><small>${dd(f.submitted_at||f.created_at)}</small></span><span class="fo-i2"><span>${H(c&&c!==f.company?c:'')}</span><span>${H(f.sales||'')}</span></span>${f.status==='sent'?`<em class="fo-wt">${TT('รอลูกค้ากรอก','Awaiting customer')}</em>`:''}</span></button>`}).join('');
+ $('fo_items').innerHTML=S.map(f=>{const nw=isNew(f),c=(f.prefill||{}).contact;return `<button type="button" class="fo-it${FO.sel===f.id?' on':''}${nw?' nw':''}" data-foi="${f.id}"><i class="fo-dot"></i><span class="fo-ib"><span class="fo-i1"><b>${H(foName(f))}</b><small>${dd(f.submitted_at||f.created_at)}</small></span><span class="fo-i2"><span>${H(c&&c!==f.company?c:'')}</span><span>${H(f.sales||'')}</span></span>${f.status==='sent'?`<em class="fo-wt">${TT('รอลูกค้ากรอก','Awaiting customer')}</em>`:''}</span></button>`}).join('');
  $('fo_more').classList.toggle('hid',L.length<=FO.lim);
  $('fo_em').textContent=FO.ok?TT('ไม่พบคำตอบ','No submissions found'):TT('โหลดข้อมูลไม่สำเร็จ','Failed to load data');$('fo_em').classList.toggle('hid',!!L.length);
  if(FO.sel==null||!L.some(f=>f.id===FO.sel)){const f=L[0];if(f&&window.innerWidth>900)pick(f);else if(!f)clearPv()}}
@@ -4087,14 +4087,16 @@ function loadImgs(f){const els=[...document.querySelectorAll('#fo_pv img[data-u]
   return getImg(u,f.id).then(d=>{if(!i.isConnected)return;if(a)a.classList.remove('fo-ld');
    if(d===false){if(a&&a.classList.contains('fo-sg'))i.replaceWith(document.createTextNode(TT('เปิดไฟล์','Open file')));else if(a)a.classList.add('fo-ie')}
    else{i.src=d;if(a)a.classList.add('fo-ok')}})}))}
+function foName(f){if(f.company)return f.company;const p=f.prefill||{};if(p.contact)return p.contact;const a=(Array.isArray(f.answers)?f.answers:[]).find(x=>/บริษัท|company|ผู้ติดต่อ|ชื่อ.*(ผู้|ลูกค้า)|contact|^ชื่อ|name/i.test(x.l||'')&&String(x.v||'').trim()&&!/อีเมล|email|โทร|phone/i.test(x.l||''));if(a)return String(a.v).trim();return f.status==='done'?TT('ไม่ระบุชื่อลูกค้า','Unnamed customer'):TT('รอลูกค้ากรอก','Awaiting customer')}
 async function showAns(f){const done=f.status==='done',me=profile&&profile.id;
  $('fo_pe').classList.add('hid');$('fo_pc').classList.remove('hid');
- $('foa_t').textContent=f.company||TT('รอลูกค้ากรอก','Awaiting customer');
+ $('foa_t').textContent=foName(f);
  $('foa_s').textContent=(done?[TT('กรอกเมื่อ ','Submitted ')+dt(f.submitted_at||f.created_at)]:[TT('ส่งลิงก์เมื่อ ','Link created ')+dt(f.created_at)]).concat(f.sales?[TT('เซลล์ ','Sales ')+f.sales]:[]).join(' · ');
  ['foa_pr','foa_pdf'].forEach(id=>$(id).classList.toggle('hid',!done));$('fo_pcp').classList.toggle('hid',done||f.source==='jotform');$('fo_pdl').classList.toggle('hid',!(profile&&profile.role==='admin')&&!(f.created_by&&f.created_by===me));
  $('fo_pw').classList.toggle('hid',done);$('fo_pw').textContent=done?'':TT('ลูกค้ายังไม่ได้กรอกฟอร์มนี้','The customer has not filled in this form yet');
  if(!done){cuLinkUI(f);FO.cur=f;$('foa_b').innerHTML='';$('foa_f').innerHTML='';$('foa_sh').classList.add('hid');return}
  if(f.answers===undefined){$('foa_b').innerHTML='<div class="fo-ldg"></div>';$('foa_f').innerHTML='';const{data}=await sb.from('cust_forms').select('answers,files').eq('id',f.id).single();f.answers=(data&&data.answers)||[];f.files=(data&&data.files)||[]}
+ if(done&&!f.company){const nm=foName(f);if(nm&&nm!==TT('ไม่ระบุชื่อลูกค้า','Unnamed customer')){f.company=nm;try{sb.from('cust_forms').update({company:nm}).eq('id',f.id).then(()=>{})}catch(_){}const it=document.querySelector(`[data-foi="${f.id}"] .fo-i1 b`);if(it)it.textContent=nm}}$('foa_t').textContent=foName(f);
  if(FO.sel!=null&&FO.sel!==f.id)return;const ans=Array.isArray(f.answers)?f.answers:[];
  $('foa_b').innerHTML=secs(f,ans);cuLinkUI(f);
  const fl=Array.isArray(f.files)?f.files:[],im=fl.filter(isImg),ot=fl.filter(x=>!isImg(x));
