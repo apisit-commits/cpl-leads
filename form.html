@@ -270,7 +270,7 @@ async function submit(btn){cmbAll();btn.disabled=true;btn.textContent=T('กำ�
  if(S.preview){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('นี่คือตัวอย่างฟอร์ม ข้อมูลจะไม่ถูกส่ง','This is a preview. Nothing was sent.'));return}
  const answers=all.filter(f=>f[3]!=='file'&&f[3]!=='sign'&&f[3]!=='head').map(f=>({k:f[0],l:f[1],e:f[2],...(custom?{s:SEC[f[0]][0],se:SEC[f[0]][1]}:{}),v:f[3]==='check'?(S.v[f[0]]?'ยินยอม':''):Array.isArray(S.v[f[0]])?S.v[f[0]].join(', '):(S.v[f[0]]==null?'':String(S.v[f[0]]))+(f[3]==='num'&&f[6]&&f[6].u&&S.v[f[0]]?' '+f[6].u[0]:'')}));
  const mp=m=>{const f=all.find(x=>x[6]&&x[6].map===m);return f?String(S.v[f[0]]||''):''};
- const co=S.v.s_company||S.v.co_name||S.v.c_name||S.v.t_name||S.v.j_name||mp('company')||'',ct=S.v.s_contact||S.v.ct_name||S.v.c_contact||S.v.t_contact||S.v.j_pos||mp('contact')||'';
+ const ct=S.v.s_contact||S.v.ct_name||S.v.c_contact||S.v.t_contact||S.v.j_pos||mp('contact')||'',gss=()=>{const f=all.find(x=>x[3]==='text'&&/บริษัท|company|ชื่อนิติ|ผู้ติดต่อ|ผู้ขอ|ลูกค้า|^ชื่อ|name|contact/i.test((x[1]||'')+' '+(x[2]||''))&&!/อีเมล|email|โทร|phone|ที่อยู่|address/i.test((x[1]||'')+' '+(x[2]||''))&&String(S.v[x[0]]||'').trim());return f?String(S.v[f[0]]).trim():''},co=S.v.s_company||S.v.co_name||S.v.c_name||S.v.t_name||S.v.j_name||mp('company')||ct||gss()||'';
  try{const{data,error}=await sb.rpc('form_submit',{p_token:S.k,p_answers:answers,p_files:[],p_sheet:null,p_company:co,p_contact:ct});if(error)throw error}
  catch(e){btn.disabled=false;btn.textContent=T('ส่งข้อมูล','Submit');alert(T('ส่งข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง','Could not submit. Please try again.'));return}
  S.form.status='done';
