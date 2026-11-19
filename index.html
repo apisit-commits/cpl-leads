@@ -1141,9 +1141,11 @@ const lb=k=>dIc(k)+esc(k);
 let ADSP=[];
 async function loadSpend(){if(!profile||!['admin','marketing'].includes(profile.role))return;const r=await sb.from('mk_items').select('id,data').eq('kind','adspend');if(r.error)return;ADSP=(r.data||[]).map(x=>({id:x.id,m:(x.data||{}).m,t:(x.data||{}).t,a:+(x.data||{}).a||0})).filter(x=>x.m&&x.t);if(!$('vD').classList.contains('hid'))renderDash()}
 function renderDash(){
- const DM=[['A','Ads',''],['M','Marketing','Marketing'],['K','Sales','Sales'],['E','CEO','CEO']].filter(x=>(window.DRok||'AMKE').includes(x[0]));$('dmodes').innerHTML=DM.map(([k,l,e])=>`<button data-m="${k}" class="${dashMode===k?'on':''}">${e?TT(l,e):l}</button>`).join('');$('dmodes').classList.toggle('hid',DM.length<2);
+ const offV=$('dtm').value==='C'||(!!profile&&profile.role==='sales'&&profile.team==='C');if(offV&&dashMode==='A')dashMode='M';
+ const DM=[['A','Ads',''],['M','Marketing','Marketing'],['K','Sales','Sales'],['E','CEO','CEO']].filter(x=>(window.DRok||'AMKE').includes(x[0])&&!(offV&&x[0]==='A'));$('dmodes').innerHTML=DM.map(([k,l,e])=>`<button data-m="${k}" class="${dashMode===k?'on':''}">${e?TT(l,e):l}</button>`).join('');$('dmodes').classList.toggle('hid',DM.length<2);
  const a=$('d1').value,b=$('d2').value,tm=$('dtm').value;
- const base=rows.filter(r=>inVm(r)&&(!tm||r.team===tm)&&(!a||r.date>=a)&&(!b||r.date<=b));
+ const xC=r=>!(dashMode==='A'&&r.team==='C');
+ const base=rows.filter(r=>xC(r)&&inVm(r)&&(!tm||r.team===tm)&&(!a||r.date>=a)&&(!b||r.date<=b));
  const names=[...new Set(rows.map(r=>r.sales).filter(Boolean))].sort(),cur=$('dsl').value;
  $('dsl').innerHTML='<option value="">เซลล์ทุกคน</option>'+names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');$('dsl').value=names.includes(cur)?cur:'';
  $('dtitle').textContent=DT[dashMode];$('dslw').classList.toggle('hid',dashMode!=='K');
@@ -1155,7 +1157,7 @@ function renderDash(){
  const dlsP=r=>{const m=cdt(r),ex=((r.detail&&r.detail.deals)||[]).map(x=>({d:x.d||m,a:+x.a||0}));return((r.deal_amt||!ex.length)?[{d:m,a:+r.deal_amt||0}]:[]).concat(ex).filter(x=>inP(x.d))};
  const amtP=v=>v.reduce((t,r)=>t+(closedR(r)?dlsP(r).reduce((s,x)=>s+x.a,0):0),0);
  const rid=new Set(rows.map(r=>r.id)),pool=rows.concat([...CLZ.values()].filter(r=>!rid.has(r.id)));
- const lw=pool.filter(r=>closedR(r)&&(!tm||r.team===tm)&&(!sl||r.sales===sl)&&dlsP(r).length),W=lw.length,AMT=amtP(lw),DN=lw.reduce((t,r)=>t+dlsP(r).length,0);
+ const lw=pool.filter(r=>xC(r)&&closedR(r)&&(!tm||r.team===tm)&&(!sl||r.sales===sl)&&dlsP(r).length),W=lw.length,AMT=amtP(lw),DN=lw.reduce((t,r)=>t+dlsP(r).length,0);
  const chips=`<div class="dchips w12">${[['รอการตัดสินใจ',cn(ST_S)],['ไม่สนใจ',cn(ST_N)],dashMode==='A'?['Lead ที่ระบุ Ads',pc(l.filter(r=>r.ads).length,T)]:['ออกใบเสนอราคา',l.filter(isQ).length]].map(([x,y])=>`<span>${x} <b>${typeof y==='number'?N(y):y}</b></span>`).join('')}</div>`;
  const grp=(fn,empty,src)=>{const m={};(src||l).forEach(r=>{[].concat(fn(r)).forEach(k=>{k=k||empty;if(!k)return;(m[k]=m[k]||[]).push(r)})});return Object.entries(m).sort((x,y)=>y[1].length-x[1].length)};
  const cnt=(v,s)=>v.filter(r=>effS(r)===s).length,cM=(v,s)=>v.filter(r=>!closedR(r)&&r.status===s).length,cF=(v,s)=>v.filter(r=>!closedR(r)&&okS(r.fu_status)===s).length;
