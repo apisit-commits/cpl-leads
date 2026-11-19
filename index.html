@@ -703,9 +703,9 @@ function TR2(m){m=String(m);if(LANG!=='en')return m;return m.split('\n').map(l=>
 let WHO=null;
 function setWho(){if(!WHO)return;fLabels();const R={admin:'ADMIN',sales:'SALES '+(TEAMS[WHO.t]||''),sales_lead:'SALES HEAD',marketing:'MARKETING',ads:'ADS'};{const rl=(R[WHO.r]||String(WHO.r).toUpperCase());$('who').textContent=WHO.n+' · '+rl;$('wn').textContent=WHO.n||'';$('wr').textContent=rl;$('av').textContent=String(WHO.n||'?').trim().charAt(0).toUpperCase()}}
 const ST_Y='ปิดการขาย',ST_H='มีโอกาสเปลี่ยนใจ',ST_S='รอการตัดสินใจ',ST_N='ยังไม่สนใจบริการ';
-const SO_LAB={lead:'ยังไม่ติดต่อ',visit:'ติดต่อแล้ว',qual:'ตรงความต้องการ',quote:'ส่ง Quotation ครั้งที่ 1',nego:'ส่ง Quotation ครั้งที่ 2',q3:'ส่ง Quotation ครั้งที่ 3',closed:'ปิดดีล',lost:'ปิดไม่สำเร็จ',dormant:'พักไว้'};
+const SO_LAB={lead:'ยังไม่ติดต่อ',visit:'ติดต่อแล้ว',quote:'ส่ง Quotation ครั้งที่ 1',nego:'ส่ง Quotation ครั้งที่ 2',q3:'ส่ง Quotation ครั้งที่ 3',closed:'ปิดดีล',lost:'ปิดไม่สำเร็จ',dormant:'พักไว้'};
 const SO_STAT={lead:ST_S,visit:ST_S,qual:ST_S,quote:ST_S,nego:ST_S,q3:ST_S,closed:ST_Y,lost:ST_N,dormant:ST_S};
-const SO_KEY={'Lead ใหม่':'lead','นัดพบ / เยี่ยม':'visit','ส่ง Quotation':'quote','เจรจา':'nego',...Object.fromEntries(Object.entries(SO_LAB).map(([k,v])=>[v,k]))};
+const SO_KEY={'ตรงความต้องการ':'visit','Lead ใหม่':'lead','นัดพบ / เยี่ยม':'visit','ส่ง Quotation':'quote','เจรจา':'nego',...Object.fromEntries(Object.entries(SO_LAB).map(([k,v])=>[v,k]))};
 const stv=s=>SO_KEY[s]?SO_STAT[SO_KEY[s]]:s;
 const LEG={'Yes/ปิดการขาย':ST_Y,'Have a Chance/มีโอกาสเปลี่ยนใจ':ST_H,'Still Deciding/รอการตัดสินใจ':ST_S,'No/ยังไม่สนใจบริการ':ST_N},stN=x=>LEG[x]||x;
 const OPT={
@@ -4774,7 +4774,7 @@ if(typeof SO==='undefined'||!$('vSO'))return;
 const E=s=>esc(s==null?'':String(s)),D=x=>x&&x.data&&typeof x.data==='object'?x.data:{};
 const RES=[['int','สนใจ','var(--ok)','Interested'],['quote','ขอใบเสนอราคา','var(--wn)','Wants a quote'],['no','ยังไม่สนใจ','var(--er)','Not interested'],['miss','ไม่พบผู้ติดต่อ','var(--mu)','Contact not met']];
 const SVS=['เรือ','Air Cargo','Courier','รถ','พิธีการ'];
-const ST2={none:['ยังไม่ติดต่อ','var(--mu)'],contact:['ติดต่อแล้ว','var(--inf)'],qual:['ตรงความต้องการ','#0d8a6a'],quote:['Quotation ครั้งที่ 1','var(--wn)'],nego:['Quotation ครั้งที่ 2','#c26a00'],q3:['Quotation ครั้งที่ 3','#b45309'],closed:['ปิดดีล','#7c5cd6'],lost:['ไม่สำเร็จ','var(--er)'],dormant:['พักไว้','#8a9bb0']};
+const ST2={none:['ยังไม่ติดต่อ','var(--mu)'],contact:['ติดต่อแล้ว','var(--inf)'],quote:['Quotation ครั้งที่ 1','var(--wn)'],nego:['Quotation ครั้งที่ 2','#c26a00'],q3:['Quotation ครั้งที่ 3','#b45309'],closed:['ปิดดีล','#7c5cd6'],lost:['ไม่สำเร็จ','var(--er)'],dormant:['พักไว้','#8a9bb0']};
 SO.hasData=null;SO.goal=null;SO.day=null;SO.f={area:'',ind:'',st:'',s:'',q:'',tp:''};SO.wk='';
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const dAdd=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return iso(d)};
@@ -4787,7 +4787,7 @@ async function detect(){if(SO.hasData!==null)return;try{const r=await sb.from('s
 async function goalLoad(){try{const{data}=await sb.from('mk_items').select('id,data').eq('kind','so_goal');const g=(data||[]).find(x=>x.data&&x.data.team==='C');SO.goal=g?{id:g.id,...g.data}:{}}catch(e){SO.goal={}}}
 const _load=soLoad;soLoad=async function(){await Promise.all([_load(),detect(),SO.goal?null:goalLoad()])};
 const visOf=id=>SO.visits.filter(v=>String(v.deal_id)===String(id));
-function status(d){const st=d.stage||'lead';if(['closed','lost','quote','nego','q3','qual','dormant'].includes(st))return st;if(st==='visit'||D(d).src==='call')return'contact';return'none'}
+function status(d){const st=d.stage||'lead';if(['closed','lost','quote','nego','q3','dormant'].includes(st))return st;if(st==='visit'||st==='qual'||D(d).src==='call')return'contact';return'none'}
 window.soStat=status;window.SO_ST2=ST2;
 function nextOf(d){return null;const up=visOf(d.id).filter(v=>!v.checked_in&&v.visit_date>=today()).sort((a,b)=>(a.visit_date+a.visit_time).localeCompare(b.visit_date+b.visit_time))[0];
  const dn=D(d).next;if(up&&(!dn||up.visit_date<=dn))return{d:up.visit_date,t:(up.visit_time||'').slice(0,5)};if(dn)return{d:dn,t:D(d).next_note||''};return null}
@@ -5406,7 +5406,7 @@ nav.addEventListener('click',e=>{if(sup){e.preventDefault();e.stopImmediatePropa
 (function(){const dg=$('soci');if(!dg)return;const E=s=>esc(s==null?'':String(s));
 {const x=document.createElement('button');x.type='button';x.className='dlgx';x.setAttribute('aria-label','ปิด');x.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';x.onclick=()=>dg.close();dg.prepend(x)}
 const nk=s=>(s||'').trim().toLowerCase(),dig=s=>String(s||'').replace(/\D/g,'').slice(-9),D=d=>d&&d.data&&typeof d.data==='object'?d.data:{},cp=o=>JSON.parse(JSON.stringify(o||{}));
-const STEPS=[['lead','ยังไม่ติดต่อ'],['visit','ติดต่อแล้ว'],['qual','ตรงความต้องการ'],['quote','Quotation ครั้งที่ 1'],['nego','ครั้งที่ 2'],['q3','ครั้งที่ 3'],['closed','ปิดดีล (Won)']];
+const STEPS=[['lead','ยังไม่ติดต่อ'],['visit','ติดต่อแล้ว'],['quote','Quotation ครั้งที่ 1'],['nego','ครั้งที่ 2'],['q3','ครั้งที่ 3'],['closed','ปิดดีล (Won)']];
 const SEC=[['ov','ภาพรวม'],['co','บริษัท & ผู้ติดต่อ'],['nd','ความต้องการขนส่ง'],['dl','คู่แข่ง, ใบเสนอราคา & ผลดีล']];
 const SRC=['Ads','Facebook','LINE OA','ลูกค้าแนะนำ','งานแสดงสินค้า','Tele sales','เยี่ยมลูกค้าโดยตรง'];
 const MODE=[['sea','ทางเรือ'],['air','ทางอากาศ'],['land','ทางบก'],['rail','รถไฟ',1]],CTR=["FCL 20'","FCL 40'","FCL 40'HC",'LCL','Reefer'],INC=['EXW','FOB','CIF','CFR','DAP','DDP'];
@@ -5425,7 +5425,7 @@ async function findLead(d){const x=D(d);let r=(x.lead_id&&rows.find(y=>y.id===x.
  try{let q=sb.from('leads').select(cols()).eq('team','C');q=x.lead_id?q.eq('id',x.lead_id):q.eq('name',d.company);const{data}=await q.order('id',{ascending:false}).limit(1);if(data&&data[0]){r=norm(data[0]);if(!rows.some(y=>y.id===r.id))rows.push(r);return r}}catch(e){}return null}
 /* state */
 function build(d){const x=cp(D(d)),L=LEAD,dt=(L&&L.detail)||{},C=callsOf(d);
- const st={...x,name:d.company||'',stage:d.stage||'lead',sales:d.sales||soActor()};
+ const st={...x,name:d.company||'',stage:d.stage==='qual'?'visit':(d.stage||'lead'),sales:d.sales||soActor()};
  if(!Array.isArray(st.contacts)||!st.contacts.length)st.contacts=[{n:x.ct||dt.ctn||dt.fn||(C[0]&&C[0].contact)||'',pos:'',ph:x.ph||dt.p0||dt.ph||(C[0]&&C[0].phone)||'',line:'',em:x.em||dt.em||(C[0]&&C[0].email)||'',time:''}];
  st.ch=st.ch||(L&&L.channel)||'';st.ind=st.ind||dt.ind||'';st.tax=st.tax||dt.tax||'';st.temp=st.temp||dt.temp||'';
  if(!st.src2)st.src2=C.length?'Tele sales':'';if(!Array.isArray(st.needs)||!st.needs.length)st.needs=[{dir:'Import'}];
