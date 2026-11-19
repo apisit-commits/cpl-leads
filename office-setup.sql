@@ -17,3 +17,4 @@ drop policy if exists office_cfg_rw on public.office_cfg;
 create policy office_cfg_rw on public.office_cfg for all to authenticated using (true) with check (true);
 drop policy if exists office_status_rw on public.office_status;
 create policy office_status_rw on public.office_status for all to authenticated using (true) with check (true);
+alter table public.office_status add column if not exists av jsonb;
