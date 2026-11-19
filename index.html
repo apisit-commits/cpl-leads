@@ -5908,5 +5908,15 @@ function clOpen(id,term){CL.les=id;CL.qz=null;CL.st.last=id;clSave();clRender();
 .mo-zg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .mo-bars{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:8px}.mo-bars div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}.mo-bars span{font-size:12px;font-weight:600}.mo-bars i{width:100%;max-width:70px;border-radius:6px 6px 0 0;background:color-mix(in srgb,var(--pr) 30%,transparent)}.mo-bars .on i{background:var(--pr)}.mo-bars small{font-size:11.5px;color:var(--mu)}
 </style>
+<style>
+html:not([data-theme=dark]) .tabs #acct{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(255,255,255,.16)!important}
+nav.tabs{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+html.scl nav.tabs,html.scl nav.tabs *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){nav.tabs{animation:none!important}}
+</style>
+<script>
+(function(){const h=document.documentElement;let t=0,on=false;const f=()=>{if(!on){on=true;h.classList.add('scl')}clearTimeout(t);t=setTimeout(()=>{on=false;h.classList.remove('scl')},160)};
+addEventListener('scroll',f,{passive:true,capture:true});addEventListener('wheel',f,{passive:true});addEventListener('touchmove',f,{passive:true});})();
+</script>
 </body>
 </html>
