@@ -5875,7 +5875,7 @@ function clOpen(id,term){CL.les=id;CL.qz=null;CL.st.last=id;clSave();clRender();
  const _t=tab;tab=function(k){if(k==='CL'){V.forEach(x=>{const e=$(x);if(e)e.classList.add('hid')});nav.querySelectorAll('button.on').forEach(b=>b.classList.remove('on'));const f=$('fnb');if(f)f.classList.add('hid');bt.classList.add('on');vw.classList.remove('hid');clLoad();clRender();return}
   vw.classList.add('hid');bt.classList.remove('on');return _t(k)};
  bt.onclick=()=>tab('CL');
- const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);try{bt.classList.toggle('hid',!!profile&&profile.role==='zimp')}catch(_){}return r};
+ const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);try{bt.classList.toggle('hid',!!profile&&profile.role==='zimp')}catch(_){}try{if(profile&&profile.role==='sales'&&profile.team==='C'){const s1=$('nsep1'),s2=$('nsep2');if(s1&&s2){let at=s1;['tSO','tFO','tC'].forEach(id=>{const e=$(id);if(e){at.after(e);at=e}});if(at.nextElementSibling!==s2)at.after(s2)}}}catch(_){}return r};
  vw.addEventListener('click',e=>{const t=e.target.closest('[data-clv],[data-cll],[data-clc],[data-clz],[data-clo],[data-clqn],[data-cldn],[data-clb],[data-clgo],[data-claz],[data-clqo]');if(!t||e.target.closest('a'))return;const d=t.dataset;
   if(d.clb!=null){e.stopPropagation();clTogBm(d.clb);return}
   if(d.clv){CL.v=d.clv;CL.les=null;CL.qz=null;CL.q='';if(d.clv==='team')CL.team=null;clRender();return}
