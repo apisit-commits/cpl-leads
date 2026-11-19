@@ -5522,5 +5522,19 @@ Object.assign(EN,{'ภาพรวม':'Overview','บริษัท & ผู�
  if(x.lead_id){const L=rows.find(y=>y.id===x.lead_id);if(L){const dt={...(L.detail||{}),temp:v};try{const r=await sb.from('leads').update({detail:dt}).eq('id',L.id);if(!r.error)L.detail=dt}catch(_){}}}
  soRender()},true)})();
 </script>
+<script>
+/* keep the current page on refresh */
+(function(){const nav=document.querySelector('nav.tabs');if(!nav)return;const K=()=>'cplView:'+((profile&&(profile.id||profile.name))||'');let last=null,done=false;
+nav.addEventListener('click',e=>{const b=e.target.closest('nav.tabs>button[id]');if(b)last=b.id},true);
+function save(){if(!profile)return;try{const o={b:last};try{o.so=SO.page}catch(_){}try{o.mk=MK.tab}catch(_){}try{o.dm=dashMode}catch(_){}localStorage.setItem(K(),JSON.stringify(o))}catch(_){}}
+window.addEventListener('beforeunload',save);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
+function restore(){if(done||!profile)return;done=true;if(location.hash&&location.hash.length>1)return;let o=null;try{o=JSON.parse(localStorage.getItem(K())||'null')}catch(_){}if(!o||!o.b)return;
+ const b=document.getElementById(o.b);if(!b||b.classList.contains('hid')||b.offsetParent===null)return;
+ try{if(o.mk&&typeof MK==='object')MK.tab=o.mk}catch(_){}try{if(o.dm&&typeof dashMode!=='undefined')dashMode=o.dm}catch(_){}
+ last=o.b;b.click();try{if(o.so&&o.b==='tSO'&&typeof SO==='object'){SO.page=o.so;if(['C','O'].includes(o.so))SO.tele=o.so;setTimeout(()=>{try{soRender()}catch(_){}},50)}}catch(_){}
+ try{if(o.dm&&'AMKE'.includes(o.dm)&&typeof tab==='function'&&o.b==='tDB')tab(o.dm)}catch(_){}}
+const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);setTimeout(restore,350);return r};
+})();
+</script>
 </body>
 </html>
