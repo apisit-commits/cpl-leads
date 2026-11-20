@@ -6212,7 +6212,7 @@ const PXSEAT=[
  ['s1',2,0.6,11.0,1.6,'#c08552','#0096d6','Sales','#0096d6',1,'desk'],['s2',2,2.8,11.0,1.6,'#c08552','#0096d6','Sales','#0096d6',2,'desk'],['s3',2,5.0,11.0,1.6,'#c08552','#0096d6','Sales','#0096d6',5,'desk'],['sa',2,0.6,14.2,1.6,'#c08552','#74c0fc','ผู้ช่วยเซลล์','#74c0fc',3,'desk'],['sh',2,2.9,14.2,2.4,'#7a4a2a','#c0392b','หัวหน้าเซลล์','#c0392b',6,'desk'],
  ['b1',2,0.6,3.0,1.6,'#c08552','#1c7ed6','Booking','#1c7ed6',2,'desk'],['b2',2,2.8,3.0,1.6,'#c08552','#1c7ed6','Booking','#1c7ed6',1,'desk'],['b3',2,5.0,3.0,1.6,'#c08552','#1c7ed6','Booking','#1c7ed6',3,'desk'],['b4',2,0.6,6.2,1.6,'#c08552','#1c7ed6','Booking','#1c7ed6',2,'desk'],['b5',2,5.6,6.2,1.6,'#c08552','#1c7ed6','Booking','#1c7ed6',1,'desk'],['bh',2,2.9,6.2,2.4,'#7a4a2a','#1864ab','หัวหน้า Booking','#1864ab',6,'desk'],
  ['off1',1,0,0,0,'','#c27100','Offline Team','#7c5cd6',0,'dine0'],['off2',1,0,0,0,'','#c27100','Offline Team','#7c5cd6',0,'dine1'],['off3',1,0,0,0,'','#c27100','Offline Team','#7c5cd6',0,'dine2'],
- ['mk1',1,0,0,0,'','#868e96','Marketing','#e8590c',0,'kit0'],['mk2',1,0,0,0,'','#868e96','Marketing','#e8590c',0,'kit1']];
+ ['mk1',1,0,0,0,'','#868e96','Marketing','#e8590c',0,'kit0'],['mk2',1,0,0,0,'','#868e96','Marketing','#e8590c',0,'kit1'],['maid',1,0,0,0,'','#868e96','แม่บ้าน','#0ca678',0,'kit4']];
 /* F1 fixed spots: [x,y,pose-facing f/b] person foot positions */
 const PXF1={dine:[[1.3,7.9,'f'],[2.5,7.9,'f'],[3.7,7.9,'f'],[4.9,7.9,'f'],[6.1,7.9,'f'],[1.9,10.5,'b'],[3.1,10.5,'b'],[4.3,10.5,'b'],[5.5,10.5,'b']],
  kit:[[3.0,2.9,'f'],[4.2,2.9,'f'],[3.0,5.1,'b'],[4.2,5.1,'b'],[5.6,1.6,'f']],sofa:[[0.75,1.6,'s'],[0.75,2.5,'s'],[0.75,3.4,'s'],[0.75,4.3,'s']],
@@ -6321,7 +6321,7 @@ function ofCast(){const S=OF.cfg.seats||{},ppl=[],away=[],out=[],busy={dine:new 
  seated.forEach(s=>{if(s[10]!=='desk'&&ofLoc(S[s[0]])==='desk')busy[s[10].startsWith('dine')?'dine':'kit'].add(+s[10].replace(/\D/g,''))});
  const take=t=>{const L=PXF1[t];for(let i=0;i<L.length;i++)if(!busy[t].has(i)){busy[t].add(i);return [L[i],t]}return null};
  const put=(nm,col,seat)=>{const lc=ofLoc(nm),av=ofAv(nm),bub=ofBubble(nm,1);
-  if(lc==='desk'&&seat){const sp=pxSeatSpot(seat),call=OF.calls.some(x=>x.actor===nm&&Date.now()-Date.parse(x.created_at)<6e5);ppl.push({name:nm,av,floor:seat[1],x:sp[0],y:sp[1],pose:sp[2]==='b'?'back':call?'phone':(fr?'type1':'type0'),seat:true,col,bub});return}
+  if(lc==='desk'&&seat){const sp=pxSeatSpot(seat),call=OF.calls.some(x=>x.actor===nm&&Date.now()-Date.parse(x.created_at)<6e5);ppl.push({name:nm,av,floor:seat[1],x:sp[0],y:sp[1],pose:sp[2]==='b'?'back':seat[0]==='maid'?'sit':call?'phone':(fr?'type1':'type0'),seat:true,col,bub});return}
   if(OFZONE[lc]){const r=lc==='meet'?take('meet'):lc==='eat'?take('dine'):(take('sofa')||take('kit'));if(r){const [p,t]=r;ppl.push({name:nm,av,floor:1,x:p[0],y:p[1],pose:p[2]==='b'?'back':t==='sofa'?'sofa':lc==='meet'?'meet':lc==='eat'?'eat':'sit',seat:true,col,bub});return}}
   if(lc==='out'){out.push({name:nm,av,col,bub,pose:fr?'walk0':'walk1'});return}
   if(seat&&lc!=='desk'){const sp=pxSeatSpot(seat);away.push({floor:seat[1],x:sp[0],y:sp[1],txt:'📍 '+nm+' · '+(OFLOC[lc]||['',''])[1]})}};
