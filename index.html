@@ -6315,12 +6315,12 @@ function ofAv(nm){const v=Object.values(OF.st).find(x=>x.name===nm&&x.av);return
 function ofColor(nm){const s=OFSEAT.find(x=>OF.cfg.seats[x[0]]===nm);if(s)return s[8];const p=OF.prof.find(x=>x.name===nm);const r=p&&p.role;return r==='marketing'?'#e8590c':r==='zimp'?'#f5b400':r==='ceo'?'#0b4d8c':p&&p.team==='C'?'#7c5cd6':p&&p.team==='B'?'#f08a24':'#0096d6'}
 function ofAuto(nm){const now=Date.now(),H=3*36e5;const c=OF.calls.filter(x=>x.actor===nm);if(c.length&&now-Date.parse(c[0].created_at)<H)return '📞 โทรลูกค้า '+c.length+' สายวันนี้';
  const l=OF.cls.find(x=>x.name===nm);if(l&&now-Date.parse(l.updated_at)<36e5)return '📚 เรียน Classroom';return ''}
-function ofBubble(nm){const s=ofStOf(nm);if(s&&s.note)return (s.loc&&s.loc!=='desk'&&OFLOC[s.loc]?OFLOC[s.loc][0]:'💬')+' '+s.note;if(s&&s.loc&&s.loc!=='desk')return OFLOC[s.loc][0]+' '+OFLOC[s.loc][1];return ofAuto(nm)}
+function ofBubble(nm,inMap){const s=ofStOf(nm);if(inMap&&s&&!s.note&&OFZONE[s.loc])return '';if(s&&s.note)return (s.loc&&s.loc!=='desk'&&OFLOC[s.loc]?OFLOC[s.loc][0]:'💬')+' '+s.note;if(s&&s.loc&&s.loc!=='desk')return OFLOC[s.loc][0]+' '+OFLOC[s.loc][1];return ofAuto(nm)}
 function ofCast(){const S=OF.cfg.seats||{},ppl=[],away=[],out=[],busy={dine:new Set(),kit:new Set(),meet:new Set(),sofa:new Set()},fr=OF.fr%2;
  const seated=OFSEAT.filter(s=>S[s[0]]);
  seated.forEach(s=>{if(s[10]!=='desk'&&ofLoc(S[s[0]])==='desk')busy[s[10].startsWith('dine')?'dine':'kit'].add(+s[10].replace(/\D/g,''))});
  const take=t=>{const L=PXF1[t];for(let i=0;i<L.length;i++)if(!busy[t].has(i)){busy[t].add(i);return [L[i],t]}return null};
- const put=(nm,col,seat)=>{const lc=ofLoc(nm),av=ofAv(nm),bub=ofBubble(nm);
+ const put=(nm,col,seat)=>{const lc=ofLoc(nm),av=ofAv(nm),bub=ofBubble(nm,1);
   if(lc==='desk'&&seat){const sp=pxSeatSpot(seat),call=OF.calls.some(x=>x.actor===nm&&Date.now()-Date.parse(x.created_at)<6e5);ppl.push({name:nm,av,floor:seat[1],x:sp[0],y:sp[1],pose:sp[2]==='b'?'back':call?'phone':(fr?'type1':'type0'),seat:true,col,bub});return}
   if(OFZONE[lc]){const r=lc==='meet'?take('meet'):lc==='eat'?take('dine'):(take('sofa')||take('kit'));if(r){const [p,t]=r;ppl.push({name:nm,av,floor:1,x:p[0],y:p[1],pose:p[2]==='b'?'back':t==='sofa'?'sofa':lc==='meet'?'meet':lc==='eat'?'eat':'sit',seat:true,col,bub});return}}
   if(lc==='out'){out.push({name:nm,av,col,bub,pose:fr?'walk0':'walk1'});return}
@@ -6337,6 +6337,9 @@ function ofLbls(L){return L.map(l=>{const k=l.kind,st=`left:${l.x.toFixed(2)}%;t
  const bg=k==='name'||k==='floor'||k==='own'?`;background:${l.col}`:'';return `<span class="oflb ${k}" style="${st}${bg}"${l.n?` data-ofn="${ofE(l.n)}"`:''}>${ofE(l.t)}</span>`}).join('')}
 function ofScene(){OF.scn=ofBuild();return `<div class="ofcv" style="aspect-ratio:${OF.scn.cv.width}/${OF.scn.cv.height}"><canvas id="ofcvs" width="${OF.scn.cv.width}" height="${OF.scn.cv.height}"></canvas>${ofLbls(OF.scn.labels)}</div>`}
 function ofPaint(){const c=$('ofcvs');if(!c||!OF.scn)return;const x=c.getContext('2d');x.drawImage(OF.scn.cv,0,0)}
+let ofRq=0;const ofSoon=()=>{clearTimeout(ofRq);ofRq=setTimeout(ofRender,120)};
+function ofRT(){if(OF.ch||!sb||!sb.channel)return;try{OF.ch=sb.channel('office-rt').on('postgres_changes',{event:'*',schema:'public',table:'office_status'},p=>{if(p.eventType==='DELETE'){if(p.old&&p.old.user_id!=null)delete OF.st[String(p.old.user_id)]}else if(p.new&&p.new.user_id!=null)OF.st[String(p.new.user_id)]=p.new;ofSoon()}).on('postgres_changes',{event:'*',schema:'public',table:'office_cfg'},p=>{if(p.new&&p.new.data){OF.cfg=Object.assign({seats:{},cars:{}},p.new.data);ofSoon()}}).on('postgres_changes',{event:'INSERT',schema:'public',table:'so_call_logs'},p=>{if(p.new&&p.new.actor){OF.calls.unshift({actor:p.new.actor,created_at:p.new.created_at||new Date().toISOString()});ofSoon()}}).subscribe()}catch(_){OF.ch=null}}
+function ofRTOff(){if(OF.ch){try{sb.removeChannel(OF.ch)}catch(_){}OF.ch=null}}
 function ofTick(){const v=$('vOF');if(!v||v.classList.contains('hid')||document.hidden)return;OF.fr++;const c=$('ofcvs');if(!c)return;const s=ofBuild();if(s.cv.width!==c.width||s.cv.height!==c.height)return;OF.scn.cv=s.cv;ofPaint()}
 function ofBranches(){return `<div class="ofbr">${OFBR.map(([k,n,c])=>{const L=ofAll().filter(n=>ofLoc(n)===k).map(n=>Object.assign({name:n},ofStOf(n)||{},{name:n}));return `<div class="ofbc"><div class="ofbh" style="background:${c}">📍 ${ofE(n)}<em>${L.length}</em></div><div class="ofbp">${L.length?L.map(v=>`<div class="ofbm" data-ofn="${ofE(v.name)}"><img src="${avImg(ofAv(v.name),'stand',1)}" alt=""><b>${ofE(v.name)}</b>${v.note?`<span class="sub">${ofE(v.note)}</span>`:''}</div>`).join(''):'<div class="sub">—</div>'}</div></div>`}).join('')}</div>`}
 function ofSide(){const me=ofMine(),ml=me&&ofTdy(me)?me.loc:'desk',S=OF.cfg.seats||{},C=OF.cfg.cars||{};
@@ -6393,8 +6396,9 @@ function ofAvDlg(who){const d=$('ofd'),nm=who||profile.name||'';let A=Object.ass
  const vw=document.createElement('div');vw.id='vOF';vw.className='hid';const ref=$('vN');ref.parentNode.insertBefore(vw,ref);
  const dl=document.createElement('dialog');dl.id='ofd';dl.style.width='min(420px,94vw)';dl.innerHTML='<div id="ofdc" style="padding:18px 20px"></div>';document.body.appendChild(dl);
  const V=['vN','vF','vW','vL','vD','vC','vCU','vPT','vSO','vRS','vS','vFO','vCL'];
- const _t=tab;tab=function(k){if(k==='OF'){V.forEach(x=>{const e=$(x);if(e)e.classList.add('hid')});nav.querySelectorAll('button.on').forEach(b=>b.classList.remove('on'));const f=$('fnb');if(f)f.classList.add('hid');bt.classList.add('on');vw.classList.remove('hid');ofRender();ofLoad();clearInterval(OF.t);clearInterval(OF.a);OF.t=setInterval(()=>{if(!document.hidden&&!vw.classList.contains('hid'))ofLoad()},60000);OF.a=setInterval(ofTick,800);return}
-  vw.classList.add('hid');bt.classList.remove('on');clearInterval(OF.t);clearInterval(OF.a);return _t(k)};
+ const _t=tab;tab=function(k){if(k==='OF'){V.forEach(x=>{const e=$(x);if(e)e.classList.add('hid')});nav.querySelectorAll('button.on').forEach(b=>b.classList.remove('on'));const f=$('fnb');if(f)f.classList.add('hid');bt.classList.add('on');vw.classList.remove('hid');ofRender();ofLoad();clearInterval(OF.t);clearInterval(OF.a);OF.t=setInterval(()=>{if(!document.hidden&&!vw.classList.contains('hid'))ofLoad()},20000);ofRT();OF.a=setInterval(ofTick,800);return}
+  vw.classList.add('hid');bt.classList.remove('on');clearInterval(OF.t);clearInterval(OF.a);ofRTOff();return _t(k)};
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!vw.classList.contains('hid'))ofLoad()});
  bt.onclick=()=>tab('OF');
  const _ar=applyRoleUI;applyRoleUI=function(){const r=_ar.apply(this,arguments);try{bt.classList.toggle('hid',!profile)}catch(_){}return r};
  vw.addEventListener('click',e=>{const t=e.target.closest('[data-ofv],[data-ofed],[data-ofav],[data-ofadd],[data-ofseat],[data-ofcar],[data-ofl],[data-ofsv],[data-ofn]');if(!t)return;const d=t.dataset;

@@ -18,3 +18,8 @@ create policy office_cfg_rw on public.office_cfg for all to authenticated using 
 drop policy if exists office_status_rw on public.office_status;
 create policy office_status_rw on public.office_status for all to authenticated using (true) with check (true);
 alter table public.office_status add column if not exists av jsonb;
+do $$ begin
+  begin alter publication supabase_realtime add table public.office_status; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.office_cfg; exception when duplicate_object then null; end;
+  begin alter publication supabase_realtime add table public.so_call_logs; exception when duplicate_object then null; end;
+end $$;
