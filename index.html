@@ -6341,7 +6341,7 @@ function ofCast(){const S=OF.cfg.seats||{},ppl=[],away=[],out=[],busy={dine:new 
   if(lc==='desk'&&seat){const sp=pxSeatSpot(seat),call=OF.calls.some(x=>x.actor===nm&&Date.now()-Date.parse(x.created_at)<6e5);ppl.push({tier,name:nm,av,floor:seat[1],x:sp[0],y:sp[1],pose:sp[2]==='b'?'back':seat[0]==='maid'?'sit':call?'phone':(fr?'type1':'type0'),seat:true,col,bub});return}
   if(OFZONE[lc]){const r=lc==='meet'?take('meet'):lc==='eat'?take('dine'):(take('sofa')||take('kit'));if(r){const [p,t]=r;ppl.push({tier,name:nm,av,floor:1,x:p[0],y:p[1],pose:p[2]==='b'?'back':t==='sofa'?'sofa':lc==='meet'?'meet':lc==='eat'?'eat':'sit',seat:true,col,bub});return}}
   if(lc==='out'){out.push({tier,name:nm,av,col,bub,pose:fr?'walk0':'walk1'});return}
-  if(seat&&lc!=='desk'){const sp=pxSeatSpot(seat);away.push({floor:seat[1],x:sp[0],y:sp[1],txt:'📍 '+nm+' · '+(OFLOC[lc]||['',''])[1]})}};
+  if(seat&&lc!=='desk'&&lc!=='leave'){const sp=pxSeatSpot(seat);away.push({floor:seat[1],x:sp[0],y:sp[1],txt:'📍 '+nm+' · '+(OFLOC[lc]||['',''])[1]})}};
  seated.forEach(s=>put(S[s[0]],s[8],s));
  Object.values(OF.st).filter(v=>ofTdy(v)&&(OFZONE[v.loc]||v.loc==='out')&&!seated.some(s=>S[s[0]]===v.name)).forEach(v=>put(v.name,ofColor(v.name),null));
  return {ppl,away,out}}
