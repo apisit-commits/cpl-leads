@@ -1012,7 +1012,7 @@ async function enter(){
 function applyRoleUI(p){tFlabel();const r=p.role,H=(id,h)=>$(id).classList.toggle('hid',!!h),has=a=>a.includes(r);
  H('add',!has(['admin','sales','sales_lead','keyer']));H('n_add',!has(['admin','marketing']));H('tS',r!=='admin');H('tC',has(['ads','keyer','zimp','ceo']));H('tSO',!canSO());
  const DR={admin:'AMKE',marketing:'AMK',ads:'A',sales:'',sales_lead:'K',keyer:'',zimp:'AM',ceo:'AMKE'}[r]||'';window.DRok=DR;H('tDB',!DR);
- H('tF',!has(['sales','sales_lead','admin','keyer']));H('tW',!has(['admin','marketing','zimp']));H('tL',r==='zimp');H('tN',0);
+ H('tF',!has(['sales','sales_lead','admin','keyer']));H('tW',!has(['admin','marketing','zimp']));H('tL',0);H('tN',0);
  ['A','M','K','E'].forEach(k=>H('t'+k,1));H('rg',1);H('exp',r==='zimp')}
 let PVR=null,PVW=null;
 function pvApply(v){if(!PVR){PVR=profile;PVW=WHO}if(!PVR||PVR.role!=='admin')return;const[role,tm]=v.split(':'),p=role==='admin'?PVR:{...PVR,role,team:tm||PVR.team};
